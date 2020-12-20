@@ -9,6 +9,8 @@
 !.vscode/launch.json
 !.vscode/extensions.json
 
+build/
+
 ### dotenv ###
 .env
 
@@ -20,6 +22,8 @@
 ### Firebase Patch ###
 .runtimeconfig.json
 .firebase/
+
+build/
 
 ### Git ###
 # Created by git for backups. To disable backups in Git:
