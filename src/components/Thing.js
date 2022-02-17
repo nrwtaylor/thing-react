@@ -4,15 +4,27 @@ import axios from "axios";
 import { Get } from "../components/Database";
 
 export default function Thing(props) {
-  //  const [thingreport, setThingReport] = useState(false);
   const subject = props.subject;
+  const defaultPollInterval = 10 * 1000; //ms
+  const minimumPollInterval = 60 * 60 * 1000;
+  const [pollInterval, setPollInterval] = useState(defaultPollInterval);
+  const [timedInterval, setTimedInterval] = useState();
+  const [flag, setFlag] = useState();
 
   const [data, setData] = useState({
     thing: { uuid: "X" },
     thing_report: { sms: "No response. Yet." },
   });
 
+  useEffect(() => {
+getResponse();
+  }, []);
+
   function getResponse() {
+    if (flag === "red") {
+      return;
+    }
+    setFlag("red");
     var t = { subject: subject };
     var thingy = { thing: null, thing_report: null };
 
@@ -21,66 +33,69 @@ export default function Thing(props) {
 
     console.log("Axios call " + subject);
 
-    //const webPrefix = `https://stackr.ca/`;
-    const webPrefix = "https://localhost/api/whitefox/";
-
-//    axios.get(webPrefix + subject + `.json`).then((res) => {
-    axios.get(`https://stackr.ca/` + subject + `.json`).then((res) => {
+    const webPrefix = process.env.REACT_APP_WEB_PREFIX;
+    const requestedAt = Date.now();
+    console.log("requestedAt", requestedAt);
+    axios.get(webPrefix + subject + `.json`).then((res) => {
       let thingy = res.data;
       console.log("Thing res.data", res.data);
 
       // agent etime info json:null thing etc
-
-      //setData({ thing: thingy.thing, thing_report: thingy.thing_report });
       setData(res.data);
+
+      const elapsedTime = Date.now() - requestedAt;
+      console.log("elapsedTime", elapsedTime);
+
+      setTimedInterval(elapsedTime);
+      setFlag("green");
     });
   }
+
+  useEffect(() => {
+    // Testing at 10%.
+    setPollInterval(timedInterval * 1.1 < minimumPollInterval ? minimumPollInterval : timedInterval * 1.1);
+  }, [timedInterval]);
 
   function Create() {}
 
   function Forget() {}
 
-  // TODO Rename
-  //function Get() {getResponse();}
-
-/*
-Call for another response immediately when the last requested one comes back.
-*/
-  useEffect(() => {
-    getResponse();
-  }, [getResponse]); // eslint-disable-line react-hooks/exhaustive-deps
-
-
   // Call getResponse on a Timer.
   useEffect(() => {
+    // If still processing the last one,
+    // Skip a beat, do not request aother.
+    if (flag === "red") {
+      return;
+    }
+
     const interval = setInterval(() => {
       getResponse();
       console.log("This will run every five minutes!");
-    }, 5 * 60 * 1000);
+    }, pollInterval);
+    console.log("interval", interval);
+
     return () => clearInterval(interval);
-  }, []);
+  }, [flag]);
 
   return (
     <>
       THING
+      {flag} <br />
+      TIMED INTERVAL {timedInterval}
+      <br />
+      wPOLL INTERVAL {pollInterval}
+      {!data && <>NOT DATA</>}
+      AGENT RESPONSE START
       <Agent user={null} thing={data.thing} agent_input={null} />
-
+      AGENT RESPONSE END
       <div>Datagram</div>
       {subject}
-
       <div>Thing</div>
-
-{/* Note */}
-
-<div>{data && data.sms}</div>
-
-
-<div dangerouslySetInnerHTML={{__html: data && data.web}} />
-
-
-<div>{data && data.thing && data.thing.uuid}</div>
-<div>{data && data.thing && data.thing.created_at}</div>
-
+      {/* Note */}
+      <div>{data && data.sms}</div>
+      <div dangerouslySetInnerHTML={{ __html: data && data.web }} />
+      <div>{data && data.thing && data.thing.uuid}</div>
+      <div>{data && data.thing && data.thing.created_at}</div>
       <div>{data && data.thing_report && data.thing_report.sms}</div>
     </>
   );

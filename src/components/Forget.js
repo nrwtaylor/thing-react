@@ -5,8 +5,6 @@ import { Button, Dialog, DialogTitle, DialogActions } from "@material-ui/core";
 
 import { DeleteOutline } from "@material-ui/icons";
 
-//import firebase, { firestore } from "../../firebase";
-
 function Forget(props) {
   const [open, setOpen] = useState(false);
 
@@ -26,8 +24,6 @@ function Forget(props) {
     if (props.uuid === undefined) {
       return;
     }
-
-    //  const db = firebase.firestore();
 
     props.callBack();
     /*

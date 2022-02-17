@@ -31,27 +31,24 @@ import Forget from "../components/Forget.js";
 function Agent(props) {
   const user_name = props.user_name; // TODO
 
+  const [flag, setFlag] = useState();
+
   const [reply, setReply] = useState("");
 
-  //const user = props.user;
-//  const from = props.thing.from;
-//  const to = props.thing.to;
-//  const comment = props.thing.comment;
-//  const timestamp = props.thing.created_at;
-
   const thing = props.thing;
-
-//  const uuid = props.thing.uuid;
 
   const [data, setData] = useState({
     thing: { uuid: "X" },
     thing_report: { sms: "No response. Yet." },
   });
 
+/*
   useEffect(() => {
-    getAgent();
-  }, [getAgent]); // eslint-disable-line react-hooks/exhaustive-deps
+    setFlag("green");
 
+//    getAgent();
+  }, [getAgent]); // eslint-disable-line react-hooks/exhaustive-deps
+*/
   const [open, setOpen] = useState(false);
 
   const replyAgentDialog = (thing) => {
@@ -61,11 +58,11 @@ function Agent(props) {
   const handleClose = () => {
     setOpen(false);
   };
-
+/*
   useEffect(() => {
     console.log("Agent thing", thing);
   }, [thing]);
-
+*/
   function fromName() {
     if (thing === undefined) {
        return "Agent";
@@ -134,12 +131,18 @@ function Agent(props) {
 
   // TODO Call Thing > Database.
   function getAgent(agent) {
+
+    if (flag === 'red') {return;}
+    setFlag("red");
     console.log("Axios call " + agent);
-    axios.get(`https://stackr.ca/` + agent + `.json`).then((res) => {
+    const webPrefix = process.env.REACT_APP_WEB_PREFIX
+    axios.get(webPrefix + agent + `.json`).then((res) => {
+
       let thingy = res.data;
       console.log("Agent res.data", res.data);
-      //      setData({ thing: thingy.thing, thing_report: thingy.thing_report });
       setData(res.data);
+
+      // dev flag available not available
       //setFlag("green");
     })
 .catch((error) => {
@@ -156,6 +159,7 @@ console.log("Agent error", error);
   return (
     <>
       AGENT
+{/* flag */}
       <ListItem key={thing && thing.uuid} alignItems="flex-start">
         <ListItemText
           primary={
