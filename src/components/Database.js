@@ -6,6 +6,8 @@ export function Get(thing) {
     let thingy = res.data;
     //setData({ thing: thingy.thing, thing_report: thingy.thing_report });
     return thingy;
-  });
+  }).catch((error)=>{
+console.log("Database error");
+});
 }
 

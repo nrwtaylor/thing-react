@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-import "../../index.css";
+import "../index.css";
 import {
   Typography,
-//  Avatar,
-//  ListItemAvatar,
+  //  Avatar,
+  //  ListItemAvatar,
   Box,
 } from "@material-ui/core";
 
@@ -20,34 +20,28 @@ import {
   DialogActions,
 } from "@material-ui/core";
 
-
 import {
   //AddCircleOutlineRounded,
   //DeleteOutlineRounded,
-  Edit
-} from '@material-ui/icons'; 
+  Edit,
+} from "@material-ui/icons";
 
-
-//import firebase, { firestore } from "../../firebase";
-
-import Forget from "../../components/Forget/Forget.js";
+import Forget from "../components/Forget.js";
 
 function Agent(props) {
-
-
-  const user_name = props.user_name; // TODO rename this stuff so it isn't c>
+  const user_name = props.user_name; // TODO
 
   const [reply, setReply] = useState("");
 
   //const user = props.user;
-  const from = props.thing.from;
-  const to = props.thing.to;
-  const comment = props.thing.comment;
-  const timestamp = props.thing.created_at;
+//  const from = props.thing.from;
+//  const to = props.thing.to;
+//  const comment = props.thing.comment;
+//  const timestamp = props.thing.created_at;
 
-  const uuid = props.thing.uuid;
+  const thing = props.thing;
 
-//  const db = firebase.firestore();
+//  const uuid = props.thing.uuid;
 
   const [data, setData] = useState({
     thing: { uuid: "X" },
@@ -57,7 +51,6 @@ function Agent(props) {
   useEffect(() => {
     getAgent();
   }, [getAgent]); // eslint-disable-line react-hooks/exhaustive-deps
-
 
   const [open, setOpen] = useState(false);
 
@@ -69,29 +62,35 @@ function Agent(props) {
     setOpen(false);
   };
 
-
+  useEffect(() => {
+    console.log("Agent thing", thing);
+  }, [thing]);
 
   function fromName() {
-    if (from === undefined) {
+    if (thing === undefined) {
+       return "Agent";
+    }
+
+
+    if (thing && thing.from === undefined) {
       return "Agent";
     }
-    return from;
+
+
+    return thing.from;
   }
 
   const editAgent = () => {
-
-  //   const db = firebase.firestore();
-
     const datagram = {
       comment: reply,
       to: "merp",
       from: user_name,
-      association: uuid, 
-//      created_at: firebase.firestore.FieldValue.serverTimestamp(),
+      association: thing.uuid,
     };
     console.log("Datagram");
     console.log(datagram);
-/*
+
+    /*
     db.collection("things")
       .add(
         datagram
@@ -108,7 +107,10 @@ function Agent(props) {
   };
 
   function timeStamp() {
-
+    var date = Date.now();
+    return date.toString();
+    //    return date.toLocaleDateString("en-US");
+    /*
     if (timestamp === undefined) {
       return "X";
     }
@@ -118,7 +120,7 @@ function Agent(props) {
     }
 
 
-    const date = timestamp.toDate();
+//    const date = timestamp.toDate();
     const d = date.toString();
 
     const thing_date = new Date(d);
@@ -127,6 +129,7 @@ function Agent(props) {
       today_date.getTime() - thing_date.getTime()
     );
     return thing_date.toLocaleDateString("en-US");
+*/
   }
 
   // TODO Call Thing > Database.
@@ -134,21 +137,26 @@ function Agent(props) {
     console.log("Axios call " + agent);
     axios.get(`https://stackr.ca/` + agent + `.json`).then((res) => {
       let thingy = res.data;
-      setData({ thing: thingy.thing, thing_report: thingy.thing_report });
-    });
+      console.log("Agent res.data", res.data);
+      //      setData({ thing: thingy.thing, thing_report: thingy.thing_report });
+      setData(res.data);
+      //setFlag("green");
+    })
+.catch((error) => {
+console.log("Agent error", error);
+});
   }
-
 
   function callBack() {
-    console.log("Thing callBack called.");
+    console.log("Agent callBack called.");
   }
 
-  const deleteButton = (<Forget uuid={uuid} callBack={callBack} />)
+  const deleteButton = <Forget uuid={thing && thing.uuid} callBack={callBack} />;
 
   return (
     <>
-
-      <ListItem key={uuid} alignItems="flex-start">
+      AGENT
+      <ListItem key={thing && thing.uuid} alignItems="flex-start">
         <ListItemText
           primary={
             <Typography variant="body2">
@@ -159,50 +167,47 @@ function Agent(props) {
           secondary={
             <>
               <Typography component="span" variant="body1" color="textPrimary">
-                {comment}
+                {thing && thing.subject}
+                {data.etime}
+                To {thing && thing.to}
               </Typography>
               <Box className="delete-button">{deleteButton}</Box>
             </>
           }
         />
-
       </ListItem>
 
-            <IconButton
-              aria-label="Edit"
-              onClick={() => replyAgentDialog()}
-              
-            ><Edit /></IconButton>
+      <IconButton aria-label="Edit" onClick={() => replyAgentDialog()}>
+        <Edit />
+      </IconButton>
 
-        <Dialog open={open} onClose={handleClose} fullWidth>
-            uuid {uuid} 
-            from {from} 
-            to {to} 
-            user_name {user_name}
-          <DialogContent>
-            <TextField
-              multiline
-              autoFocus
-              margin="normal"
-              label="Type your reply here... (TODO)"
-              type="text"
-              fullWidth
-              name="updateReply"
-              value={reply}
-              onChange={(event) => setReply(event.target.value)}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={editAgent} color="primary">
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-
+      <Dialog open={open} onClose={handleClose} fullWidth>
+        uuid {thing && thing.uuid}
+        from {thing && thing.from}
+        to {thing && thing.to}
+        user_name {user_name}
+        <DialogContent>
+          <TextField
+            multiline
+            autoFocus
+            margin="normal"
+            label="Type your reply here... (TODO)"
+            type="text"
+            fullWidth
+            name="updateReply"
+            value={reply}
+            onChange={(event) => setReply(event.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={editAgent} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

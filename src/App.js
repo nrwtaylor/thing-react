@@ -1,21 +1,13 @@
-import React from 'react';
-//import axios from 'axios';
-import Thing from '../src/components/Thing/Thing';
+import React from "react";
+import Thing from "../src/components/Thing";
 
-export default class PersonList extends React.Component {
-  state = {
-    persons: []
-  }
+export default function App() {
+  const pathname = window.location.pathname;
 
-  componentDidMount() {
-  }
-
-  render() {
-    return (
-<>
-App test
-<Thing subject={'start'} />
-</>
-    )
-  }
+  return (
+    <>
+      whitefox
+      <Thing subject={pathname} />
+    </>
+  );
 }
