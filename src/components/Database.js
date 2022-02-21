@@ -9,7 +9,7 @@ export function Get(thing) {
     let thingy = res.data;
     return thingy;
   }).catch((error)=>{
-    console.log("Database error");
+    console.log("Database error", error);
   });
 }
 

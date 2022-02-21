@@ -32,7 +32,7 @@ function Agent(props) {
   const user_name = props.user_name; // TODO
 
   const [flag, setFlag] = useState();
-
+  //const [requestedAt, setRequestedAt] = useState();
   const [reply, setReply] = useState("");
 
   const thing = props.thing;
@@ -63,6 +63,15 @@ function Agent(props) {
     console.log("Agent thing", thing);
   }, [thing]);
 */
+
+  function humanTime(timestamp) {
+
+   const ts = new Date();
+   return ts.toISOString();
+
+  }
+
+
   function fromName() {
     if (thing === undefined) {
        return "Agent";
@@ -136,6 +145,7 @@ function Agent(props) {
     setFlag("red");
     console.log("Axios call " + agent);
     const webPrefix = process.env.REACT_APP_WEB_PREFIX
+    //setRequestedAt(Date.now());
     axios.get(webPrefix + agent + `.json`).then((res) => {
 
       let thingy = res.data;
@@ -156,16 +166,25 @@ console.log("Agent error", error);
 
   const deleteButton = <Forget uuid={thing && thing.uuid} callBack={callBack} />;
 
+
+
+
   return (
     <>
       AGENT
 {/* flag */}
+
       <ListItem key={thing && thing.uuid} alignItems="flex-start">
         <ListItemText
           primary={
             <Typography variant="body2">
               timestamp {timeStamp()}
+<br />
+              humanTime {humanTime(timeStamp())}
+<br />
               from {fromName()}
+<br />
+
             </Typography>
           }
           secondary={
