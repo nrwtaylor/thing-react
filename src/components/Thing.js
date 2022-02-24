@@ -6,14 +6,20 @@ import { Get } from "../components/Database";
 
 export default function Thing(props) {
   const subject = props.subject;
+  const startAt = props.createdAt;
+
+  const currentAt = Date.now();
+
   const defaultPollInterval = 10 * 1000; //ms
   const defaultTickInterval = 25; //ms
-  const minimumPollInterval = 1 * 10 * 1000; //ms
+  const minimumPollInterval = 1 * 60 * 1000; //ms
 
   const maxBar = 20;
   const maxTick = 4;
   const [tick, setTick] = useState(0);
   const [bar, setBar] = useState(0);
+
+  const [PNG, setPNG] = useState();
 
   const [pollInterval, setPollInterval] = useState(defaultPollInterval);
   const [timedInterval, setTimedInterval] = useState();
@@ -25,10 +31,16 @@ export default function Thing(props) {
 
   const [agentRequestedAt, setAgentRequestedAt] = useState();
 
+  const [nextRunAt, setNextRunAt] = useState();
+
+  const [totalBytesReceivedData, setTotalBytesReceivedData] = useState(0);
+
   const [flag, setFlag] = useState();
 
-  const [uuid, setUuid] = useState();
+  const runTime = Date.now() - startAt;
 
+  // Generate a UUID if not given one by App.
+  const uuid = props.uuid ? props.uuid : uuidv4();
   const [error, setError] = useState();
 
   const [data, setData] = useState({
@@ -46,8 +58,9 @@ export default function Thing(props) {
     return ts.toISOString();
   }
 
+  // refactor out
   function getUuid() {
-    setUuid(uuidv4());
+    return uuid;
   }
 
   function getResponse() {
@@ -61,23 +74,38 @@ export default function Thing(props) {
     // TODO Call Get from Database.js and return.
     thingy = Get(t);
 
-    console.log("Axios call " + subject);
+    console.log("Thing " + uuid + " making axios call " + subject);
 
     const webPrefix = process.env.REACT_APP_WEB_PREFIX;
     const requestedAt = Date.now();
     setAgentRequestedAt(requestedAt);
-    console.log("requestedAt", requestedAt);
+    // console.log("requestedAt", requestedAt);
     axios
-      .get(webPrefix + subject + `.json`)
+      .get(webPrefix + subject + `.json`, {
+        headers: {
+          Authorization: "my secret token",
+        },
+      })
       .then((res) => {
         let thingy = res.data;
-        console.log("Thing res.data", res.data);
+        console.log("Thing axios res", res);
+        console.log("Thing axios res.data", res.data);
 
         // agent etime info json:null thing etc
         setData(res.data);
 
+        const bytesReceivedData = JSON.stringify(res.data).length;
+        console.log("bytes", bytesReceivedData);
+
+        setTotalBytesReceivedData(
+          (prevTotalBytesReceivedData) =>
+            prevTotalBytesReceivedData + bytesReceivedData
+        );
+
         const elapsedTime = Date.now() - requestedAt;
-        //console.log("elapsedTime", elapsedTime);
+
+        var base64Icon = "data:image/png;base64," + res.data.thingReport.png;
+        setPNG(base64Icon);
 
         setTimedInterval(elapsedTime);
         setFlag("green");
@@ -101,21 +129,44 @@ export default function Thing(props) {
   function Forget() {}
 
   // Call getResponse on a Timer.
+  // Check if the flag has changed.
   useEffect(() => {
     // If still processing the last one,
-    // Skip a beat, do not request aother.
+    // Skip a beat, do not request another.
     if (flag === "red") {
       return;
     }
 
+    // First time flag is green.
+
+    console.log("nextRunAt pollInterval", pollInterval);
+    const t = currentAt + pollInterval;
+
+    setNextRunAt(t);
+
     const interval = setInterval(() => {
       getResponse();
-      console.log("This will run every five minutes!");
+      console.log("This will run every: " + pollInterval);
     }, pollInterval);
     console.log("interval", interval);
 
     return () => clearInterval(interval);
   }, [flag]);
+
+  useEffect(() => {
+    // If still processing the last one,
+    // Skip a beat, do not request aother.
+    if (flag === "green") {
+      return;
+    }
+
+    // Do some work?
+    console.log("Thing " + uuid + " asking for work.");
+    /*
+https://www.reddit.com/r/reactjs/comments/p7ky46/is_react_synchronous_with_respect_to_function/
+https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_JavaScript
+*/
+  }, [tick]);
 
   const incrementTick = () => {
     setTick((tick) => (tick + 1) % maxTick);
@@ -136,6 +187,7 @@ export default function Thing(props) {
 
     return <>REQUESTED AT {i}</>;
   };
+
   useEffect(() => {
     // If still processing the last one,
     // Skip a beat, do not request aother.
@@ -144,12 +196,8 @@ export default function Thing(props) {
     }
 
     const tickInterval = setInterval(() => {
-      //getResponse();
-      //console.log("Tick", tick);
-
       incrementTick();
     }, defaultTickInterval);
-    //console.log("tickInterval", tickInterval);
 
     return () => clearInterval(tickInterval);
   }, []);
@@ -159,7 +207,6 @@ export default function Thing(props) {
 
     if (tick === 0) {
       const elapsedTime = Date.now() - tickRequestedAt;
-      //console.log("elapsedTime", elapsedTime);
 
       setTimedTickInterval(elapsedTime);
       setTickRequestedAt(Date.now());
@@ -173,7 +220,6 @@ export default function Thing(props) {
   useEffect(() => {
     if (bar === 0) {
       const elapsedTime = Date.now() - barRequestedAt;
-      //console.log("elapsedTime", elapsedTime);
 
       setTimedBarInterval(elapsedTime);
       setBarRequestedAt(Date.now());
@@ -183,6 +229,16 @@ export default function Thing(props) {
   return (
     <>
       THING {uuid}
+      <br />
+      RUNTIME {runTime}
+      <br />
+      NEXT RUN AT {nextRunAt}
+      <br />
+      CURRENT AT {currentAt}
+      <br />
+      TOGOTIME {nextRunAt - currentAt}
+      <br />
+      TOTAL CHARACTERS RECEIVED DATA {totalBytesReceivedData}
       <br />
       {error && error.message}
       <br />
@@ -211,7 +267,8 @@ export default function Thing(props) {
       <div dangerouslySetInnerHTML={{ __html: data && data.web }} />
       <div>{data && data.thing && data.thing.uuid}</div>
       <div>{data && data.thing && data.thing.created_at}</div>
-      <div>{data && data.thing_report && data.thing_report.sms}</div>
+      <div>{data && data.thingReport && data.thingReport.sms}</div>
+      {PNG && <img width="800px" src={PNG} />}
     </>
   );
 }
