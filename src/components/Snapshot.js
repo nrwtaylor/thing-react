@@ -220,8 +220,8 @@ let f = [...ampPoints];
 // Add item to it
 f.push({ name: 'asdf', student:24, fees:1, value: amount, amount:amount });
 
-const maxAmpPoints = 100000;
-;
+const maxAmpPoints = 50;
+
 const excessPoints = f.length - maxAmpPoints;
 
 if (excessPoints >= 0) {
@@ -245,7 +245,7 @@ let g = [...voltPoints];
 
 g.push({ name: 'volt', student:24, fees:1, value: amount, amount:voltAmount });
 
-const maxVoltPoints = 100000;
+const maxVoltPoints = 50;
 const excessVoltPoints = g.length - maxVoltPoints;
 
 if (excessVoltPoints >= 0) {
@@ -273,19 +273,23 @@ setVoltPoints(g);
 
   return (
     <>
-<Trace data={ampPoints}/>
+<div>
+<Trace data={ampPoints}/><br />
 AMP0: {data && data.transducers && data.transducers.thamp0ad0 && data.transducers.thamp0ad0.amount} A<br />
 <Trace data={voltPoints}/>
 
 VLT0 (HOUSE): {data && data.transducers && data.transducers.thvlt0ad1 && data.transducers.thvlt0ad1.amount} V<br />
 VLT1 (START): {data && data.transducers && data.transducers.thvlt1ad1 && data.transducers.thvlt1ad1.amount} V<br />
 
+PRESSURE: {data && data.transducers && data.transducers.thprsapb0 && data.transducers.thprsapb0.amount} bar<br />
+PRESSURE: {data && data.transducers && data.transducers.thtmpatc1 && data.transducers.thtmpatc1.amount} C<br />
+GAS: {data && data.transducers && data.transducers.thgasaxx3 && data.transducers.thgasaxx3.amount} ohms<br />
 
 ACCZ: {data && data.transducers && data.transducers.thacczax2 && data.transducers.thacczax2.amount} ms2<br />
 
 
 PITCH: {data && data.transducers && data.transducers.thptchad1 && data.transducers.thptchad1.amount} degrees<br />
-PITCH: {data && data.transducers && data.transducers.throllad0 && data.transducers.throllad0.amount} degrees<br />
+ROLL: {data && data.transducers && data.transducers.throllad0 && data.transducers.throllad0.amount} degrees<br />
 YAW: {data && data.transducers && data.transducers.thyawax2 && data.transducers.thyawax2.amount} <br />
 
 RATE OF TURN: {data && data.transducers && data.transducers.thgyrzax2 && data.transducers.thgyrzax2.amount} <br />
@@ -301,10 +305,10 @@ LONGITUDE: {data && data.current_longitude}<br />
 SPEED IN KNOTS: {data && data.speed_in_knots} knots<br />
 TRUE COURSE: {data && data.true_course}<br />
 
-NUMBER OF SATELLITES: {data && data.number_of_satellites}s<br />
+NUMBER OF SATELLITES: {data && data.number_of_satellites}<br />
 
 
-
+</div>
 
     </>
   );
