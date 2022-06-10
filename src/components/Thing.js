@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Agent from "../components/Agent";
+import Snapshot from "../components/Snapshot";
+
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { Get } from "../components/Database";
@@ -228,6 +230,8 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
 
   return (
     <>
+      Last edited: 9 June 2022
+<div>
       THING {uuid}
       <br />
       RUNTIME {runTime}
@@ -254,6 +258,11 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
       <RequestedAt />
       <br />
       {!data && <>NOT DATA</>}
+</div>
+<div>
+<Snapshot user={null} thing={data.thing} agent_input={null} />
+</div>
+<div>
       AGENT RESPONSE START
       <br />
       <Agent user={null} thing={data.thing} agent_input={null} />
@@ -269,6 +278,7 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
       <div>{data && data.thing && data.thing.created_at}</div>
       <div>{data && data.thingReport && data.thingReport.sms}</div>
       {PNG && <img width="800px" src={PNG} />}
+</div>
     </>
   );
 }
