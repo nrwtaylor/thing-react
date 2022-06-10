@@ -27,6 +27,7 @@ import {
 } from "@material-ui/icons";
 
 import Forget from "../components/Forget.js";
+import Trace from "../components/Trace.js";
 
 function Snapshot(props) {
   const user_name = props.user_name; // TODO
@@ -197,12 +198,66 @@ console.log("Agent error", error);
 });
   }
 
+const [ampPoints, setAmpPoints] = useState([]);
+const [voltPoints, setVoltPoints] = useState([]);
+
+
 useEffect(()=>{
 
 
 //console.log(data && data.transducers && data.transducers.thaccxad0);
 
 console.log(data && data.transducers && data.transducers.thamp0ad0 && data.transducers.thamp0ad0.amount);
+
+
+const amount = parseInt(data && data.transducers && data.transducers.thamp0ad0 && data.transducers.thamp0ad0.amount);
+console.log("amount", amount);
+
+
+// Create a new array based on current state:
+let f = [...ampPoints];
+
+// Add item to it
+f.push({ name: 'asdf', student:24, fees:1, value: amount, amount:amount });
+
+const maxAmpPoints = 100000;
+;
+const excessPoints = f.length - maxAmpPoints;
+
+if (excessPoints >= 0) {
+
+f.splice(0, excessPoints);
+
+}
+
+console.log(f);
+// Set state
+setAmpPoints(f);
+
+
+//////////
+
+
+const voltAmount = parseInt(data && data.transducers && data.transducers.thvlt0ad1 && data.transducers.thvlt0ad1.amount);
+console.log("voltAmount", voltAmount);
+// Create a new array based on current state:
+let g = [...voltPoints];
+
+g.push({ name: 'volt', student:24, fees:1, value: amount, amount:voltAmount });
+
+const maxVoltPoints = 100000;
+const excessVoltPoints = g.length - maxVoltPoints;
+
+if (excessVoltPoints >= 0) {
+
+g.splice(0, excessVoltPoints);
+
+}
+console.log("f volts",f);
+
+setVoltPoints(g);
+
+
 
 
 }, [data]);
@@ -218,7 +273,9 @@ console.log(data && data.transducers && data.transducers.thamp0ad0 && data.trans
 
   return (
     <>
+<Trace data={ampPoints}/>
 AMP0: {data && data.transducers && data.transducers.thamp0ad0 && data.transducers.thamp0ad0.amount} A<br />
+<Trace data={voltPoints}/>
 
 VLT0 (HOUSE): {data && data.transducers && data.transducers.thvlt0ad1 && data.transducers.thvlt0ad1.amount} V<br />
 VLT1 (START): {data && data.transducers && data.transducers.thvlt1ad1 && data.transducers.thvlt1ad1.amount} V<br />
@@ -231,20 +288,20 @@ PITCH: {data && data.transducers && data.transducers.thptchad1 && data.transduce
 PITCH: {data && data.transducers && data.transducers.throllad0 && data.transducers.throllad0.amount} degrees<br />
 YAW: {data && data.transducers && data.transducers.thyawax2 && data.transducers.thyawax2.amount} <br />
 
-RATE OF TURN: {data && data.transducers && data.transducers.thgyrzax2 && data.transducers.thgyrzax2.amount} ms2<br />
+RATE OF TURN: {data && data.transducers && data.transducers.thgyrzax2 && data.transducers.thgyrzax2.amount} <br />
 {/*
 MRU<br />
 ACCZ: {data && data.transducers && data.transducers.thacczax2 && data.transducers.thacczax2.amount} m<br />
 ACCZ: {data && data.transducers && data.transducers.thacczax2 && data.transducers.thacczax2.amount} m<br />
 ACCZ: {data && data.transducers && data.transducers.thacczax2 && data.transducers.thacczax2.amount} m<br />
 */}
-LATITUDE: {data && data.current_latitude} V<br />
-LONGITUDE: {data && data.current_longitude} V<br />
+LATITUDE: {data && data.current_latitude}<br />
+LONGITUDE: {data && data.current_longitude}<br />
 
 SPEED IN KNOTS: {data && data.speed_in_knots} knots<br />
-TRUE COURSE: {data && data.true_course} knots<br />
+TRUE COURSE: {data && data.true_course}<br />
 
-NUMBER OF SATELLITES: {data && data.number_of_satellites} knots<br />
+NUMBER OF SATELLITES: {data && data.number_of_satellites}s<br />
 
 
 
