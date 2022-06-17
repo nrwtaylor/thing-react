@@ -30,6 +30,9 @@ import Forget from "../components/Forget.js";
 
 function Agent(props) {
   const user_name = props.user_name; // TODO
+  const agent_input= props.agent_input;
+
+  const address = props.address;
 
   const [flag, setFlag] = useState();
   //const [requestedAt, setRequestedAt] = useState();
@@ -144,7 +147,9 @@ function Agent(props) {
     if (flag === 'red') {return;}
     setFlag("red");
     console.log("Axios call " + agent);
-    const webPrefix = process.env.REACT_APP_WEB_PREFIX
+    //const webPrefix = process.env.REACT_APP_WEB_PREFIX
+
+    const webPrefix = agent_input;
     //setRequestedAt(Date.now());
     axios.get(webPrefix + agent + `.json`).then((res) => {
 

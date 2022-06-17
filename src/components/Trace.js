@@ -26,7 +26,13 @@ function Trace(props) {
 
 const {data} = props;
 
+useEffect(()=> {
 
+
+
+},[data]);
+
+//return (<>NOTHING</>);
 
   return (
     <>
@@ -36,16 +42,16 @@ TRACE START
 
            <ResponsiveContainer width="100%" aspect={3}>
                 <LineChart data={data} margin={{ right: 300 }}>
-                    <CartesianGrid />
+                 {/*   <CartesianGrid /> */}
                  {/*   <XAxis dataKey="name" 
                         interval={'preserveStartEnd'} /> */}
                     <YAxis></YAxis>
-                    <Legend />
-                    <Tooltip />
-                    <Line type="monotone" stroke="#8884d8" dataKey="amount" strokeWidth={2}
-                        stroke="black" activeDot={{ r: 8 }} />
+                {/*    <Legend /> */}
+                 {/*   <Tooltip /> */}
+                  {/*  <Line type="monotone" stroke="#8884d8" dataKey="amount" strokeWidth={2}
+                        stroke="black" activeDot={{ r: 8 }} /> */}
                     <Line dataKey="amount"
-                        stroke="red" activeDot={{ r: 8 }} />
+                        stroke="red" strokeWidth={4} activeDot={{ r: 8 }} />
                 </LineChart>
             </ResponsiveContainer>
 
@@ -57,6 +63,8 @@ TRACE START
       </ResponsiveContainer>
 */}
 TRACE END
+<br/>
+<p />
     </>
   );
 

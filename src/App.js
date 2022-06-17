@@ -13,17 +13,31 @@ export default function App() {
 
   const createdAt = Date.now();
 
+  const webPrefix = process.env.REACT_APP_WEB_PREFIX;
+
   console.log("REACT THING");
   console.log("Started Thing ", uuid);
   return (
     <>
-      whitefox
+      whitefox<br />
       <Thing
         subject={pathname}
         createdAt={createdAt}
         uuid={uuid}
         input={input}
+        webPrefix={webPrefix}
       />
+
+      kokopelli<br />
+      <Thing
+        subject={pathname}
+        createdAt={createdAt}
+        uuid={uuid}
+        input={input}
+        webPrefix={"http://192.168.10.10/"}
+      />
+
+
     </>
   );
 }

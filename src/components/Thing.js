@@ -7,6 +7,9 @@ import { v4 as uuidv4 } from "uuid";
 import { Get } from "../components/Database";
 
 export default function Thing(props) {
+
+  const {webPrefix} = props;
+
   const subject = props.subject;
   const startAt = props.createdAt;
 
@@ -52,7 +55,7 @@ export default function Thing(props) {
 
   useEffect(() => {
     getUuid();
-    getResponse();
+    getResponse(webPrefix);
   }, []);
 
   function humanTime(timestamp) {
@@ -65,7 +68,12 @@ export default function Thing(props) {
     return uuid;
   }
 
-  function getResponse() {
+  function getResponse(webPrefix = null) {
+
+if (webPrefix === null) {
+   webPrefix = process.env.REACT_APP_WEB_PREFIX;
+}
+
     if (flag === "red") {
       return;
     }
@@ -78,7 +86,7 @@ export default function Thing(props) {
 
     console.log("Thing " + uuid + " making axios call " + subject);
 
-    const webPrefix = process.env.REACT_APP_WEB_PREFIX;
+//    const webPrefix = process.env.REACT_APP_WEB_PREFIX;
     const requestedAt = Date.now();
     setAgentRequestedAt(requestedAt);
     // console.log("requestedAt", requestedAt);
@@ -147,7 +155,7 @@ export default function Thing(props) {
     setNextRunAt(t);
 
     const interval = setInterval(() => {
-      getResponse();
+      getResponse(webPrefix);
       console.log("This will run every: " + pollInterval);
     }, pollInterval);
     console.log("interval", interval);
@@ -259,13 +267,20 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
       <br />
       {!data && <>NOT DATA</>}
 </div>
+
 <div>
-<Snapshot user={null} thing={data.thing} agent_input={null} />
+{/*<Snapshot user={null} thing={data.thing} agent_input="https://stackr.ca" />*/}
+<Snapshot user={null} thing={data.thing} agent_input={webPrefix} />
+
+
 </div>
+
 <div>
       AGENT RESPONSE START
       <br />
-      <Agent user={null} thing={data.thing} agent_input={null} />
+{/*      <Agent user={null} thing={data.thing} agent_input="http://localhost" />*/}
+    <Agent user={null} thing={data.thing} agent_input={webPrefix} />
+
       <br />
       AGENT RESPONSE END
       <div>Datagram</div>

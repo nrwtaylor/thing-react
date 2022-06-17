@@ -31,7 +31,8 @@ import Trace from "../components/Trace.js";
 
 function Snapshot(props) {
   const user_name = props.user_name; // TODO
-
+const agent_input=props.agent_input;
+const webPrefix = agent_input;
   const [flag, setFlag] = useState();
   //const [requestedAt, setRequestedAt] = useState();
   const [reply, setReply] = useState("");
@@ -52,6 +53,8 @@ function Snapshot(props) {
 */
   const [open, setOpen] = useState(false);
 
+
+const [snapshotGetTime, setSnapshotGetTime] = useState();
   const replyAgentDialog = (thing) => {
     setOpen(true);
   };
@@ -83,8 +86,8 @@ function Snapshot(props) {
 //    setNextRunAt(t);
 
     const interval = setInterval(() => {
-      getAgent();
-    }, 200);
+      getSnapshot();
+    }, 50); // 20 Hz was 200. 
 
     return () => clearInterval(interval);
   }, []);
@@ -173,37 +176,54 @@ function Snapshot(props) {
   }
 
   // TODO Call Thing > Database.
-  function getAgent(agent) {
-
+  function getSnapshot(agent) {
+const startTime = new Date();
     if (flag === 'red') {return;}
-    setFlag("red");
-    //console.log("Axios call " + agent);
-    const webPrefix = process.env.REACT_APP_WEB_PREFIX
+   // setFlag("red");
+    console.log("Snapshot axios call " + agent);
+//    const webPrefix = process.env.REACT_APP_WEB_PREFIX
     //setRequestedAt(Date.now());
 
-const url = 'http://192.168.10.10/snapshot.json';
-//    axios.get(webPrefix + agent + `.json`).then((res) => {
+//const url = 'http://192.168.10.10/snapshot.json';
+const url = webPrefix + 'snapshot.json';
+    console.log("Snapshot axios url " + url);
+    console.log("Snapshot axios url " + url , flag);
+    console.log("Snapshot axios url " + url , webPrefix);
 
+if (webPrefix  === "https://stackr.ca/") {
+setFlag('red');
+return;}
+//    axios.get(webPrefix + agent + `.json`).then((res) => {
+//if (flag === undefined) {setFlag('green');}
     axios.get(url).then((res) => {
-console.log("snapshot", res);
+console.log("Got "+url);
+//console.log("snapshot", res);
       let thingy = res.data;
-      console.log("Agent res.data", res.data);
+//      console.log("Agent res.data", res.data);
       setData(res.data);
 
       // dev flag available not available
-      //setFlag("green");
+      setFlag("green");
+const endTime = new Date();
+setSnapshotGetTime(endTime - startTime);
+    //setFlag("green");
+
     })
 .catch((error) => {
-console.log("Agent error", error);
+    setFlag("red");
+
+console.log("Get error", url, error);
 });
   }
 
+const [ampDataPointer, setAmpDataPointer] = useState(0);
 const [ampPoints, setAmpPoints] = useState([]);
+const startTime = new Date();
 const [voltPoints, setVoltPoints] = useState([]);
-
+const [tracePeriod, setTracePeriod] = useState();
 
 useEffect(()=>{
-
+const startTime = new Date();
 
 //console.log(data && data.transducers && data.transducers.thaccxad0);
 
@@ -220,45 +240,57 @@ let f = [...ampPoints];
 // Add item to it
 f.push({ name: 'asdf', student:24, fees:1, value: amount, amount:amount });
 
-const maxAmpPoints = 50;
+const maxAmpPoints = 100;
 
 const excessPoints = f.length - maxAmpPoints;
 
 if (excessPoints >= 0) {
+const a = (ampDataPointer + 1) % maxAmpPoints;
 
-f.splice(0, excessPoints);
+setAmpDataPointer(a);
+
+//f.splice(0, excessPoints);
+f.shift();
 
 }
 
-console.log(f);
+//console.log(f);
 // Set state
+
+
 setAmpPoints(f);
+
 
 
 //////////
 
 
+
 const voltAmount = parseInt(data && data.transducers && data.transducers.thvlt0ad1 && data.transducers.thvlt0ad1.amount);
-console.log("voltAmount", voltAmount);
+//console.log("voltAmount", voltAmount);
 // Create a new array based on current state:
 let g = [...voltPoints];
 
 g.push({ name: 'volt', student:24, fees:1, value: amount, amount:voltAmount });
 
-const maxVoltPoints = 50;
+const maxVoltPoints = 100;
 const excessVoltPoints = g.length - maxVoltPoints;
 
 if (excessVoltPoints >= 0) {
 
-g.splice(0, excessVoltPoints);
+//g.splice(0, excessVoltPoints);
+g.shift();
 
 }
-console.log("f volts",f);
+//console.log("f volts",f);
 
 setVoltPoints(g);
 
 
-
+const endTime = new Date();
+const tf = endTime - startTime;
+const timeDiff = tf;
+setTracePeriod(timeDiff);
 
 }, [data]);
 
@@ -274,15 +306,23 @@ setVoltPoints(g);
   return (
     <>
 <div>
+SNAPSHOT FLAG {flag} COLOUR<br />
+SNAPSHOT GET TIME {snapshotGetTime}ms {Math.round(1000 / snapshotGetTime,1)}Hz<br />
 <Trace data={ampPoints}/><br />
 AMP0: {data && data.transducers && data.transducers.thamp0ad0 && data.transducers.thamp0ad0.amount} A<br />
-<Trace data={voltPoints}/>
+<br />
+pointer {ampDataPointer}<br />
+Process Amp Trace Period {tracePeriod}ms<br />
+
+<br />
+<Trace data={voltPoints}/> 
 
 VLT0 (HOUSE): {data && data.transducers && data.transducers.thvlt0ad1 && data.transducers.thvlt0ad1.amount} V<br />
 VLT1 (START): {data && data.transducers && data.transducers.thvlt1ad1 && data.transducers.thvlt1ad1.amount} V<br />
 
 PRESSURE: {data && data.transducers && data.transducers.thprsapb0 && data.transducers.thprsapb0.amount} bar<br />
-PRESSURE: {data && data.transducers && data.transducers.thtmpatc1 && data.transducers.thtmpatc1.amount} C<br />
+TEMPERATURE: {data && data.transducers && data.transducers.thtmpatc1 && data.transducers.thtmpatc1.amount} C<br />
+HUMIDITY: {data && data.transducers && data.transducers.thhmdahp2 && data.transducers.thhmdahp2.amount} % RH<br />
 GAS: {data && data.transducers && data.transducers.thgasaxx3 && data.transducers.thgasaxx3.amount} ohms<br />
 
 ACCZ: {data && data.transducers && data.transducers.thacczax2 && data.transducers.thacczax2.amount} ms2<br />
