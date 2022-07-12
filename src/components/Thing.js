@@ -7,8 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Get } from "../components/Database";
 
 export default function Thing(props) {
-
-  const {webPrefix} = props;
+  const { webPrefix } = props;
 
   const subject = props.subject;
   const startAt = props.createdAt;
@@ -69,10 +68,9 @@ export default function Thing(props) {
   }
 
   function getResponse(webPrefix = null) {
-
-if (webPrefix === null) {
-   webPrefix = process.env.REACT_APP_WEB_PREFIX;
-}
+    if (webPrefix === null) {
+      webPrefix = process.env.REACT_APP_WEB_PREFIX;
+    }
 
     if (flag === "red") {
       return;
@@ -86,7 +84,7 @@ if (webPrefix === null) {
 
     console.log("Thing " + uuid + " making axios call " + subject);
 
-//    const webPrefix = process.env.REACT_APP_WEB_PREFIX;
+    //    const webPrefix = process.env.REACT_APP_WEB_PREFIX;
     const requestedAt = Date.now();
     setAgentRequestedAt(requestedAt);
     // console.log("requestedAt", requestedAt);
@@ -239,61 +237,59 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
   return (
     <>
       Last edited: 9 June 2022
-<div>
-      THING {uuid}
-      <br />
-      RUNTIME {runTime}
-      <br />
-      NEXT RUN AT {nextRunAt}
-      <br />
-      CURRENT AT {currentAt}
-      <br />
-      TOGOTIME {nextRunAt - currentAt}
-      <br />
-      TOTAL CHARACTERS RECEIVED DATA {totalBytesReceivedData}
-      <br />
-      {error && error.message}
-      <br />
-      TICK {tick} {timedTickInterval}
-      <br />
-      BAR {bar} {timedBarInterval}
-      <br />
-      {flag} <br />
-      TIMED INTERVAL {timedInterval}
-      <br />
-      POLL INTERVAL {pollInterval}
-      <br />
-      <RequestedAt />
-      <br />
-      {!data && <>NOT DATA</>}
-</div>
+      <div>
+        THING {uuid}
+        <br />
+        RUNTIME {runTime}
+        <br />
+        NEXT RUN AT {nextRunAt}
+        <br />
+        CURRENT AT {currentAt}
+        <br />
+        TOGOTIME {nextRunAt - currentAt}
+        <br />
+        TOTAL CHARACTERS RECEIVED DATA {totalBytesReceivedData}
+        <br />
+        {error && error.message}
+        <br />
+        TICK {tick} {timedTickInterval}
+        <br />
+        BAR {bar} {timedBarInterval}
+        <br />
+        {flag} <br />
+        TIMED INTERVAL {timedInterval}
+        <br />
+        POLL INTERVAL {pollInterval}
+        <br />
+        <RequestedAt />
+        <br />
+        {!data && <>NOT DATA</>}
+      </div>
+      <div>
+        {/*<Snapshot user={null} thing={data.thing} agent_input="https://stackr.ca" />*/}
+        <Snapshot user={null} thing={data.thing} agent_input={webPrefix} />
+      </div>
+      <div>
+        <br />
+        {/*      <Agent user={null} thing={data.thing} agent_input="http://localhost" />*/}
+        <Agent user={null} thing={data.thing} agent_input={webPrefix} />
 
-<div>
-{/*<Snapshot user={null} thing={data.thing} agent_input="https://stackr.ca" />*/}
-<Snapshot user={null} thing={data.thing} agent_input={webPrefix} />
-
-
-</div>
-
-<div>
-      AGENT RESPONSE START
-      <br />
-{/*      <Agent user={null} thing={data.thing} agent_input="http://localhost" />*/}
-    <Agent user={null} thing={data.thing} agent_input={webPrefix} />
-
-      <br />
-      AGENT RESPONSE END
-      <div>Datagram</div>
-      {subject}
-      <div>Thing</div>
-      {/* Note */}
-      <div>{data && data.sms}</div>
-      <div dangerouslySetInnerHTML={{ __html: data && data.web }} />
-      <div>{data && data.thing && data.thing.uuid}</div>
-      <div>{data && data.thing && data.thing.created_at}</div>
-      <div>{data && data.thingReport && data.thingReport.sms}</div>
-      {PNG && <img width="800px" src={PNG} />}
-</div>
+        <br />
+      </div>
+      <div>
+        <div>DATAGRAM</div>
+        {subject}
+      </div>
+      <div>
+        <div>THING</div>
+        {/* Note */}
+        <div>SMS {data && data.sms}</div>
+        <div dangerouslySetInnerHTML={{ __html: data && data.web }} />
+        <div>UUID {data && data.thing && data.thing.uuid}</div>
+        <div>CREATED AT {data && data.thing && data.thing.created_at}</div>
+        <div>SMS {data && data.thingReport && data.thingReport.sms}</div>
+        {PNG && <img width="800px" src={PNG} />}
+      </div>
     </>
   );
 }

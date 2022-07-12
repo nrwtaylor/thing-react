@@ -30,7 +30,7 @@ import Forget from "../components/Forget.js";
 
 function Agent(props) {
   const user_name = props.user_name; // TODO
-  const agent_input= props.agent_input;
+  const agent_input = props.agent_input;
 
   const address = props.address;
 
@@ -45,7 +45,7 @@ function Agent(props) {
     thing_report: { sms: "No response. Yet." },
   });
 
-/*
+  /*
   useEffect(() => {
     setFlag("green");
 
@@ -61,30 +61,25 @@ function Agent(props) {
   const handleClose = () => {
     setOpen(false);
   };
-/*
+  /*
   useEffect(() => {
     console.log("Agent thing", thing);
   }, [thing]);
 */
 
   function humanTime(timestamp) {
-
-   const ts = new Date();
-   return ts.toISOString();
-
+    const ts = new Date();
+    return ts.toISOString();
   }
-
 
   function fromName() {
     if (thing === undefined) {
-       return "Agent";
+      return "Agent";
     }
-
 
     if (thing && thing.from === undefined) {
       return "Agent";
     }
-
 
     return thing.from;
   }
@@ -143,53 +138,53 @@ function Agent(props) {
 
   // TODO Call Thing > Database.
   function getAgent(agent) {
-
-    if (flag === 'red') {return;}
+    if (flag === "red") {
+      return;
+    }
     setFlag("red");
     console.log("Axios call " + agent);
     //const webPrefix = process.env.REACT_APP_WEB_PREFIX
 
     const webPrefix = agent_input;
     //setRequestedAt(Date.now());
-    axios.get(webPrefix + agent + `.json`).then((res) => {
+    axios
+      .get(webPrefix + agent + `.json`)
+      .then((res) => {
+        let thingy = res.data;
+        console.log("Agent res.data", res.data);
+        setData(res.data);
 
-      let thingy = res.data;
-      console.log("Agent res.data", res.data);
-      setData(res.data);
-
-      // dev flag available not available
-      //setFlag("green");
-    })
-.catch((error) => {
-console.log("Agent error", error);
-});
+        // dev flag available not available
+        //setFlag("green");
+      })
+      .catch((error) => {
+        console.log("Agent error", error);
+      });
   }
 
   function callBack() {
     console.log("Agent callBack called.");
   }
 
-  const deleteButton = <Forget uuid={thing && thing.uuid} callBack={callBack} />;
-
-
-
+  const deleteButton = (
+    <Forget uuid={thing && thing.uuid} callBack={callBack} />
+  );
 
   return (
     <>
-      AGENT
-{/* flag */}
+      <div> AGENT</div>
+      {/* flag */}
 
       <ListItem key={thing && thing.uuid} alignItems="flex-start">
         <ListItemText
           primary={
             <Typography variant="body2">
               timestamp {timeStamp()}
-<br />
+              <br />
               humanTime {humanTime(timeStamp())}
-<br />
+              <br />
               from {fromName()}
-<br />
-
+              <br />
             </Typography>
           }
           secondary={

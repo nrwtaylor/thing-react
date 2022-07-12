@@ -28,9 +28,9 @@ import {
 
 import Forget from "../components/Forget.js";
 import Trace from "../components/Trace.js";
-import Stream from "../components/Stream.js";
 
-function Snapshot(props) {
+function Stream(props) {
+  const { data } = props;
   const user_name = props.user_name; // TODO
   const agent_input = props.agent_input;
   const webPrefix = agent_input;
@@ -40,10 +40,10 @@ function Snapshot(props) {
 
   const thing = props.thing;
 
-  const [data, setData] = useState({
-    thing: { uuid: "X" },
-    thing_report: { sms: "No response. Yet." },
-  });
+  // const [data, setData] = useState({
+  //   thing: { uuid: "X" },
+  //   thing_report: { sms: "No response. Yet." },
+  // });
 
   /*
   useEffect(() => {
@@ -54,7 +54,7 @@ function Snapshot(props) {
 */
   const [open, setOpen] = useState(false);
 
-  const [snapshotGetTime, setSnapshotGetTime] = useState();
+  const [streamGetTime, setStreamGetTime] = useState();
   const replyAgentDialog = (thing) => {
     setOpen(true);
   };
@@ -84,7 +84,7 @@ function Snapshot(props) {
     //    setNextRunAt(t);
 
     const interval = setInterval(() => {
-      getSnapshot();
+      getStream();
     }, 50); // 20 Hz was 200.
 
     return () => clearInterval(interval);
@@ -166,48 +166,8 @@ function Snapshot(props) {
   }
 
   // TODO Call Thing > Database.
-  function getSnapshot(agent) {
-    const startTime = new Date();
-    if (flag === "red") {
-      return;
-    }
-    // setFlag("red");
-    console.log("Snapshot axios call " + agent);
-    //    const webPrefix = process.env.REACT_APP_WEB_PREFIX
-    //setRequestedAt(Date.now());
-
-    //const url = 'http://192.168.10.10/snapshot.json';
-    const url = webPrefix + "snapshot.json";
-    console.log("Snapshot axios url " + url);
-    console.log("Snapshot axios url " + url, flag);
-    console.log("Snapshot axios url " + url, webPrefix);
-
-    if (webPrefix === "https://stackr.ca/") {
-      setFlag("red");
-      return;
-    }
-    //    axios.get(webPrefix + agent + `.json`).then((res) => {
-    //if (flag === undefined) {setFlag('green');}
-    axios
-      .get(url)
-      .then((res) => {
-        console.log("Got " + url);
-        //console.log("snapshot", res);
-        let thingy = res.data;
-        //      console.log("Agent res.data", res.data);
-        setData(res.data);
-
-        // dev flag available not available
-        setFlag("green");
-        const endTime = new Date();
-        setSnapshotGetTime(endTime - startTime);
-        //setFlag("green");
-      })
-      .catch((error) => {
-        setFlag("red");
-
-        console.log("Get error", url, error);
-      });
+  function getStream(agent) {
+    // No function data is a props.
   }
 
   const [ampDataPointer, setAmpDataPointer] = useState(0);
@@ -313,15 +273,13 @@ function Snapshot(props) {
 
   return (
     <>
-      <div>SNAPSHOT</div>
+      <div>STREAM</div>
       <div>
         FLAG {flag} COLOUR
         <br />
-        GET TIME {snapshotGetTime}ms {Math.round(1000 / snapshotGetTime, 1)}Hz
+        GET TIME {streamGetTime}ms {Math.round(1000 / streamGetTime, 1)}Hz
         <br />
-        <Trace data={ampPoints} />
-        <br />
-        <Stream data={ampPoints} />
+        <Trace data={data} />
         <br />
         AMP0:{" "}
         {data &&
@@ -335,108 +293,9 @@ function Snapshot(props) {
         Process Amp Trace Period {tracePeriod}ms
         <br />
         <br />
-        <Trace data={voltPoints} />
-        VLT0 (HOUSE):{" "}
-        {data &&
-          data.transducers &&
-          data.transducers.thvlt0ad1 &&
-          data.transducers.thvlt0ad1.amount}{" "}
-        V<br />
-        VLT1 (START):{" "}
-        {data &&
-          data.transducers &&
-          data.transducers.thvlt1ad1 &&
-          data.transducers.thvlt1ad1.amount}{" "}
-        V<br />
-        PRESSURE:{" "}
-        {data &&
-          data.transducers &&
-          data.transducers.thprsapb0 &&
-          data.transducers.thprsapb0.amount}{" "}
-        bar
-        <br />
-        TEMPERATURE:{" "}
-        {data &&
-          data.transducers &&
-          data.transducers.thtmpatc1 &&
-          data.transducers.thtmpatc1.amount}{" "}
-        C<br />
-        HUMIDITY:{" "}
-        {data &&
-          data.transducers &&
-          data.transducers.thhmdahp2 &&
-          data.transducers.thhmdahp2.amount}{" "}
-        % RH
-        <br />
-        GAS:{" "}
-        {data &&
-          data.transducers &&
-          data.transducers.thgasaxx3 &&
-          data.transducers.thgasaxx3.amount}{" "}
-        ohms
-        <br />
-        ACCZ:{" "}
-        {data &&
-          data.transducers &&
-          data.transducers.thacczax2 &&
-          data.transducers.thacczax2.amount}{" "}
-        ms2
-        <br />
-        PITCH:{" "}
-        {data &&
-          data.transducers &&
-          data.transducers.thptchad1 &&
-          data.transducers.thptchad1.amount}{" "}
-        degrees
-        <br />
-        ROLL:{" "}
-        {data &&
-          data.transducers &&
-          data.transducers.throllad0 &&
-          data.transducers.throllad0.amount}{" "}
-        degrees
-        <br />
-        YAW:{" "}
-        {data &&
-          data.transducers &&
-          data.transducers.thyawax2 &&
-          data.transducers.thyawax2.amount}{" "}
-        <br />
-        RATE OF TURN:{" "}
-        {data &&
-          data.transducers &&
-          data.transducers.thgyrzax2 &&
-          data.transducers.thgyrzax2.amount}{" "}
-        <br />
-        {/*
-MRU<br />
-ACCZ: {data && data.transducers && data.transducers.thacczax2 && data.transducers.thacczax2.amount} m<br />
-ACCZ: {data && data.transducers && data.transducers.thacczax2 && data.transducers.thacczax2.amount} m<br />
-ACCZ: {data && data.transducers && data.transducers.thacczax2 && data.transducers.thacczax2.amount} m<br />
-*/}
-        LATITUDE: {data && data.current_latitude}
-        <br />
-        LONGITUDE: {data && data.current_longitude}
-        <br />
-        SPEED IN KNOTS: {data && data.speed_in_knots} knots
-        <br />
-        TRUE COURSE: {data && data.true_course}
-        <br />
-        NUMBER OF SATELLITES: {data && data.number_of_satellites}
-        <br />
-        HDOP: {data && data.horizontal_dilution_of_precision}
-        <br />
-        ALITUDE: {data && data.altitude_above_mean_sea_level}m (MSL)
-        <br />
-        FIX TIME: {data && data.fix_time}
-        <br />
-        TIMESTAMP: {data && data.time_stamp}
-        <br />
-        PARSED AT: {data && data.parsedAt}
-        <br />
       </div>
     </>
   );
 }
 
-export default Snapshot;
+export default Stream;

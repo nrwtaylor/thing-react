@@ -1,9 +1,17 @@
 import React, { PureComponent, useState, useEffect } from "react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 import "../index.css";
-import { 
+import {
   Typography,
   //  Avatar,
   //  ListItemAvatar,
@@ -21,54 +29,45 @@ import {
   DialogActions,
 } from "@material-ui/core";
 
-
 function Trace(props) {
+  const { data } = props;
 
-const {data} = props;
+  useEffect(() => {}, [data]);
 
-useEffect(()=> {
-
-
-
-},[data]);
-
-//return (<>NOTHING</>);
+  //return (<>NOTHING</>);
 
   return (
     <>
-
-TRACE START
-
-
-           <ResponsiveContainer width="100%" aspect={3}>
-                <LineChart data={data} margin={{ right: 300 }}>
-                 {/*   <CartesianGrid /> */}
-                 {/*   <XAxis dataKey="name" 
+      <ResponsiveContainer width="100%" aspect={3}>
+        <LineChart data={data} margin={{ right: 300 }}>
+          {/*   <CartesianGrid /> */}
+          {/*   <XAxis dataKey="name" 
                         interval={'preserveStartEnd'} /> */}
-                    <YAxis></YAxis>
-                {/*    <Legend /> */}
-                 {/*   <Tooltip /> */}
-                  {/*  <Line type="monotone" stroke="#8884d8" dataKey="amount" strokeWidth={2}
+          <YAxis></YAxis>
+          {/*    <Legend /> */}
+          {/*   <Tooltip /> */}
+          {/*  <Line type="monotone" stroke="#8884d8" dataKey="amount" strokeWidth={2}
                         stroke="black" activeDot={{ r: 8 }} /> */}
-                    <Line dataKey="amount"
-                        stroke="red" strokeWidth={4} activeDot={{ r: 8 }} />
-                </LineChart>
-            </ResponsiveContainer>
+          <Line
+            dataKey="amount"
+            stroke="red"
+            strokeWidth={4}
+            activeDot={{ r: 8 }}
+          />
+        </LineChart>
+      </ResponsiveContainer>
 
-{/*
+      {/*
       <ResponsiveContainer width="100%" height="100%">
         <LineChart width={300} height={100} data={data}>
           <Line type="monotone" dataKey="pv" stroke="#8884d8" strokeWidth={2} />
         </LineChart>
       </ResponsiveContainer>
 */}
-TRACE END
-<br/>
-<p />
+      <br />
+      <p />
     </>
   );
-
-
 }
 
 export default Trace;
