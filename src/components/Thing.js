@@ -49,9 +49,9 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 }));
 
 export default function Thing(props) {
-  const { webPrefix } = props;
+  const { webPrefix, subject, to } = props;
 
-  const subject = props.subject;
+  //const subject = props.subject;
   const startAt = props.createdAt;
 
   const currentAt = Date.now();
@@ -285,6 +285,7 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
   return (
     <>
     <Card>
+<div>
         <ExpandMore
           expand={expanded}
           onClick={handleExpandClick}
@@ -293,7 +294,10 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
         >
           <ExpandMoreIcon />
         </ExpandMore>
+<Typography>TO {to}</Typography>
+<Typography>SUBJECT {subject}</Typography>
 
+</div>
 {expanded && (<>
 
       Last edited: 12 June 2022
@@ -325,10 +329,12 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
         <br />
         {!data && <>NOT DATA</>}
       </div>
+
+{subject && subject === 'snapshot' && (
       <div>
         {/*<Snapshot user={null} thing={data.thing} agent_input="https://stackr.ca" />*/}
         <Snapshot user={null} thing={data.thing} agent_input={webPrefix} />
-      </div>
+      </div>)}
       <div>
         <br />
         {/*      <Agent user={null} thing={data.thing} agent_input="http://localhost" />*/}
@@ -347,10 +353,11 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
         <div dangerouslySetInnerHTML={{ __html: data && data.web }} />
         <div>UUID {data && data.thing && data.thing.uuid}</div>
         <div>CREATED AT {data && data.thing && data.thing.created_at}</div>
-        <div>SMS {data && data.thingReport && data.thingReport.sms}</div>
       </div>
 
 </>)}
+        <div>SMS {data && data.thingReport && data.thingReport.sms}</div>
+
         {PNG && <img width="800px" src={PNG} />}
 </Card>
     </>

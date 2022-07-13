@@ -33,7 +33,7 @@ import Forget from "../components/Forget.js";
 import Trace from "../components/Trace.js";
 
 function Stream(props) {
-  const { quantity, period } = props;
+  const { quantity, period, hide } = props;
 
 const {amount, units} = quantity;
 
@@ -50,22 +50,6 @@ amountRef.current = amount;
 
   const thing = props.thing;
 
-  // const [data, setData] = useState({
-  //   thing: { uuid: "X" },
-  //   thing_report: { sms: "No response. Yet." },
-  // });
-
-  /*
-  useEffect(() => {
-    setFlag("green");
-
-  useInterval(() => {
-    // Your custom logic here
-    setCount(count + 1);
-  }, 1000);
-//    getAgent();
-  }, [getAgent]); // eslint-disable-line react-hooks/exhaustive-deps
-*/
   const [open, setOpen] = useState(false);
 
   const [currentAmount, setCurrentAmount] = useState();
@@ -105,39 +89,6 @@ getStream();
           }
         }, [delay]);
       }
-
-  //useEffect(()=>{
-
-  //getAgent();
-
-  //},[]);
-/*
-  useEffect(() => {
-    // If still processing the last one,
-    // Skip a beat, do not request another.
-    //    if (flag === "red") {
-    //      return;
-    //    }
-
-    // First time flag is green.
-
-    //    console.log("nextRunAt pollInterval", pollInterval);
-    //    const t = currentAt + pollInterval;
-
-    //    setNextRunAt(t);
-//getStream();
-    const interval = setInterval(() => {
-  //    getStream();
-    }, 50); // 20 Hz was 200.
-
-    return () => clearInterval(interval);
-  }, []);
-*/
-  /*
-  useEffect(() => {
-    console.log("Agent thing", thing);
-  }, [thing]);
-*/
 
   function humanTime(timestamp) {
     const ts = new Date();
@@ -240,7 +191,8 @@ const a = amountRef.current;
     console.log("Stream mountRef.current", a);
 
 
-    const conditionedAmount = parseInt(a);
+    const conditionedAmount = parseFloat(a);
+
     console.log("Stream conditionedAmountt", conditionedAmount);
     // Create a new array based on current state:
     let s = [...streamPoints];
@@ -254,7 +206,7 @@ const a = amountRef.current;
       amount: conditionedAmount,
     });
 
-    const maxStreamPoints = 100;
+    const maxStreamPoints = 50;
 
     const excessPoints = s.length - maxStreamPoints;
 
@@ -302,7 +254,7 @@ if (isNaN(amount)) {return;}
     //function getStream() {
     const startTime = new Date();
 
-    const conditionedAmount = parseInt(amount);
+    const conditionedAmount = parseFloat(amount);
 
     // Create a new array based on current state:
     let f = [...dataPoints];
@@ -354,26 +306,28 @@ if (isNaN(amount)) {return;}
   return (
     <>
       <div>
-{period && (<>        <Trace data={streamPoints} />
+{period && hide && (<>        <Trace data={streamPoints} />
 <br />
 Period {humanPeriod(period)}
-<Frequency frequency={1000/period} />
+<Typography><Frequency frequency={1000/period} /> requested</Typography>
+<Typography><Frequency frequency={1000/tracePeriod} /> observed</Typography>
 
 </>)}
 
-{period === undefined && (<>
+{period === undefined && hide && (<>
         <Trace data={dataPoints} />
 <br />
-Period {humanPeriod(tracePeriod)}
-<Frequency frequency={1000/tracePeriod} />
+<Typography>Period {humanPeriod(tracePeriod)}</Typography>
+<Typography><Frequency frequency={1000/tracePeriod} /></Typography>
 
 </>)}
 
-      
+{hide && (<>
   amount {amount} {units}
         <br />
         pointer {dataPointer}
         <br />
+</>)}
       </div>
     </>
   );

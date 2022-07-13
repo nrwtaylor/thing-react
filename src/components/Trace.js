@@ -45,9 +45,7 @@ function Trace(props) {
       <ResponsiveContainer width="100%" aspect={3}>
         <LineChart data={data} margin={{ right: 300 }}>
           {/*   <CartesianGrid /> */}
-          {/*   <XAxis dataKey="name" 
-                        interval={'preserveStartEnd'} /> */}
-          <YAxis></YAxis>
+          <YAxis ></YAxis>
           {/*    <Legend /> */}
           {/*   <Tooltip /> */}
           {/*  <Line type="monotone" stroke="#8884d8" dataKey="amount" strokeWidth={2}

@@ -142,27 +142,6 @@ function Snapshot(props) {
   function timeStamp() {
     var date = Date.now();
     return date.toString();
-    //    return date.toLocaleDateString("en-US");
-    /*
-    if (timestamp === undefined) {
-      return "X";
-    }
-
-    if (timestamp === null) {
-      return "X";
-    }
-
-
-//    const date = timestamp.toDate();
-    const d = date.toString();
-
-    const thing_date = new Date(d);
-    const today_date = new Date();
-    const seconds_diff = Math.round(
-      today_date.getTime() - thing_date.getTime()
-    );
-    return thing_date.toLocaleDateString("en-US");
-*/
   }
 
   // TODO Call Thing > Database.
@@ -216,93 +195,6 @@ function Snapshot(props) {
   const [voltPoints, setVoltPoints] = useState([]);
   const [tracePeriod, setTracePeriod] = useState();
 
-  useEffect(() => {
-    const startTime = new Date();
-
-    //console.log(data && data.transducers && data.transducers.thaccxad0);
-
-    console.log(
-      data &&
-        data.transducers &&
-        data.transducers.thamp0ad0 &&
-        data.transducers.thamp0ad0.amount
-    );
-
-    const amount = parseInt(
-      data &&
-        data.transducers &&
-        data.transducers.thamp0ad0 &&
-        data.transducers.thamp0ad0.amount
-    );
-    console.log("amount", amount);
-
-    // Create a new array based on current state:
-    let f = [...ampPoints];
-
-    // Add item to it
-    f.push({
-      name: "asdf",
-      student: 24,
-      fees: 1,
-      value: amount,
-      amount: amount,
-    });
-
-    const maxAmpPoints = 100;
-
-    const excessPoints = f.length - maxAmpPoints;
-
-    if (excessPoints >= 0) {
-      const a = (ampDataPointer + 1) % maxAmpPoints;
-
-      setAmpDataPointer(a);
-
-      //f.splice(0, excessPoints);
-      f.shift();
-    }
-
-    //console.log(f);
-    // Set state
-
-    setAmpPoints(f);
-
-    //////////
-
-    const voltAmount = parseInt(
-      data &&
-        data.transducers &&
-        data.transducers.thvlt0ad1 &&
-        data.transducers.thvlt0ad1.amount
-    );
-    //console.log("voltAmount", voltAmount);
-    // Create a new array based on current state:
-    let g = [...voltPoints];
-
-    g.push({
-      name: "volt",
-      student: 24,
-      fees: 1,
-      value: amount,
-      amount: voltAmount,
-    });
-
-    const maxVoltPoints = 100;
-    const excessVoltPoints = g.length - maxVoltPoints;
-
-    if (excessVoltPoints >= 0) {
-      //g.splice(0, excessVoltPoints);
-      g.shift();
-    }
-    //console.log("f volts",f);
-
-    setVoltPoints(g);
-
-    const endTime = new Date();
-    const tf = endTime - startTime;
-    const timeDiff = tf;
-    setTracePeriod(timeDiff);
-  }, [data]);
-
   function callBack() {
     console.log("Agent callBack called.");
   }
@@ -325,19 +217,25 @@ function Snapshot(props) {
           data.transducers.thamp0ad0 &&
           data.transducers.thamp0ad0.amount}{" "}
         A<br />
-        <Trace data={ampPoints} />
+   {/*     <Trace data={ampPoints} />
         <br />
-
+*/}
 
         <br />
-        <Stream quantity={{units:"A",amount:data &&
+        <Stream hide={false} quantity={{units:"A",amount:data &&
         data.transducers &&
         data.transducers.thamp0ad0 &&
         data.transducers.thamp0ad0.amount}
 } />
 
         <br />
-        <Stream quantity={{units:"A",amount:data &&
+        <Stream hide={true} quantity={{units:"A",amount:data &&
+        data.transducers &&
+        data.transducers.thamp0ad0 &&
+        data.transducers.thamp0ad0.amount}
+} period={100} />
+        <br />
+        <Stream hide={false} quantity={{units:"A",amount:data &&
         data.transducers &&
         data.transducers.thamp0ad0 &&
         data.transducers.thamp0ad0.amount}
@@ -345,7 +243,7 @@ function Snapshot(props) {
 
 
         <br />
-        <Stream quantity={{units:"A",amount:data &&
+        <Stream hide={false} quantity={{units:"A",amount:data &&
         data.transducers &&
         data.transducers.thamp0ad0 &&
         data.transducers.thamp0ad0.amount}
@@ -362,9 +260,9 @@ function Snapshot(props) {
         V<br />
 
         <br />
-        <Trace data={voltPoints} />
+   {/*     <Trace data={voltPoints} /> */}
 
-        <Stream quantity={{units:"V",amount:data &&
+        <Stream hide={true} quantity={{units:"V",amount:data &&
         data.transducers &&
         data.transducers.thvlt0ad1 &&
         data.transducers.thvlt0ad1.amount}
@@ -372,14 +270,14 @@ function Snapshot(props) {
 <br />
 
 
-        <Stream quantity={{units:"V",amount:data &&
+        <Stream hide={false} quantity={{units:"V",amount:data &&
         data.transducers &&
         data.transducers.thvlt0ad1 &&
         data.transducers.thvlt0ad1.amount}
 } period={1*60*1000} />
 <br />
 
-        <Stream quantity={{units:"V",amount:data &&
+        <Stream  hide={false} quantity={{units:"V",amount:data &&
         data.transducers &&
         data.transducers.thvlt0ad1 &&
         data.transducers.thvlt0ad1.amount
@@ -394,7 +292,7 @@ function Snapshot(props) {
           data.transducers.thvlt1ad1.amount}{" "}
         V<br />
 
-        <Stream quantity={{units:"V",amount:data &&
+        <Stream  hide={true} quantity={{units:"V",amount:data &&
         data.transducers &&
         data.transducers.thvlt1ad1 &&
         data.transducers.thvlt1ad1.amount}
@@ -402,13 +300,13 @@ function Snapshot(props) {
 <br />
 
 
-        <Stream quantity={{amount:data &&
+        <Stream  hide={false} quantity={{amount:data &&
         data.transducers &&
         data.transducers.thvlt1ad1 &&
         data.transducers.thvlt1ad1.amount
 }} period={1*60*1000} />
 <br />
-        <Stream quantity={{units:"V",amount:data &&
+        <Stream  hide={false} quantity={{units:"V",amount:data &&
         data.transducers &&
         data.transducers.thvlt1ad1 &&
         data.transducers.thvlt1ad1.amount
@@ -423,7 +321,7 @@ function Snapshot(props) {
           data.transducers.thprsapb0.amount}{" "}
         bar
         <br />
-        <Stream quantity={{units:"mbar",amount:data &&
+        <Stream  hide={false} quantity={{units:"mbar",amount:data &&
         data.transducers &&
         data.transducers.thprsapb0 &&
         data.transducers.thprsapb0.amount}
@@ -436,14 +334,20 @@ function Snapshot(props) {
           data.transducers.thtmpatc1 &&
           data.transducers.thtmpatc1.amount}{" "}
         C<br />
-        <Stream quantity={{units:"C", amount:data &&
+        <Stream  hide={false} quantity={{units:"C", amount:data &&
+        data.transducers &&
+        data.transducers.thtmpatc1 &&
+        data.transducers.thtmpatc1.amount
+}} period={50} />
+<br />
+
+        <Stream  hide={false} quantity={{units:"C", amount:data &&
         data.transducers &&
         data.transducers.thtmpatc1 &&
         data.transducers.thtmpatc1.amount
 }} period={1*60*1000} />
-<br />
 <br/>
-        <Stream quantity={{units:"C", amount:data>
+        <Stream  hide={false} quantity={{units:"C", amount:data>
         data.transducers &&
         data.transducers.thtmpatc1 &&
         data.transducers.thtmpatc1.amount
@@ -458,7 +362,7 @@ function Snapshot(props) {
           data.transducers.thhmdahp2.amount}{" "}
         % RH
         <br />
-        <Stream quantity={{units:"%RH", amount:data &&
+        <Stream  hide={false} quantity={{units:"%RH", amount:data &&
         data.transducers &&
         data.transducers.thhmdahp2 &&
         data.transducers.thhmdahp2.amount
@@ -472,7 +376,7 @@ function Snapshot(props) {
           data.transducers.thgasaxx3.amount}{" "}
         ohms
         <br />
-        <Stream quantity={{units:"ohms", amount:data &&
+        <Stream  hide={false} quantity={{units:"ohms", amount:data &&
         data.transducers &&
         data.transducers.thgasaxx3 &&
         data.transducers.thgasaxx3.amount
@@ -486,14 +390,14 @@ function Snapshot(props) {
           data.transducers.thacczax2.amount}{" "}
         ms2
         <br />
-        <Stream quantity={{amount:data &&
+        <Stream hide={false} quantity={{amount:data &&
         data.transducers &&
         data.transducers.thacczax2 &&
         data.transducers.thacczax2.amount
 , units:"ms-2"}} />
 
         <br />
-        <Stream quantity={{amount:data &&
+        <Stream  hide={true}  quantity={{amount:data &&
         data.transducers &&
         data.transducers.thacczax2 &&
         data.transducers.thacczax2.amount
@@ -510,12 +414,25 @@ function Snapshot(props) {
           data.transducers.thptchad1.amount}{" "}
         degrees
         <br />
+        <Stream  hide={true}  quantity={{amount:data &&
+        data.transducers &&
+        data.transducers.thptchad1 &&
+        data.transducers.thptchad1.amount
+, units:"degrees"}} period={50}/>
+<br />
         ROLL:{" "}
         {data &&
           data.transducers &&
           data.transducers.throllad0 &&
           data.transducers.throllad0.amount}{" "}
         degrees
+        <br />
+        <Stream  hide={true}  quantity={{amount:data &&
+        data.transducers &&
+        data.transducers.throllad0 &&
+        data.transducers.throllad0.amount
+, units:"degrees"}} period={50}/>
+
         <br />
         YAW:{" "}
         {data &&
@@ -549,7 +466,7 @@ ACCZ: {data && data.transducers && data.transducers.thacczax2 && data.transducer
         <br />
         ALTITUDE: {data && data.altitude_above_mean_sea_level}m (MSL)
         <br />
-        <Stream quantity={{amount:data && data.altitude_above_mean_sea_level}}
+        <Stream  hide={false}  quantity={{amount:data && data.altitude_above_mean_sea_level}}
 period = {5*60 * 1000}
  />
 <br />

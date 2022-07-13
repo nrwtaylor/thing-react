@@ -228,7 +228,7 @@ const a = frequencyRef.current;
     console.log("Stream mountRef.current", a);
 
 
-    const conditionedAmount = parseInt(a);
+    const conditionedAmount = parseFloat(a);
     console.log("Stream conditionedAmountt", conditionedAmount);
     // Create a new array based on current state:
     let s = [...streamPoints];
@@ -290,7 +290,7 @@ if (isNaN(amount)) {return;}
     //function getStream() {
     const startTime = new Date();
 
-    const amount = parseInt(frequency);
+    const amount = parseFloat(frequency);
 
     // Create a new array based on current state:
     let f = [...dataPoints];
@@ -341,7 +341,6 @@ if (isNaN(amount)) {return;}
 
   return (
     <>
-      <div>
 {frequency && (<> 
 humanFrequency {humanFrequency(frequency)}
 </>)}
@@ -349,7 +348,6 @@ humanFrequency {humanFrequency(frequency)}
 {frequency === undefined && (<>
 UNDEFINED
 </>)}
-      </div>
     </>
   );
 }
