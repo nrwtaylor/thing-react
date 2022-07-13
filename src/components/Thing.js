@@ -1,10 +1,52 @@
 import React, { useState, useEffect } from "react";
-import Agent from "../components/Agent";
-import Snapshot from "../components/Snapshot";
+import Agent from "../components/Agent.js";
+import Snapshot from "../components/Snapshot.js";
 
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
-import { Get } from "../components/Database";
+import { Get } from "../components/Database.js";
+
+//import{ Collapse} from '@mui/core';
+
+import { styled } from '@mui/material/styles';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardMedia from '@mui/material/CardMedia';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import Collapse from '@mui/material/Collapse';
+import Avatar from '@mui/material/Avatar';
+
+
+import IconButton, { IconButtonProps } from '@mui/material/IconButton';
+//import IconButton from '@mui/material/IconButton';
+
+import Typography from '@mui/material/Typography';
+import { red } from '@mui/material/colors';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import ShareIcon from '@mui/icons-material/Share';
+
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+
+//import ExpandMoreIcon from '@mui/icons-material/ExpandMore.js';
+
+
+interface ExpandMoreProps extends IconButtonProps {
+  expand: boolean;
+}
+
+
+const ExpandMore = styled((props: ExpandMoreProps) => {
+  const { expand, ...other } = props;
+  return <IconButton {...other} />;
+})(({ theme, expand }) => ({
+  transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+  marginLeft: 'auto',
+  transition: theme.transitions.create('transform', {
+    duration: theme.transitions.duration.shortest,
+  }),
+}));
 
 export default function Thing(props) {
   const { webPrefix } = props;
@@ -42,6 +84,12 @@ export default function Thing(props) {
   const [flag, setFlag] = useState();
 
   const runTime = Date.now() - startAt;
+
+  const [expanded, setExpanded] = React.useState(false);
+
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
 
   // Generate a UUID if not given one by App.
   const uuid = props.uuid ? props.uuid : uuidv4();
@@ -236,7 +284,19 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
 
   return (
     <>
-      Last edited: 9 June 2022
+    <Card>
+        <ExpandMore
+          expand={expanded}
+          onClick={handleExpandClick}
+          aria-expanded={expanded}
+          aria-label="show more"
+        >
+          <ExpandMoreIcon />
+        </ExpandMore>
+
+{expanded && (<>
+
+      Last edited: 12 June 2022
       <div>
         THING {uuid}
         <br />
@@ -288,8 +348,11 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
         <div>UUID {data && data.thing && data.thing.uuid}</div>
         <div>CREATED AT {data && data.thing && data.thing.created_at}</div>
         <div>SMS {data && data.thingReport && data.thingReport.sms}</div>
-        {PNG && <img width="800px" src={PNG} />}
       </div>
+
+</>)}
+        {PNG && <img width="800px" src={PNG} />}
+</Card>
     </>
   );
 }

@@ -29,6 +29,9 @@ import {
   DialogActions,
 } from "@material-ui/core";
 
+import Frequency from "../components/Frequency.js";
+
+
 function Trace(props) {
   const { data } = props;
 
@@ -38,6 +41,7 @@ function Trace(props) {
 
   return (
     <>
+<Box>
       <ResponsiveContainer width="100%" aspect={3}>
         <LineChart data={data} margin={{ right: 300 }}>
           {/*   <CartesianGrid /> */}
@@ -66,6 +70,7 @@ function Trace(props) {
 */}
       <br />
       <p />
+</Box>
     </>
   );
 }

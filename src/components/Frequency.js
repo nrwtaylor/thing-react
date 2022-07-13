@@ -26,17 +26,11 @@ import {
   Edit,
 } from "@material-ui/icons";
 
-import Frequency from "../components/Frequency.js";
-
-
 import Forget from "../components/Forget.js";
 import Trace from "../components/Trace.js";
 
-function Stream(props) {
-  const { quantity, period } = props;
-
-const {amount, units} = quantity;
-
+function Frequency(props) {
+  const { frequency } = props;
   const user_name = props.user_name; // TODO
   const agent_input = props.agent_input;
   const webPrefix = agent_input;
@@ -44,35 +38,19 @@ const {amount, units} = quantity;
   //const [requestedAt, setRequestedAt] = useState();
   const [reply, setReply] = useState("");
 
+const period = 1 / frequency;
 
-const amountRef = React.createRef();
-amountRef.current = amount;
+const frequencyRef = React.createRef();
+frequencyRef.current = frequency;
 
   const thing = props.thing;
 
-  // const [data, setData] = useState({
-  //   thing: { uuid: "X" },
-  //   thing_report: { sms: "No response. Yet." },
-  // });
-
-  /*
-  useEffect(() => {
-    setFlag("green");
-
-  useInterval(() => {
-    // Your custom logic here
-    setCount(count + 1);
-  }, 1000);
-//    getAgent();
-  }, [getAgent]); // eslint-disable-line react-hooks/exhaustive-deps
-*/
   const [open, setOpen] = useState(false);
 
   const [currentAmount, setCurrentAmount] = useState();
 
   useInterval(() => {
     // Your custom logic here
-console.log("Stream useInterval amount", amount);
 getStream();  
 }, period);
 
@@ -224,19 +202,29 @@ getStream();
   const [tracePeriod, setTracePeriod] = useState();
 
 
+function humanFrequency(p) {
+
+if (p<1) {return "1/"+Math.round(1/p, 0) + " Hz"}
+
+return Math.round(p, 1) + " Hz";
+
+
+}
+
+
 function humanPeriod(p) {
 
-//if (p>0) {return "1/"+Math.round(p / 1000, 0) + " Hz"}
+if (p>0) {return "1/"+Math.round(p / 1000, 0) + " Hz"}
 
-//return Math.round(1000 / p, 1) + " Hz";
-return Math.round(p/1000,0) + " s";
+return Math.round(1000 / p, 1) + " Hz";
+
 
 }
 
   function getStream() {
 
 //console.log("Stream tick");
-const a = amountRef.current;
+const a = frequencyRef.current;
     console.log("Stream mountRef.current", a);
 
 
@@ -285,7 +273,7 @@ const a = amountRef.current;
   }, []);
 
   useEffect(() => {
-    console.log("Stream amount", amount);
+    console.log("Stream amount", frequency);
 /* 
    if (amount === undefined) {
       return;
@@ -302,7 +290,7 @@ if (isNaN(amount)) {return;}
     //function getStream() {
     const startTime = new Date();
 
-    const conditionedAmount = parseInt(amount);
+    const amount = parseInt(frequency);
 
     // Create a new array based on current state:
     let f = [...dataPoints];
@@ -312,8 +300,8 @@ if (isNaN(amount)) {return;}
       name: "asdf",
       student: 24,
       fees: 1,
-      value: conditionedAmount,
-      amount: conditionedAmount,
+      value: amount,
+      amount: amount,
     });
 
     const maxAmpPoints = 100;
@@ -341,7 +329,7 @@ if (isNaN(amount)) {return;}
     const timeDiff = tf;
     setTracePeriod(timeDiff);
     //  }
-  }, [amount]);
+  }, [frequency]);
 
   function callBack() {
     console.log("Agent callBack called.");
@@ -354,29 +342,16 @@ if (isNaN(amount)) {return;}
   return (
     <>
       <div>
-{period && (<>        <Trace data={streamPoints} />
-<br />
-Period {humanPeriod(period)}
-<Frequency frequency={1000/period} />
-
+{frequency && (<> 
+humanFrequency {humanFrequency(frequency)}
 </>)}
 
-{period === undefined && (<>
-        <Trace data={dataPoints} />
-<br />
-Period {humanPeriod(tracePeriod)}
-<Frequency frequency={1000/tracePeriod} />
-
+{frequency === undefined && (<>
+UNDEFINED
 </>)}
-
-      
-  amount {amount} {units}
-        <br />
-        pointer {dataPointer}
-        <br />
       </div>
     </>
   );
 }
 
-export default Stream;
+export default Frequency;
