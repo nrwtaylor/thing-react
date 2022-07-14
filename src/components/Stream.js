@@ -44,6 +44,7 @@ const {amount, units} = quantity;
   //const [requestedAt, setRequestedAt] = useState();
   const [reply, setReply] = useState("");
 
+  const [refreshedAt, setRefreshedAt] = useState();
 
 const amountRef = React.createRef();
 amountRef.current = amount;
@@ -206,7 +207,7 @@ const a = amountRef.current;
       amount: conditionedAmount,
     });
 
-    const maxStreamPoints = 50;
+    const maxStreamPoints = 100;
 
     const excessPoints = s.length - maxStreamPoints;
 
@@ -253,6 +254,9 @@ if (isNaN(amount)) {return;}
 
     //function getStream() {
     const startTime = new Date();
+const d = startTime - refreshedAt;
+setRefreshedAt(startTime);
+
 
     const conditionedAmount = parseFloat(amount);
 
@@ -291,7 +295,8 @@ if (isNaN(amount)) {return;}
     const endTime = new Date();
     const tf = endTime - startTime;
     const timeDiff = tf;
-    setTracePeriod(timeDiff);
+    //setTracePeriod(timeDiff);
+setTracePeriod(d);
     //  }
   }, [amount]);
 
@@ -306,7 +311,7 @@ if (isNaN(amount)) {return;}
   return (
     <>
       <div>
-{period && hide && (<>        <Trace data={streamPoints} />
+{period && hide && (<>        <Trace data={streamPoints} domain={props.domain}/>
 <br />
 Period {humanPeriod(period)}
 <Typography><Frequency frequency={1000/period} /> requested</Typography>
@@ -315,7 +320,7 @@ Period {humanPeriod(period)}
 </>)}
 
 {period === undefined && hide && (<>
-        <Trace data={dataPoints} />
+        <Trace data={dataPoints} domain={props.domain} />
 <br />
 <Typography>Period {humanPeriod(tracePeriod)}</Typography>
 <Typography><Frequency frequency={1000/tracePeriod} /></Typography>

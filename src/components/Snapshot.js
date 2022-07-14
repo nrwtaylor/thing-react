@@ -29,6 +29,7 @@ import {
 import Forget from "../components/Forget.js";
 import Trace from "../components/Trace.js";
 import Stream from "../components/Stream.js";
+import BubbleLevel from "../components/BubbleLevel.js";
 
 function Snapshot(props) {
   const user_name = props.user_name; // TODO
@@ -217,103 +218,152 @@ function Snapshot(props) {
           data.transducers.thamp0ad0 &&
           data.transducers.thamp0ad0.amount}{" "}
         A<br />
-   {/*     <Trace data={ampPoints} />
+        {/*     <Trace data={ampPoints} />
         <br />
 */}
-
         <br />
-        <Stream hide={false} quantity={{units:"A",amount:data &&
-        data.transducers &&
-        data.transducers.thamp0ad0 &&
-        data.transducers.thamp0ad0.amount}
-} />
-
+        <Stream
+          hide={false}
+          quantity={{
+            units: "A",
+            amount:
+              data &&
+              data.transducers &&
+              data.transducers.thamp0ad0 &&
+              data.transducers.thamp0ad0.amount,
+          }}
+        />
         <br />
-        <Stream hide={true} quantity={{units:"A",amount:data &&
-        data.transducers &&
-        data.transducers.thamp0ad0 &&
-        data.transducers.thamp0ad0.amount}
-} period={100} />
+        <Stream
+          hide={true}
+          quantity={{
+            units: "A",
+            amount:
+              data &&
+              data.transducers &&
+              data.transducers.thamp0ad0 &&
+              data.transducers.thamp0ad0.amount,
+          }}
+          period={100}
+        />
         <br />
-        <Stream hide={false} quantity={{units:"A",amount:data &&
-        data.transducers &&
-        data.transducers.thamp0ad0 &&
-        data.transducers.thamp0ad0.amount}
-} period={5*1000} />
-
-
+        <Stream
+          hide={false}
+          quantity={{
+            units: "A",
+            amount:
+              data &&
+              data.transducers &&
+              data.transducers.thamp0ad0 &&
+              data.transducers.thamp0ad0.amount,
+          }}
+          period={5 * 1000}
+        />
         <br />
-        <Stream hide={false} quantity={{units:"A",amount:data &&
-        data.transducers &&
-        data.transducers.thamp0ad0 &&
-        data.transducers.thamp0ad0.amount}
-} period={1*60*1000} />
-
+        <Stream
+          hide={false}
+          quantity={{
+            units: "A",
+            amount:
+              data &&
+              data.transducers &&
+              data.transducers.thamp0ad0 &&
+              data.transducers.thamp0ad0.amount,
+          }}
+          period={1 * 60 * 1000}
+        />
         <br />
-
-
         VLT0 (HOUSE):{" "}
         {data &&
           data.transducers &&
           data.transducers.thvlt0ad1 &&
           data.transducers.thvlt0ad1.amount}{" "}
         V<br />
-
         <br />
-   {/*     <Trace data={voltPoints} /> */}
-
-        <Stream hide={true} quantity={{units:"V",amount:data &&
-        data.transducers &&
-        data.transducers.thvlt0ad1 &&
-        data.transducers.thvlt0ad1.amount}
-} period={100} />
-<br />
-
-
-        <Stream hide={false} quantity={{units:"V",amount:data &&
-        data.transducers &&
-        data.transducers.thvlt0ad1 &&
-        data.transducers.thvlt0ad1.amount}
-} period={1*60*1000} />
-<br />
-
-        <Stream  hide={false} quantity={{units:"V",amount:data &&
-        data.transducers &&
-        data.transducers.thvlt0ad1 &&
-        data.transducers.thvlt0ad1.amount
-}} />
-<br />
-
-
+        {/*     <Trace data={voltPoints} /> */}
+        <Stream
+          hide={true}
+          quantity={{
+            units: "V",
+            amount:
+              data &&
+              data.transducers &&
+              data.transducers.thvlt0ad1 &&
+              data.transducers.thvlt0ad1.amount,
+          }}
+          period={100}
+domain={{maximum:16, minimum:10}}
+        />
+        <br />
+        <Stream
+          hide={false}
+          quantity={{
+            units: "V",
+            amount:
+              data &&
+              data.transducers &&
+              data.transducers.thvlt0ad1 &&
+              data.transducers.thvlt0ad1.amount,
+          }}
+          period={1 * 60 * 1000}
+        />
+        <br />
+        <Stream
+          hide={false}
+          quantity={{
+            units: "V",
+            amount:
+              data &&
+              data.transducers &&
+              data.transducers.thvlt0ad1 &&
+              data.transducers.thvlt0ad1.amount,
+          }}
+        />
+        <br />
         VLT1 (START):{" "}
         {data &&
           data.transducers &&
           data.transducers.thvlt1ad1 &&
           data.transducers.thvlt1ad1.amount}{" "}
         V<br />
-
-        <Stream  hide={true} quantity={{units:"V",amount:data &&
-        data.transducers &&
-        data.transducers.thvlt1ad1 &&
-        data.transducers.thvlt1ad1.amount}
-} period={100} />
-<br />
-
-
-        <Stream  hide={false} quantity={{amount:data &&
-        data.transducers &&
-        data.transducers.thvlt1ad1 &&
-        data.transducers.thvlt1ad1.amount
-}} period={1*60*1000} />
-<br />
-        <Stream  hide={false} quantity={{units:"V",amount:data &&
-        data.transducers &&
-        data.transducers.thvlt1ad1 &&
-        data.transducers.thvlt1ad1.amount
-}} />
-<br />
-
-
+        <Stream
+          hide={true}
+          quantity={{
+            units: "V",
+            amount:
+              data &&
+              data.transducers &&
+              data.transducers.thvlt1ad1 &&
+              data.transducers.thvlt1ad1.amount,
+          }}
+          period={100}
+domain={{maximum:16, minimum:10}}
+        />
+        <br />
+        <Stream
+          hide={false}
+          quantity={{
+            amount:
+              data &&
+              data.transducers &&
+              data.transducers.thvlt1ad1 &&
+              data.transducers.thvlt1ad1.amount,
+          }}
+          period={1 * 60 * 1000}
+        />
+        <br />
+        <Stream
+          hide={false}
+          quantity={{
+            units: "V",
+            amount:
+              data &&
+              data.transducers &&
+              data.transducers.thvlt1ad1 &&
+              data.transducers.thvlt1ad1.amount,
+          }}
+        />
+        <br />
         PRESSURE:{" "}
         {data &&
           data.transducers &&
@@ -321,40 +371,63 @@ function Snapshot(props) {
           data.transducers.thprsapb0.amount}{" "}
         bar
         <br />
-        <Stream  hide={false} quantity={{units:"mbar",amount:data &&
-        data.transducers &&
-        data.transducers.thprsapb0 &&
-        data.transducers.thprsapb0.amount}
-} period={1*60*1000} />
-<br />
-
+        <Stream
+          hide={false}
+          quantity={{
+            units: "mbar",
+            amount:
+              data &&
+              data.transducers &&
+              data.transducers.thprsapb0 &&
+              data.transducers.thprsapb0.amount,
+          }}
+          period={1 * 60 * 1000}
+        />
+        <br />
         TEMPERATURE:{" "}
         {data &&
           data.transducers &&
           data.transducers.thtmpatc1 &&
           data.transducers.thtmpatc1.amount}{" "}
         C<br />
-        <Stream  hide={false} quantity={{units:"C", amount:data &&
-        data.transducers &&
-        data.transducers.thtmpatc1 &&
-        data.transducers.thtmpatc1.amount
-}} period={50} />
-<br />
-
-        <Stream  hide={false} quantity={{units:"C", amount:data &&
-        data.transducers &&
-        data.transducers.thtmpatc1 &&
-        data.transducers.thtmpatc1.amount
-}} period={1*60*1000} />
-<br/>
-        <Stream  hide={false} quantity={{units:"C", amount:data>
-        data.transducers &&
-        data.transducers.thtmpatc1 &&
-        data.transducers.thtmpatc1.amount
-}} period={15*60*1000} />
-<br />
-
-
+        <Stream
+          hide={false}
+          quantity={{
+            units: "C",
+            amount:
+              data &&
+              data.transducers &&
+              data.transducers.thtmpatc1 &&
+              data.transducers.thtmpatc1.amount,
+          }}
+          period={50}
+        />
+        <br />
+        <Stream
+          hide={false}
+          quantity={{
+            units: "C",
+            amount:
+              data &&
+              data.transducers &&
+              data.transducers.thtmpatc1 &&
+              data.transducers.thtmpatc1.amount,
+          }}
+          period={1 * 60 * 1000}
+        />
+        <br />
+        <Stream
+          hide={false}
+          quantity={{
+            units: "C",
+            amount:
+              data > data.transducers &&
+              data.transducers.thtmpatc1 &&
+              data.transducers.thtmpatc1.amount,
+          }}
+          period={15 * 60 * 1000}
+        />
+        <br />
         HUMIDITY:{" "}
         {data &&
           data.transducers &&
@@ -362,13 +435,19 @@ function Snapshot(props) {
           data.transducers.thhmdahp2.amount}{" "}
         % RH
         <br />
-        <Stream  hide={false} quantity={{units:"%RH", amount:data &&
-        data.transducers &&
-        data.transducers.thhmdahp2 &&
-        data.transducers.thhmdahp2.amount
-}} period={1*60*1000} />
-<br />
-
+        <Stream
+          hide={false}
+          quantity={{
+            units: "%RH",
+            amount:
+              data &&
+              data.transducers &&
+              data.transducers.thhmdahp2 &&
+              data.transducers.thhmdahp2.amount,
+          }}
+          period={1 * 60 * 1000}
+        />
+        <br />
         GAS:{" "}
         {data &&
           data.transducers &&
@@ -376,13 +455,19 @@ function Snapshot(props) {
           data.transducers.thgasaxx3.amount}{" "}
         ohms
         <br />
-        <Stream  hide={false} quantity={{units:"ohms", amount:data &&
-        data.transducers &&
-        data.transducers.thgasaxx3 &&
-        data.transducers.thgasaxx3.amount
-}} period={5*60*1000} />
-<br />
-
+        <Stream
+          hide={false}
+          quantity={{
+            units: "ohms",
+            amount:
+              data &&
+              data.transducers &&
+              data.transducers.thgasaxx3 &&
+              data.transducers.thgasaxx3.amount,
+          }}
+          period={5 * 60 * 1000}
+        />
+        <br />
         ACCZ:{" "}
         {data &&
           data.transducers &&
@@ -390,23 +475,59 @@ function Snapshot(props) {
           data.transducers.thacczax2.amount}{" "}
         ms2
         <br />
-        <Stream hide={false} quantity={{amount:data &&
-        data.transducers &&
-        data.transducers.thacczax2 &&
-        data.transducers.thacczax2.amount
-, units:"ms-2"}} />
+        <Stream
+          hide={false}
+          quantity={{
+            amount:
+              data &&
+              data.transducers &&
+              data.transducers.thacczax2 &&
+              data.transducers.thacczax2.amount,
+            units: "ms-2",
+          }}
+        />
+        <br />
+        <Stream
+          hide={true}
+          quantity={{
+            amount:
+              data &&
+              data.transducers &&
+              data.transducers.thacczax2 &&
+              data.transducers.thacczax2.amount,
+            units: "ms-2",
+          }}
+          period={50}
+          domain={{maximum:1000, minimum:750}} 
+        />
+
 
         <br />
-        <Stream  hide={true}  quantity={{amount:data &&
-        data.transducers &&
-        data.transducers.thacczax2 &&
-        data.transducers.thacczax2.amount
-, units:"ms-2"}} period={50}/>
-
-
-<br />
-
-
+        BUBBLE LEVEL
+        <BubbleLevel
+          data={{
+            y:
+              data &&
+              data.transducers &&
+              data.transducers.thptchad1 &&
+              data.transducers.thptchad1.amount,
+            x:
+              data &&
+              data.transducers &&
+              data.transducers.throllad0 &&
+              data.transducers.throllad0.amount,
+            z:
+              data &&
+              data.transducers &&
+              data.transducers.thyawax2 &&
+              data.transducers.thyawax2.amount,
+            dotZ:
+              data &&
+              data.transducers &&
+              data.transducers.thgyrzax2 &&
+              data.transducers.thgyrzax2.amount,
+          }}
+        />
         PITCH:{" "}
         {data &&
           data.transducers &&
@@ -414,12 +535,19 @@ function Snapshot(props) {
           data.transducers.thptchad1.amount}{" "}
         degrees
         <br />
-        <Stream  hide={true}  quantity={{amount:data &&
-        data.transducers &&
-        data.transducers.thptchad1 &&
-        data.transducers.thptchad1.amount
-, units:"degrees"}} period={50}/>
-<br />
+        <Stream
+          hide={true}
+          quantity={{
+            amount:
+              data &&
+              data.transducers &&
+              data.transducers.thptchad1 &&
+              data.transducers.thptchad1.amount,
+            units: "degrees",
+          }}
+          period={50}
+        />
+        <br />
         ROLL:{" "}
         {data &&
           data.transducers &&
@@ -427,12 +555,18 @@ function Snapshot(props) {
           data.transducers.throllad0.amount}{" "}
         degrees
         <br />
-        <Stream  hide={true}  quantity={{amount:data &&
-        data.transducers &&
-        data.transducers.throllad0 &&
-        data.transducers.throllad0.amount
-, units:"degrees"}} period={50}/>
-
+        <Stream
+          hide={true}
+          quantity={{
+            amount:
+              data &&
+              data.transducers &&
+              data.transducers.throllad0 &&
+              data.transducers.throllad0.amount,
+            units: "degrees",
+          }}
+          period={50}
+        />
         <br />
         YAW:{" "}
         {data &&
@@ -466,12 +600,12 @@ ACCZ: {data && data.transducers && data.transducers.thacczax2 && data.transducer
         <br />
         ALTITUDE: {data && data.altitude_above_mean_sea_level}m (MSL)
         <br />
-        <Stream  hide={false}  quantity={{amount:data && data.altitude_above_mean_sea_level}}
-period = {5*60 * 1000}
- />
-<br />
-
-
+        <Stream
+          hide={false}
+          quantity={{ amount: data && data.altitude_above_mean_sea_level }}
+          period={5 * 60 * 1000}
+        />
+        <br />
         FIX TIME: {data && data.fix_time}
         <br />
         TIMESTAMP: {data && data.time_stamp}
