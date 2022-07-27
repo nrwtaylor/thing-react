@@ -455,6 +455,10 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
           </>
         )}
         <div>SMS {data && data.thingReport && data.thingReport.sms}</div>
+        <div>{data && data.thingReport && data.thingReport.message}</div>
+              <div dangerouslySetInnerHTML={{ __html: data && data.thingReport && data.thingReport.snippet }} />
+
+
         {/*https://www.designcise.com/web/tutorial/how-to-hide-a-broken-image-in-react*/}
 </div>
       </Card>

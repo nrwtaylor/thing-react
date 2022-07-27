@@ -28,7 +28,7 @@ export default function App() {
 
   const things = [
     {
-      to: "ash",
+      to: "coop",
       subject: pathname,
       createdAt: createdAt,
       uuid: uuidv4(),
@@ -36,7 +36,7 @@ export default function App() {
       webPrefix: "http://localhost:3000/",
     },
     {
-      to: "ash",
+      to: "coop",
       subject: "weather",
       createdAt: createdAt,
       uuid: uuidv4(),
