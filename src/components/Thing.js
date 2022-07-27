@@ -80,6 +80,16 @@ export default function Thing(props) {
   const [nextRunAt, setNextRunAt] = useState();
 
   const [totalBytesReceivedData, setTotalBytesReceivedData] = useState(0);
+//  const minimumPollInterval = 60 * 60 * 1000;
+
+  const defaultLatencyInterval = 1000; //ms
+
+  const [latencyInterval, setLatencyInterval] = useState(defaultLatencyInterval);
+
+//  const [pollInterval, setPollInterval] = useState(defaultPollInterval);
+//  const [timedInterval, setTimedInterval] = useState();
+
+  const [timedLatencyInterval, setTimedLatencyInterval] = useState();
 
   const [flag, setFlag] = useState();
 
@@ -93,6 +103,7 @@ export default function Thing(props) {
 
   // Generate a UUID if not given one by App.
   const uuid = props.uuid ? props.uuid : uuidv4();
+  const nuuid = uuid.substring(0,4);
   const [error, setError] = useState();
 
   const [data, setData] = useState({
@@ -101,6 +112,7 @@ export default function Thing(props) {
   });
 
   useEffect(() => {
+//<<<<<<< Updated upstream
     getUuid();
     getResponse(webPrefix);
   }, []);
@@ -120,6 +132,14 @@ export default function Thing(props) {
       webPrefix = process.env.REACT_APP_WEB_PREFIX;
     }
 
+//=======
+    //const webPrefix = process.env.REACT_APP_WEB_PREFIX;
+//    const path = subject + `.json`; 
+//    getResponse(path);
+//  }, []);
+
+//  function getResponse(path) {
+//>>>>>>> Stashed changes
     if (flag === "red") {
       return;
     }
@@ -158,6 +178,7 @@ export default function Thing(props) {
             prevTotalBytesReceivedData + bytesReceivedData
         );
 
+//<<<<<<< Updated upstream
         const elapsedTime = Date.now() - requestedAt;
 
         var base64Icon = "data:image/png;base64," + res.data.thingReport.png;
@@ -169,6 +190,12 @@ export default function Thing(props) {
       .catch((error) => {
         setError({ ...error, message: "Problem" });
       });
+//=======
+//      setTimedInterval(elapsedTime);
+//      return elapsedTime;
+//      setFlag("green");
+//    });
+//>>>>>>> Stashed changes
   }
 
   useEffect(() => {
@@ -201,13 +228,44 @@ export default function Thing(props) {
     setNextRunAt(t);
 
     const interval = setInterval(() => {
+//<<<<<<< Updated upstream
       getResponse(webPrefix);
       console.log("This will run every: " + pollInterval);
+//=======
+//    const webPrefix = process.env.REACT_APP_WEB_PREFIX;
+//    const path = subject + `.json`;
+
+//      getResponse(path);
+      console.log("This will run every five minutes!");
+//>>>>>>> Stashed changes
     }, pollInterval);
     console.log("interval", interval);
 
     return () => clearInterval(interval);
   }, [flag]);
+/*
+  // Call getLatency on a Timer.
+  useEffect(() => {
+    // If still processing the last one,
+    // Skip a beat, do not request aother.
+//    if (flag === "red") {
+//      return;
+//    }
+
+    const interval = setInterval(() => {
+    //const webPrefix = process.env.REACT_APP_WEB_PREFIX;
+    //const path = subject + `.json`;
+
+      const etime = getResponse("");
+console.log("etime", etime);
+setTimedLatencyInterval(etime);
+      console.log("This will run every five minutes!");
+    }, latencyInterval);
+//    console.log("interval", interval);
+
+    return () => clearInterval(interval);
+  }, [flag]);
+*/
 
   useEffect(() => {
     // If still processing the last one,
@@ -284,7 +342,8 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
 
   return (
     <>
-    <Card>
+    <Card           onClick={handleExpandClick}
+>
 <div>
         <ExpandMore
           expand={expanded}
@@ -294,17 +353,19 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
         >
           <ExpandMoreIcon />
         </ExpandMore>
+
+
+
+<Typography>NUUID {nuuid}</Typography>
 <Typography>TO {to}</Typography>
 <Typography>SUBJECT {subject}</Typography>
-
+<Typography>TOGOTIME {nextRunAt - currentAt}</Typography>
 </div>
 {expanded && (<>
 
       Last edited: 12 June 2022
       <div>
         THING {uuid}
-        <br />
-        RUNTIME {runTime}
         <br />
         NEXT RUN AT {nextRunAt}
         <br />
@@ -321,12 +382,17 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
         BAR {bar} {timedBarInterval}
         <br />
         {flag} <br />
+TIMED LATENCY INTERVAL {timedLatencyInterval}
+<br />
+
         TIMED INTERVAL {timedInterval}
         <br />
         POLL INTERVAL {pollInterval}
         <br />
         <RequestedAt />
         <br />
+<Typography>RUNTIME {runTime}</Typography>
+
         {!data && <>NOT DATA</>}
       </div>
 
@@ -357,9 +423,10 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
 
 </>)}
         <div>SMS {data && data.thingReport && data.thingReport.sms}</div>
-
-        {PNG && <img width="800px" src={PNG} />}
+{/*https://www.designcise.com/web/tutorial/how-to-hide-a-broken-image-in-react*/}
+        {PNG && <img width="800px" src={PNG} onError={(event) => event.target.style.display = 'none'} />}
 </Card>
+
     </>
   );
 }

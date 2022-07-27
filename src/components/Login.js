@@ -4,6 +4,14 @@ import PropTypes from 'prop-types';
 
 
 async function loginUser(credentials) {
+
+const { REACT_APP_CLIENT_SECRET } = process.env;
+
+console.log("Login loginUser");
+
+const t = {token:"test123"};
+return t;
+/*
  return fetch('http://localhost:8080/login', {
    method: 'POST',
    headers: {
@@ -12,9 +20,11 @@ async function loginUser(credentials) {
    body: JSON.stringify(credentials)
  })
    .then(data => data.json())
+*/
 }
 
 export default function Login({setToken}) {
+
 
 
   const [username, setUserName] = useState();
