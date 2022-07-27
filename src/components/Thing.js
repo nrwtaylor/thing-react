@@ -8,42 +8,42 @@ import { Get } from "../components/Database.js";
 
 //import{ Collapse} from '@mui/core';
 
-import { styled } from '@mui/material/styles';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Collapse from '@mui/material/Collapse';
-import Avatar from '@mui/material/Avatar';
+import { styled } from "@mui/material/styles";
 
+//import Container from '@mui/material/Container';
 
-import IconButton, { IconButtonProps } from '@mui/material/IconButton';
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import CardMedia from "@mui/material/CardMedia";
+import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
+import Collapse from "@mui/material/Collapse";
+import Avatar from "@mui/material/Avatar";
+
+import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 //import IconButton from '@mui/material/IconButton';
 
-import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
+import Typography from "@mui/material/Typography";
+import { red } from "@mui/material/colors";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import ShareIcon from "@mui/icons-material/Share";
 
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 //import ExpandMoreIcon from '@mui/icons-material/ExpandMore.js';
-
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
 }
 
-
 const ExpandMore = styled((props: ExpandMoreProps) => {
   const { expand, ...other } = props;
   return <IconButton {...other} />;
 })(({ theme, expand }) => ({
-  transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-  marginLeft: 'auto',
-  transition: theme.transitions.create('transform', {
+  transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
+  marginLeft: "auto",
+  transition: theme.transitions.create("transform", {
     duration: theme.transitions.duration.shortest,
   }),
 }));
@@ -80,14 +80,16 @@ export default function Thing(props) {
   const [nextRunAt, setNextRunAt] = useState();
 
   const [totalBytesReceivedData, setTotalBytesReceivedData] = useState(0);
-//  const minimumPollInterval = 60 * 60 * 1000;
+  //  const minimumPollInterval = 60 * 60 * 1000;
 
   const defaultLatencyInterval = 1000; //ms
 
-  const [latencyInterval, setLatencyInterval] = useState(defaultLatencyInterval);
+  const [latencyInterval, setLatencyInterval] = useState(
+    defaultLatencyInterval
+  );
 
-//  const [pollInterval, setPollInterval] = useState(defaultPollInterval);
-//  const [timedInterval, setTimedInterval] = useState();
+  //  const [pollInterval, setPollInterval] = useState(defaultPollInterval);
+  //  const [timedInterval, setTimedInterval] = useState();
 
   const [timedLatencyInterval, setTimedLatencyInterval] = useState();
 
@@ -103,7 +105,7 @@ export default function Thing(props) {
 
   // Generate a UUID if not given one by App.
   const uuid = props.uuid ? props.uuid : uuidv4();
-  const nuuid = uuid.substring(0,4);
+  const nuuid = uuid.substring(0, 4);
   const [error, setError] = useState();
 
   const [data, setData] = useState({
@@ -112,7 +114,7 @@ export default function Thing(props) {
   });
 
   useEffect(() => {
-//<<<<<<< Updated upstream
+    //<<<<<<< Updated upstream
     getUuid();
     getResponse(webPrefix);
   }, []);
@@ -132,14 +134,14 @@ export default function Thing(props) {
       webPrefix = process.env.REACT_APP_WEB_PREFIX;
     }
 
-//=======
+    //=======
     //const webPrefix = process.env.REACT_APP_WEB_PREFIX;
-//    const path = subject + `.json`; 
-//    getResponse(path);
-//  }, []);
+    //    const path = subject + `.json`;
+    //    getResponse(path);
+    //  }, []);
 
-//  function getResponse(path) {
-//>>>>>>> Stashed changes
+    //  function getResponse(path) {
+    //>>>>>>> Stashed changes
     if (flag === "red") {
       return;
     }
@@ -178,7 +180,7 @@ export default function Thing(props) {
             prevTotalBytesReceivedData + bytesReceivedData
         );
 
-//<<<<<<< Updated upstream
+        //<<<<<<< Updated upstream
         const elapsedTime = Date.now() - requestedAt;
 
         var base64Icon = "data:image/png;base64," + res.data.thingReport.png;
@@ -190,12 +192,12 @@ export default function Thing(props) {
       .catch((error) => {
         setError({ ...error, message: "Problem" });
       });
-//=======
-//      setTimedInterval(elapsedTime);
-//      return elapsedTime;
-//      setFlag("green");
-//    });
-//>>>>>>> Stashed changes
+    //=======
+    //      setTimedInterval(elapsedTime);
+    //      return elapsedTime;
+    //      setFlag("green");
+    //    });
+    //>>>>>>> Stashed changes
   }
 
   useEffect(() => {
@@ -228,22 +230,22 @@ export default function Thing(props) {
     setNextRunAt(t);
 
     const interval = setInterval(() => {
-//<<<<<<< Updated upstream
+      //<<<<<<< Updated upstream
       getResponse(webPrefix);
       console.log("This will run every: " + pollInterval);
-//=======
-//    const webPrefix = process.env.REACT_APP_WEB_PREFIX;
-//    const path = subject + `.json`;
+      //=======
+      //    const webPrefix = process.env.REACT_APP_WEB_PREFIX;
+      //    const path = subject + `.json`;
 
-//      getResponse(path);
+      //      getResponse(path);
       console.log("This will run every five minutes!");
-//>>>>>>> Stashed changes
+      //>>>>>>> Stashed changes
     }, pollInterval);
     console.log("interval", interval);
 
     return () => clearInterval(interval);
   }, [flag]);
-/*
+  /*
   // Call getLatency on a Timer.
   useEffect(() => {
     // If still processing the last one,
@@ -330,7 +332,8 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
       incrementBar();
     }
   }, [tick]);
-
+  // Reference
+  //  {PNG && <img src={PNG} onError={(event) => event.target.style.display = 'none'}
   useEffect(() => {
     if (bar === 0) {
       const elapsedTime = Date.now() - barRequestedAt;
@@ -342,91 +345,119 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
 
   return (
     <>
-    <Card           onClick={handleExpandClick}
->
-<div>
-        <ExpandMore
-          expand={expanded}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show more"
-        >
-          <ExpandMoreIcon />
-        </ExpandMore>
+      <Card style={{ maxWidth: "100%" }}>
+        <CardHeader
+          action={
+            <IconButton>
+              <MoreVertIcon />
+            </IconButton>
+          }
+        />
+<div onClick={handleExpandClick} >
 
+        {!expanded && (
+          <>
+            {PNG && (
+              <img
+                height="140"
+                src={PNG}
+                onError={(event) => (event.target.style.display = "none")}
+              />
+            )}
+          </>
+        )}
 
+        {expanded && (
+          <CardMedia
+            component="img"
+            src={PNG}
+            onError={(event) => (event.target.style.display = "none")}
+          />
+        )}
+        <div>
+          <ExpandMore
+            expand={expanded}
+            onClick={handleExpandClick}
+            aria-expanded={expanded}
+            aria-label="show more"
+          >
+            <ExpandMoreIcon />
+          </ExpandMore>
 
-<Typography>NUUID {nuuid}</Typography>
-<Typography>TO {to}</Typography>
-<Typography>SUBJECT {subject}</Typography>
-<Typography>TOGOTIME {nextRunAt - currentAt}</Typography>
-</div>
-{expanded && (<>
+          <Typography>NUUID {nuuid}</Typography>
+          <Typography>TO {to}</Typography>
+          <Typography>SUBJECT {subject}</Typography>
+          <Typography>TOGOTIME {nextRunAt - currentAt}</Typography>
+        </div>
+        {expanded && (
+          <>
+            Last edited: 12 June 2022
+            <div>
+              THING {uuid}
+              <br />
+              NEXT RUN AT {nextRunAt}
+              <br />
+              CURRENT AT {currentAt}
+              <br />
+              TOGOTIME {nextRunAt - currentAt}
+              <br />
+              TOTAL CHARACTERS RECEIVED DATA {totalBytesReceivedData}
+              <br />
+              {error && error.message}
+              <br />
+              TICK {tick} {timedTickInterval}
+              <br />
+              BAR {bar} {timedBarInterval}
+              <br />
+              {flag} <br />
+              TIMED LATENCY INTERVAL {timedLatencyInterval}
+              <br />
+              TIMED INTERVAL {timedInterval}
+              <br />
+              POLL INTERVAL {pollInterval}
+              <br />
+              <RequestedAt />
+              <br />
+              <Typography>RUNTIME {runTime}</Typography>
+              {!data && <>NOT DATA</>}
+            </div>
+            {subject && subject === "snapshot" && (
+              <div>
+                {/*<Snapshot user={null} thing={data.thing} agent_input="https://stackr.ca" />*/}
+                <Snapshot
+                  user={null}
+                  thing={data.thing}
+                  agent_input={webPrefix}
+                />
+              </div>
+            )}
+            <div>
+              <br />
+              {/*      <Agent user={null} thing={data.thing} agent_input="http://localhost" />*/}
+              <Agent user={null} thing={data.thing} agent_input={webPrefix} />
 
-      Last edited: 12 June 2022
-      <div>
-        THING {uuid}
-        <br />
-        NEXT RUN AT {nextRunAt}
-        <br />
-        CURRENT AT {currentAt}
-        <br />
-        TOGOTIME {nextRunAt - currentAt}
-        <br />
-        TOTAL CHARACTERS RECEIVED DATA {totalBytesReceivedData}
-        <br />
-        {error && error.message}
-        <br />
-        TICK {tick} {timedTickInterval}
-        <br />
-        BAR {bar} {timedBarInterval}
-        <br />
-        {flag} <br />
-TIMED LATENCY INTERVAL {timedLatencyInterval}
-<br />
-
-        TIMED INTERVAL {timedInterval}
-        <br />
-        POLL INTERVAL {pollInterval}
-        <br />
-        <RequestedAt />
-        <br />
-<Typography>RUNTIME {runTime}</Typography>
-
-        {!data && <>NOT DATA</>}
-      </div>
-
-{subject && subject === 'snapshot' && (
-      <div>
-        {/*<Snapshot user={null} thing={data.thing} agent_input="https://stackr.ca" />*/}
-        <Snapshot user={null} thing={data.thing} agent_input={webPrefix} />
-      </div>)}
-      <div>
-        <br />
-        {/*      <Agent user={null} thing={data.thing} agent_input="http://localhost" />*/}
-        <Agent user={null} thing={data.thing} agent_input={webPrefix} />
-
-        <br />
-      </div>
-      <div>
-        <div>DATAGRAM</div>
-        {subject}
-      </div>
-      <div>
-        <div>THING</div>
-        {/* Note */}
-        <div>SMS {data && data.sms}</div>
-        <div dangerouslySetInnerHTML={{ __html: data && data.web }} />
-        <div>UUID {data && data.thing && data.thing.uuid}</div>
-        <div>CREATED AT {data && data.thing && data.thing.created_at}</div>
-      </div>
-
-</>)}
+              <br />
+            </div>
+            <div>
+              <div>DATAGRAM</div>
+              {subject}
+            </div>
+            <div>
+              <div>THING</div>
+              {/* Note */}
+              <div>SMS {data && data.sms}</div>
+              <div dangerouslySetInnerHTML={{ __html: data && data.web }} />
+              <div>UUID {data && data.thing && data.thing.uuid}</div>
+              <div>
+                CREATED AT {data && data.thing && data.thing.created_at}
+              </div>
+            </div>
+          </>
+        )}
         <div>SMS {data && data.thingReport && data.thingReport.sms}</div>
-{/*https://www.designcise.com/web/tutorial/how-to-hide-a-broken-image-in-react*/}
-        {PNG && <img width="800px" src={PNG} onError={(event) => event.target.style.display = 'none'} />}
-</Card>
-
+        {/*https://www.designcise.com/web/tutorial/how-to-hide-a-broken-image-in-react*/}
+</div>
+      </Card>
     </>
   );
 }

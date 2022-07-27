@@ -6,6 +6,9 @@ import Token from "../src/components/Token.js";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Input from "../src/components/Input.js";
 
+import Container from '@mui/material/Container';
+
+
 import { v4 as uuidv4 } from "uuid";
 
 import useToken from "./useToken";
@@ -92,11 +95,12 @@ export default function App() {
         {token && (
           <>
             <Logout deleteToken={deleteToken} />
+<Container maxWidth="sm" >
 
             {things &&
               things.map((thing) => {
                 return (
-                  <>
+                  <div key={thing.uuid} >
                     <Thing
                       to={thing.to}
                       subject={thing.subject}
@@ -105,9 +109,10 @@ export default function App() {
                       input={thing.input}
                       webPrefix={thing.webPrefix}
                     />
-                  </>
+                  </div>
                 );
               })}
+</Container>
           </>
         )}
       </BrowserRouter>
