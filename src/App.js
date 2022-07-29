@@ -7,7 +7,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Input from "../src/components/Input.js";
 
 import Container from '@mui/material/Container';
+import ThingsContainer from "../src/components/ThingContainer.js";
 
+import Collection from "../src/components/Collection.js";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -28,6 +30,7 @@ export default function App() {
 
   const things = [
     {
+      index: 0,
       to: "coop",
       subject: pathname,
       createdAt: createdAt,
@@ -36,6 +39,7 @@ export default function App() {
       webPrefix: "http://localhost:3000/",
     },
     {
+      index: 1,
       to: "coop",
       subject: "weather",
       createdAt: createdAt,
@@ -45,6 +49,7 @@ export default function App() {
     },
 
     {
+      index: 2,
       to: "whitefox",
       subject: pathname,
       createdAt: createdAt,
@@ -53,6 +58,7 @@ export default function App() {
       webPrefix: webPrefix,
     },
     {
+      index: 3,
       to: "whitefox",
       subject: "weather",
       createdAt: createdAt,
@@ -62,6 +68,7 @@ export default function App() {
     },
 
     {
+      index: 4,
       to: "kokopelli",
       subject: pathname,
       createdAt: createdAt,
@@ -70,6 +77,7 @@ export default function App() {
       webPrefix: "http://192.168.10.10/",
     },
     {
+      index: 5,
       to: "kokopelli",
       subject: "snapshot",
       createdAt: createdAt,
@@ -89,14 +97,16 @@ export default function App() {
       <Token token={token} />
 
       <BrowserRouter>
-        THING-REACT 27 July 2022
+        THING-REACT 29 July 2022
         {!token && <Login setToken={setToken} />}
         <Input />
         {token && (
           <>
             <Logout deleteToken={deleteToken} />
 <Container maxWidth="sm" >
+<Collection things={things} onCollectionChange={()=>{}}/>
 
+{/*
             {things &&
               things.map((thing) => {
                 return (
@@ -112,6 +122,7 @@ export default function App() {
                   </div>
                 );
               })}
+*/}
 </Container>
           </>
         )}

@@ -26,6 +26,7 @@ function Forget(props) {
     }
 
     props.callBack();
+    props.handleForgetThing();
     /*
     db.collection("things")
 .doc(props.id)

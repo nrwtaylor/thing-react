@@ -12,6 +12,8 @@ import { styled } from "@mui/material/styles";
 
 //import Container from '@mui/material/Container';
 
+import Button from "@mui/material/Button";
+
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
@@ -98,6 +100,8 @@ export default function Thing(props) {
   const runTime = Date.now() - startAt;
 
   const [expanded, setExpanded] = React.useState(false);
+
+  const [flipped, setFlipped] = React.useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -228,6 +232,7 @@ export default function Thing(props) {
     const t = currentAt + pollInterval;
 
     setNextRunAt(t);
+    getResponse(webPrefix);
 
     const interval = setInterval(() => {
       //<<<<<<< Updated upstream
@@ -319,8 +324,6 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
   }, []);
 
   useEffect(() => {
-    //console.log("tick", tick);
-
     if (tick === 0) {
       const elapsedTime = Date.now() - tickRequestedAt;
 
@@ -332,6 +335,22 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
       incrementBar();
     }
   }, [tick]);
+
+  const handleFlipThing = (e) => {
+    setFlipped(!flipped);
+
+    if (props.onChange) {
+      props.onChange(e);
+    }
+  };
+
+  const handleOpenThing = (e) => {
+    handleExpandClick();
+    if (props.onChange) {
+      props.onChange(e);
+    }
+  };
+
   // Reference
   //  {PNG && <img src={PNG} onError={(event) => event.target.style.display = 'none'}
   useEffect(() => {
@@ -353,46 +372,13 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
             </IconButton>
           }
         />
-<div onClick={handleExpandClick} >
+        {!expanded && <Button onClick={handleFlipThing}>FLIP</Button>}
 
-        {!expanded && (
-          <>
-            {PNG && (
-              <img
-                height="140"
-                src={PNG}
-                onError={(event) => (event.target.style.display = "none")}
-              />
-            )}
-          </>
-        )}
-
-        {expanded && (
-          <CardMedia
-            component="img"
-            src={PNG}
-            onError={(event) => (event.target.style.display = "none")}
-          />
-        )}
+        <Button onClick={handleOpenThing}>OPEN</Button>
+        {/*<div onClick={handleExpandClick} >*/}
         <div>
-          <ExpandMore
-            expand={expanded}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more"
-          >
-            <ExpandMoreIcon />
-          </ExpandMore>
-
-          <Typography>NUUID {nuuid}</Typography>
-          <Typography>TO {to}</Typography>
-          <Typography>SUBJECT {subject}</Typography>
-          <Typography>TOGOTIME {nextRunAt - currentAt}</Typography>
-        </div>
-        {expanded && (
-          <>
-            Last edited: 12 June 2022
-            <div>
+          {!expanded && flipped && (
+            <>
               THING {uuid}
               <br />
               NEXT RUN AT {nextRunAt}
@@ -405,62 +391,118 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
               <br />
               {error && error.message}
               <br />
-              TICK {tick} {timedTickInterval}
-              <br />
-              BAR {bar} {timedBarInterval}
-              <br />
-              {flag} <br />
-              TIMED LATENCY INTERVAL {timedLatencyInterval}
-              <br />
-              TIMED INTERVAL {timedInterval}
-              <br />
-              POLL INTERVAL {pollInterval}
-              <br />
-              <RequestedAt />
-              <br />
-              <Typography>RUNTIME {runTime}</Typography>
-              {!data && <>NOT DATA</>}
-            </div>
-            {subject && subject === "snapshot" && (
-              <div>
-                {/*<Snapshot user={null} thing={data.thing} agent_input="https://stackr.ca" />*/}
-                <Snapshot
-                  user={null}
-                  thing={data.thing}
-                  agent_input={webPrefix}
+              <Typography>TO {to}</Typography>
+              <Typography>SUBJECT {subject}</Typography>
+              <Typography>TOGOTIME {nextRunAt - currentAt}</Typography>
+            </>
+          )}
+
+          {!expanded && !flipped && (
+            <>
+              {PNG && (
+                <img
+                  height="140"
+                  src={PNG}
+                  onError={(event) => (event.target.style.display = "none")}
                 />
-              </div>
-            )}
-            <div>
-              <br />
-              {/*      <Agent user={null} thing={data.thing} agent_input="http://localhost" />*/}
-              <Agent user={null} thing={data.thing} agent_input={webPrefix} />
+              )}
+              <div>{data && data.sms}</div>
+              <div>{data && data.thingReport && data.thingReport.sms}</div>
+              <Typography>{nuuid}</Typography>
+            </>
+          )}
 
-              <br />
-            </div>
-            <div>
-              <div>DATAGRAM</div>
-              {subject}
-            </div>
-            <div>
-              <div>THING</div>
-              {/* Note */}
-              <div>SMS {data && data.sms}</div>
-              <div dangerouslySetInnerHTML={{ __html: data && data.web }} />
-              <div>UUID {data && data.thing && data.thing.uuid}</div>
+          {expanded && (
+            <CardMedia
+              component="img"
+              src={PNG}
+              onError={(event) => (event.target.style.display = "none")}
+            />
+          )}
+          <div>
+            <ExpandMore
+              expand={expanded}
+              onClick={handleExpandClick}
+              aria-expanded={expanded}
+              aria-label="show more"
+            >
+              <ExpandMoreIcon />
+            </ExpandMore>
+          </div>
+
+          {expanded && (
+            <>
+              Last edited: 12 June 2022
               <div>
-                CREATED AT {data && data.thing && data.thing.created_at}
+                THING {uuid}
+                <br />
+                NEXT RUN AT {nextRunAt}
+                <br />
+                CURRENT AT {currentAt}
+                <br />
+                TOGOTIME {nextRunAt - currentAt}
+                <br />
+                TOTAL CHARACTERS RECEIVED DATA {totalBytesReceivedData}
+                <br />
+                {error && error.message}
+                <br />
+                TICK {tick} {timedTickInterval}
+                <br />
+                BAR {bar} {timedBarInterval}
+                <br />
+                {flag} <br />
+                TIMED LATENCY INTERVAL {timedLatencyInterval}
+                <br />
+                TIMED INTERVAL {timedInterval}
+                <br />
+                POLL INTERVAL {pollInterval}
+                <br />
+                <RequestedAt />
+                <br />
+                <Typography>RUNTIME {runTime}</Typography>
+                {!data && <>NOT DATA</>}
               </div>
-            </div>
-          </>
-        )}
-        <div>SMS {data && data.thingReport && data.thingReport.sms}</div>
-        <div>{data && data.thingReport && data.thingReport.message}</div>
-              <div dangerouslySetInnerHTML={{ __html: data && data.thingReport && data.thingReport.snippet }} />
+              {subject && subject === "snapshot" && (
+                <div>
+                  {/*<Snapshot user={null} thing={data.thing} agent_input="https://stackr.ca" />*/}
+                  <Snapshot
+                    user={null}
+                    thing={data.thing}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
+              <div>
+                <br />
+                {/*      <Agent user={null} thing={data.thing} agent_input="http://localhost" />*/}
+                <Agent user={null} thing={data.thing} agent_input={webPrefix} />
 
+                <br />
+              </div>
+              <div>
+                <div>DATAGRAM</div>
+                {subject}
+              </div>
+              <div>
+                <div>THING</div>
+                {/* Note */}
+                <div dangerouslySetInnerHTML={{ __html: data && data.web }} />
+                <div>UUID {data && data.thing && data.thing.uuid}</div>
+                <div>
+                  CREATED AT {data && data.thing && data.thing.created_at}
+                </div>
+              </div>
+            </>
+          )}
+          <div>{data && data.thingReport && data.thingReport.message}</div>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: data && data.thingReport && data.thingReport.snippet,
+            }}
+          />
 
-        {/*https://www.designcise.com/web/tutorial/how-to-hide-a-broken-image-in-react*/}
-</div>
+          {/*https://www.designcise.com/web/tutorial/how-to-hide-a-broken-image-in-react*/}
+        </div>
       </Card>
     </>
   );

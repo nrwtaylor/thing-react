@@ -28,7 +28,6 @@ import {
 
 import Frequency from "../components/Frequency.js";
 
-
 import Forget from "../components/Forget.js";
 import Trace from "../components/Trace.js";
 
