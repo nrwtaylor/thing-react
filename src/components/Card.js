@@ -110,6 +110,7 @@ openCard(id);
           createdAt={card.createdAt}
           uuid={card.uuid}
           input={card.input}
+          datagram={card}
           webPrefix={card.webPrefix}
           onChange={(e)=>handleChange(e)}
         />

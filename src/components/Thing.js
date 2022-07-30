@@ -51,14 +51,14 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 }));
 
 export default function Thing(props) {
-  const { webPrefix, subject, to } = props;
+  const { datagram, webPrefix, subject, to } = props;
 
   //const subject = props.subject;
   const startAt = props.createdAt;
 
   const currentAt = Date.now();
 
-  const defaultPollInterval = 10 * 1000; //ms
+  const defaultPollInterval = datagram && datagram.pollInterval ? datagram.pollInterval : 2* 60 * 1000; //ms
   const defaultTickInterval = 25; //ms
   const minimumPollInterval = 1 * 60 * 1000; //ms
 
@@ -70,6 +70,13 @@ export default function Thing(props) {
   const [PNG, setPNG] = useState();
 
   const [pollInterval, setPollInterval] = useState(defaultPollInterval);
+
+useEffect(()=>{
+
+console.log("datagram", datagram);
+
+}, [datagram]);
+
   const [timedInterval, setTimedInterval] = useState();
   const [timedBarInterval, setTimedBarInterval] = useState();
   const [timedTickInterval, setTimedTickInterval] = useState();
@@ -232,7 +239,7 @@ export default function Thing(props) {
     const t = currentAt + pollInterval;
 
     setNextRunAt(t);
-    getResponse(webPrefix);
+    //getResponse(webPrefix);
 
     const interval = setInterval(() => {
       //<<<<<<< Updated upstream
@@ -379,21 +386,33 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
         <div>
           {!expanded && flipped && (
             <>
-              THING {uuid}
-              <br />
+              <Typography>UUID {uuid}</Typography>
+              <Typography>TO {to}</Typography>
+              <Typography>SUBJECT {subject}</Typography>
+
+              <Typography>CREATED AT {startAt}</Typography>
+                <div>
+                  CREATED AT {data && data.thing && data.thing.created_at}
+                </div>
+
+             TIMED LATENCY INTERVAL {timedLatencyInterval}
+                <br />
+                TIMED INTERVAL {timedInterval}
+                <br />
+                POLL INTERVAL {pollInterval}
+                <br />
+                <RequestedAt />
+                <br />
+
+
               NEXT RUN AT {nextRunAt}
               <br />
               CURRENT AT {currentAt}
-              <br />
-              TOGOTIME {nextRunAt - currentAt}
               <br />
               TOTAL CHARACTERS RECEIVED DATA {totalBytesReceivedData}
               <br />
               {error && error.message}
               <br />
-              <Typography>TO {to}</Typography>
-              <Typography>SUBJECT {subject}</Typography>
-              <Typography>TOGOTIME {nextRunAt - currentAt}</Typography>
             </>
           )}
 
@@ -407,8 +426,20 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
                 />
               )}
               <div>{data && data.sms}</div>
-              <div>{data && data.thingReport && data.thingReport.sms}</div>
+{/*
+              <div>{data && data.thingReport && data.thingReport.sms}</div>*/}
               <Typography>{nuuid}</Typography>
+              <Typography>TOGOTIME {nextRunAt - currentAt}</Typography>
+               {flag} <br />
+          message{' '}
+
+          <div
+            dangerouslySetInnerHTML={{
+              __html: data && data.thingReport && data.thingReport.message,
+            }}
+          />
+
+
             </>
           )}
 
@@ -419,7 +450,7 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
               onError={(event) => (event.target.style.display = "none")}
             />
           )}
-          <div>
+{/*          <div>
             <ExpandMore
               expand={expanded}
               onClick={handleExpandClick}
@@ -429,18 +460,12 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
               <ExpandMoreIcon />
             </ExpandMore>
           </div>
-
+*/}
           {expanded && (
             <>
               Last edited: 12 June 2022
               <div>
                 THING {uuid}
-                <br />
-                NEXT RUN AT {nextRunAt}
-                <br />
-                CURRENT AT {currentAt}
-                <br />
-                TOGOTIME {nextRunAt - currentAt}
                 <br />
                 TOTAL CHARACTERS RECEIVED DATA {totalBytesReceivedData}
                 <br />
@@ -449,15 +474,6 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
                 TICK {tick} {timedTickInterval}
                 <br />
                 BAR {bar} {timedBarInterval}
-                <br />
-                {flag} <br />
-                TIMED LATENCY INTERVAL {timedLatencyInterval}
-                <br />
-                TIMED INTERVAL {timedInterval}
-                <br />
-                POLL INTERVAL {pollInterval}
-                <br />
-                <RequestedAt />
                 <br />
                 <Typography>RUNTIME {runTime}</Typography>
                 {!data && <>NOT DATA</>}
@@ -480,26 +496,12 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
                 <br />
               </div>
               <div>
-                <div>DATAGRAM</div>
-                {subject}
-              </div>
-              <div>
-                <div>THING</div>
                 {/* Note */}
                 <div dangerouslySetInnerHTML={{ __html: data && data.web }} />
                 <div>UUID {data && data.thing && data.thing.uuid}</div>
-                <div>
-                  CREATED AT {data && data.thing && data.thing.created_at}
-                </div>
               </div>
             </>
-          )}
-          <div>{data && data.thingReport && data.thingReport.message}</div>
-          <div
-            dangerouslySetInnerHTML={{
-              __html: data && data.thingReport && data.thingReport.snippet,
-            }}
-          />
+)}
 
           {/*https://www.designcise.com/web/tutorial/how-to-hide-a-broken-image-in-react*/}
         </div>

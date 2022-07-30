@@ -37,6 +37,7 @@ export default function App() {
       uuid: uuidv4(),
       input: input,
       webPrefix: "http://localhost:3000/",
+      pollInterval: 60000,
     },
     {
       index: 1,
@@ -46,6 +47,7 @@ export default function App() {
       uuid: uuidv4(),
       input: "weather",
       webPrefix: "http://localhost:3000/",
+      pollInterval: 5 * 60000,
     },
 
     {
@@ -56,6 +58,7 @@ export default function App() {
       uuid: uuidv4(),
       input: input,
       webPrefix: webPrefix,
+      pollInterval: 60000,
     },
     {
       index: 3,
@@ -65,6 +68,7 @@ export default function App() {
       uuid: uuidv4(),
       input: "weather",
       webPrefix: webPrefix,
+      pollInterval: 10 * 60000,
     },
 
     {
@@ -75,6 +79,7 @@ export default function App() {
       uuid: uuidv4(),
       input: input,
       webPrefix: "http://192.168.10.10/",
+      pollInterval: 50,
     },
     {
       index: 5,
@@ -84,6 +89,7 @@ export default function App() {
       uuid: uuidv4(),
       input: input,
       webPrefix: "http://192.168.10.10/",
+      pollInterval: 50,
     },
   ];
 
