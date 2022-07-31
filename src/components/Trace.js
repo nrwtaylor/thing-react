@@ -38,12 +38,13 @@ function Trace(props) {
   useEffect(() => {}, [data]);
 
   //return (<>NOTHING</>);
+//        <LineChart data={data} margin={{ right: 300 }}>
 
   return (
     <>
-<Box>
+<Box >
       <ResponsiveContainer width="100%" aspect={3}>
-        <LineChart data={data} margin={{ right: 300 }}>
+        <LineChart data={data} >
           {/*   <CartesianGrid /> */}
 {props.domain && (
           <YAxis domain={props.domain} ></YAxis>)}

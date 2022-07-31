@@ -119,13 +119,14 @@ console.log("datagram", datagram);
   const nuuid = uuid.substring(0, 4);
   const [error, setError] = useState();
 
+const [url, setUrl] = useState();
+
   const [data, setData] = useState({
     thing: { uuid: "X" },
     thing_report: { sms: "No response. Yet." },
   });
 
   useEffect(() => {
-    //<<<<<<< Updated upstream
     getUuid();
     getResponse(webPrefix);
   }, []);
@@ -145,14 +146,6 @@ console.log("datagram", datagram);
       webPrefix = process.env.REACT_APP_WEB_PREFIX;
     }
 
-    //=======
-    //const webPrefix = process.env.REACT_APP_WEB_PREFIX;
-    //    const path = subject + `.json`;
-    //    getResponse(path);
-    //  }, []);
-
-    //  function getResponse(path) {
-    //>>>>>>> Stashed changes
     if (flag === "red") {
       return;
     }
@@ -169,13 +162,21 @@ console.log("datagram", datagram);
     const requestedAt = Date.now();
     setAgentRequestedAt(requestedAt);
     // console.log("requestedAt", requestedAt);
+
+var u = webPrefix + subject + `.json`;
+// Do we need to get a snapshot?
+if (to === 'snapshot') {
+u = webPrefix + "snapshot.json";
+}
+
     axios
-      .get(webPrefix + subject + `.json`, {
+      .get(u, {
         headers: {
           Authorization: "my secret token",
         },
       })
       .then((res) => {
+        setUrl(u);
         let thingy = res.data;
         console.log("Thing axios res", res);
         console.log("Thing axios res.data", res.data);
@@ -191,7 +192,6 @@ console.log("datagram", datagram);
             prevTotalBytesReceivedData + bytesReceivedData
         );
 
-        //<<<<<<< Updated upstream
         const elapsedTime = Date.now() - requestedAt;
 
         var base64Icon = "data:image/png;base64," + res.data.thingReport.png;
@@ -257,29 +257,6 @@ console.log("datagram", datagram);
 
     return () => clearInterval(interval);
   }, [flag]);
-  /*
-  // Call getLatency on a Timer.
-  useEffect(() => {
-    // If still processing the last one,
-    // Skip a beat, do not request aother.
-//    if (flag === "red") {
-//      return;
-//    }
-
-    const interval = setInterval(() => {
-    //const webPrefix = process.env.REACT_APP_WEB_PREFIX;
-    //const path = subject + `.json`;
-
-      const etime = getResponse("");
-console.log("etime", etime);
-setTimedLatencyInterval(etime);
-      console.log("This will run every five minutes!");
-    }, latencyInterval);
-//    console.log("interval", interval);
-
-    return () => clearInterval(interval);
-  }, [flag]);
-*/
 
   useEffect(() => {
     // If still processing the last one,
@@ -289,7 +266,7 @@ setTimedLatencyInterval(etime);
     }
 
     // Do some work?
-    console.log("Thing " + uuid + " asking for work.");
+    console.log("Thing " + nuuid + " check-in.");
     /*
 https://www.reddit.com/r/reactjs/comments/p7ky46/is_react_synchronous_with_respect_to_function/
 https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_JavaScript
@@ -411,6 +388,8 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
               <br />
               TOTAL CHARACTERS RECEIVED DATA {totalBytesReceivedData}
               <br />
+URL {url}
+<br />
               {error && error.message}
               <br />
             </>
@@ -478,9 +457,8 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
                 <Typography>RUNTIME {runTime}</Typography>
                 {!data && <>NOT DATA</>}
               </div>
-              {subject && subject === "snapshot" && (
+              {subject && (subject === "snapshot") && (
                 <div>
-                  {/*<Snapshot user={null} thing={data.thing} agent_input="https://stackr.ca" />*/}
                   <Snapshot
                     user={null}
                     thing={data.thing}

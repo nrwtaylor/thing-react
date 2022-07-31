@@ -28,6 +28,12 @@ export default function App() {
 
   const createdAt = Date.now();
 
+  // dev here user supplied channels.
+  //const channel0 = process.env.REACT_APP_CHANNEL_0;
+  const webPrefix = process.env.REACT_APP_WEB_PREFIX;
+  const testUuid0 = process.env.REACT_APP_THING_0;
+  const testUuid1 = process.env.REACT_APP_THING_1;
+
   const things = [
     {
       index: 0,
@@ -91,9 +97,28 @@ export default function App() {
       webPrefix: "http://192.168.10.10/",
       pollInterval: 50,
     },
+    {
+      index: 6,
+      to: 'kokopelli',
+      subject: 'snapshot',
+      uuid:testUuid0,
+      input: "snapshot",
+      webPrefix: webPrefix + 'snapshot/' + testUuid0 + '/',
+      pollInterval: 60000,
+    },
+    {
+      index: 7,
+      to: 'coop',
+      subject: 'snapshot',
+      uuid:testUuid1,
+      input: "snapshot",
+      webPrefix: webPrefix + 'snapshot/' + testUuid1 + '/',
+      pollInterval: 60000,
+    },
+
+
   ];
 
-  const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 
   console.log("REACT THING");
   console.log("Started Thing ", uuid);

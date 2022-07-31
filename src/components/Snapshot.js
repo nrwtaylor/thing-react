@@ -162,10 +162,13 @@ function Snapshot(props) {
     console.log("Snapshot axios url " + url, flag);
     console.log("Snapshot axios url " + url, webPrefix);
 
-    if (webPrefix === "https://stackr.ca/") {
-      setFlag("red");
-      return;
-    }
+
+//    if (webPrefix === "https://stackr.ca/") {
+//      setFlag("red");
+//      return;
+//    }
+
+
     //    axios.get(webPrefix + agent + `.json`).then((res) => {
     //if (flag === undefined) {setFlag('green');}
     axios
@@ -174,9 +177,13 @@ function Snapshot(props) {
         console.log("Got " + url);
         //console.log("snapshot", res);
         let thingy = res.data;
-        //      console.log("Agent res.data", res.data);
-        setData(res.data);
+        console.log("Snapshot res.data", res.data);
+if (res && res.data && res.data.thingReport && res.data.thingReport.snapshot) {
+setData(res.data.thingReport.snapshot);
+} else {
+      setData(res.data);
 
+}
         // dev flag available not available
         setFlag("green");
         const endTime = new Date();
@@ -212,6 +219,22 @@ function Snapshot(props) {
         <br />
         GET TIME {snapshotGetTime}ms {Math.round(1000 / snapshotGetTime, 1)}Hz
         <br />
+
+{data && data.ping && (<>PING<br/></>)}
+
+{data && data.ping && data.ping.map((ping, index)=>{
+
+return(
+<>
+{ping.host}<br />
+{ping.data}<br />
+{ping.refreshedAt}<br />
+</>
+)
+
+})
+}
+
         AMP0:{" "}
         {data &&
           data.transducers &&
