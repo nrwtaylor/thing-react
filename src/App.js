@@ -36,7 +36,81 @@ export default function App() {
 
   const things = [
     {
-      index: 0,
+      index: 8,
+      to: "stack",
+      subject: pathname,
+      createdAt: createdAt,
+      uuid: uuidv4(),
+      input: input,
+      webPrefix: "http://192.168.10.10/stack/",
+    },
+    {
+      index: 9,
+      to: "agent",
+      subject: "weather",
+      createdAt: createdAt,
+      uuid: uuidv4(),
+      input: "weather",
+      webPrefix: "http://192.168.10.10/stack/",
+    },
+    {
+      index: 10,
+      to: "agent",
+      subject: "day twilight tmlr",
+      createdAt: createdAt,
+      uuid: uuidv4(),
+      input: "day twilight tmlr",
+      webPrefix: "http://192.168.10.10/stack/",
+    },
+{
+      index: 11,
+      to: "agent",
+      subject: "roll d20",
+      createdAt: createdAt,
+      uuid: uuidv4(),
+      input: "roll",
+      webPrefix: "http://192.168.10.10/stack/",
+    },
+
+{
+      index: 12,
+      to: "agent",
+      subject: "roll",
+      createdAt: createdAt,
+      uuid: uuidv4(),
+      input: "roll",
+      webPrefix: "http://192.168.10.10/stack/",
+    },
+{
+      index: 13,
+      to: "agent",
+      subject: "card",
+      createdAt: createdAt,
+      uuid: uuidv4(),
+      input: "card",
+      webPrefix: "http://192.168.10.10/stack/",
+    },
+{
+      index: 14,
+      to: "agent",
+      subject: "day-twilight-tmlr",
+      createdAt: createdAt,
+      uuid: uuidv4(),
+      input: null,
+      webPrefix: "http://192.168.10.10/stack/",
+    },
+
+    {
+      index: 15,
+      to: "agent",
+      subject: "snapshot",
+      createdAt: createdAt,
+      uuid: uuidv4(),
+      input: input,
+      webPrefix: "http://192.168.10.10/stack/",
+    },
+
+{
       to: "coop",
       subject: pathname,
       createdAt: createdAt,
@@ -115,7 +189,6 @@ export default function App() {
       webPrefix: webPrefix + 'snapshot/' + testUuid1 + '/',
       pollInterval: 60000,
     },
-
 
   ];
 
