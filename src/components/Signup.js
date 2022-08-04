@@ -1,19 +1,16 @@
 import React, { useState } from "react";
-//import './Login.css';
 import PropTypes from "prop-types";
 
 import crypto from "crypto";
 
-async function loginUser(credentials) {
+async function signupUser(credentials) {
   const { REACT_APP_CLIENT_SECRET } = process.env;
   const { REACT_APP_AUTH_PREFIX } = process.env;
 
   console.log("Login loginUser credentials", credentials);
-
-  const t = { token: "test123" };
   console.log("credentials", credentials);
-//  return fetch("https://stackr.ca/api/browndog/auth/signin", {
-  return fetch(REACT_APP_AUTH_PREFIX + "signin", {
+
+  return fetch(REACT_APP_AUTH_PREFIX + "signup", {
 
     method: "POST",
     headers: {
@@ -25,15 +22,19 @@ async function loginUser(credentials) {
   });
 }
 
-export default function Login({ setToken, setIdentity }) {
+export default function Signup() {
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
+  const [from, setFrom] = useState();
+
+  const [message, setMessage] = useState();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Login username", username);
     console.log("Login password", password);
 
+    // Client salted hash
     const hash = crypto.createHmac(
       "sha256",
       process.env.REACT_APP_CLIENT_SECRET
@@ -43,31 +44,28 @@ export default function Login({ setToken, setIdentity }) {
     var data = hash.update(username + password);
     //Creating the hash in the required format
     var gen_hash = data.digest("hex");
+    //Printing the output on the console
+    //console.log("Login hash : " + gen_hash);
 
     const pass = "";
 
-    const token = await loginUser({
+    const token = await signupUser({
       username: gen_hash,
       password: pass,
+      email: from
     });
 
-    //    const token = await loginUser({
-    //      username,
-    //      password
-    //    });
+    console.log("Signup handleSubmit", token);
 
-    console.log("Login handleSubmit", token);
+setMessage(token.message);
 
-    // Authentication ... and Authorisation.
-    // Keep roles out of JWT.
-
-    setIdentity(token); //tbd
-    setToken(token);
+    //setIdentity(token);
+    //setToken(token);
   };
 
   return (
-    <div className="login-wrapper">
-      <h1>Please Log In</h1>
+    <div className="signup-wrapper">
+      <h1>Please Sign Up</h1>
       <form onSubmit={handleSubmit}>
         <label>
           <p>Username</p>
@@ -79,6 +77,11 @@ export default function Login({ setToken, setIdentity }) {
             type="password"
             onChange={(e) => setPassword(e.target.value)}
           />
+          <p>From(email)</p>
+          <input
+            type="channel"
+            onChange={(e) => setFrom(e.target.value)}
+          />
         </label>
         <div>
           <button type="submit">Submit</button>
@@ -88,6 +91,6 @@ export default function Login({ setToken, setIdentity }) {
   );
 }
 
-Login.propTypes = {
-  setToken: PropTypes.func.isRequired,
+Signup.propTypes = {
+//  setToken: PropTypes.func.isRequired,
 };

@@ -30,6 +30,8 @@ import Forget from "../components/Forget.js";
 import Trace from "../components/Trace.js";
 import Stream from "../components/Stream.js";
 import BubbleLevel from "../components/BubbleLevel.js";
+import Ping from "../components/Ping.js";
+
 
 function Snapshot(props) {
   const user_name = props.user_name; // TODO
@@ -86,7 +88,7 @@ function Snapshot(props) {
 
     const interval = setInterval(() => {
       getSnapshot();
-    }, 50); // 20 Hz was 200.
+    }, 10000); // 20 Hz was 200.
 
     return () => clearInterval(interval);
   }, []);
@@ -214,6 +216,9 @@ setData(res.data.thingReport.snapshot);
   return (
     <>
       <div>SNAPSHOT</div>
+<div>
+URL {webPrefix}.snapshot.json
+</div>
       <div>
         FLAG {flag} COLOUR
         <br />
@@ -221,7 +226,7 @@ setData(res.data.thingReport.snapshot);
         <br />
 
 {data && data.ping && (<>PING<br/></>)}
-
+{data && data.ping && (<Ping ping={data.ping} />)}
 {data && data.ping && data.ping.map((ping, index)=>{
 
 return(

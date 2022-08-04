@@ -1,8 +1,12 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Thing from "../src/components/Thing.js";
 import Login from "../src/components/Login.js";
 import Logout from "../src/components/Logout.js";
+import Signup from "../src/components/Signup.js";
+
 import Token from "../src/components/Token.js";
+import Identity from "../src/components/Identity.js";
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Input from "../src/components/Input.js";
 
@@ -15,6 +19,8 @@ import { v4 as uuidv4 } from "uuid";
 
 import useToken from "./useToken";
 
+import useIdentity from "./useIdentity";
+
 export default function App() {
   const pathname = window.location.pathname;
 
@@ -25,7 +31,9 @@ export default function App() {
   const uuid = uuidv4();
 
   const { token, setToken, deleteToken } = useToken();
+  const {identity, setIdentity} = useIdentity();
 
+//const [identity, setIdentity] = useState();
   const createdAt = Date.now();
 
   // dev here user supplied channels.
@@ -33,6 +41,12 @@ export default function App() {
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
   const testUuid0 = process.env.REACT_APP_THING_0;
   const testUuid1 = process.env.REACT_APP_THING_1;
+
+useEffect(()=>{
+
+console.log("token", token);
+setIdentity(token);
+}, [token]);
 
   const things = [
     {
@@ -199,10 +213,13 @@ export default function App() {
   return (
     <>
       <Token token={token} />
-
+<Identity identity={identity} />
       <BrowserRouter>
-        THING-REACT 29 July 2022
-        {!token && <Login setToken={setToken} />}
+        THING-REACT 3 August 2022
+        {!token && (<><Login setToken={setToken} setIdentity={setIdentity} />
+<Signup />
+
+</>)}
         <Input />
         {token && (
           <>
