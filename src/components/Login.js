@@ -1,20 +1,15 @@
 import React, { useState } from "react";
 //import './Login.css';
 import PropTypes from "prop-types";
-
 import crypto from "crypto";
 
 async function loginUser(credentials) {
   const { REACT_APP_CLIENT_SECRET } = process.env;
-  const { REACT_APP_AUTH_PREFIX } = process.env;
+  const { REACT_APP_API_PREFIX } = process.env;
 
   console.log("Login loginUser credentials", credentials);
 
-  const t = { token: "test123" };
-  console.log("credentials", credentials);
-//  return fetch("https://stackr.ca/api/browndog/auth/signin", {
-  return fetch(REACT_APP_AUTH_PREFIX + "signin", {
-
+  return fetch(REACT_APP_API_PREFIX + "auth/signin", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -31,8 +26,6 @@ export default function Login({ setToken, setIdentity }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login username", username);
-    console.log("Login password", password);
 
     const hash = crypto.createHmac(
       "sha256",
@@ -51,17 +44,12 @@ export default function Login({ setToken, setIdentity }) {
       password: pass,
     });
 
-    //    const token = await loginUser({
-    //      username,
-    //      password
-    //    });
-
     console.log("Login handleSubmit", token);
 
     // Authentication ... and Authorisation.
     // Keep roles out of JWT.
 
-    setIdentity(token); //tbd
+    setIdentity(gen_hash); //tbd
     setToken(token);
   };
 

@@ -166,7 +166,7 @@ function Snapshot(props) {
     console.log("Snapshot axios url " + url, webPrefix);
 
 
-//    if (webPrefix === "https://stackr.ca/") {
+//    if (webPrefix === "https://example.com/") {
 //      setFlag("red");
 //      return;
 //    }

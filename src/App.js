@@ -23,6 +23,9 @@ import useIdentity from "./useIdentity";
 
 import useInput from "./useInput";
 
+import axios from "axios";
+
+
 export default function App() {
   const pathname = window.location.pathname;
 
@@ -32,7 +35,7 @@ export default function App() {
 //  const input = { uuids: matches };
   const uuid = uuidv4();
 
-  const { token, setToken, deleteToken } = useToken();
+  const { username, token, setToken, deleteToken } = useToken();
   const {identity, setIdentity, deleteIdentity} = useIdentity();
   const { input, setInput, deleteInput } = useInput();
 
@@ -41,16 +44,80 @@ export default function App() {
   const createdAt = Date.now();
 
   // dev here user supplied channels.
-  //const channel0 = process.env.REACT_APP_CHANNEL_0;
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
   const testUuid0 = process.env.REACT_APP_THING_0;
   const testUuid1 = process.env.REACT_APP_THING_1;
+  const apiPrefix = process.env.REACT_APP_API_PREFIX;
+
+useEffect(() =>{
+
+if (!identity) {defaultThings(); return;}
+if (identity === null) {defaultThings(); return;}
+loadThings();
+
+
+
+},[identity]);
+
+useEffect(() =>{
+console.log("App identity", identity);
+
+//if (!username) {defaultThings(); return;}
+//if (username === null) {defaultThings(); return;}
+//loadThings();
+
+
+
+},[identity]);
+
+
+function defaultThings() {
+
+}
+
+function loadThings() {
+
+const u = apiPrefix + 'things/';
+    axios
+      .get(u, {
+        headers: {
+ 'Authorization': 'my secret token',
+'x-access-token':token
+        }
+      })
+
+      .then((res) => {
+        let thingy = res.data;
+        console.log("Things axios res", res);
+        console.log("Things axios res.data", res.data);
+
+        // agent etime info json:null thing etc
+//        setData(res.data);
+
+//        const elapsedTime = Date.now() - requestedAt;
+
+      })
+      .catch((error) => {
+
+        console.log("Thing error", u, error);
+//        setError({ ...error, message: "Problem" });
+      });
+
+
+}
 
 useEffect(()=>{
 
 console.log("token", token);
-setIdentity(token);
+//setIdentity(token);
+//console.log("identity",identity);
 }, [token]);
+
+useEffect(()=>{
+
+console.log("App identity",identity);
+}, [identity]);
+
 
   const things = [
     {
@@ -233,7 +300,7 @@ setIdentity(token);
                       createdAt={0}
                       uuid={'1'}
                       input={'web'}
-                      webPrefix={'http://192.168.10.10/stack/'}
+                      webPrefix={webPrefix}
                     />
                   </div>
 

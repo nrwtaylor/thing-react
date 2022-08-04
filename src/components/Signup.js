@@ -5,12 +5,12 @@ import crypto from "crypto";
 
 async function signupUser(credentials) {
   const { REACT_APP_CLIENT_SECRET } = process.env;
-  const { REACT_APP_AUTH_PREFIX } = process.env;
+  const { REACT_APP_API_PREFIX } = process.env;
 
   console.log("Login loginUser credentials", credentials);
   console.log("credentials", credentials);
 
-  return fetch(REACT_APP_AUTH_PREFIX + "signup", {
+  return fetch(REACT_APP_API_PREFIX + "auth/signup", {
 
     method: "POST",
     headers: {

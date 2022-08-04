@@ -30,13 +30,16 @@ console.log("useToken getToken tokenString", tokenString);
     console.log("useToken token", token);
   }, [token]);
   const [token, setToken] = useState(getToken());
+  const [username, setUsername] = useState();
 
   const saveToken = (userToken) => {
     console.log("useToken saveToken userToken", userToken);
 
     localStorage.setItem("token", JSON.stringify(userToken));
 
+//    setUsername(userToken.username);
     setToken(userToken.token);
+
   };
 
   const deleteToken = (userToken) => {
@@ -50,5 +53,6 @@ console.log("useToken getToken tokenString", tokenString);
     deleteToken: deleteToken,
     setToken: saveToken,
     token,
+    username
   };
 }

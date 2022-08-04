@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 
+import jwt_decode from "jwt-decode";
+
 export default function useIdentity() {
+
 
   const getIdentity = () => {
     return identity;
@@ -9,17 +12,12 @@ export default function useIdentity() {
   const [identity, setIdentity] = useState();
 
   const saveIdentity = (userIdentity) => {
-    console.log("useToken saveToken userToken", userIdentity);
-
-    //localStorage.setItem("token", JSON.stringify(userIdentity));
-
-    setIdentity("hey");
+    console.log("useIdentity saveIdentity userIdentity", userIdentity);
+    setIdentity(userIdentity);
   };
 
   const deleteIdentity = (userIdentity) => {
     // Leave no rubbish behind.
-
-    //localStorage.clear();
     setIdentity(false);
   };
 
