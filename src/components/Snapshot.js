@@ -85,6 +85,7 @@ function Snapshot(props) {
     //    const t = currentAt + pollInterval;
 
     //    setNextRunAt(t);
+    getSnapshot();
 
     const interval = setInterval(() => {
       getSnapshot();
@@ -239,7 +240,7 @@ return(
 
 })
 }
-
+{data && data.transducers && (<>
         AMP0:{" "}
         {data &&
           data.transducers &&
@@ -608,6 +609,8 @@ domain={{maximum:16, minimum:10}}
           data.transducers.thgyrzax2 &&
           data.transducers.thgyrzax2.amount}{" "}
         <br />
+
+</>)}
         {/*
 MRU<br />
 ACCZ: {data && data.transducers && data.transducers.thacczax2 && data.transducers.thacczax2.amount} m<br />

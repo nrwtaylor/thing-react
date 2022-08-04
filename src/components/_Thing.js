@@ -186,19 +186,12 @@ console.log("Thing merp");
 //  }).then((res) => {
 
 
-//    axios
-//      .get(u, {"body":{}}, {
-//        headers: {
-//          'Content-Type': 'application/json'
-//        }
- //     })
     axios
-      .get(u, {
+      .get(u, {"body":{}}, {
         headers: {
- 'Authorization': 'my secret token',
+//          'Content-Type': 'application/json'
         }
       })
-
       .then((res) => {
         console.log("Thing seturl subject u", subject, u);
         setUrl(u);

@@ -122,7 +122,7 @@ function Navbar(props) {
 
  // const path = router.pathname;
 const path = window.location.pathname 
-
+const {setInput} = props;
   const searchEnabled = false; // Algolia / Elastic search. Pay to play. Disable for launch.
 
 const darkMode = false;
@@ -149,13 +149,15 @@ const [keywords, setKeywords] = useState(null);
   const handleSubmit = (event) => {
 event.preventDefault();
     // change url
-const slug = getSlug(keywords);
+//const slug = getSlug(keywords);
 //window.location.href = "http://localhost:3000/" + slug;
 
-    let path = slug;
+//    let path = slug;
 //    let history = useHistory();
 //    history.push(path);
-history(path);
+//history(path);
+
+setInput(keywords);
   };
 
   const handleCloseMenu = () => {

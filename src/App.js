@@ -21,17 +21,21 @@ import useToken from "./useToken";
 
 import useIdentity from "./useIdentity";
 
+import useInput from "./useInput";
+
 export default function App() {
   const pathname = window.location.pathname;
 
   const reg = /\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/g;
 
   const matches = pathname.match(reg);
-  const input = { uuids: matches };
+//  const input = { uuids: matches };
   const uuid = uuidv4();
 
   const { token, setToken, deleteToken } = useToken();
-  const {identity, setIdentity} = useIdentity();
+  const {identity, setIdentity, deleteIdentity} = useIdentity();
+  const { input, setInput, deleteInput } = useInput();
+
 
 //const [identity, setIdentity] = useState();
   const createdAt = Date.now();
@@ -220,7 +224,20 @@ setIdentity(token);
 <Signup />
 
 </>)}
-        <Input />
+        <Input setInput={setInput}/>
+
+                  <div key={'2'} >
+                    <Thing
+                      to={'agent'}
+                      subject={input}
+                      createdAt={0}
+                      uuid={'1'}
+                      input={'web'}
+                      webPrefix={'http://192.168.10.10/stack/'}
+                    />
+                  </div>
+
+
         {token && (
           <>
             <Logout deleteToken={deleteToken} />
