@@ -22,13 +22,16 @@ const style = {
 export const Card = memo(function Card({
   id,
   card,
+  token,
   text,
 flipCard,
+spawnCard,
 openCard,
   moveCard,
   deleteCard,
   findCard,
 }) {
+
   const originalIndex = findCard(id).index; //index
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -69,6 +72,19 @@ flipCard(id);
   }
 function handleChange(e) {
 console.log("handleChange", e);
+if (e === 'spawn') {
+
+spawnCard(id, originalIndex);
+
+}
+
+if (e === 'forget') {
+
+deleteCard(id);
+
+}
+
+
 }
   function handleOpenCard(e) {
 
@@ -105,11 +121,12 @@ openCard(id);
         }}
       >
         <Thing
-          to={card.to}
-          subject={card.subject}
-          createdAt={card.createdAt}
+//          to={card.to}
+//          subject={card.subject}
+//          createdAt={card.createdAt}
           uuid={card.uuid}
-          input={card.input}
+//          input={card.input}
+          token={token}
           datagram={card}
           webPrefix={card.webPrefix}
           onChange={(e)=>handleChange(e)}

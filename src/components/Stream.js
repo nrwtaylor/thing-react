@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 
 import "../index.css";
 import {
@@ -116,18 +115,6 @@ function Stream(props) {
     console.log("Datagram");
     console.log(datagram);
 
-    /*
-    db.collection("things")
-      .add(
-        datagram
-      )
-      .then(function () {
-        console.log("Document succesfully written!");
-      })
-      .catch(function (error) {
-        console.error("Error writing document: ", error);
-      });
-*/
 
     setOpen(false);
   };
@@ -135,33 +122,7 @@ function Stream(props) {
   function timeStamp() {
     var date = Date.now();
     return date.toString();
-    //    return date.toLocaleDateString("en-US");
-    /*
-    if (timestamp === undefined) {
-      return "X";
-    }
-
-    if (timestamp === null) {
-      return "X";
-    }
-
-
-//    const date = timestamp.toDate();
-    const d = date.toString();
-
-    const thing_date = new Date(d);
-    const today_date = new Date();
-    const seconds_diff = Math.round(
-      today_date.getTime() - thing_date.getTime()
-    );
-    return thing_date.toLocaleDateString("en-US");
-*/
   }
-
-  // TODO Call Thing > Database.
-  //function getStream(agent) {
-  // No function data is a props.
-  //}
 
   const [streamPointer, setStreamPointer] = useState(0);
   const [streamPoints, setStreamPoints] = useState([]);

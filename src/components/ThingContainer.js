@@ -5,6 +5,8 @@ import update from "immutability-helper";
 import { useDrop } from "react-dnd";
 import { ItemTypes } from "./ItemTypes";
 import { FullscreenExitTwoTone } from "@material-ui/icons";
+import { v4 as uuidv4 } from "uuid";
+
 //import { wrap } from "analytics/lib/analytics.cjs";
 
 const style = {
@@ -17,6 +19,7 @@ const style = {
 };
 
 export const ThingContainer = memo(function ThingContainer(props) {
+  const {token} = props;
   const [things, setThings] = useState(props.things);
   const findThing = useCallback(
     (id) => {
@@ -46,6 +49,9 @@ export const ThingContainer = memo(function ThingContainer(props) {
 
   const deleteThing = useCallback(
     (id, atIndex) => {
+
+if (things.length <=1) {return;}
+
 //console.log("deleteCard id", id);
 //console.log("deleteCard atIndex", atIndex);
       const { thing, index } = findThing(id);
@@ -53,6 +59,7 @@ export const ThingContainer = memo(function ThingContainer(props) {
             setThings(update(things, {
                 $splice: [[index,1]],
             }));
+
       props.onCollectionChange(things)
     },
     [things]
@@ -71,6 +78,42 @@ export const ThingContainer = memo(function ThingContainer(props) {
     },
     [things]
   );
+
+  const spawnThing = useCallback(
+    (id, atIndex) => {
+//console.log("deleteCard id", id);
+//console.log("deleteCard atIndex", atIndex);
+      const { thing, index } = findThing(id);
+const newThing = {...thing};
+const uuid = uuidv4();
+newThing.uuid = uuid;
+        //    setThings(update(things, {
+        //        $splice: [[index,1]],
+        //    }));
+setThings(
+        update(things, {
+          $splice: [
+            [index, 0, newThing],
+          ],
+        })
+);
+
+
+//let newThings = [...things];
+//newThings.splice(index, 0, {to:"to", from:"from", subject:"subject"});
+
+//setThings({...newThings});
+//            setThings(update(things, {
+//                $splice: [[index,index]],
+//            }));
+// To avoid state issue stuff
+//      props.onCollectionChange(newThings)
+      props.onCollectionChange(things)
+
+    },
+    [things]
+  );
+
 
   const flipThing = useCallback(
     (id, atIndex) => {
@@ -115,6 +158,7 @@ console.log('ThingContainer things', things);
           openCard={openThing}
           moveCard={moveThing}
           deleteCard={deleteThing}
+          spawnCard={spawnThing}
           findCard={findThing}
         />
       ))}

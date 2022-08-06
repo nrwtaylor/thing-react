@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Agent from "../components/Agent.js";
 import Snapshot from "../components/Snapshot.js";
+import Datagram from "../components/Datagram.js";
+import ToGoTime from "../components/ToGoTime.js";
 
-import axios from "axios";
+//import useDatagram from "./useDatagram";
+
 import { v4 as uuidv4 } from "uuid";
-import { Get } from "../components/Database.js";
+import { getThingReport } from "../util/database.js";
 
 //import{ Collapse} from '@mui/core';
 
@@ -23,7 +26,7 @@ import Collapse from "@mui/material/Collapse";
 import Avatar from "@mui/material/Avatar";
 
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
-//import IconButton from '@mui/material/IconButton';
+import UpdateIcon from "@mui/icons-material/Update";
 
 import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
@@ -51,7 +54,9 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 }));
 
 export default function Thing(props) {
-  const { datagram, webPrefix, subject, to } = props;
+  const { datagram, token } = props;
+
+  const { to, subject, webPrefix } = datagram;
 
   //const subject = props.subject;
   const startAt = props.createdAt;
@@ -72,6 +77,12 @@ export default function Thing(props) {
 
   const [pollInterval, setPollInterval] = useState(defaultPollInterval);
 
+  //const {datagram, setDatagram} = useDatagram();
+
+  function setDatagram() {
+    console.log("hey");
+  }
+
   useEffect(() => {
     console.log("datagram", datagram);
   }, [datagram]);
@@ -85,7 +96,7 @@ export default function Thing(props) {
 
   const [agentRequestedAt, setAgentRequestedAt] = useState();
 
-  const [nextRunAt, setNextRunAt] = useState();
+  const [nextRunAt, setNextRunAt] = useState(Date.now() + pollInterval);
 
   const [totalBytesReceivedData, setTotalBytesReceivedData] = useState(0);
   //  const minimumPollInterval = 60 * 60 * 1000;
@@ -118,7 +129,7 @@ export default function Thing(props) {
   const nuuid = uuid.substring(0, 4);
   const [error, setError] = useState();
 
-  const [url, setUrl] = useState();
+  //const [url, setUrl] = useState();
 
   const [data, setData] = useState({
     thing: { uuid: "X" },
@@ -146,6 +157,10 @@ export default function Thing(props) {
     return uuid;
   }
 
+  function handleRefresh() {
+    getResponse(webPrefix, true);
+  }
+
   function getResponse(webPrefix = null, flagOverride = false) {
     if (webPrefix === null) {
       webPrefix = process.env.REACT_APP_WEB_PREFIX;
@@ -155,87 +170,45 @@ export default function Thing(props) {
       return;
     }
     setFlag("red");
+    console.log("Thing getResponse flag subject", flag, subject);
+//    const s = currentAt + defaultPollInterval;
 
-    var t = { subject: subject };
-    var thingy = { thing: null, thing_report: null };
+//    setNextRunAt(s);
 
-    // TODO Call Get from Database.js and return.
-    thingy = Get(t);
+//    var t = { subject: subject };
+//    var thingy = { thing: null, thing_report: null };
 
-    console.log("Thing " + uuid + " making axios call " + subject);
+ //   const s = currentAt + defaultPollInterval;
+ //   setNextRunAt(s);
 
-    //    const webPrefix = process.env.REACT_APP_WEB_PREFIX;
+
     const requestedAt = Date.now();
     setAgentRequestedAt(requestedAt);
-    // console.log("requestedAt", requestedAt);
 
-    var u = webPrefix + subject + `.json`;
-    // Do we need to get a snapshot?
-    if (to === "snapshot") {
-      u = webPrefix + "snapshot.json";
-    }
-//          'Authorization': 'my secret token',
-console.log("Thing merp");
-
-// fetch(u, {
-  //  method: "GET",
-  //  headers: {
- //     "Content-Type": "application/json",
- //   },
-//    body: JSON.stringify(credentials),
-//  }).then((res) => {
-
-
-//    axios
-//      .get(u, {"body":{}}, {
-//        headers: {
-//          'Content-Type': 'application/json'
-//        }
- //     })
-    axios
-      .get(u, {
-        headers: {
- 'Authorization': 'my secret token',
-        }
-      })
-
-      .then((res) => {
-        console.log("Thing seturl subject u", subject, u);
-        setUrl(u);
-        let thingy = res.data;
-        console.log("Thing axios res", res);
-        console.log("Thing axios res.data", res.data);
-
-        // agent etime info json:null thing etc
-        setData(res.data);
-
-        const bytesReceivedData = JSON.stringify(res.data).length;
-        console.log("bytes", bytesReceivedData);
-
-        setTotalBytesReceivedData(
-          (prevTotalBytesReceivedData) =>
-            prevTotalBytesReceivedData + bytesReceivedData
-        );
+    getThingReport(datagram, token)
+      .then((result) => {
+        console.log("Thing getThingReport", result);
+        setData(result);
 
         const elapsedTime = Date.now() - requestedAt;
 
-        var base64Icon = "data:image/png;base64," + res.data.thingReport.png;
+        var base64Icon = "data:image/png;base64," + result.thingReport.png;
         setPNG(base64Icon);
 
         setTimedInterval(elapsedTime);
+
+    const p = requestedAt + 120000;
+    setNextRunAt(p);
+console.log("nextRunAt p", p, humanTime(p));
+
         setFlag("green");
+setError(null);
       })
       .catch((error) => {
-
-        console.log("Thing error", u, error);
-        setError({ ...error, message: "Problem" });
+        setError("Did not get Thingreport.");
+        console.error(error);
       });
-    //=======
-    //      setTimedInterval(elapsedTime);
-    //      return elapsedTime;
-    //      setFlag("green");
-    //    });
-    //>>>>>>> Stashed changes
+    return;
   }
 
   useEffect(() => {
@@ -251,21 +224,28 @@ console.log("Thing merp");
 
   function Forget() {}
 
+  const handleForgetThing = (e) => {
+    if (props.onChange) {
+      props.onChange('forget');
+    }
+  };
+
+
   // Call getResponse on a Timer.
   // Check if the flag has changed.
   useEffect(() => {
     // If still processing the last one,
     // Skip a beat, do not request another.
-    if (flag === "red") {
-      return;
-    }
-
+    //    if (flag === "red") {
+    //      return;
+    //    }
+    setFlag("green");
     // First time flag is green.
 
     console.log("Thing nextRunAt pollInterval", pollInterval);
-    const t = currentAt + pollInterval;
+    //const t = currentAt + pollInterval;
 
-    setNextRunAt(t);
+    //setNextRunAt(t);
     getResponse(webPrefix);
 
     const interval = setInterval(() => {
@@ -283,7 +263,8 @@ console.log("Thing merp");
     console.log("interval", interval);
 
     return () => clearInterval(interval);
-  }, [flag]);
+    //  }, [flag]);
+  }, [datagram]);
 
   useEffect(() => {
     // If still processing the last one,
@@ -355,6 +336,13 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
     }
   };
 
+  const handleSpawnThing = (e) => {
+    if (props.onChange) {
+      props.onChange('spawn');
+    }
+  };
+
+
   const handleOpenThing = (e) => {
     handleExpandClick();
     if (props.onChange) {
@@ -383,20 +371,26 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
             </IconButton>
           }
         />
+
+       <Button onClick={handleSpawnThing}>SPAWN</Button>
+
+       <Button onClick={handleForgetThing}>FORGET</Button>
+
+
         {!expanded && <Button onClick={handleFlipThing}>FLIP</Button>}
 
-        <Button onClick={handleOpenThing}>OPEN</Button>
+        {expanded && <Button onClick={handleOpenThing}>FOLD</Button>}
+        {!expanded && <Button onClick={handleOpenThing}>OPEN</Button>}
+
         {/*<div onClick={handleExpandClick} >*/}
         <div>
           {!expanded && flipped && (
             <>
-              <Typography>UUID {uuid}</Typography>
-              <Typography>TO {to}</Typography>
-              <Typography>SUBJECT {subject}</Typography>
-              <Typography>CREATED AT {startAt}</Typography>
-              <div>
-                CREATED AT {data && data.thing && data.thing.created_at}
-              </div>
+              <Datagram datagram={datagram} setDatagram={setDatagram} />
+              WEBPREFIX {datagram.webPrefix}
+              <br />
+ERROR {error}
+<br />
               TIMED LATENCY INTERVAL {timedLatencyInterval}
               <br />
               TIMED INTERVAL {timedInterval}
@@ -405,13 +399,11 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
               <br />
               <RequestedAt />
               <br />
-              NEXT RUN AT {nextRunAt}
+              NEXT RUN AT {humanTime(nextRunAt)}
               <br />
-              CURRENT AT {currentAt}
+              CURRENT AT {humanTime(currentAt)}
               <br />
               TOTAL CHARACTERS RECEIVED DATA {totalBytesReceivedData}
-              <br />
-              URL {url}
               <br />
               {error && error.message}
               <br />
@@ -432,7 +424,11 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
               {/*
               <div>{data && data.thingReport && data.thingReport.sms}</div>*/}
               <Typography>{nuuid}</Typography>
-              <Typography>TOGOTIME {nextRunAt - currentAt}</Typography>
+              <ToGoTime
+                toGoTime={nextRunAt - currentAt}
+                onRefresh={handleRefresh}
+              />
+              {/*             <Typography>TOGOTIME {nextRunAt - currentAt}</Typography> */}
               {flag} <br />
               message{" "}
               <div
@@ -482,7 +478,8 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
                 <div>
                   <Snapshot
                     user={null}
-                    thing={data.thing}
+                    //thing={data.thing}
+                    datagram={datagram}
                     agent_input={webPrefix}
                   />
                 </div>
@@ -490,7 +487,11 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
               <div>
                 <br />
                 {/*      <Agent user={null} thing={data.thing} agent_input="http://localhost" />*/}
-                <Agent user={null} thing={data.thing} agent_input={webPrefix} />
+                <Agent
+                  user={null}
+                  thing={data && data.thing}
+                  agent_input={webPrefix}
+                />
 
                 <br />
               </div>

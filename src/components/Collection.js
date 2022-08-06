@@ -30,7 +30,7 @@ const img = {
 };
 
 function Collection(props) {
-  const { things } = props;
+  const { things, token } = props;
 /*
   useEffect(() => {
     console.log("images");

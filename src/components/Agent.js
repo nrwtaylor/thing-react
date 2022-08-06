@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 
 import "../index.css";
 import {
@@ -125,32 +124,6 @@ function Agent(props) {
     );
     return thing_date.toLocaleDateString("en-US");
 */
-  }
-
-  // TODO Call Thing > Database.
-  function getAgent(agent) {
-    if (flag === "red") {
-      return;
-    }
-    setFlag("red");
-    console.log("Axios call " + agent);
-    //const webPrefix = process.env.REACT_APP_WEB_PREFIX
-
-    const webPrefix = agent_input;
-    //setRequestedAt(Date.now());
-    axios
-      .get(webPrefix + agent + `.json`)
-      .then((res) => {
-        let thingy = res.data;
-        console.log("Agent res.data", res.data);
-        setData(res.data);
-
-        // dev flag available not available
-        //setFlag("green");
-      })
-      .catch((error) => {
-        console.log("Agent error", error);
-      });
   }
 
   function callBack() {

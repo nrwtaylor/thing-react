@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import Thing from "../src/components/Thing.js";
 import Login from "../src/components/Login.js";
 import Logout from "../src/components/Logout.js";
 import Signup from "../src/components/Signup.js";
+import { getThings } from "../src/util/database.js";
 
 import Token from "../src/components/Token.js";
 import Identity from "../src/components/Identity.js";
@@ -10,7 +11,7 @@ import Identity from "../src/components/Identity.js";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Input from "../src/components/Input.js";
 
-import Container from '@mui/material/Container';
+import Container from "@mui/material/Container";
 import ThingsContainer from "../src/components/ThingContainer.js";
 
 import Collection from "../src/components/Collection.js";
@@ -18,13 +19,10 @@ import Collection from "../src/components/Collection.js";
 import { v4 as uuidv4 } from "uuid";
 
 import useToken from "./useToken";
-
 import useIdentity from "./useIdentity";
-
 import useInput from "./useInput";
 
 import axios from "axios";
-
 
 export default function App() {
   const pathname = window.location.pathname;
@@ -32,15 +30,16 @@ export default function App() {
   const reg = /\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/g;
 
   const matches = pathname.match(reg);
-//  const input = { uuids: matches };
+  //  const input = { uuids: matches };
   const uuid = uuidv4();
 
+//  const [things, setThings] = useState([]);
+
   const { username, token, setToken, deleteToken } = useToken();
-  const {identity, setIdentity, deleteIdentity} = useIdentity();
+  const { identity, setIdentity, deleteIdentity } = useIdentity();
   const { input, setInput, deleteInput } = useInput();
 
-
-//const [identity, setIdentity] = useState();
+  //const [identity, setIdentity] = useState();
   const createdAt = Date.now();
 
   // dev here user supplied channels.
@@ -49,41 +48,38 @@ export default function App() {
   const testUuid1 = process.env.REACT_APP_THING_1;
   const apiPrefix = process.env.REACT_APP_API_PREFIX;
 
-useEffect(() =>{
+  useEffect(() => {
+    if (!identity) {
+      defaultThings();
+      return;
+    }
+    if (identity === null) {
+      defaultThings();
+      return;
+    }
+    loadThings();
+  }, [identity]);
 
-if (!identity) {defaultThings(); return;}
-if (identity === null) {defaultThings(); return;}
-loadThings();
-
-
-
-},[identity]);
-
-useEffect(() =>{
-console.log("App identity", identity);
-
-//if (!username) {defaultThings(); return;}
-//if (username === null) {defaultThings(); return;}
-//loadThings();
-
+  useEffect(() => {
+      defaultThings();
+  }, []);
 
 
-},[identity]);
+  useEffect(() => {
+    console.log("App identity", identity);
+  }, [identity]);
 
 
-function defaultThings() {
+  function loadThings() {
+    getThings(apiPrefix, token);
 
-}
-
-function loadThings() {
-
-const u = apiPrefix + 'things/';
+    const u = apiPrefix + "things/";
     axios
       .get(u, {
         headers: {
- 'Authorization': 'my secret token',
-'x-access-token':token
-        }
+          Authorization: "my secret token",
+          "x-access-token": token,
+        },
       })
 
       .then((res) => {
@@ -91,38 +87,39 @@ const u = apiPrefix + 'things/';
         console.log("Things axios res", res);
         console.log("Things axios res.data", res.data);
 
+
+
+        //setThings({...things, ...thingy});
+
         // agent etime info json:null thing etc
-//        setData(res.data);
+        //        setData(res.data);
 
-//        const elapsedTime = Date.now() - requestedAt;
-
+        //        const elapsedTime = Date.now() - requestedAt;
       })
       .catch((error) => {
-
         console.log("Thing error", u, error);
-//        setError({ ...error, message: "Problem" });
+        //        setError({ ...error, message: "Problem" });
       });
+  }
 
 
-}
 
-useEffect(()=>{
+  useEffect(() => {
+    console.log("token", token);
+    //setIdentity(token);
+    //console.log("identity",identity);
+  }, [token]);
 
-console.log("token", token);
-//setIdentity(token);
-//console.log("identity",identity);
-}, [token]);
+  useEffect(() => {
+    console.log("App identity", identity);
+  }, [identity]);
 
-useEffect(()=>{
-
-console.log("App identity",identity);
-}, [identity]);
-
+  function defaultThings() {}
 
   const things = [
     {
       index: 8,
-      to: "stack",
+      to: "proxy",
       subject: pathname,
       createdAt: createdAt,
       uuid: uuidv4(),
@@ -131,7 +128,7 @@ console.log("App identity",identity);
     },
     {
       index: 9,
-      to: "agent",
+      to: "proxy",
       subject: "weather",
       createdAt: createdAt,
       uuid: uuidv4(),
@@ -140,16 +137,16 @@ console.log("App identity",identity);
     },
     {
       index: 10,
-      to: "agent",
+      to: "proxy",
       subject: "day twilight tmlr",
       createdAt: createdAt,
       uuid: uuidv4(),
       input: "day twilight tmlr",
       webPrefix: "http://192.168.10.10/stack/",
     },
-{
+    {
       index: 11,
-      to: "agent",
+      to: "proxy",
       subject: "roll d20",
       createdAt: createdAt,
       uuid: uuidv4(),
@@ -157,73 +154,43 @@ console.log("App identity",identity);
       webPrefix: "http://192.168.10.10/stack/",
     },
 
-{
+    {
       index: 12,
-      to: "agent",
+      to: "proxy",
       subject: "roll",
       createdAt: createdAt,
       uuid: uuidv4(),
       input: "roll",
       webPrefix: "http://192.168.10.10/stack/",
     },
-{
+    {
       index: 13,
-      to: "agent",
+      to: "proxy",
       subject: "card",
       createdAt: createdAt,
       uuid: uuidv4(),
       input: "card",
       webPrefix: "http://192.168.10.10/stack/",
     },
-{
+    {
       index: 14,
-      to: "agent",
+      to: "whitefox",
       subject: "day-twilight-tmlr",
       createdAt: createdAt,
       uuid: uuidv4(),
       input: null,
-      webPrefix: "http://192.168.10.10/stack/",
+      webPrefix: "https://stackr.ca/",
     },
 
-    {
-      index: 15,
-      to: "agent",
-      subject: "snapshot",
-      createdAt: createdAt,
-      uuid: uuidv4(),
-      input: input,
-      webPrefix: "http://192.168.10.10/stack/",
-    },
-
-{
-      to: "coop",
-      subject: pathname,
-      createdAt: createdAt,
-      uuid: uuidv4(),
-      input: input,
-      webPrefix: "http://localhost:3000/",
-      pollInterval: 60000,
-    },
     {
       index: 1,
-      to: "coop",
+      to: "localhost",
       subject: "weather",
       createdAt: createdAt,
       uuid: uuidv4(),
       input: "weather",
       webPrefix: "http://localhost:3000/",
       pollInterval: 5 * 60000,
-    },
-
-    {
-      index: 2,
-      to: "whitefox",
-      subject: pathname,
-      createdAt: createdAt,
-      uuid: uuidv4(),
-      input: input,
-      webPrefix: webPrefix,
-      pollInterval: 60000,
     },
     {
       index: 3,
@@ -237,98 +204,77 @@ console.log("App identity",identity);
     },
 
     {
-      index: 4,
-      to: "kokopelli",
-      subject: pathname,
-      createdAt: createdAt,
-      uuid: uuidv4(),
-      input: input,
-      webPrefix: "http://192.168.10.10/",
-      pollInterval: 50,
-    },
-    {
       index: 5,
-      to: "kokopelli",
+      to: "192.168.10.10",
       subject: "snapshot",
       createdAt: createdAt,
       uuid: uuidv4(),
       input: input,
       webPrefix: "http://192.168.10.10/",
-      pollInterval: 50,
+      pollInterval: 60000,
     },
     {
       index: 6,
-      to: 'kokopelli',
-      subject: 'snapshot',
-      uuid:testUuid0,
+      to: "kokopelli",
+      subject: "snapshot",
+      uuid: testUuid0,
       input: "snapshot",
-      webPrefix: webPrefix + 'snapshot/' + testUuid0 + '/',
+      webPrefix: webPrefix + "snapshot/" + testUuid0 + "/",
       pollInterval: 60000,
     },
     {
       index: 7,
-      to: 'coop',
-      subject: 'snapshot',
-      uuid:testUuid1,
+      to: "coop",
+      subject: "snapshot",
+      uuid: testUuid1,
       input: "snapshot",
-      webPrefix: webPrefix + 'snapshot/' + testUuid1 + '/',
+      webPrefix: webPrefix + "snapshot/" + testUuid1 + "/",
       pollInterval: 60000,
     },
-
   ];
 
+//setThings(t);
 
-  console.log("REACT THING");
-  console.log("Started Thing ", uuid);
+//  console.log("REACT THING");
+//  console.log("Started Thing ", uuid);
+
+//}
 
   return (
     <>
       <Token token={token} />
-<Identity identity={identity} />
+      <Identity identity={identity} />
       <BrowserRouter>
         THING-REACT 3 August 2022
-        {!token && (<><Login setToken={setToken} setIdentity={setIdentity} />
-<Signup />
-
-</>)}
-        <Input setInput={setInput}/>
-
-                  <div key={'2'} >
-                    <Thing
-                      to={'agent'}
-                      subject={input}
-                      createdAt={0}
-                      uuid={'1'}
-                      input={'web'}
-                      webPrefix={webPrefix}
-                    />
-                  </div>
-
-
+        {!token && (
+          <>
+            <Login setToken={setToken} setIdentity={setIdentity} />
+            <Signup />
+          </>
+        )}
+        <Input setInput={setInput} />
+{/*
+        <div key={"2"}>
+          <Thing
+            token={token}
+            datagram={{
+              to: "agent",
+              subject: input,
+              createdAt: 0,
+              input: "web",
+              webPrefix: webPrefix,
+            }}
+            //                      webPrefix={webPrefix}
+          />
+        </div>
+*/}
         {token && (
           <>
             <Logout deleteToken={deleteToken} />
-<Container maxWidth="sm" >
-<Collection things={things} onCollectionChange={()=>{}}/>
+            <Container maxWidth="sm">
+              <Collection token={token} things={things} onCollectionChange={() => {}} />
 
-{/*
-            {things &&
-              things.map((thing) => {
-                return (
-                  <div key={thing.uuid} >
-                    <Thing
-                      to={thing.to}
-                      subject={thing.subject}
-                      createdAt={thing.createdAt}
-                      uuid={thing.uuid}
-                      input={thing.input}
-                      webPrefix={thing.webPrefix}
-                    />
-                  </div>
-                );
-              })}
-*/}
-</Container>
+            </Container>
           </>
         )}
       </BrowserRouter>
