@@ -17,7 +17,9 @@ async function loginUser(credentials) {
     body: JSON.stringify(credentials),
   }).then((data) => {
     return data.json();
-  });
+  }).catch((error)=>{
+console.error(error);
+});
 }
 
 export default function Login({ setToken, setIdentity }) {

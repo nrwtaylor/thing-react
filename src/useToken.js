@@ -5,8 +5,14 @@ export default function useToken() {
     const tokenString = localStorage.getItem("token");
 
 console.log("useToken getToken tokenString", tokenString);
+var userToken = null;
 
-    const userToken = JSON.parse(tokenString);
+try {
+    userToken = JSON.parse(tokenString);
+} catch(e) {
+    console.log("Problem with localStorage token");
+    return null;
+}
 
     //if (userToken) {
     //return userToken;
