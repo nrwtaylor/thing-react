@@ -245,7 +245,7 @@ export default function App() {
       <Token token={token} />
       <Identity identity={identity} />
       <BrowserRouter>
-        THING-REACT 3 August 2022
+        THING-REACT 6 August 2022
         {!token && (
           <>
             <Login setToken={setToken} setIdentity={setIdentity} />
