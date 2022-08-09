@@ -66,6 +66,7 @@ console.log("database getThingReport", u, datagram, thingy);
     return thingy;
   }).catch((error)=>{
     console.log("database getThingReport error", u, datagram, error);
+return ({thingReport:{message:"message", error:error}});
   });
 }
 
