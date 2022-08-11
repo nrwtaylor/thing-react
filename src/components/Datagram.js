@@ -5,17 +5,25 @@ import jwt_decode from "jwt-decode";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 
+import { setThing } from "../util/database.js";
+
 import { humanTime } from "./../util/time.js";
 
-export default function Datagram({ datagram, setDatagram }) {
+export default function Datagram({ datagram, setDatagram, token }) {
   const [subject, setSubject] = useState(datagram.subject);
   // Display token.
 
   function subjectChange(e) {
+console.log("datagram subjectChange", datagram);
     var d = e.target.value;
     setSubject(d);
     datagram.subject = d;
     setDatagram({...datagram});
+
+console.log("datagram uuid", datagram.uuid);
+
+setThing(datagram.uuid, {subject:d}, token);
+
   }
 
 

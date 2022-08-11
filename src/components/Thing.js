@@ -3,6 +3,7 @@ import Agent from "../components/Agent.js";
 import Snapshot from "../components/Snapshot.js";
 import Datagram from "../components/Datagram.js";
 import ToGoTime from "../components/ToGoTime.js";
+import Associations from "../components/Associations.js";
 
 //import useDatagram from "./useDatagram";
 
@@ -55,6 +56,12 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 
 export default function Thing(props) {
   const { datagram, token } = props;
+
+useEffect(()=>{
+
+console.log("Thing token", token);
+
+},[token]);
 
   const { to, subject, webPrefix } = datagram;
 
@@ -386,7 +393,7 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
         <div>
           {!expanded && flipped && (
             <>
-              <Datagram datagram={datagram} setDatagram={setDatagram} />
+              <Datagram datagram={datagram} setDatagram={setDatagram} token={token} />
               WEBPREFIX {datagram.webPrefix}
               <br />
 ERROR {error}
@@ -405,6 +412,7 @@ ERROR {error}
               <br />
               TOTAL CHARACTERS RECEIVED DATA {totalBytesReceivedData}
               <br />
+              <Associations datagram={datagram} />
               {error && error.message}
               <br />
             </>

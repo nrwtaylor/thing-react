@@ -6,6 +6,7 @@ import { useDrop } from "react-dnd";
 import { ItemTypes } from "./ItemTypes";
 import { FullscreenExitTwoTone } from "@material-ui/icons";
 import { v4 as uuidv4 } from "uuid";
+import { forgetThing, createThing, getThingReport } from "../util/database.js";
 
 //import { wrap } from "analytics/lib/analytics.cjs";
 
@@ -15,11 +16,13 @@ const style = {
   //width: '100%',
   //  display: 'flex',
   // spacing:'1'
- 
 };
 
 export const ThingContainer = memo(function ThingContainer(props) {
-  const {token} = props;
+
+const webPrefix = process.env.REACT_APP_WEB_PREFIX;
+
+  const { token } = props;
   const [things, setThings] = useState(props.things);
   const findThing = useCallback(
     (id) => {
@@ -31,6 +34,12 @@ export const ThingContainer = memo(function ThingContainer(props) {
     },
     [things]
   );
+
+useEffect(() =>{
+
+setThings(props.things);
+
+},[props.things]);
 
   const moveThing = useCallback(
     (id, atIndex) => {
@@ -49,128 +58,148 @@ export const ThingContainer = memo(function ThingContainer(props) {
 
   const deleteThing = useCallback(
     (id, atIndex) => {
+      if (things.length <= 1) {
+        return;
+      }
 
-if (things.length <=1) {return;}
-
-//console.log("deleteCard id", id);
-//console.log("deleteCard atIndex", atIndex);
+      //console.log("deleteCard id", id);
+      //console.log("deleteCard atIndex", atIndex);
       const { thing, index } = findThing(id);
 
-            setThings(update(things, {
-                $splice: [[index,1]],
-            }));
+      setThings(
+        update(things, {
+          $splice: [[index, 1]],
+        })
+      );
 
-      props.onCollectionChange(things)
+
+// Call delete Thing api
+forgetThing(thing, token).then((res)=>{
+console.log("ThingContainer forgot uuid", thing.uuid);
+      props.onCollectionChange(things);
+
+}).catch((error)=>{console.error("error",error);})
+//      props.onCollectionChange(things);
     },
     [things]
   );
 
+
+
   const openThing = useCallback(
     (id, atIndex) => {
-//console.log("deleteCard id", id);
-//console.log("deleteCard atIndex", atIndex);
+      //console.log("deleteCard id", id);
+      //console.log("deleteCard atIndex", atIndex);
       const { thing, index } = findThing(id);
 
- //           setThings(update(things, {
- //               $splice: [[index,1]],
- ///           }));
-      props.onCollectionChange(things)
+      //           setThings(update(things, {
+      //               $splice: [[index,1]],
+      ///           }));
+      props.onCollectionChange(things);
     },
     [things]
   );
 
   const spawnThing = useCallback(
     (id, atIndex) => {
-//console.log("deleteCard id", id);
-//console.log("deleteCard atIndex", atIndex);
+      //console.log("deleteCard id", id);
+      //console.log("deleteCard atIndex", atIndex);
       const { thing, index } = findThing(id);
-const newThing = {...thing};
-const uuid = uuidv4();
-newThing.uuid = uuid;
-        //    setThings(update(things, {
-        //        $splice: [[index,1]],
-        //    }));
+      const newThing = { ...thing };
+      const uuid = uuidv4();
+      newThing.uuid = uuid;
+      console.log("ThingContainer spawnThing thing", thing);
+      console.log("ThingContainer spawnThing token", token);
+
+      // Spawn thing on designated stack.
+
+      const doNotWait = createThing(webPrefix, thing, token)
+        .then((result) => {
+          console.log("spawnThing createThing result", result);
+
+          newThing.associations = {
+            ...newThing.associations,
+            uuid: result.uuid,
+          };
+
+          setThings(
+            update(things, {
+              $splice: [[index, 0, newThing]],
+            })
+          );
+
+          props.onCollectionChange(things);
+        })
+        .catch((error) => {
+          console.log("spawnThing createThing error", error);
+        });
+      //    setThings(update(things, {
+      //        $splice: [[index,1]],
+      //    }));
+      /*
 setThings(
         update(things, {
           $splice: [
             [index, 0, newThing],
           ],
         })
+
+
 );
 
-
-//let newThings = [...things];
-//newThings.splice(index, 0, {to:"to", from:"from", subject:"subject"});
-
-//setThings({...newThings});
-//            setThings(update(things, {
-//                $splice: [[index,index]],
-//            }));
-// To avoid state issue stuff
-//      props.onCollectionChange(newThings)
       props.onCollectionChange(things)
-
+*/
     },
     [things]
   );
 
-
   const flipThing = useCallback(
     (id, atIndex) => {
-//console.log("deleteCard id", id);
-//console.log("deleteCard atIndex", atIndex);
+      //console.log("deleteCard id", id);
+      //console.log("deleteCard atIndex", atIndex);
       const { thing, index } = findThing(id);
 
- //           setThings(update(things, {
- //               $splice: [[index,1]],
- ///           }));
-      props.onCollectionChange(things)
+      //           setThings(update(things, {
+      //               $splice: [[index,1]],
+      ///           }));
+      props.onCollectionChange(things);
     },
     [things]
   );
 
   useEffect(() => {
-console.log('ThingContainer things', things);
+    console.log("ThingContainer things", things);
     const reindexedThings = things.map((image, i) => {
       return { ...image, index: i };
     });
-     props.onCollectionChange(reindexedThings);
+    props.onCollectionChange(reindexedThings);
   }, [things, setThings]);
 
   const [, drop] = useDrop(() => ({ accept: ItemTypes.CARD }));
   return (
-
-
-    <div ref={drop} style={style} >
-     
-   
-     <Grid container spacing={3} direction="row" >
-    
-    
-{things && (<>
-      {things.map((thing) => (
-         <Card 
-          key={thing.uuid}
-          id={`${thing.index}`}
-          card={thing}
-          text={thing && thing.text}
-          flipCard={flipThing}
-          openCard={openThing}
-          moveCard={moveThing}
-          deleteCard={deleteThing}
-          spawnCard={spawnThing}
-          findCard={findThing}
-        />
-      ))}
-     </>)}
-       </Grid>
-    
-
-      </div>
-
-
-    
-   
+    <div ref={drop} style={style}>
+      <Grid container spacing={3} direction="row">
+        {things && (
+          <>
+            {things.map((thing) => (
+              <Card
+                key={thing.uuid}
+                id={`${thing.index}`}
+                card={thing}
+                text={thing && thing.text}
+                flipCard={flipThing}
+                openCard={openThing}
+                moveCard={moveThing}
+                deleteCard={deleteThing}
+                spawnCard={spawnThing}
+                findCard={findThing}
+                token={token}
+              />
+            ))}
+          </>
+        )}
+      </Grid>
+    </div>
   );
 });
 

@@ -48,7 +48,7 @@ function Collection(props) {
 
       <DndProvider backend={HTML5Backend}>
      
-        <ThingContainer things={things} onCollectionChange={handleCollectionChange} />
+        <ThingContainer things={things} onCollectionChange={handleCollectionChange} token={token} />
    
       </DndProvider>
 

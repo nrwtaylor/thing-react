@@ -103,7 +103,6 @@ function Snapshot(props) {
     //    const webPrefix = process.env.REACT_APP_WEB_PREFIX
     //setRequestedAt(Date.now());
 
-    //const url = 'http://192.168.10.10/snapshot.json';
     const url = webPrefix + "snapshot.json";
 
 getSnapshot(webPrefix, "").then((result)=>{
