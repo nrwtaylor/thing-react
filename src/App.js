@@ -33,6 +33,24 @@ export default function App() {
 
   const defaultThings = [
     {
+      index: 20,
+      to: "local",
+      subject: "snapshot",
+      createdAt: Date.now(),
+      uuid: uuidv4(),
+      input: "snapshot",
+      webPrefix: "http://192.168.10.10/snapshot.json",
+    },
+    {
+      index: 20,
+      to: "local",
+      subject: "hey",
+      createdAt: Date.now(),
+      uuid: uuidv4(),
+      input: "hey",
+      webPrefix: stack0Prefix,
+    },
+    {
       index: 8,
       to: "proxy",
       subject: "rocky",
@@ -146,6 +164,36 @@ export default function App() {
       webPrefix: webPrefix + "snapshot/" + testUuid1 + "/",
       pollInterval: 60000,
     },
+    {
+      index: 25,
+      to: "coop",
+      subject: "snapshot",
+      uuid: testUuid1,
+      input: "snapshot",
+      webPrefix: "http://192.168.10.10/proxy/" + "snapshot/" + testUuid1 + "/",
+      pollInterval: 60000,
+    },
+    {
+      index: 26,
+      to: "kokopelli",
+      subject: "snapshot",
+      uuid: testUuid0,
+      input: "snapshot",
+      webPrefix: "http://192.168.10.10/proxy/" + "snapshot/" + testUuid0 + "/",
+      pollInterval: 60000,
+    },
+    {
+      index: 27,
+      to: "kokopelli",
+      subject: "snapshot",
+      uuid: "ef9da730-ceb7-42ba-bd0f-913b1b24cc5e",
+      input: "snapshot",
+      webPrefix: "http://192.168.10.10/",
+      pollInterval: 60000,
+
+    },
+
+
   ];
 
   const pathname = window.location.pathname;

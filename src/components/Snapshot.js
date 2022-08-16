@@ -102,10 +102,12 @@ function Snapshot(props) {
     console.log("Snapshot getSnapshot call " + agent);
     //    const webPrefix = process.env.REACT_APP_WEB_PREFIX
     //setRequestedAt(Date.now());
+console.log("Snapshot getSnapshot webPrefix", webPrefix);
+//    const url = webPrefix + "snapshot.json";
 
-    const url = webPrefix + "snapshot.json";
+getSnapshot(webPrefix,"").then((result)=>{
 
-getSnapshot(webPrefix, "").then((result)=>{
+console.log("Snapshot getSnapshot result", result);
 
 if (result && result.thingReport === false) {
 // No thing report. Do not update snapshot.
@@ -125,7 +127,7 @@ setData(result.thingReport.snapshot);
 
 
 
-}).catch((error)=>{console.error(error);})
+}).catch((error)=>{console.error("Snapshot getSnapshot error",error);})
 /*
     axios
       .get(url)

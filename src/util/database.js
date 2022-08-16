@@ -100,10 +100,14 @@ export function forgetThing(datagram, token) {
 
 export function getSnapshot(webPrefix, token) {
   const u = webPrefix + "snapshot.json";
+  console.log("database getSnapshot u", u);
   console.log("database getSnapshot webPrefix", webPrefix);
+
   return axios
     .get(u, {
       headers: {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': '*',
         Authorization: "my secret token",
         "x-access-token": token,
         "Content-Type": "application/json",

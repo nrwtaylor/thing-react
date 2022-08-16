@@ -281,7 +281,7 @@ setError(null);
     }
 
     // Do some work?
-    console.log("Thing " + nuuid + " check-in.");
+//    console.log("Thing " + nuuid + " check-in.");
     /*
 https://www.reddit.com/r/reactjs/comments/p7ky46/is_react_synchronous_with_respect_to_function/
 https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_JavaScript
