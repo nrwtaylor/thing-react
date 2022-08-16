@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 
 import "../index.css";
 import {
@@ -28,14 +27,13 @@ import {
 
 import Frequency from "../components/Frequency.js";
 
-
 import Forget from "../components/Forget.js";
 import Trace from "../components/Trace.js";
 
 function Stream(props) {
-  const { quantity, period, hide } = props;
+  const { quantities, quantity, period, hide } = props;
 
-const {amount, units} = quantity;
+  const { amount, units } = quantity;
 
   const user_name = props.user_name; // TODO
   const agent_input = props.agent_input;
@@ -46,8 +44,8 @@ const {amount, units} = quantity;
 
   const [refreshedAt, setRefreshedAt] = useState();
 
-const amountRef = React.createRef();
-amountRef.current = amount;
+  const amountRef = React.createRef();
+  amountRef.current = amount;
 
   const thing = props.thing;
 
@@ -57,9 +55,9 @@ amountRef.current = amount;
 
   useInterval(() => {
     // Your custom logic here
-console.log("Stream useInterval amount", amount);
-getStream();  
-}, period);
+    console.log("Stream useInterval amount", amount);
+    getStream();
+  }, period);
 
   const [streamGetTime, setStreamGetTime] = useState();
   const replyAgentDialog = (thing) => {
@@ -70,26 +68,25 @@ getStream();
     setOpen(false);
   };
 
+  function useInterval(callback, delay) {
+    const savedCallback = React.useRef();
 
-    function useInterval(callback, delay) {
-        const savedCallback = React.useRef();
-      
-        // Remember the latest function.
-        useEffect(() => {
-          savedCallback.current = callback;
-        }, [callback]);
-      
-        // Set up the interval.
-        useEffect(() => {
-          function tick() {
-            savedCallback.current();
-          }
-          if (delay !== null) {
-            let id = setInterval(tick, delay);
-            return () => clearInterval(id);
-          }
-        }, [delay]);
+    // Remember the latest function.
+    useEffect(() => {
+      savedCallback.current = callback;
+    }, [callback]);
+
+    // Set up the interval.
+    useEffect(() => {
+      function tick() {
+        savedCallback.current();
       }
+      if (delay !== null) {
+        let id = setInterval(tick, delay);
+        return () => clearInterval(id);
+      }
+    }, [delay]);
+  }
 
   function humanTime(timestamp) {
     const ts = new Date();
@@ -118,18 +115,6 @@ getStream();
     console.log("Datagram");
     console.log(datagram);
 
-    /*
-    db.collection("things")
-      .add(
-        datagram
-      )
-      .then(function () {
-        console.log("Document succesfully written!");
-      })
-      .catch(function (error) {
-        console.error("Error writing document: ", error);
-      });
-*/
 
     setOpen(false);
   };
@@ -137,33 +122,7 @@ getStream();
   function timeStamp() {
     var date = Date.now();
     return date.toString();
-    //    return date.toLocaleDateString("en-US");
-    /*
-    if (timestamp === undefined) {
-      return "X";
-    }
-
-    if (timestamp === null) {
-      return "X";
-    }
-
-
-//    const date = timestamp.toDate();
-    const d = date.toString();
-
-    const thing_date = new Date(d);
-    const today_date = new Date();
-    const seconds_diff = Math.round(
-      today_date.getTime() - thing_date.getTime()
-    );
-    return thing_date.toLocaleDateString("en-US");
-*/
   }
-
-  // TODO Call Thing > Database.
-  //function getStream(agent) {
-  // No function data is a props.
-  //}
 
   const [streamPointer, setStreamPointer] = useState(0);
   const [streamPoints, setStreamPoints] = useState([]);
@@ -175,28 +134,31 @@ getStream();
   const [voltPoints, setVoltPoints] = useState([]);
   const [tracePeriod, setTracePeriod] = useState();
 
+  function humanPeriod(p) {
+    //if (p>0) {return "1/"+Math.round(p / 1000, 0) + " Hz"}
 
-function humanPeriod(p) {
-
-//if (p>0) {return "1/"+Math.round(p / 1000, 0) + " Hz"}
-
-//return Math.round(1000 / p, 1) + " Hz";
-return Math.round(p/1000,0) + " s";
-
-}
+    //return Math.round(1000 / p, 1) + " Hz";
+    return Math.round(p / 1000, 0) + " s";
+  }
 
   function getStream() {
-
-//console.log("Stream tick");
-const a = amountRef.current;
+    //console.log("Stream tick");
+    const a = amountRef.current;
     console.log("Stream mountRef.current", a);
 
-
-    const conditionedAmount = parseFloat(a);
+    var conditionedAmount = parseFloat(a);
 
     console.log("Stream conditionedAmountt", conditionedAmount);
     // Create a new array based on current state:
     let s = [...streamPoints];
+    const amounts = [];
+    if (quantities) {
+      quantities.map((quantity) => {
+        const amount = parseFloat(quantity.amount);
+        amounts.push(amount);
+      });
+      conditionedAmount = amounts[1];
+    }
 
     // Add item to it
     s.push({
@@ -205,6 +167,8 @@ const a = amountRef.current;
       fees: 1,
       value: conditionedAmount,
       amount: conditionedAmount,
+      amount2: amounts && amounts[0],
+      amount3: amounts && amounts[2],
     });
 
     const maxStreamPoints = 100;
@@ -227,10 +191,10 @@ const a = amountRef.current;
 
     //////////
 
-//    const endTime = new Date();
-//    const tf = endTime - startTime;
-//    const timeDiff = tf;
-//    setTracePeriod(timeDiff);
+    //    const endTime = new Date();
+    //    const tf = endTime - startTime;
+    //    const timeDiff = tf;
+    //    setTracePeriod(timeDiff);
   }
 
   useEffect(() => {
@@ -239,7 +203,7 @@ const a = amountRef.current;
 
   useEffect(() => {
     console.log("Stream amount", amount);
-/* 
+    /* 
    if (amount === undefined) {
       return;
     }
@@ -254,14 +218,25 @@ if (isNaN(amount)) {return;}
 
     //function getStream() {
     const startTime = new Date();
-const d = startTime - refreshedAt;
-setRefreshedAt(startTime);
+    const d = startTime - refreshedAt;
+    setRefreshedAt(startTime);
 
-
-    const conditionedAmount = parseFloat(amount);
+    var conditionedAmount = parseFloat(amount);
 
     // Create a new array based on current state:
     let f = [...dataPoints];
+
+
+
+
+    const amounts = [];
+    if (quantities) {
+      quantities.map((quantity) => {
+        const amount = parseFloat(quantity.amount);
+        amounts.push(amount);
+      });
+      conditionedAmount = amounts[0];
+    }
 
     // Add item to it
     f.push({
@@ -270,8 +245,26 @@ setRefreshedAt(startTime);
       fees: 1,
       value: conditionedAmount,
       amount: conditionedAmount,
+      amount2: amounts && amounts[1],
+      amount3: amounts && amounts[2],
     });
 
+
+
+
+
+
+
+    // Add item to it
+/*
+    f.push({
+      name: "asdf",
+      student: 24,
+      fees: 1,
+      value: conditionedAmount,
+      amount: conditionedAmount,
+    });
+*/
     const maxAmpPoints = 100;
 
     const excessPoints = f.length - maxAmpPoints;
@@ -296,7 +289,7 @@ setRefreshedAt(startTime);
     const tf = endTime - startTime;
     const timeDiff = tf;
     //setTracePeriod(timeDiff);
-setTracePeriod(d);
+    setTracePeriod(d);
     //  }
   }, [amount]);
 
@@ -311,28 +304,40 @@ setTracePeriod(d);
   return (
     <>
       <div>
-{period && hide && (<>        <Trace data={streamPoints} domain={props.domain}/>
-<br />
-Period {humanPeriod(period)}
-<Typography><Frequency frequency={1000/period} /> requested</Typography>
-<Typography><Frequency frequency={1000/tracePeriod} /> observed</Typography>
+        {period && hide && (
+          <>
+            {" "}
+            <Trace data={streamPoints} domain={props.domain} />
+            <br />
+            Period {humanPeriod(period)}
+            <Typography>
+              <Frequency frequency={1000 / period} /> requested
+            </Typography>
+            <Typography>
+              <Frequency frequency={1000 / tracePeriod} /> observed
+            </Typography>
+          </>
+        )}
 
-</>)}
+        {period === undefined && hide && (
+          <>
+            <Trace data={dataPoints} domain={props.domain} />
+            <br />
+            <Typography>Period {humanPeriod(tracePeriod)}</Typography>
+            <Typography>
+              <Frequency frequency={1000 / tracePeriod} />
+            </Typography>
+          </>
+        )}
 
-{period === undefined && hide && (<>
-        <Trace data={dataPoints} domain={props.domain} />
-<br />
-<Typography>Period {humanPeriod(tracePeriod)}</Typography>
-<Typography><Frequency frequency={1000/tracePeriod} /></Typography>
-
-</>)}
-
-{hide && (<>
-  amount {amount} {units}
-        <br />
-        pointer {dataPointer}
-        <br />
-</>)}
+        {hide && (
+          <>
+            amount {amount} {units}
+            <br />
+            pointer {dataPointer}
+            <br />
+          </>
+        )}
       </div>
     </>
   );

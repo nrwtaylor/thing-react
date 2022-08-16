@@ -1,62 +1,77 @@
 import React, { useState, useEffect } from "react";
 import Agent from "../components/Agent.js";
 import Snapshot from "../components/Snapshot.js";
+import Datagram from "../components/Datagram.js";
+import ToGoTime from "../components/ToGoTime.js";
+import Associations from "../components/Associations.js";
 
-import axios from "axios";
+//import useDatagram from "./useDatagram";
+
 import { v4 as uuidv4 } from "uuid";
-import { Get } from "../components/Database.js";
+import { getThingReport } from "../util/database.js";
 
 //import{ Collapse} from '@mui/core';
 
-import { styled } from '@mui/material/styles';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Collapse from '@mui/material/Collapse';
-import Avatar from '@mui/material/Avatar';
+import { styled } from "@mui/material/styles";
 
+//import Container from '@mui/material/Container';
 
-import IconButton, { IconButtonProps } from '@mui/material/IconButton';
-//import IconButton from '@mui/material/IconButton';
+import Button from "@mui/material/Button";
 
-import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import CardMedia from "@mui/material/CardMedia";
+import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
+import Collapse from "@mui/material/Collapse";
+import Avatar from "@mui/material/Avatar";
 
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import IconButton, { IconButtonProps } from "@mui/material/IconButton";
+import UpdateIcon from "@mui/icons-material/Update";
+
+import Typography from "@mui/material/Typography";
+import { red } from "@mui/material/colors";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import ShareIcon from "@mui/icons-material/Share";
+
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 //import ExpandMoreIcon from '@mui/icons-material/ExpandMore.js';
-
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
 }
 
-
 const ExpandMore = styled((props: ExpandMoreProps) => {
   const { expand, ...other } = props;
   return <IconButton {...other} />;
 })(({ theme, expand }) => ({
-  transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-  marginLeft: 'auto',
-  transition: theme.transitions.create('transform', {
+  transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
+  marginLeft: "auto",
+  transition: theme.transitions.create("transform", {
     duration: theme.transitions.duration.shortest,
   }),
 }));
 
 export default function Thing(props) {
-  const { webPrefix, subject, to } = props;
+  const { datagram, token } = props;
+
+useEffect(()=>{
+
+console.log("Thing token", token);
+
+},[token]);
+
+  const { to, subject, webPrefix } = datagram;
 
   //const subject = props.subject;
   const startAt = props.createdAt;
 
   const currentAt = Date.now();
 
-  const defaultPollInterval = 10 * 1000; //ms
+  const defaultPollInterval =
+    datagram && datagram.pollInterval ? datagram.pollInterval : 2 * 60 * 1000; //ms
   const defaultTickInterval = 25; //ms
   const minimumPollInterval = 1 * 60 * 1000; //ms
 
@@ -68,6 +83,17 @@ export default function Thing(props) {
   const [PNG, setPNG] = useState();
 
   const [pollInterval, setPollInterval] = useState(defaultPollInterval);
+
+  //const {datagram, setDatagram} = useDatagram();
+
+  function setDatagram() {
+    console.log("hey");
+  }
+
+  useEffect(() => {
+    console.log("datagram", datagram);
+  }, [datagram]);
+
   const [timedInterval, setTimedInterval] = useState();
   const [timedBarInterval, setTimedBarInterval] = useState();
   const [timedTickInterval, setTimedTickInterval] = useState();
@@ -77,9 +103,21 @@ export default function Thing(props) {
 
   const [agentRequestedAt, setAgentRequestedAt] = useState();
 
-  const [nextRunAt, setNextRunAt] = useState();
+  const [nextRunAt, setNextRunAt] = useState(Date.now() + pollInterval);
 
   const [totalBytesReceivedData, setTotalBytesReceivedData] = useState(0);
+  //  const minimumPollInterval = 60 * 60 * 1000;
+
+  const defaultLatencyInterval = 1000; //ms
+
+  const [latencyInterval, setLatencyInterval] = useState(
+    defaultLatencyInterval
+  );
+
+  //  const [pollInterval, setPollInterval] = useState(defaultPollInterval);
+  //  const [timedInterval, setTimedInterval] = useState();
+
+  const [timedLatencyInterval, setTimedLatencyInterval] = useState();
 
   const [flag, setFlag] = useState();
 
@@ -87,13 +125,18 @@ export default function Thing(props) {
 
   const [expanded, setExpanded] = React.useState(false);
 
+  const [flipped, setFlipped] = React.useState(false);
+
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
   // Generate a UUID if not given one by App.
   const uuid = props.uuid ? props.uuid : uuidv4();
+  const nuuid = uuid.substring(0, 4);
   const [error, setError] = useState();
+
+  //const [url, setUrl] = useState();
 
   const [data, setData] = useState({
     thing: { uuid: "X" },
@@ -105,6 +148,12 @@ export default function Thing(props) {
     getResponse(webPrefix);
   }, []);
 
+  useEffect(() => {
+    console.log("Thing subject changed", subject);
+    //setFlag('green');
+    getResponse(webPrefix, true);
+  }, [subject]);
+
   function humanTime(timestamp) {
     const ts = new Date(timestamp);
     return ts.toISOString();
@@ -115,60 +164,58 @@ export default function Thing(props) {
     return uuid;
   }
 
-  function getResponse(webPrefix = null) {
+  function handleRefresh() {
+    getResponse(webPrefix, true);
+  }
+
+  function getResponse(webPrefix = null, flagOverride = false) {
     if (webPrefix === null) {
       webPrefix = process.env.REACT_APP_WEB_PREFIX;
     }
 
-    if (flag === "red") {
+    if (flag === "red" && flagOverride === false) {
       return;
     }
     setFlag("red");
-    var t = { subject: subject };
-    var thingy = { thing: null, thing_report: null };
+    console.log("Thing getResponse flag subject", flag, subject);
+//    const s = currentAt + defaultPollInterval;
 
-    // TODO Call Get from Database.js and return.
-    thingy = Get(t);
+//    setNextRunAt(s);
 
-    console.log("Thing " + uuid + " making axios call " + subject);
+//    var t = { subject: subject };
+//    var thingy = { thing: null, thing_report: null };
 
-    //    const webPrefix = process.env.REACT_APP_WEB_PREFIX;
+ //   const s = currentAt + defaultPollInterval;
+ //   setNextRunAt(s);
+
+
     const requestedAt = Date.now();
     setAgentRequestedAt(requestedAt);
-    // console.log("requestedAt", requestedAt);
-    axios
-      .get(webPrefix + subject + `.json`, {
-        headers: {
-          Authorization: "my secret token",
-        },
-      })
-      .then((res) => {
-        let thingy = res.data;
-        console.log("Thing axios res", res);
-        console.log("Thing axios res.data", res.data);
 
-        // agent etime info json:null thing etc
-        setData(res.data);
-
-        const bytesReceivedData = JSON.stringify(res.data).length;
-        console.log("bytes", bytesReceivedData);
-
-        setTotalBytesReceivedData(
-          (prevTotalBytesReceivedData) =>
-            prevTotalBytesReceivedData + bytesReceivedData
-        );
+    getThingReport(datagram, token)
+      .then((result) => {
+        console.log("Thing getThingReport", result);
+        setData(result);
 
         const elapsedTime = Date.now() - requestedAt;
 
-        var base64Icon = "data:image/png;base64," + res.data.thingReport.png;
+        var base64Icon = "data:image/png;base64," + result.thingReport.png;
         setPNG(base64Icon);
 
         setTimedInterval(elapsedTime);
+
+    const p = requestedAt + 120000;
+    setNextRunAt(p);
+console.log("nextRunAt p", p, humanTime(p));
+
         setFlag("green");
+setError(null);
       })
       .catch((error) => {
-        setError({ ...error, message: "Problem" });
+        setError("Did not get Thingreport.");
+        console.error(error);
       });
+    return;
   }
 
   useEffect(() => {
@@ -184,30 +231,47 @@ export default function Thing(props) {
 
   function Forget() {}
 
+  const handleForgetThing = (e) => {
+    if (props.onChange) {
+      props.onChange('forget');
+    }
+  };
+
+
   // Call getResponse on a Timer.
   // Check if the flag has changed.
   useEffect(() => {
     // If still processing the last one,
     // Skip a beat, do not request another.
-    if (flag === "red") {
-      return;
-    }
-
+    //    if (flag === "red") {
+    //      return;
+    //    }
+    setFlag("green");
     // First time flag is green.
 
-    console.log("nextRunAt pollInterval", pollInterval);
-    const t = currentAt + pollInterval;
+    console.log("Thing nextRunAt pollInterval", pollInterval);
+    //const t = currentAt + pollInterval;
 
-    setNextRunAt(t);
+    //setNextRunAt(t);
+    getResponse(webPrefix);
 
     const interval = setInterval(() => {
+      //<<<<<<< Updated upstream
       getResponse(webPrefix);
       console.log("This will run every: " + pollInterval);
+      //=======
+      //    const webPrefix = process.env.REACT_APP_WEB_PREFIX;
+      //    const path = subject + `.json`;
+
+      //      getResponse(path);
+      console.log("This will run every five minutes!");
+      //>>>>>>> Stashed changes
     }, pollInterval);
     console.log("interval", interval);
 
     return () => clearInterval(interval);
-  }, [flag]);
+    //  }, [flag]);
+  }, [datagram]);
 
   useEffect(() => {
     // If still processing the last one,
@@ -217,7 +281,7 @@ export default function Thing(props) {
     }
 
     // Do some work?
-    console.log("Thing " + uuid + " asking for work.");
+//    console.log("Thing " + nuuid + " check-in.");
     /*
 https://www.reddit.com/r/reactjs/comments/p7ky46/is_react_synchronous_with_respect_to_function/
 https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_JavaScript
@@ -259,8 +323,6 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
   }, []);
 
   useEffect(() => {
-    //console.log("tick", tick);
-
     if (tick === 0) {
       const elapsedTime = Date.now() - tickRequestedAt;
 
@@ -273,6 +335,30 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
     }
   }, [tick]);
 
+  const handleFlipThing = (e) => {
+    setFlipped(!flipped);
+
+    if (props.onChange) {
+      props.onChange(e);
+    }
+  };
+
+  const handleSpawnThing = (e) => {
+    if (props.onChange) {
+      props.onChange('spawn');
+    }
+  };
+
+
+  const handleOpenThing = (e) => {
+    handleExpandClick();
+    if (props.onChange) {
+      props.onChange(e);
+    }
+  };
+
+  // Reference
+  //  {PNG && <img src={PNG} onError={(event) => event.target.style.display = 'none'}
   useEffect(() => {
     if (bar === 0) {
       const elapsedTime = Date.now() - barRequestedAt;
@@ -284,82 +370,150 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
 
   return (
     <>
-    <Card>
-<div>
-        <ExpandMore
-          expand={expanded}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show more"
-        >
-          <ExpandMoreIcon />
-        </ExpandMore>
-<Typography>TO {to}</Typography>
-<Typography>SUBJECT {subject}</Typography>
+      <Card style={{ maxWidth: "100%" }}>
+        <CardHeader
+          action={
+            <IconButton>
+              <MoreVertIcon />
+            </IconButton>
+          }
+        />
 
-</div>
-{expanded && (<>
+       <Button onClick={handleSpawnThing}>SPAWN</Button>
 
-      Last edited: 12 June 2022
-      <div>
-        THING {uuid}
-        <br />
-        RUNTIME {runTime}
-        <br />
-        NEXT RUN AT {nextRunAt}
-        <br />
-        CURRENT AT {currentAt}
-        <br />
-        TOGOTIME {nextRunAt - currentAt}
-        <br />
-        TOTAL CHARACTERS RECEIVED DATA {totalBytesReceivedData}
-        <br />
-        {error && error.message}
-        <br />
-        TICK {tick} {timedTickInterval}
-        <br />
-        BAR {bar} {timedBarInterval}
-        <br />
-        {flag} <br />
-        TIMED INTERVAL {timedInterval}
-        <br />
-        POLL INTERVAL {pollInterval}
-        <br />
-        <RequestedAt />
-        <br />
-        {!data && <>NOT DATA</>}
-      </div>
+       <Button onClick={handleForgetThing}>FORGET</Button>
 
-{subject && subject === 'snapshot' && (
-      <div>
-        {/*<Snapshot user={null} thing={data.thing} agent_input="https://stackr.ca" />*/}
-        <Snapshot user={null} thing={data.thing} agent_input={webPrefix} />
-      </div>)}
-      <div>
-        <br />
-        {/*      <Agent user={null} thing={data.thing} agent_input="http://localhost" />*/}
-        <Agent user={null} thing={data.thing} agent_input={webPrefix} />
 
-        <br />
-      </div>
-      <div>
-        <div>DATAGRAM</div>
-        {subject}
-      </div>
-      <div>
-        <div>THING</div>
-        {/* Note */}
-        <div>SMS {data && data.sms}</div>
-        <div dangerouslySetInnerHTML={{ __html: data && data.web }} />
-        <div>UUID {data && data.thing && data.thing.uuid}</div>
-        <div>CREATED AT {data && data.thing && data.thing.created_at}</div>
-      </div>
+        {!expanded && <Button onClick={handleFlipThing}>FLIP</Button>}
 
-</>)}
-        <div>SMS {data && data.thingReport && data.thingReport.sms}</div>
+        {expanded && <Button onClick={handleOpenThing}>FOLD</Button>}
+        {!expanded && <Button onClick={handleOpenThing}>OPEN</Button>}
 
-        {PNG && <img width="800px" src={PNG} />}
-</Card>
+        {/*<div onClick={handleExpandClick} >*/}
+        <div>
+          {!expanded && flipped && (
+            <>
+              <Datagram datagram={datagram} setDatagram={setDatagram} token={token} />
+              WEBPREFIX {datagram.webPrefix}
+              <br />
+ERROR {error}
+<br />
+              TIMED LATENCY INTERVAL {timedLatencyInterval}
+              <br />
+              TIMED INTERVAL {timedInterval}
+              <br />
+              POLL INTERVAL {pollInterval}
+              <br />
+              <RequestedAt />
+              <br />
+              NEXT RUN AT {humanTime(nextRunAt)}
+              <br />
+              CURRENT AT {humanTime(currentAt)}
+              <br />
+              TOTAL CHARACTERS RECEIVED DATA {totalBytesReceivedData}
+              <br />
+              <Associations datagram={datagram} />
+              {error && error.message}
+              <br />
+            </>
+          )}
+
+          {!expanded && !flipped && (
+            <>
+              {subject}
+              {PNG && (
+                <img
+                  height="140"
+                  src={PNG}
+                  onError={(event) => (event.target.style.display = "none")}
+                />
+              )}
+              <div>{data && data.sms}</div>
+              {/*
+              <div>{data && data.thingReport && data.thingReport.sms}</div>*/}
+              <Typography>{nuuid}</Typography>
+              <ToGoTime
+                toGoTime={nextRunAt - currentAt}
+                onRefresh={handleRefresh}
+              />
+              {/*             <Typography>TOGOTIME {nextRunAt - currentAt}</Typography> */}
+              {flag} <br />
+              message{" "}
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: data && data.thingReport && data.thingReport.message,
+                }}
+              />
+            </>
+          )}
+
+          {expanded && (
+            <CardMedia
+              component="img"
+              src={PNG}
+              onError={(event) => (event.target.style.display = "none")}
+            />
+          )}
+          {/*          <div>
+            <ExpandMore
+              expand={expanded}
+              onClick={handleExpandClick}
+              aria-expanded={expanded}
+              aria-label="show more"
+            >
+              <ExpandMoreIcon />
+            </ExpandMore>
+          </div>
+*/}
+          {expanded && (
+            <>
+              Last edited: 12 June 2022
+              <div>
+                THING {uuid}
+                <br />
+                TOTAL CHARACTERS RECEIVED DATA {totalBytesReceivedData}
+                <br />
+                {error && error.message}
+                <br />
+                TICK {tick} {timedTickInterval}
+                <br />
+                BAR {bar} {timedBarInterval}
+                <br />
+                <Typography>RUNTIME {runTime}</Typography>
+                {!data && <>NOT DATA</>}
+              </div>
+              {subject && subject === "snapshot" && (
+                <div>
+                  <Snapshot
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
+              <div>
+                <br />
+                {/*      <Agent user={null} thing={data.thing} agent_input="http://localhost" />*/}
+                <Agent
+                  user={null}
+                  thing={data && data.thing}
+                  agent_input={webPrefix}
+                />
+
+                <br />
+              </div>
+              <div>
+                {/* Note */}
+                <div dangerouslySetInnerHTML={{ __html: data && data.web }} />
+                <div>UUID {data && data.thing && data.thing.uuid}</div>
+              </div>
+            </>
+          )}
+
+          {/*https://www.designcise.com/web/tutorial/how-to-hide-a-broken-image-in-react*/}
+        </div>
+      </Card>
     </>
   );
 }

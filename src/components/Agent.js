@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 
 import "../index.css";
 import {
@@ -52,20 +51,11 @@ function Agent(props) {
 //    getAgent();
   }, [getAgent]); // eslint-disable-line react-hooks/exhaustive-deps
 */
-  const [open, setOpen] = useState(false);
+  //  const [open, setOpen] = useState(false);
 
   const replyAgentDialog = (thing) => {
-    setOpen(true);
+    //    setOpen(true);
   };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-  /*
-  useEffect(() => {
-    console.log("Agent thing", thing);
-  }, [thing]);
-*/
 
   function humanTime(timestamp) {
     const ts = new Date();
@@ -107,7 +97,7 @@ function Agent(props) {
       });
 */
 
-    setOpen(false);
+    //    setOpen(false);
   };
 
   function timeStamp() {
@@ -136,32 +126,6 @@ function Agent(props) {
 */
   }
 
-  // TODO Call Thing > Database.
-  function getAgent(agent) {
-    if (flag === "red") {
-      return;
-    }
-    setFlag("red");
-    console.log("Axios call " + agent);
-    //const webPrefix = process.env.REACT_APP_WEB_PREFIX
-
-    const webPrefix = agent_input;
-    //setRequestedAt(Date.now());
-    axios
-      .get(webPrefix + agent + `.json`)
-      .then((res) => {
-        let thingy = res.data;
-        console.log("Agent res.data", res.data);
-        setData(res.data);
-
-        // dev flag available not available
-        //setFlag("green");
-      })
-      .catch((error) => {
-        console.log("Agent error", error);
-      });
-  }
-
   function callBack() {
     console.log("Agent callBack called.");
   }
@@ -172,13 +136,31 @@ function Agent(props) {
 
   return (
     <>
-      <div> AGENT</div>
+      <div>AGENT</div>
+      <TextField
+        multiline
+        autoFocus
+        margin="normal"
+        label="INPUT"
+        type="text"
+        fullWidth
+        name="updateReply"
+        value={reply}
+        onChange={(event) => setReply(event.target.value)}
+      />
+    </>
+  );
+
+  return (
+    <>
+      <div>AGENT</div>
       {/* flag */}
 
       <ListItem key={thing && thing.uuid} alignItems="flex-start">
         <ListItemText
           primary={
-            <Typography variant="body2">
+            {
+              /*           <Typography variant="body2">
               timestamp {timeStamp()}
               <br />
               humanTime {humanTime(timeStamp())}
@@ -186,6 +168,8 @@ function Agent(props) {
               from {fromName()}
               <br />
             </Typography>
+*/
+            }
           }
           secondary={
             <>
@@ -200,37 +184,20 @@ function Agent(props) {
         />
       </ListItem>
 
-      <IconButton aria-label="Edit" onClick={() => replyAgentDialog()}>
-        <Edit />
-      </IconButton>
-
-      <Dialog open={open} onClose={handleClose} fullWidth>
-        uuid {thing && thing.uuid}
-        from {thing && thing.from}
-        to {thing && thing.to}
-        user_name {user_name}
-        <DialogContent>
-          <TextField
-            multiline
-            autoFocus
-            margin="normal"
-            label="Type your reply here... (TODO)"
-            type="text"
-            fullWidth
-            name="updateReply"
-            value={reply}
-            onChange={(event) => setReply(event.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={editAgent} color="primary">
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <TextField
+        multiline
+        autoFocus
+        margin="normal"
+        label="Type your reply here... (TODO)"
+        type="text"
+        fullWidth
+        name="updateReply"
+        value={reply}
+        onChange={(event) => setReply(event.target.value)}
+      />
+      <Button onClick={editAgent} color="primary">
+        Save
+      </Button>
     </>
   );
 }

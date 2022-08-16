@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 
 import "../index.css";
 import {
@@ -30,29 +29,27 @@ import Forget from "../components/Forget.js";
 import Trace from "../components/Trace.js";
 import Stream from "../components/Stream.js";
 import BubbleLevel from "../components/BubbleLevel.js";
+import Ping from "../components/Ping.js";
+import {getSnapshot} from "../util/database.js";
+
 
 function Snapshot(props) {
+
+  const {datagram} = props;
+
   const user_name = props.user_name; // TODO
   const agent_input = props.agent_input;
   const webPrefix = agent_input;
   const [flag, setFlag] = useState();
   //const [requestedAt, setRequestedAt] = useState();
   const [reply, setReply] = useState("");
-
-  const thing = props.thing;
+  const [snapshotInterval, setSnapshotInterval] =  useState(60000);
 
   const [data, setData] = useState({
     thing: { uuid: "X" },
     thing_report: { sms: "No response. Yet." },
   });
 
-  /*
-  useEffect(() => {
-    setFlag("green");
-
-//    getAgent();
-  }, [getAgent]); // eslint-disable-line react-hooks/exhaustive-deps
-*/
   const [open, setOpen] = useState(false);
 
   const [snapshotGetTime, setSnapshotGetTime] = useState();
@@ -64,38 +61,15 @@ function Snapshot(props) {
     setOpen(false);
   };
 
-  //useEffect(()=>{
-
-  //getAgent();
-
-  //},[]);
-
   useEffect(() => {
-    // If still processing the last one,
-    // Skip a beat, do not request another.
-    //    if (flag === "red") {
-    //      return;
-    //    }
-
-    // First time flag is green.
-
-    //    console.log("nextRunAt pollInterval", pollInterval);
-    //    const t = currentAt + pollInterval;
-
-    //    setNextRunAt(t);
+    getSnapshot2();
 
     const interval = setInterval(() => {
-      getSnapshot();
-    }, 50); // 20 Hz was 200.
+      getSnapshot2();
+    }, snapshotInterval); // 20 Hz was 200.
 
     return () => clearInterval(interval);
   }, []);
-
-  /*
-  useEffect(() => {
-    console.log("Agent thing", thing);
-  }, [thing]);
-*/
 
   function humanTime(timestamp) {
     const ts = new Date();
@@ -103,80 +77,71 @@ function Snapshot(props) {
   }
 
   function fromName() {
-    if (thing === undefined) {
+    if (datagram === undefined) {
       return "Agent";
     }
 
-    if (thing && thing.from === undefined) {
+    if (datagram && datagram.from === undefined) {
       return "Agent";
     }
 
-    return thing.from;
+    return datagram.from;
   }
-
-  const editAgent = () => {
-    const datagram = {
-      comment: reply,
-      to: "merp",
-      from: user_name,
-      association: thing.uuid,
-    };
-    console.log("Datagram");
-    console.log(datagram);
-
-    /*
-    db.collection("things")
-      .add(
-        datagram
-      )
-      .then(function () {
-        console.log("Document succesfully written!");
-      })
-      .catch(function (error) {
-        console.error("Error writing document: ", error);
-      });
-*/
-
-    setOpen(false);
-  };
 
   function timeStamp() {
     var date = Date.now();
     return date.toString();
   }
 
-  // TODO Call Thing > Database.
-  function getSnapshot(agent) {
+  function getSnapshot2(agent) {
     const startTime = new Date();
     if (flag === "red") {
       return;
     }
     // setFlag("red");
-    console.log("Snapshot axios call " + agent);
+    console.log("Snapshot getSnapshot call " + agent);
     //    const webPrefix = process.env.REACT_APP_WEB_PREFIX
     //setRequestedAt(Date.now());
+console.log("Snapshot getSnapshot webPrefix", webPrefix);
+//    const url = webPrefix + "snapshot.json";
 
-    //const url = 'http://192.168.10.10/snapshot.json';
-    const url = webPrefix + "snapshot.json";
-    console.log("Snapshot axios url " + url);
-    console.log("Snapshot axios url " + url, flag);
-    console.log("Snapshot axios url " + url, webPrefix);
+getSnapshot(webPrefix,"").then((result)=>{
 
-    if (webPrefix === "https://stackr.ca/") {
-      setFlag("red");
-      return;
-    }
-    //    axios.get(webPrefix + agent + `.json`).then((res) => {
-    //if (flag === undefined) {setFlag('green');}
+console.log("Snapshot getSnapshot result", result);
+
+if (result && result.thingReport === false) {
+// No thing report. Do not update snapshot.
+return;
+}
+
+if (result && result.thingReport && result.thingReport.snapshot) {
+setData(result.thingReport.snapshot);
+} else {
+      setData(result.data);
+
+}
+        // dev flag available not available
+        setFlag("green");
+        const endTime = new Date();
+        setSnapshotGetTime(endTime - startTime);
+
+
+
+}).catch((error)=>{console.error("Snapshot getSnapshot error",error);})
+/*
     axios
       .get(url)
       .then((res) => {
         console.log("Got " + url);
         //console.log("snapshot", res);
         let thingy = res.data;
-        //      console.log("Agent res.data", res.data);
-        setData(res.data);
+        console.log("Snapshot res.data", res.data);
+if (res && res.data && res.data.thingReport && res.data.thingReport.snapshot) {
+setData(res.data.thingReport.snapshot);
+} else {
+      setData(res.data);
 
+}
         // dev flag available not available
         setFlag("green");
         const endTime = new Date();
@@ -188,6 +153,7 @@ function Snapshot(props) {
 
         console.log("Get error", url, error);
       });
+*/
   }
 
   const [ampDataPointer, setAmpDataPointer] = useState(0);
@@ -201,17 +167,36 @@ function Snapshot(props) {
   }
 
   const deleteButton = (
-    <Forget uuid={thing && thing.uuid} callBack={callBack} />
+    <Forget uuid={datagram && datagram.uuid} callBack={callBack} />
   );
 
   return (
     <>
       <div>SNAPSHOT</div>
+<div>
+URL {webPrefix}.snapshot.json
+</div>
       <div>
         FLAG {flag} COLOUR
         <br />
         GET TIME {snapshotGetTime}ms {Math.round(1000 / snapshotGetTime, 1)}Hz
         <br />
+
+{data && data.ping && (<>PING<br/></>)}
+{data && data.ping && (<Ping ping={data.ping} />)}
+{data && data.ping && data.ping.map((ping, index)=>{
+
+return(
+<>
+{ping.host}<br />
+{ping.data}<br />
+{ping.refreshedAt}<br />
+</>
+)
+
+})
+}
+{data && data.transducers && (<>
         AMP0:{" "}
         {data &&
           data.transducers &&
@@ -580,6 +565,8 @@ domain={{maximum:16, minimum:10}}
           data.transducers.thgyrzax2 &&
           data.transducers.thgyrzax2.amount}{" "}
         <br />
+
+</>)}
         {/*
 MRU<br />
 ACCZ: {data && data.transducers && data.transducers.thacczax2 && data.transducers.thacczax2.amount} m<br />
