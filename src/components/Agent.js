@@ -137,6 +137,8 @@ function Agent(props) {
   return (
     <>
       <div>AGENT</div>
+{thing && thing.nomFrom}
+{thing && thing.from}
       <TextField
         multiline
         autoFocus
@@ -154,6 +156,8 @@ function Agent(props) {
   return (
     <>
       <div>AGENT</div>
+{thing && thing.nomFrom}
+{thing && thing.from}
       {/* flag */}
 
       <ListItem key={thing && thing.uuid} alignItems="flex-start">

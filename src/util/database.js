@@ -99,15 +99,19 @@ export function forgetThing(datagram, token) {
 
 
 export function getSnapshot(webPrefix, token) {
-  const u = webPrefix + "snapshot.json";
+if (!webPrefix) {return false;}
+  var u = webPrefix;
+if (!u.endsWith('snapshot.json')) {
+ u = webPrefix + "snapshot.json";
+}
   console.log("database getSnapshot u", u);
   console.log("database getSnapshot webPrefix", webPrefix);
 
   return axios
     .get(u, {
       headers: {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': '*',
+//  'Access-Control-Allow-Origin': '*',
+//  'Access-Control-Allow-Headers': '*',
         Authorization: "my secret token",
         "x-access-token": token,
         "Content-Type": "application/json",
@@ -119,7 +123,7 @@ export function getSnapshot(webPrefix, token) {
       return thingy;
     })
     .catch((error) => {
-      console.log("database getSnapshot u error", u, error);
+      console.log("database getSnapshot u error", u, webPrefix, error);
     });
 }
 
