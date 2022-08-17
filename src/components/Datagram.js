@@ -11,6 +11,8 @@ import { humanTime } from "./../util/time.js";
 
 export default function Datagram({ datagram, setDatagram, token }) {
   const [subject, setSubject] = useState(datagram.subject);
+  const [to, setTo] = useState(datagram.to);
+
   // Display token.
 
   function subjectChange(e) {
@@ -23,6 +25,19 @@ console.log("datagram subjectChange", datagram);
 console.log("datagram uuid", datagram.uuid);
 
 setThing(datagram.uuid, {subject:d}, token);
+
+  }
+
+  function toChange(e) {
+console.log("datagram toChange", datagram);
+    var d = e.target.value;
+    setTo(d);
+    datagram.to = d;
+    setDatagram({...datagram});
+
+console.log("datagram uuid", datagram.uuid);
+
+setThing(datagram.uuid, {to:d}, token);
 
   }
 
@@ -40,11 +55,6 @@ setThing(datagram.uuid, {subject:d}, token);
 
   return (
     <>
-              <Typography>UUID {datagram && datagram.uuid}</Typography>
-              <Typography>TO {datagram && datagram.to}</Typography>
-{/*              <Typography>SUBJECT {datagram && datagram.subject}</Typography> */}
-
-
             <TextField
 //              error = {validation.validator(variableType,subject)}
               variant="filled"
@@ -55,6 +65,18 @@ setThing(datagram.uuid, {subject:d}, token);
               name="updateSubject"
               value={subject}
               onChange={subjectChange}
+            />
+
+            <TextField
+//              error = {validation.validator(variableType,subject)}
+              variant="filled"
+              margin="normal"
+              label={'to'}
+              type="text"
+              fullWidth
+              name="updateTo"
+              value={to}
+              onChange={toChange}
             />
 
 

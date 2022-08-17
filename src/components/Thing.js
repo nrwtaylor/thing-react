@@ -482,8 +482,8 @@ ERROR {error}
                 <Typography>RUNTIME {runTime}</Typography>
                 {!data && <>NOT DATA</>}
               </div>
-              {subject && subject === "snapshot" && (
-                <div>
+{subject && (subject.toUpperCase().indexOf("snapshot") === -1) && (        
+        <div>
                   <Snapshot
                     user={null}
                     //thing={data.thing}
