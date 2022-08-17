@@ -42,7 +42,7 @@ function Snapshot(props) {
   const [flag, setFlag] = useState();
   //const [requestedAt, setRequestedAt] = useState();
   const [reply, setReply] = useState("");
-  const [snapshotInterval, setSnapshotInterval] = useState(60000);
+  const [snapshotInterval, setSnapshotInterval] = useState(50);
 
   const [data, setData] = useState({
     thing: { uuid: "X" },
@@ -112,23 +112,28 @@ const url = to;
 
         console.log("Snapshot getSnapshot result", result);
 
+        if (!result) {return true;}
+
         if (result && result.thingReport === false) {
           // No thing report. Do not update snapshot.
-          return;
+          return false;
         }
 
         if (result && result.thingReport && result.thingReport.snapshot) {
           setData(result.thingReport.snapshot);
         } else {
-          setData(result.data);
+          // Failback situation where thingReport format not found.
+          setData(result);
         }
         // dev flag available not available
         setFlag("green");
         const endTime = new Date();
         setSnapshotGetTime(endTime - startTime);
+        return result;
       })
       .catch((error) => {
         console.error("Snapshot getSnapshot error", error);
+        return error;
       });
     /*
     axios
