@@ -99,7 +99,7 @@ export function forgetThing(datagram, token) {
 
 
 export function getSnapshot(webPrefix, token) {
-if (!webPrefix) {return false;}
+if (!webPrefix) {return Promise.reject();}
   var u = webPrefix;
 
 //if (!u.endsWith('snapshot.json')) {

@@ -49,6 +49,19 @@ export const ThingContainer = memo(function ThingContainer(props) {
           ],
         })
       );
+
+things.map((t, index) =>{
+      const newT = { ...t };
+
+t.index = index;
+setThing(t.uuid, t, token).then((result)=> {console.log(result);});
+
+
+})
+
+
+// dev?
+
     },
     [findThing, things, setThings]
   );
@@ -217,6 +230,9 @@ setThings(
           $splice: [[index, 1, newThing]],
         })
       );
+
+// dev?
+setThing(newThing.uuid, newThing, token).then((result)=> {console.log(result);});
 
       //           setThings(update(things, {
       //               $splice: [[index,1]],
