@@ -24,14 +24,14 @@ export const Card = memo(function Card({
   card,
   token,
   text,
-flipCard,
-spawnCard,
-openCard,
+  flipCard,
+  spawnCard,
+  openCard,
+  foldCard,
   moveCard,
   deleteCard,
   findCard,
 }) {
-
   const originalIndex = findCard(id).index; //index
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -66,30 +66,44 @@ openCard,
   const opacity = isDragging ? 0 : 1;
 
   function handleFlipCard(e) {
-
-//    props.onCardChange(e);
-flipCard(id);
+    //    props.onCardChange(e);
+    flipCard(id);
   }
-function handleChange(e) {
-console.log("handleChange", e);
-if (e === 'spawn') {
+  function handleChange(e) {
+    console.log("handleChange", e);
+    if (e === "spawn") {
+      spawnCard(id, originalIndex);
+    }
 
-spawnCard(id, originalIndex);
+    if (e === "forget") {
+      deleteCard(id);
+    }
 
-}
+    if (e === "open") {
+      openCard(id);
+    }
 
-if (e === 'forget') {
+    if (e === "flip") {
+      flipCard(id);
+    }
 
-deleteCard(id);
+    if (e === "fold") {
+      foldCard(id);
+    }
 
-}
-
-
-}
+  }
   function handleOpenCard(e) {
+    //    props.onCardChange(e);
+    openCard(id);
+  }
 
-//    props.onCardChange(e);
-openCard(id);
+  function handleFlipCard(e) {
+    //    props.onCardChange(e);
+    flipCard(id);
+  }
+
+  function handleFoldCard(e) {
+    foldCard(id);
   }
 
 
@@ -101,6 +115,41 @@ openCard(id);
   useEffect(() => {
     console.log("Card card", card);
   }, [card]);
+
+  if (card && card.open && card.open === "open") {
+    return (
+      <Grid
+        item
+        xs={12}
+        sm={12}
+        ref={(node) => drag(drop(node))}
+        style={{ ...style, opacity }}
+      >
+        <Box
+          style={{
+            border: "1px solid #1d7d1d",
+            borderRadius: "8px",
+            padding: "4px",
+            height: "100%",
+            display: "flex",
+            cursor: "move",
+          }}
+        >
+          <Thing
+            //          to={card.to}
+            //          subject={card.subject}
+            //          createdAt={card.createdAt}
+            uuid={card.uuid}
+            //          input={card.input}
+            token={token}
+            datagram={card}
+            webPrefix={card.webPrefix}
+            onChange={(e) => handleChange(e)}
+          />
+        </Box>
+      </Grid>
+    );
+  }
 
   return (
     <Grid
@@ -121,15 +170,15 @@ openCard(id);
         }}
       >
         <Thing
-//          to={card.to}
-//          subject={card.subject}
-//          createdAt={card.createdAt}
+          //          to={card.to}
+          //          subject={card.subject}
+          //          createdAt={card.createdAt}
           uuid={card.uuid}
-//          input={card.input}
+          //          input={card.input}
           token={token}
           datagram={card}
           webPrefix={card.webPrefix}
-          onChange={(e)=>handleChange(e)}
+          onChange={(e) => handleChange(e)}
         />
       </Box>
     </Grid>

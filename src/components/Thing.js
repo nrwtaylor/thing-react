@@ -339,7 +339,7 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
     setFlipped(!flipped);
 
     if (props.onChange) {
-      props.onChange(e);
+      props.onChange('flip');
     }
   };
 
@@ -353,7 +353,7 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
   const handleOpenThing = (e) => {
     handleExpandClick();
     if (props.onChange) {
-      props.onChange(e);
+      props.onChange('open');
     }
   };
 

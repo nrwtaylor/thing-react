@@ -6,7 +6,7 @@ import { useDrop } from "react-dnd";
 import { ItemTypes } from "./ItemTypes";
 import { FullscreenExitTwoTone } from "@material-ui/icons";
 import { v4 as uuidv4 } from "uuid";
-import { forgetThing, createThing, getThingReport } from "../util/database.js";
+import { forgetThing, createThing, getThingReport, setThing } from "../util/database.js";
 
 //import { wrap } from "analytics/lib/analytics.cjs";
 
@@ -19,8 +19,7 @@ const style = {
 };
 
 export const ThingContainer = memo(function ThingContainer(props) {
-
-const webPrefix = process.env.REACT_APP_WEB_PREFIX;
+  const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 
   const { token } = props;
   const [things, setThings] = useState(props.things);
@@ -35,11 +34,9 @@ const webPrefix = process.env.REACT_APP_WEB_PREFIX;
     [things]
   );
 
-useEffect(() =>{
-
-setThings(props.things);
-
-},[props.things]);
+  useEffect(() => {
+    setThings(props.things);
+  }, [props.things]);
 
   const moveThing = useCallback(
     (id, atIndex) => {
@@ -72,33 +69,74 @@ setThings(props.things);
         })
       );
 
-
-// Call delete Thing api
-forgetThing(thing, token).then((res)=>{
-console.log("ThingContainer forgot uuid", thing.uuid);
-      props.onCollectionChange(things);
-
-}).catch((error)=>{console.error("error",error);})
-//      props.onCollectionChange(things);
+      // Call delete Thing api
+      forgetThing(thing, token)
+        .then((res) => {
+          console.log("ThingContainer forgot uuid", thing.uuid);
+          props.onCollectionChange(things);
+        })
+        .catch((error) => {
+          console.error("error", error);
+        });
+      //      props.onCollectionChange(things);
     },
     [things]
   );
 
-
-
   const openThing = useCallback(
     (id, atIndex) => {
-      //console.log("deleteCard id", id);
-      //console.log("deleteCard atIndex", atIndex);
       const { thing, index } = findThing(id);
 
       //           setThings(update(things, {
       //               $splice: [[index,1]],
       ///           }));
+      const newThing = { ...thing };
+
+      //          newThing.associations = {
+      //            ...newThing.associations,
+      //            uuid: result.uuid,
+      //          };
+
+      newThing.open = "open";
+
+      setThings(
+        update(things, {
+          $splice: [[index, 1, newThing]],
+        })
+      );
+
+// dev?
+setThing(newThing.uuid, newThing, token).then((result)=> {console.log(result);});
+
+
       props.onCollectionChange(things);
     },
     [things]
   );
+
+  const foldThing = useCallback(
+    (id, atIndex) => {
+      const { thing, index } = findThing(id);
+
+      const newThing = { ...thing };
+
+      newThing.open = "folded";
+
+      setThings(
+        update(things, {
+          $splice: [[index, 1, newThing]],
+        })
+      );
+
+// dev?
+setThing(newThing.uuid, newThing, token).then((result)=> {console.log(result);});
+
+
+      props.onCollectionChange(things);
+    },
+    [things]
+  );
+
 
   const spawnThing = useCallback(
     (id, atIndex) => {
@@ -159,6 +197,27 @@ setThings(
       //console.log("deleteCard atIndex", atIndex);
       const { thing, index } = findThing(id);
 
+      const newThing = { ...thing };
+
+      //          newThing.associations = {
+      //            ...newThing.associations,
+      //            uuid: result.uuid,
+      //          };
+      if (newThing && newThing.side === "back") {
+        newThing.side = "front";
+      } else if (newThing && newThing.side === "front") {
+        newThing.side = "back";
+      } else {
+        // broken
+        newThing.side = "front";
+      }
+
+      setThings(
+        update(things, {
+          $splice: [[index, 1, newThing]],
+        })
+      );
+
       //           setThings(update(things, {
       //               $splice: [[index,1]],
       ///           }));
@@ -182,6 +241,7 @@ setThings(
         {things && (
           <>
             {things.map((thing) => (
+<>
               <Card
                 key={thing.uuid}
                 id={`${thing.index}`}
@@ -189,12 +249,14 @@ setThings(
                 text={thing && thing.text}
                 flipCard={flipThing}
                 openCard={openThing}
+                foldCard={foldThing}
                 moveCard={moveThing}
                 deleteCard={deleteThing}
                 spawnCard={spawnThing}
                 findCard={findThing}
                 token={token}
               />
+</>
             ))}
           </>
         )}

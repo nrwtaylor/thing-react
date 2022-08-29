@@ -41,6 +41,16 @@ export default function App() {
       input: "start",
 //      webPrefix: "http://192.168.10.10/snapshot.json",
     },
+    {
+      index: 21,
+      to: "localhost",
+      subject: "snapshot 03bf6037-3644-48da-999b-c3bdc6cee39f kokopelli",
+      createdAt: Date.now(),
+      uuid: testUuid0,
+      input: "start",
+//      webPrefix: "http://192.168.10.10/snapshot.json",
+    },
+
 
   ];
 
@@ -215,12 +225,19 @@ export default function App() {
 
   //}
 
+function handleCollectionChange(things) {
+
+//setThings(things);
+
+
+}
+
   return (
     <>
       <Token token={token} />
       <Identity identity={identity} />
       <BrowserRouter>
-        THING-REACT 10 August 2022
+        THING-REACT 28 August 2022
         {!token && (
           <>
             <Login setToken={setToken} setIdentity={setIdentity} />
@@ -243,14 +260,18 @@ export default function App() {
           />
         </div>
 */}
+<br />
+{token && (<>TOKEN EXISTS</>)}
+<br />
         {token && things && (
           <>
             <Logout deleteToken={deleteToken} />
+
             <Container maxWidth="sm">
               <Collection
                 token={token}
                 things={things}
-                onCollectionChange={() => {}}
+                onCollectionChange={(c) => {handleCollectionChange(c)}}
               />
             </Container>
           </>

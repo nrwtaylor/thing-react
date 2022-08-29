@@ -29,17 +29,20 @@ export default function Token({ token }) {
 
   return (
     <>
-      TOKEN
-      {!token && "NOT"}
+      TOKEN{' '}
+      {!token && "NONE"}
       {token && token === null && "NULL"}
       {token && token === false && "FALSE"}
       {token && token === "" && "EMPTY"}
       {token && token === true && "TRUE"}
       {token && Array.isArray(token) && "ARRAY"}
       {token && token.isString && <>{"STRING" + token}</>}
-      {token && token} <br />
-      {expiresAt && <>{expiresAt}{' '}{humanTime(expiresAt)}</>} <br />
-      {refreshedAt && <>{refreshedAt}{' '}{humanTime(refreshedAt)}</>} <br />
+      {token && token} 
+<br />
+      EXPIRES AT{' '}{expiresAt && <>{expiresAt}{' '}{humanTime(expiresAt)}</>} 
+<br />
+      REFRESHED AT{' '}{refreshedAt && <>{refreshedAt}{' '}{humanTime(refreshedAt)}</>} 
+<br />
       <br />
     </>
   );

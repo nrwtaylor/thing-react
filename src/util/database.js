@@ -101,9 +101,10 @@ export function forgetThing(datagram, token) {
 export function getSnapshot(webPrefix, token) {
 if (!webPrefix) {return false;}
   var u = webPrefix;
-if (!u.endsWith('snapshot.json')) {
- u = webPrefix + "snapshot.json";
-}
+
+//if (!u.endsWith('snapshot.json')) {
+// u = webPrefix + "snapshot.json";
+//}
   console.log("database getSnapshot u", u);
   console.log("database getSnapshot webPrefix", webPrefix);
 
