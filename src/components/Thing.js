@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router";
 import Agent from "../components/Agent.js";
 import Snapshot from "../components/Snapshot.js";
 import Datagram from "../components/Datagram.js";
 import ToGoTime from "../components/ToGoTime.js";
+import Poll from "../components/Poll.js";
+
 import Associations from "../components/Associations.js";
 
 //import useDatagram from "./useDatagram";
 
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4, uuid } from "uuid";
 import { getThingReport } from "../util/database.js";
 
 //import{ Collapse} from '@mui/core';
@@ -55,13 +58,17 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 }));
 
 export default function Thing(props) {
-  const { datagram, token } = props;
+  //  const text = props.match.params.text;
 
-useEffect(()=>{
+  const { datagram, token, agentInput } = props;
 
-console.log("Thing token", token);
+  const { text } = useParams();
 
-},[token]);
+const variables = {poll:{interval:20000, aggressive:'yes'}};
+
+  useEffect(() => {
+    console.log("Thing token", token);
+  }, [token]);
 
   const { to, subject, webPrefix } = datagram;
 
@@ -73,7 +80,9 @@ console.log("Thing token", token);
   const defaultPollInterval =
     datagram && datagram.pollInterval ? datagram.pollInterval : 2 * 60 * 1000; //ms
   const defaultTickInterval = 25; //ms
-  const minimumPollInterval = 1 * 60 * 1000; //ms
+//  const minimumPollInterval = 2 * 60 * 1000; //ms
+
+const [minimumPollInterval, setMinimumPollInterval] = useState(100);
 
   const maxBar = 20;
   const maxTick = 4;
@@ -86,13 +95,22 @@ console.log("Thing token", token);
 
   //const {datagram, setDatagram} = useDatagram();
 
-  function setDatagram() {
-    console.log("hey");
+  function setDatagram(d) {
+if (!d) return;
+
+    console.log("hey", d);
+if (!d.pollInterval) return;
+setPollInterval(d.pollInterval);
   }
 
   useEffect(() => {
     console.log("datagram", datagram);
+if (!datagram) return;
+setTimedInterval(datagram.pollInterval);
+
   }, [datagram]);
+
+const [aggressivePoll, setAggressivePoll] = useState();
 
   const [timedInterval, setTimedInterval] = useState();
   const [timedBarInterval, setTimedBarInterval] = useState();
@@ -114,6 +132,16 @@ console.log("Thing token", token);
     defaultLatencyInterval
   );
 
+useEffect(() =>{
+
+if (variables && variables.poll && variables.poll.aggressive) {
+
+//setAggressivePoll(variables.poll.aggressive);
+
+}
+
+}, [variables]);
+
   //  const [pollInterval, setPollInterval] = useState(defaultPollInterval);
   //  const [timedInterval, setTimedInterval] = useState();
 
@@ -128,12 +156,33 @@ console.log("Thing token", token);
   const [flipped, setFlipped] = React.useState(false);
 
   const handleExpandClick = () => {
-    setExpanded(!expanded);
+    setExpanded(true);
   };
 
+  const handleFoldClick = () => {
+    setExpanded(false);
+  };
+
+
   // Generate a UUID if not given one by App.
-  const uuid = props.uuid ? props.uuid : uuidv4();
-  const nuuid = uuid.substring(0, 4);
+  //  const uuid = props.uuid ? props.uuid : uuidv4();
+
+  const [uuid, setUuid] = useState();
+  const [nuuid, setNuuid] = useState();
+
+  useEffect(() => {
+    if (props.uuid === undefined) {
+    }
+    if (text === undefined) {
+    }
+
+    const u = props.uuid ? props.uuid : uuidv4();
+    const n = u.substring(0, 4);
+
+    setUuid(u);
+    setNuuid(n);
+  }, [props.uuid, text]);
+
   const [error, setError] = useState();
 
   //const [url, setUrl] = useState();
@@ -155,7 +204,9 @@ console.log("Thing token", token);
   }, [subject]);
 
   function humanTime(timestamp) {
+
     const ts = new Date(timestamp);
+console.log("ts",ts);
     return ts.toISOString();
   }
 
@@ -168,6 +219,22 @@ console.log("Thing token", token);
     getResponse(webPrefix, true);
   }
 
+function handlePollIntervalButton() {
+
+if (aggressivePoll === 'yes') {setAggressivePoll('no');} else if
+(aggressivePoll === 'no') {setAggressivePoll('yes');} else {
+// Broken. So fix safe.
+setAggressivePoll('no');
+}
+
+}
+
+useEffect(() =>{
+
+console.log("Thing aggressivePoll", aggressivePoll);
+
+},[aggressivePoll]);
+
   function getResponse(webPrefix = null, flagOverride = false) {
     if (webPrefix === null) {
       webPrefix = process.env.REACT_APP_WEB_PREFIX;
@@ -178,16 +245,15 @@ console.log("Thing token", token);
     }
     setFlag("red");
     console.log("Thing getResponse flag subject", flag, subject);
-//    const s = currentAt + defaultPollInterval;
+    //    const s = currentAt + defaultPollInterval;
 
-//    setNextRunAt(s);
+    //    setNextRunAt(s);
 
-//    var t = { subject: subject };
-//    var thingy = { thing: null, thing_report: null };
+    //    var t = { subject: subject };
+    //    var thingy = { thing: null, thing_report: null };
 
- //   const s = currentAt + defaultPollInterval;
- //   setNextRunAt(s);
-
+    //   const s = currentAt + defaultPollInterval;
+    //   setNextRunAt(s);
 
     const requestedAt = Date.now();
     setAgentRequestedAt(requestedAt);
@@ -204,12 +270,12 @@ console.log("Thing token", token);
 
         setTimedInterval(elapsedTime);
 
-    const p = requestedAt + 120000;
-    setNextRunAt(p);
-console.log("nextRunAt p", p, humanTime(p));
+        const p = requestedAt + 120000;
+        setNextRunAt(p);
+        console.log("nextRunAt p", p, humanTime(p));
 
         setFlag("green");
-setError(null);
+        setError(null);
       })
       .catch((error) => {
         setError("Did not get Thingreport.");
@@ -219,13 +285,31 @@ setError(null);
   }
 
   useEffect(() => {
-    // Testing at 10%.
-    setPollInterval(
-      timedInterval * 1.1 < minimumPollInterval
+
+// This sets the polling rate to the maximum achievable.
+//if (aggressivePoll === true) {
+if (!datagram) return;
+//if (!aggressivePoll) return;
+
+//if (datagram && datagram.pollInterval && datagram.pollInterval 
+//if (aggressivePoll) {
+const p = (timedInterval * 1.1 < minimumPollInterval
         ? minimumPollInterval
-        : timedInterval * 1.1
-    );
-  }, [timedInterval]);
+        : timedInterval * 1.1).toFixed(0);
+
+    // Testing at 10%.
+    setPollInterval(p);
+//}
+
+//if (!aggressivePoll) {
+//setPollInterval(datagram.pollInterval);
+//}
+//}
+
+
+
+
+  }, [timedInterval, aggressivePoll]);
 
   function Create() {}
 
@@ -233,10 +317,9 @@ setError(null);
 
   const handleForgetThing = (e) => {
     if (props.onChange) {
-      props.onChange('forget');
+      props.onChange("forget");
     }
   };
-
 
   // Call getResponse on a Timer.
   // Check if the flag has changed.
@@ -281,7 +364,7 @@ setError(null);
     }
 
     // Do some work?
-//    console.log("Thing " + nuuid + " check-in.");
+    //    console.log("Thing " + nuuid + " check-in.");
     /*
 https://www.reddit.com/r/reactjs/comments/p7ky46/is_react_synchronous_with_respect_to_function/
 https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_JavaScript
@@ -339,23 +422,30 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
     setFlipped(!flipped);
 
     if (props.onChange) {
-      props.onChange('flip');
+      props.onChange("flip");
     }
   };
 
   const handleSpawnThing = (e) => {
     if (props.onChange) {
-      props.onChange('spawn');
+      props.onChange("spawn");
     }
   };
-
 
   const handleOpenThing = (e) => {
     handleExpandClick();
     if (props.onChange) {
-      props.onChange('open');
+      props.onChange("open");
     }
   };
+
+  const handleFoldThing = (e) => {
+    handleFoldClick();
+    if (props.onChange) {
+      props.onChange("fold");
+    }
+  };
+
 
   // Reference
   //  {PNG && <img src={PNG} onError={(event) => event.target.style.display = 'none'}
@@ -378,26 +468,33 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
             </IconButton>
           }
         />
+<Poll variables={variables && variables.poll} poll={{interval:pollInterval, aggressive:aggressivePoll}}
+                onPoll={handlePollIntervalButton}
+              />
+        {text}
 
-       <Button onClick={handleSpawnThing}>SPAWN</Button>
+        <Button onClick={handleSpawnThing}>SPAWN</Button>
 
-       <Button onClick={handleForgetThing}>FORGET</Button>
-
+        <Button onClick={handleForgetThing}>FORGET</Button>
 
         {!expanded && <Button onClick={handleFlipThing}>FLIP</Button>}
 
-        {expanded && <Button onClick={handleOpenThing}>FOLD</Button>}
+        {expanded && <Button onClick={handleFoldThing}>FOLD</Button>}
         {!expanded && <Button onClick={handleOpenThing}>OPEN</Button>}
 
         {/*<div onClick={handleExpandClick} >*/}
         <div>
           {!expanded && flipped && (
             <>
-              <Datagram datagram={datagram} setDatagram={setDatagram} token={token} />
+              <Datagram
+                datagram={datagram}
+                setDatagram={setDatagram}
+                token={token}
+              />
               WEBPREFIX {datagram.webPrefix}
               <br />
-ERROR {error}
-<br />
+              ERROR {error}
+              <br />
               TIMED LATENCY INTERVAL {timedLatencyInterval}
               <br />
               TIMED INTERVAL {timedInterval}
@@ -482,8 +579,8 @@ ERROR {error}
                 <Typography>RUNTIME {runTime}</Typography>
                 {!data && <>NOT DATA</>}
               </div>
-{subject && (subject.toUpperCase().indexOf("snapshot") === -1) && (        
-        <div>
+              {subject && subject.toUpperCase().indexOf("snapshot") === -1 && (
+                <div>
                   <Snapshot
                     user={null}
                     //thing={data.thing}

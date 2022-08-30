@@ -1,4 +1,6 @@
 export function humanTime(timestamp) {
+
+if (!timestamp) {return true;}
   const ts = new Date(timestamp * 1000);
   return ts.toISOString();
 }
@@ -27,8 +29,8 @@ export function ageMinutes(at) {
   }
 
   export function humanAge(at) {
-
-var milliseconds = age(at);
+const a = new Date(at);
+var milliseconds = age(a);
 var seconds = Math.floor(milliseconds/1000);
 
 if (seconds > 60 * 60) {

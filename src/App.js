@@ -7,6 +7,8 @@ import { getThings, createThing } from "../src/util/database.js";
 
 import Token from "../src/components/Token.js";
 import Identity from "../src/components/Identity.js";
+import Snapshot from "../src/components/Snapshot.js";
+
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Input from "../src/components/Input.js";
@@ -234,10 +236,15 @@ function handleCollectionChange(things) {
 
   return (
     <>
-      <Token token={token} />
       <Identity identity={identity} />
       <BrowserRouter>
-        THING-REACT 28 August 2022
+
+
+           <Routes>
+                 <Route exact path='/' element={<>
+
+
+        THING-REACT 29 August 2022
         {!token && (
           <>
             <Login setToken={setToken} setIdentity={setIdentity} />
@@ -261,7 +268,7 @@ function handleCollectionChange(things) {
         </div>
 */}
 <br />
-{token && (<>TOKEN EXISTS</>)}
+<Token token={token} />
 <br />
         {token && things && (
           <>
@@ -276,7 +283,26 @@ function handleCollectionChange(things) {
             </Container>
           </>
         )}
+
+ </>}></Route>
+
+           <Route exact path='/thing/:text' element={< Thing datagram={{to:"agent", subject:"thing", webPrefix:webPrefix }} />}></Route>
+{/*<Route exact path = '/thing/:text' render={(routeParams) => <Thing datagram={{to:"thing", subject:"hello", subject2:routeParams.text}} width={200} />} />*/}
+{/*<Route exact path = '/thing/:text' render={(props) => {<Thing datagram={{to:"thing", subject:props.match.params.text}} />} }/>*/}
+{/*<Route exact path="/thing/" render={(props) => (
+<>
+foo
+    <Thing agentInput={""}/>
+bar
+</>
+)} />*/}
+
+                 <Route exact path='/snapshot/:text' element={< Snapshot />}></Route>
+          </Routes>
+
       </BrowserRouter>
+End.
     </>
   );
 }
+

@@ -6,7 +6,12 @@ import { useDrop } from "react-dnd";
 import { ItemTypes } from "./ItemTypes";
 import { FullscreenExitTwoTone } from "@material-ui/icons";
 import { v4 as uuidv4 } from "uuid";
-import { forgetThing, createThing, getThingReport, setThing } from "../util/database.js";
+import {
+  forgetThing,
+  createThing,
+  getThingReport,
+  setThing,
+} from "../util/database.js";
 
 //import { wrap } from "analytics/lib/analytics.cjs";
 
@@ -50,18 +55,16 @@ export const ThingContainer = memo(function ThingContainer(props) {
         })
       );
 
-things.map((t, index) =>{
-      const newT = { ...t };
+      things.map((t, index) => {
+        const newT = { ...t };
 
-t.index = index;
-setThing(t.uuid, t, token).then((result)=> {console.log(result);});
+        t.index = index;
+        setThing(t.uuid, t, token).then((result) => {
+          console.log(result);
+        });
+      });
 
-
-})
-
-
-// dev?
-
+      // dev?
     },
     [findThing, things, setThings]
   );
@@ -118,9 +121,10 @@ setThing(t.uuid, t, token).then((result)=> {console.log(result);});
         })
       );
 
-// dev?
-setThing(newThing.uuid, newThing, token).then((result)=> {console.log(result);});
-
+      // dev?
+      setThing(newThing.uuid, newThing, token).then((result) => {
+        console.log(result);
+      });
 
       props.onCollectionChange(things);
     },
@@ -141,15 +145,15 @@ setThing(newThing.uuid, newThing, token).then((result)=> {console.log(result);})
         })
       );
 
-// dev?
-setThing(newThing.uuid, newThing, token).then((result)=> {console.log(result);});
-
+      // dev?
+      setThing(newThing.uuid, newThing, token).then((result) => {
+        console.log(result);
+      });
 
       props.onCollectionChange(things);
     },
     [things]
   );
-
 
   const spawnThing = useCallback(
     (id, atIndex) => {
@@ -231,8 +235,10 @@ setThings(
         })
       );
 
-// dev?
-setThing(newThing.uuid, newThing, token).then((result)=> {console.log(result);});
+      // dev?
+      setThing(newThing.uuid, newThing, token).then((result) => {
+        console.log(result);
+      });
 
       //           setThings(update(things, {
       //               $splice: [[index,1]],
@@ -257,22 +263,22 @@ setThing(newThing.uuid, newThing, token).then((result)=> {console.log(result);})
         {things && (
           <>
             {things.map((thing) => (
-<>
-              <Card
-                key={thing.uuid}
-                id={`${thing.index}`}
-                card={thing}
-                text={thing && thing.text}
-                flipCard={flipThing}
-                openCard={openThing}
-                foldCard={foldThing}
-                moveCard={moveThing}
-                deleteCard={deleteThing}
-                spawnCard={spawnThing}
-                findCard={findThing}
-                token={token}
-              />
-</>
+              <>
+                <Card
+                  key={thing.uuid}
+                  id={`${thing.index}`}
+                  card={thing}
+                  text={thing && thing.text}
+                  flipCard={flipThing}
+                  openCard={openThing}
+                  foldCard={foldThing}
+                  moveCard={moveThing}
+                  deleteCard={deleteThing}
+                  spawnCard={spawnThing}
+                  findCard={findThing}
+                  token={token}
+                />
+              </>
             ))}
           </>
         )}

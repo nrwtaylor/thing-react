@@ -12,6 +12,7 @@ import { humanTime } from "./../util/time.js";
 export default function Datagram({ datagram, setDatagram, token }) {
   const [subject, setSubject] = useState(datagram.subject);
   const [to, setTo] = useState(datagram.to);
+  const [pollInterval, setPollInterval] = useState(datagram.pollInterval);
 
   // Display token.
 
@@ -38,6 +39,19 @@ console.log("datagram toChange", datagram);
 console.log("datagram uuid", datagram.uuid);
 
 setThing(datagram.uuid, {to:d}, token);
+
+  }
+
+  function pollIntervalChange(e) {
+console.log("datagram toChange", datagram);
+    var d = parseFloat(e.target.value);
+    setPollInterval(d);
+    datagram.pollInterval = d;
+    setDatagram({...datagram});
+
+console.log("datagram uuid", datagram.uuid);
+
+setThing(datagram.uuid, {pollInterval:d}, token);
 
   }
 
@@ -80,6 +94,18 @@ setThing(datagram.uuid, {to:d}, token);
             />
 
 
+
+            <TextField
+//              error = {validation.validator(variableType,subject)}
+              variant="filled"
+              margin="normal"
+              label={'pollInterval'}
+              type="text"
+              fullWidth
+              name="updatePollInterval"
+              value={pollInterval}
+              onChange={pollIntervalChange}
+            />
 
 
 

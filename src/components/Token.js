@@ -3,29 +3,67 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import jwt_decode from "jwt-decode";
 
-import { humanTime } from "./../util/time.js";
+import { humanTime, humanAge } from "./../util/time.js";
 
 export default function Token({ token }) {
   const [refreshedAt, setRefreshedAt] = useState();
   const [expiresAt, setExpiresAt] = useState();
+  const [age, setAge] = useState();
+  const [currentTime, setCurrentTime] = useState();
+  const updateInterval = 1000;
   // Display token.
 
   useEffect(() => {
-    console.log("Token token", token);
     if (!token) {
       return;
     }
-    //console.log("Token token", token);
+
+    console.log("Token token", token);
 
     if (token === null) {
       return;
     }
 
     const t = jwt_decode(token);
-    console.log("Token", t);
+
+    console.log("Token setExpiresAt", t.exp);
     setRefreshedAt(t.iat);
+
     setExpiresAt(t.exp);
+
   }, [token]);
+
+useEffect(()=>{
+console.log("Token start");
+},[]);
+
+
+  useEffect(() => {
+    updateAge();
+
+    const interval = setInterval(() => {
+setCurrentTime(Date.now());
+      updateAge();
+    }, 500); // 20 Hz was 200.
+
+    return () => clearInterval(interval);
+  }, []);
+
+
+function updateAge() {
+
+console.log("Token updateAge", age, expiresAt);
+
+//if (!expiresAt) {return;}
+setAge(Date.now() - expiresAt*1000);
+}
+
+
+useEffect(() =>{
+console.log("Token expiresAt", expiresAt);
+
+}, [expiresAt]);
+
 
   return (
     <>
@@ -43,6 +81,8 @@ export default function Token({ token }) {
 <br />
       REFRESHED AT{' '}{refreshedAt && <>{refreshedAt}{' '}{humanTime(refreshedAt)}</>} 
 <br />
+AGE{' '}
+{((expiresAt * 1000) - currentTime)  }ms
       <br />
     </>
   );
