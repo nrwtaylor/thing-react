@@ -5,14 +5,16 @@ import Snapshot from "../components/Snapshot.js";
 import Datagram from "../components/Datagram.js";
 import ToGoTime from "../components/ToGoTime.js";
 import Poll from "../components/Poll.js";
+import Subject from "../components/Subject.js";
+import Content from "../components/Content.js";
 
 import Associations from "../components/Associations.js";
 
 //import useDatagram from "./useDatagram";
 
-import { v4 as uuidv4, uuid } from "uuid";
-import { getThingReport } from "../util/database.js";
-
+import { v4 as uuidv4, uuid as uuidLibrary } from "uuid";
+import { getThingReport, setThing } from "../util/database.js";
+import { humanTime } from "../util/time.js";
 //import{ Collapse} from '@mui/core';
 
 import { styled } from "@mui/material/styles";
@@ -64,7 +66,7 @@ export default function Thing(props) {
 
   const { text } = useParams();
 
-const variables = {poll:{interval:20000, aggressive:'yes'}};
+  const variables = { poll: { interval: 20000, aggressive: "yes" } };
 
   useEffect(() => {
     console.log("Thing token", token);
@@ -80,9 +82,9 @@ const variables = {poll:{interval:20000, aggressive:'yes'}};
   const defaultPollInterval =
     datagram && datagram.pollInterval ? datagram.pollInterval : 2 * 60 * 1000; //ms
   const defaultTickInterval = 25; //ms
-//  const minimumPollInterval = 2 * 60 * 1000; //ms
+  //  const minimumPollInterval = 2 * 60 * 1000; //ms
 
-const [minimumPollInterval, setMinimumPollInterval] = useState(100);
+  const [minimumPollInterval, setMinimumPollInterval] = useState(100);
 
   const maxBar = 20;
   const maxTick = 4;
@@ -91,26 +93,37 @@ const [minimumPollInterval, setMinimumPollInterval] = useState(100);
 
   const [PNG, setPNG] = useState();
 
-  const [pollInterval, setPollInterval] = useState(defaultPollInterval);
+  var pollInterval =
+    datagram && datagram.pollInterval
+      ? datagram.pollInterval
+      : defaultPollInterval;
+  //  const [pollInterval, setPollInterval] = useState(defaultPollInterval);
 
-  //const {datagram, setDatagram} = useDatagram();
+  function setPollInterval(d) {
+    datagram.pollInterval = d;
+    setDatagram({ ...datagram });
+  }
+
+  function setSubject(d) {
+    datagram.subject = d;
+    setDatagram({ ...datagram });
+  }
 
   function setDatagram(d) {
-if (!d) return;
+    if (!d) return;
 
     console.log("hey", d);
-if (!d.pollInterval) return;
-setPollInterval(d.pollInterval);
+    if (!d.pollInterval) return;
+    //setPollInterval(d.pollInterval);
   }
 
   useEffect(() => {
     console.log("datagram", datagram);
-if (!datagram) return;
-setTimedInterval(datagram.pollInterval);
-
+    if (!datagram) return;
+    setTimedInterval(datagram.pollInterval);
   }, [datagram]);
 
-const [aggressivePoll, setAggressivePoll] = useState();
+  const [aggressivePoll, setAggressivePoll] = useState();
 
   const [timedInterval, setTimedInterval] = useState();
   const [timedBarInterval, setTimedBarInterval] = useState();
@@ -132,15 +145,11 @@ const [aggressivePoll, setAggressivePoll] = useState();
     defaultLatencyInterval
   );
 
-useEffect(() =>{
-
-if (variables && variables.poll && variables.poll.aggressive) {
-
-//setAggressivePoll(variables.poll.aggressive);
-
-}
-
-}, [variables]);
+  useEffect(() => {
+    if (variables && variables.poll && variables.poll.aggressive) {
+      //setAggressivePoll(variables.poll.aggressive);
+    }
+  }, [variables]);
 
   //  const [pollInterval, setPollInterval] = useState(defaultPollInterval);
   //  const [timedInterval, setTimedInterval] = useState();
@@ -162,7 +171,6 @@ if (variables && variables.poll && variables.poll.aggressive) {
   const handleFoldClick = () => {
     setExpanded(false);
   };
-
 
   // Generate a UUID if not given one by App.
   //  const uuid = props.uuid ? props.uuid : uuidv4();
@@ -202,14 +210,14 @@ if (variables && variables.poll && variables.poll.aggressive) {
     //setFlag('green');
     getResponse(webPrefix, true);
   }, [subject]);
-
+  /*
   function humanTime(timestamp) {
-
+console.log("Thing humanTime timestamp", timestamp);
     const ts = new Date(timestamp);
 console.log("ts",ts);
     return ts.toISOString();
   }
-
+*/
   // refactor out
   function getUuid() {
     return uuid;
@@ -219,21 +227,20 @@ console.log("ts",ts);
     getResponse(webPrefix, true);
   }
 
-function handlePollIntervalButton() {
+  function handlePollIntervalButton() {
+    if (aggressivePoll === "yes") {
+      setAggressivePoll("no");
+    } else if (aggressivePoll === "no") {
+      setAggressivePoll("yes");
+    } else {
+      // Broken. So fix safe.
+      setAggressivePoll("no");
+    }
+  }
 
-if (aggressivePoll === 'yes') {setAggressivePoll('no');} else if
-(aggressivePoll === 'no') {setAggressivePoll('yes');} else {
-// Broken. So fix safe.
-setAggressivePoll('no');
-}
-
-}
-
-useEffect(() =>{
-
-console.log("Thing aggressivePoll", aggressivePoll);
-
-},[aggressivePoll]);
+  useEffect(() => {
+    console.log("Thing aggressivePoll", aggressivePoll);
+  }, [aggressivePoll]);
 
   function getResponse(webPrefix = null, flagOverride = false) {
     if (webPrefix === null) {
@@ -270,7 +277,7 @@ console.log("Thing aggressivePoll", aggressivePoll);
 
         setTimedInterval(elapsedTime);
 
-        const p = requestedAt + 120000;
+        const p = requestedAt + pollInterval;
         setNextRunAt(p);
         console.log("nextRunAt p", p, humanTime(p));
 
@@ -285,31 +292,33 @@ console.log("Thing aggressivePoll", aggressivePoll);
   }
 
   useEffect(() => {
+    // This sets the polling rate to the maximum achievable.
+    //if (aggressivePoll === true) {
+    if (!datagram) return;
+    //if (!aggressivePoll) return;
 
-// This sets the polling rate to the maximum achievable.
-//if (aggressivePoll === true) {
-if (!datagram) return;
-//if (!aggressivePoll) return;
-
-//if (datagram && datagram.pollInterval && datagram.pollInterval 
-//if (aggressivePoll) {
-const p = (timedInterval * 1.1 < minimumPollInterval
+    //if (datagram && datagram.pollInterval && datagram.pollInterval
+    if (aggressivePoll) {
+      const p = (timedInterval * 1.1 < minimumPollInterval
         ? minimumPollInterval
-        : timedInterval * 1.1).toFixed(0);
+        : timedInterval * 1.1
+      ).toFixed(0);
 
-    // Testing at 10%.
-    setPollInterval(p);
-//}
+      // Testing at 10%.
+      setPollInterval(p);
+    }
 
-//if (!aggressivePoll) {
-//setPollInterval(datagram.pollInterval);
-//}
-//}
-
-
-
-
+    if (!aggressivePoll) {
+      setPollInterval(datagram.pollInterval);
+    }
+    //}
   }, [timedInterval, aggressivePoll]);
+
+  useEffect(() => {
+    if (!pollInterval) return;
+    console.log("Thing pollInterval", pollInterval);
+    setNextRunAt(Date.now() + pollInterval);
+  }, [pollInterval]);
 
   function Create() {}
 
@@ -446,7 +455,6 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
     }
   };
 
-
   // Reference
   //  {PNG && <img src={PNG} onError={(event) => event.target.style.display = 'none'}
   useEffect(() => {
@@ -458,9 +466,19 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
     }
   }, [bar]);
 
+  const bRed = "#ff000080";
+  const bGreen = "#00000000";
+
   return (
     <>
-      <Card style={{ maxWidth: "100%" }}>
+      <Card
+        sx={{ borderColor: flag }}
+        style={{
+          maxWidth: "100%",
+          backgroundColor: flag === "red" ? bRed : bGreen,
+        }}
+        raised={flag === "red" ? true : false}
+      >
         <CardHeader
           action={
             <IconButton>
@@ -468,9 +486,11 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
             </IconButton>
           }
         />
-<Poll variables={variables && variables.poll} poll={{interval:pollInterval, aggressive:aggressivePoll}}
-                onPoll={handlePollIntervalButton}
-              />
+        <Poll
+          variables={variables && variables.poll}
+          poll={{ interval: pollInterval, aggressive: aggressivePoll }}
+          onPoll={handlePollIntervalButton}
+        />
         {text}
 
         <Button onClick={handleSpawnThing}>SPAWN</Button>
@@ -515,9 +535,10 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
             </>
           )}
 
+          <Subject subject={subject} setSubject={setSubject} token={token} />
+
           {!expanded && !flipped && (
             <>
-              {subject}
               {PNG && (
                 <img
                   height="140"
@@ -534,13 +555,7 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
                 onRefresh={handleRefresh}
               />
               {/*             <Typography>TOGOTIME {nextRunAt - currentAt}</Typography> */}
-              {flag} <br />
-              message{" "}
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: data && data.thingReport && data.thingReport.message,
-                }}
-              />
+              {data && data.thingReport && data.thingReport.sms}
             </>
           )}
 
@@ -564,22 +579,21 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
 */}
           {expanded && (
             <>
-              Last edited: 12 June 2022
-              <div>
-                THING {uuid}
-                <br />
-                TOTAL CHARACTERS RECEIVED DATA {totalBytesReceivedData}
-                <br />
-                {error && error.message}
-                <br />
-                TICK {tick} {timedTickInterval}
-                <br />
-                BAR {bar} {timedBarInterval}
-                <br />
-                <Typography>RUNTIME {runTime}</Typography>
-                {!data && <>NOT DATA</>}
-              </div>
-              {subject && subject.toUpperCase().indexOf("snapshot") === -1 && (
+              <Typography> {nuuid} </Typography>
+              <br />
+              <Content thingReport={data && data.thingReport} />
+              <br />
+              TOTAL CHARACTERS RECEIVED DATA {totalBytesReceivedData}
+              <br />
+              {error && error.message}
+              <br />
+              TICK {tick} {timedTickInterval}
+              <br />
+              BAR {bar} {timedBarInterval}
+              <br />
+              <Typography>RUNTIME {runTime}</Typography>
+              {!data && <>NOT DATA</>}
+              {subject && subject.toLowerCase().indexOf("snapshot") !== -1 && (
                 <div>
                   <Snapshot
                     user={null}

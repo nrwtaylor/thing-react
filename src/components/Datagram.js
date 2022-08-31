@@ -17,44 +17,53 @@ export default function Datagram({ datagram, setDatagram, token }) {
   // Display token.
 
   function subjectChange(e) {
-console.log("datagram subjectChange", datagram);
+    console.log("datagram subjectChange", datagram);
     var d = e.target.value;
     setSubject(d);
     datagram.subject = d;
-    setDatagram({...datagram});
+    setDatagram({ ...datagram });
 
-console.log("datagram uuid", datagram.uuid);
+    console.log("datagram uuid", datagram.uuid);
 
-setThing(datagram.uuid, {subject:d}, token);
-
+    setThing(datagram.uuid, { subject: d }, token);
   }
 
   function toChange(e) {
-console.log("datagram toChange", datagram);
+    console.log("datagram toChange", datagram);
     var d = e.target.value;
     setTo(d);
     datagram.to = d;
-    setDatagram({...datagram});
+    setDatagram({ ...datagram });
 
-console.log("datagram uuid", datagram.uuid);
+    console.log("datagram uuid", datagram.uuid);
 
-setThing(datagram.uuid, {to:d}, token);
-
+    setThing(datagram.uuid, { to: d }, token);
   }
 
   function pollIntervalChange(e) {
-console.log("datagram toChange", datagram);
+    console.log("datagram toChange", datagram);
+
     var d = parseFloat(e.target.value);
+
+    if (isNaN(d)) {
+      d = 1;
+    }
+
+    //        if(parseInt(value) !== 0) {
+    //            this.setState({ value });
+    //        }
+    if (d === 0) {
+      d = 1;
+    }
+
     setPollInterval(d);
     datagram.pollInterval = d;
-    setDatagram({...datagram});
+    setDatagram({ ...datagram });
 
-console.log("datagram uuid", datagram.uuid);
+    console.log("datagram uuid", datagram.uuid);
 
-setThing(datagram.uuid, {pollInterval:d}, token);
-
+    setThing(datagram.uuid, { pollInterval: d }, token);
   }
-
 
   useEffect(() => {
     console.log("Token token", datagram);
@@ -69,6 +78,7 @@ setThing(datagram.uuid, {pollInterval:d}, token);
 
   return (
     <>
+      {/*
             <TextField
 //              error = {validation.validator(variableType,subject)}
               variant="filled"
@@ -80,36 +90,32 @@ setThing(datagram.uuid, {pollInterval:d}, token);
               value={subject}
               onChange={subjectChange}
             />
+*/}
+      <TextField
+        //              error = {validation.validator(variableType,subject)}
+        variant="filled"
+        margin="normal"
+        label={"to"}
+        type="text"
+        fullWidth
+        name="updateTo"
+        value={to}
+        onChange={toChange}
+      />
 
-            <TextField
-//              error = {validation.validator(variableType,subject)}
-              variant="filled"
-              margin="normal"
-              label={'to'}
-              type="text"
-              fullWidth
-              name="updateTo"
-              value={to}
-              onChange={toChange}
-            />
+      <TextField
+        //              error = {pollInterval<1}
+        variant="filled"
+        margin="normal"
+        label={"pollInterval"}
+        type="text"
+        fullWidth
+        name="updatePollInterval"
+        value={pollInterval}
+        onChange={pollIntervalChange}
+      />
 
-
-
-            <TextField
-//              error = {validation.validator(variableType,subject)}
-              variant="filled"
-              margin="normal"
-              label={'pollInterval'}
-              type="text"
-              fullWidth
-              name="updatePollInterval"
-              value={pollInterval}
-              onChange={pollIntervalChange}
-            />
-
-
-
-              <Typography>CREATED AT {datagram && datagram.createdAt}</Typography>
+      <Typography>CREATED AT {datagram && datagram.createdAt}</Typography>
     </>
   );
 }
