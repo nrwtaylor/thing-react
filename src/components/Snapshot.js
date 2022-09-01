@@ -293,7 +293,7 @@ setData(res.data.thingReport.snapshot);
             />
             <br />
             <Stream
-              hide={false}
+              hide={true}
               quantity={{
                 units: "V",
                 amount:
@@ -338,7 +338,7 @@ setData(res.data.thingReport.snapshot);
             />
             <br />
             <Stream
-              hide={false}
+              hide={true}
               quantity={{
                 amount:
                   data &&
@@ -369,7 +369,7 @@ setData(res.data.thingReport.snapshot);
             bar
             <br />
             <Stream
-              hide={false}
+              hide={true}
               quantity={{
                 units: "mbar",
                 amount:
@@ -378,7 +378,7 @@ setData(res.data.thingReport.snapshot);
                   data.transducers.thprsapb0 &&
                   data.transducers.thprsapb0.amount,
               }}
-              period={1 * 60 * 1000}
+              period={50}
             />
             <br />
             TEMPERATURE:{" "}
@@ -388,7 +388,7 @@ setData(res.data.thingReport.snapshot);
               data.transducers.thtmpatc1.amount}{" "}
             C<br />
             <Stream
-              hide={false}
+              hide={true}
               quantity={{
                 units: "C",
                 amount:
@@ -401,7 +401,7 @@ setData(res.data.thingReport.snapshot);
             />
             <br />
             <Stream
-              hide={false}
+              hide={true}
               quantity={{
                 units: "C",
                 amount:
@@ -410,11 +410,11 @@ setData(res.data.thingReport.snapshot);
                   data.transducers.thtmpatc1 &&
                   data.transducers.thtmpatc1.amount,
               }}
-              period={1 * 60 * 1000}
+              period={1000}
             />
             <br />
             <Stream
-              hide={false}
+              hide={true}
               quantity={{
                 units: "C",
                 amount:
@@ -422,7 +422,7 @@ setData(res.data.thingReport.snapshot);
                   data.transducers.thtmpatc1 &&
                   data.transducers.thtmpatc1.amount,
               }}
-              period={15 * 60 * 1000}
+              period={10 * 60 * 1000}
             />
             <br />
             HUMIDITY:{" "}
@@ -433,7 +433,7 @@ setData(res.data.thingReport.snapshot);
             % RH
             <br />
             <Stream
-              hide={false}
+              hide={true}
               quantity={{
                 units: "%RH",
                 amount:
@@ -442,7 +442,20 @@ setData(res.data.thingReport.snapshot);
                   data.transducers.thhmdahp2 &&
                   data.transducers.thhmdahp2.amount,
               }}
-              period={1 * 60 * 1000}
+              period={50}
+            />
+            <br />
+            <Stream
+              hide={true}
+              quantity={{
+                units: "%RH",
+                amount:
+                  data &&
+                  data.transducers &&
+                  data.transducers.thhmdahp2 &&
+                  data.transducers.thhmdahp2.amount,
+              }}
+              period={1000}
             />
             <br />
             GAS:{" "}
@@ -453,7 +466,7 @@ setData(res.data.thingReport.snapshot);
             ohms
             <br />
             <Stream
-              hide={false}
+              hide={true}
               quantity={{
                 units: "ohms",
                 amount:
@@ -462,8 +475,22 @@ setData(res.data.thingReport.snapshot);
                   data.transducers.thgasaxx3 &&
                   data.transducers.thgasaxx3.amount,
               }}
-              period={5 * 60 * 1000}
+              period={50}
             />
+            <br />
+            <Stream
+              hide={true}
+              quantity={{
+                units: "ohms",
+                amount:
+                  data &&
+                  data.transducers &&
+                  data.transducers.thgasaxx3 &&
+                  data.transducers.thgasaxx3.amount,
+              }}
+              period={1000}
+            />
+
             <br />
             ACCZ:{" "}
             {data &&
@@ -589,18 +616,40 @@ ACCZ: {data && data.transducers && data.transducers.thacczax2 && data.transducer
         <br />
         SPEED IN KNOTS: {data && data.speed_in_knots} knots
         <br />
+            <Stream
+              hide={true}
+              quantity={{
+                amount:
+                data && data.speed_in_knots,
+                units: "knots",
+              }}
+              period={50}
+            />
+            <br />
+
         TRUE COURSE: {data && data.true_course}
         <br />
         NUMBER OF SATELLITES: {data && data.number_of_satellites}
         <br />
+            <Stream
+              hide={true}
+              quantity={{
+                amount:
+data && data.number_of_satellites,
+                units: "",
+              }}
+              period={50}
+            />
+            <br />
+
         HDOP: {data && data.horizontal_dilution_of_precision}
         <br />
         ALTITUDE: {data && data.altitude_above_mean_sea_level}m (MSL)
         <br />
         <Stream
-          hide={false}
+          hide={true}
           quantity={{ amount: data && data.altitude_above_mean_sea_level }}
-          period={5 * 60 * 1000}
+          period={50}
         />
         <br />
         FIX TIME: {data && data.fix_time}
