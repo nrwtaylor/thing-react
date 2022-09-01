@@ -4,6 +4,9 @@ import PropTypes from "prop-types";
 import jwt_decode from "jwt-decode";
 
 import { humanTime, humanAge } from "./../util/time.js";
+import Reauthorize from "../components/Reauthorize.js";
+
+
 
 export default function Token({ token }) {
   const [refreshedAt, setRefreshedAt] = useState();
@@ -30,59 +33,70 @@ export default function Token({ token }) {
     setRefreshedAt(t.iat);
 
     setExpiresAt(t.exp);
-
   }, [token]);
 
-useEffect(()=>{
-console.log("Token start");
-},[]);
-
+  //useEffect(()=>{
+  //console.log("Token start");
+  //},[]);
 
   useEffect(() => {
     updateAge();
 
     const interval = setInterval(() => {
-setCurrentTime(Date.now());
-      updateAge();
+console.log("Token tick");
+      setCurrentTime(Date.now());
+      updateAge(expiresAt);
     }, 500); // 20 Hz was 200.
 
     return () => clearInterval(interval);
-  }, []);
+  }, [expiresAt]);
 
+  function updateAge() {
+    console.log("Token updateAge", age, expiresAt);
 
-function updateAge() {
+    //if (!expiresAt) {return;}
+    //setAge(Date.now() - expiresAt*1000);
 
-console.log("Token updateAge", age, expiresAt);
+    const t = parseFloat(expiresAt) * 1000 - Date.now();
 
-//if (!expiresAt) {return;}
-setAge(Date.now() - expiresAt*1000);
-}
+    console.log("xkcd", t, expiresAt, Date.now());
 
+    setAge(t);
+  }
 
-useEffect(() =>{
-console.log("Token expiresAt", expiresAt);
-
-}, [expiresAt]);
-
+  useEffect(() => {
+    console.log("Token expiresAt", expiresAt);
+  }, [expiresAt]);
 
   return (
     <>
-      TOKEN{' '}
-      {!token && "NONE"}
+      TOKEN {!token && "NONE"}
       {token && token === null && "NULL"}
       {token && token === false && "FALSE"}
       {token && token === "" && "EMPTY"}
       {token && token === true && "TRUE"}
       {token && Array.isArray(token) && "ARRAY"}
       {token && token.isString && <>{"STRING" + token}</>}
-      {token && token} 
+      {token && token}
+      <br />
+      EXPIRES AT{" "}
+      {expiresAt && (
+        <>
+          {expiresAt} {humanTime(expiresAt)}
+        </>
+      )}
+      <br />
+      REFRESHED AT{" "}
+      {refreshedAt && (
+        <>
+          {refreshedAt} {humanTime(refreshedAt)}
+        </>
+      )}
+      <br />
+      AGE {age}ms
 <br />
-      EXPIRES AT{' '}{expiresAt && <>{expiresAt}{' '}{humanTime(expiresAt)}</>} 
-<br />
-      REFRESHED AT{' '}{refreshedAt && <>{refreshedAt}{' '}{humanTime(refreshedAt)}</>} 
-<br />
-AGE{' '}
-{((expiresAt * 1000) - currentTime)  }ms
+{(age<0) && (<>TOKEN EXPIRED<Reauthorize /></>)}
+{(age>=0) && (<>TOKEN CURRENT<Reauthorize /></>)} 
       <br />
     </>
   );
