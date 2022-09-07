@@ -6,7 +6,7 @@ import jwt_decode from "jwt-decode";
 import Button from "@mui/material/Button";
 import UpdateIcon from '@mui/icons-material/Update';
 
-import { humanTime } from "./../util/time.js";
+import { humanTime, humanAge, humanRuntime } from "./../util/time.js";
 
 export default function ToGoTime({ toGoTime, onRefresh }) {
 
@@ -22,9 +22,9 @@ export default function ToGoTime({ toGoTime, onRefresh }) {
 
   return (
     <>
-      TOGOTIME
-{toGoTime}
 <UpdateIcon onClick={onRefresh}>REFRESH</UpdateIcon>
+      TOGOTIME{' '}
+ {humanRuntime(toGoTime)}
 
       <br />
     </>

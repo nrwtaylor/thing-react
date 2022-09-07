@@ -268,7 +268,7 @@ function handleCollectionChange(things) {
         </div>
 */}
 <br />
-<Token token={token} />
+<Token token={token} setToken={setToken} setIdentity={setIdentity} />
 <br />
         {token && things && (
           <>

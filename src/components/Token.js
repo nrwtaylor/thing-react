@@ -3,12 +3,17 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import jwt_decode from "jwt-decode";
 
+import useToken from "../useToken";
+import useIdentity from "../useIdentity";
+
+
 import { humanTime, humanAge } from "./../util/time.js";
 import Reauthorize from "../components/Reauthorize.js";
+import Login from "../components/Login.js";
 
 
 
-export default function Token({ token }) {
+export default function Token({ token, setToken, setIdentity }) {
   const [refreshedAt, setRefreshedAt] = useState();
   const [expiresAt, setExpiresAt] = useState();
   const [age, setAge] = useState();
@@ -77,7 +82,7 @@ console.log("Token tick");
       {token && token === true && "TRUE"}
       {token && Array.isArray(token) && "ARRAY"}
       {token && token.isString && <>{"STRING" + token}</>}
-      {token && token}
+      {/*token && token*/}
       <br />
       EXPIRES AT{" "}
       {expiresAt && (
@@ -95,7 +100,9 @@ console.log("Token tick");
       <br />
       AGE {age}ms
 <br />
-{(age<0) && (<>TOKEN EXPIRED<Reauthorize /></>)}
+
+{(age<0) && (<>TOKEN EXPIRED            <Login setToken={setToken} setIdentity={setIdentity} />
+</>)}
 {(age>=0) && (<>TOKEN CURRENT<Reauthorize /></>)} 
       <br />
     </>

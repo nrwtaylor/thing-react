@@ -7,6 +7,8 @@ import ToGoTime from "../components/ToGoTime.js";
 import Poll from "../components/Poll.js";
 import Subject from "../components/Subject.js";
 import Content from "../components/Content.js";
+import Message from "../components/Message.js";
+
 
 import Associations from "../components/Associations.js";
 
@@ -467,15 +469,18 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
   }, [bar]);
 
   const bRed = "#ff000080";
-  const bGreen = "#00000000";
+  const bGreen = "#00ff0000";
 
   return (
     <>
       <Card
+        disableGutters={true}
         sx={{ borderColor: flag }}
         style={{
           maxWidth: "100%",
-          backgroundColor: flag === "red" ? bRed : bGreen,
+          borderColor: flag === "red" ? bRed : bGreen,
+  border: "10px solid",
+//          backgroundColor: flag === "red" ? bRed : bGreen,
         }}
         raised={flag === "red" ? true : false}
       >
@@ -486,18 +491,20 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
             </IconButton>
           }
         />
-        <Poll
-          variables={variables && variables.poll}
-          poll={{ interval: pollInterval, aggressive: aggressivePoll }}
-          onPoll={handlePollIntervalButton}
-        />
         {text}
+
+              <Typography>{nuuid}</Typography>
+
 
         <Button onClick={handleSpawnThing}>SPAWN</Button>
 
         <Button onClick={handleForgetThing}>FORGET</Button>
 
-        {!expanded && <Button onClick={handleFlipThing}>FLIP</Button>}
+        {!expanded && <Button onClick={handleFlipThing}>
+
+{flipped ? "MESSAGE" : "SOURCE"}
+
+</Button>}
 
         {expanded && <Button onClick={handleFoldThing}>FOLD</Button>}
         {!expanded && <Button onClick={handleOpenThing}>OPEN</Button>}
@@ -519,6 +526,12 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
               <br />
               TIMED INTERVAL {timedInterval}
               <br />
+        <Poll
+          variables={variables && variables.poll}
+          poll={{ interval: pollInterval, aggressive: aggressivePoll }}
+          onPoll={handlePollIntervalButton}
+        />
+<br />
               POLL INTERVAL {pollInterval}
               <br />
               <RequestedAt />
@@ -549,13 +562,16 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
               <div>{data && data.sms}</div>
               {/*
               <div>{data && data.thingReport && data.thingReport.sms}</div>*/}
-              <Typography>{nuuid}</Typography>
+              {/*             <Typography>TOGOTIME {nextRunAt - currentAt}</Typography> */}
+
+<Message message={{subject:data && data.thingReport && data.thingReport.sms}} />
+
               <ToGoTime
                 toGoTime={nextRunAt - currentAt}
                 onRefresh={handleRefresh}
               />
-              {/*             <Typography>TOGOTIME {nextRunAt - currentAt}</Typography> */}
-              {data && data.thingReport && data.thingReport.sms}
+
+
             </>
           )}
 

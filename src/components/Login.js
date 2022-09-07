@@ -3,6 +3,10 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import crypto from "crypto";
 
+import useToken from "../useToken";
+import useIdentity from "../useIdentity";
+
+
 async function loginUser(credentials) {
   const { REACT_APP_CLIENT_SECRET } = process.env;
   const { REACT_APP_API_PREFIX } = process.env;
@@ -22,9 +26,13 @@ console.error(error);
 });
 }
 
-export default function Login({ setToken, setIdentity }) {
+export default function Login() {
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
+
+  const { token, setToken, deleteToken } = useToken();
+  const { identity, setIdentity, deleteIdentity } = useIdentity();
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();

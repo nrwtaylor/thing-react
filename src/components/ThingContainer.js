@@ -56,10 +56,11 @@ export const ThingContainer = memo(function ThingContainer(props) {
       );
 
       things.map((t, index) => {
-        const newT = { ...t };
+        const newT = { ...t, index:index };
 
-        t.index = index;
-        setThing(t.uuid, t, token).then((result) => {
+//        newT.index = index;
+
+        setThing(t.uuid, newT, token).then((result) => {
           console.log(result);
         });
       });

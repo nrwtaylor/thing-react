@@ -78,6 +78,7 @@ function Ping(props) {
       // Parse ping return.
       // Identity and read.
       const pingArray = p.data.split("=");
+if (!pingArray[1]) {return;}
       const pingArray2 = pingArray[1].split("/");
 
       const measure =
