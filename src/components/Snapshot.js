@@ -260,7 +260,7 @@ setData(res.data.thingReport.snapshot);
             />
             <br />
             <Stream
-              hide={false}
+              hide={true}
               quantity={{
                 units: "A",
                 amount:
@@ -526,8 +526,15 @@ setData(res.data.thingReport.snapshot);
               period={50}
               domain={{ maximum: 1000, minimum: 750 }}
             />
+<br />
+Magnetometer
+<Magnetometer vector={{z:data && data.transducers && data.transducers.thmagzax2, 
+y:data && data.transducers && data.transducers.thmagyad1, 
+x:data && data.transducers && data.transducers.thmagxad0}} />
 
-<Magnetometer vector={{z:data && data.transducers && data.transducers.thmagzax2, y:data && data.transducers && data.transducers.thmagyad1, x:data && data.transducers && data.transducers.thmagxad0}} />
+{/* <Magnetometer vector={{z:1, 
+y:1, 
+x:1}} /> */}
 
             <br />
             BUBBLE LEVEL
