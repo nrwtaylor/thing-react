@@ -244,7 +244,7 @@ function handleCollectionChange(things) {
                  <Route exact path='/' element={<>
 
 
-        THING-REACT 29 August 2022
+        THING-REACT 1 September 2022
         {!token && (
           <>
             <Login setToken={setToken} setIdentity={setIdentity} />
