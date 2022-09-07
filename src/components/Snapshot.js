@@ -29,6 +29,8 @@ import Forget from "../components/Forget.js";
 import Trace from "../components/Trace.js";
 import Stream from "../components/Stream.js";
 import BubbleLevel from "../components/BubbleLevel.js";
+import Magnetometer from "../components/Magnetometer.js";
+
 import Ping from "../components/Ping.js";
 import { getSnapshot } from "../util/database.js";
 
@@ -524,6 +526,9 @@ setData(res.data.thingReport.snapshot);
               period={50}
               domain={{ maximum: 1000, minimum: 750 }}
             />
+
+<Magnetometer vector={{z:data && data.transducers && data.transducers.thmagzax2, y:data && data.transducers && data.transducers.thmagyad1, x:data && data.transducers && data.transducers.thmagxad0}} />
+
             <br />
             BUBBLE LEVEL
             <BubbleLevel
