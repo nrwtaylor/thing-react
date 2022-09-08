@@ -44,43 +44,53 @@ return Math.floor(seconds) + " seconds ago.";
 
   }
 
-export function humanRuntime(runTimeMilliseconds) {
+export function humanRuntime(runTimeMilliseconds, lens, inputPostFix) {
 
-const sign = Math.sign(runTimeMilliseconds);
+var sign = Math.sign(runTimeMilliseconds);
 
 
 //const a = new Date(at);
 var milliseconds = Math.abs(runTimeMilliseconds);
 var seconds = Math.floor(milliseconds/1000);
+var postFix = "";
+if (lens === 'text') {
+sign = 1;
+
+postFix = " ago";
+if (inputPostFix) {
+postFix = " " + inputPostFix;
+}
+
+}
 
 if (seconds > 24 * 60 * 60 * 7) {
-return sign * Math.floor(seconds / (24 * 60 * 60 * 7)) + " weeks";
+return sign * Math.floor(seconds / (24 * 60 * 60 * 7)) + " weeks" + postFix;
 }
 
 
 if (seconds > 24 * 60 * 60) {
-return sign * Math.floor(seconds / (24 * 60 * 60)) + " days";
+return sign * Math.floor(seconds / (24 * 60 * 60)) + " days" + postFix;
 }
 
 
 if (seconds > 60 * 60) {
-return sign * Math.floor(seconds / (60 * 60)) + " hours";
+return sign * Math.floor(seconds / (60 * 60)) + " hours" + postFix;
 }
 
 if (seconds > 60) {
-return sign * Math.floor(seconds/60) + " minutes.";
+return sign * Math.floor(seconds/60) + " minutes." + postFix;
 }
 
 if (milliseconds > 999) {
-return sign * Math.floor(seconds) + " seconds";
+return sign * Math.floor(seconds) + " seconds" + postFix;
 }
 
 if (milliseconds > 1) {
-return sign * Math.floor(milliseconds) + " milliseconds";
+return sign * Math.floor(milliseconds) + " milliseconds" + postFix;
 }
 
 
-return sign * Math.floor(milliseconds) + " ms";
+return sign * Math.floor(milliseconds) + " ms" + postFix;
 
   }
 

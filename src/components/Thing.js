@@ -17,6 +17,10 @@ import Associations from "../components/Associations.js";
 import { v4 as uuidv4, uuid as uuidLibrary } from "uuid";
 import { getThingReport, setThing } from "../util/database.js";
 import { humanTime } from "../util/time.js";
+
+import useMessages from "../useMessages";
+
+
 //import{ Collapse} from '@mui/core';
 
 import { styled } from "@mui/material/styles";
@@ -70,13 +74,12 @@ export default function Thing(props) {
 
   const variables = { poll: { interval: 20000, aggressive: "yes" } };
 
-  useEffect(() => {
-    console.log("Thing token", token);
-  }, [token]);
+  const {messages, addMessage} = useMessages();
+
+  
 
   const { to, subject, webPrefix } = datagram;
 
-  //const subject = props.subject;
   const startAt = props.createdAt;
 
   const currentAt = Date.now();
@@ -123,6 +126,19 @@ export default function Thing(props) {
     console.log("datagram", datagram);
     if (!datagram) return;
     setTimedInterval(datagram.pollInterval);
+
+console.log("Thing setThing uuid", uuid);
+
+    setThing(datagram.uuid, datagram, token).then((result)=>{
+
+addMessage(datagram.subject);
+
+console.log("Thing setThing result", result);
+}).catch((error)=>{
+
+console.log("Thing setThing error", error);
+
+});
   }, [datagram]);
 
   const [aggressivePoll, setAggressivePoll] = useState();
@@ -152,9 +168,6 @@ export default function Thing(props) {
       //setAggressivePoll(variables.poll.aggressive);
     }
   }, [variables]);
-
-  //  const [pollInterval, setPollInterval] = useState(defaultPollInterval);
-  //  const [timedInterval, setTimedInterval] = useState();
 
   const [timedLatencyInterval, setTimedLatencyInterval] = useState();
 
@@ -212,14 +225,7 @@ export default function Thing(props) {
     //setFlag('green');
     getResponse(webPrefix, true);
   }, [subject]);
-  /*
-  function humanTime(timestamp) {
-console.log("Thing humanTime timestamp", timestamp);
-    const ts = new Date(timestamp);
-console.log("ts",ts);
-    return ts.toISOString();
-  }
-*/
+
   // refactor out
   function getUuid() {
     return uuid;
@@ -274,8 +280,10 @@ console.log("ts",ts);
 
         const elapsedTime = Date.now() - requestedAt;
 
+if (result && result.thingReport && result.thingReport.png) {
         var base64Icon = "data:image/png;base64," + result.thingReport.png;
         setPNG(base64Icon);
+}
 
         setTimedInterval(elapsedTime);
 
@@ -486,14 +494,18 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
       >
         <CardHeader
           action={
-            <IconButton>
+<>
+    <Typography>{nuuid}</Typography>
+
+
+{/*            <IconButton>
               <MoreVertIcon />
             </IconButton>
+*/}
+</>
           }
         />
-        {text}
 
-              <Typography>{nuuid}</Typography>
 
 
         <Button onClick={handleSpawnThing}>SPAWN</Button>
@@ -508,6 +520,10 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
 
         {expanded && <Button onClick={handleFoldThing}>FOLD</Button>}
         {!expanded && <Button onClick={handleOpenThing}>OPEN</Button>}
+
+
+
+
 
         {/*<div onClick={handleExpandClick} >*/}
         <div>
@@ -532,8 +548,6 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
           onPoll={handlePollIntervalButton}
         />
 <br />
-              POLL INTERVAL {pollInterval}
-              <br />
               <RequestedAt />
               <br />
               NEXT RUN AT {humanTime(nextRunAt)}
@@ -548,7 +562,8 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
             </>
           )}
 
-          <Subject subject={subject} setSubject={setSubject} token={token} />
+{!expanded && !flipped && (
+          <Subject subject={subject} setSubject={setSubject} token={token} /> )}
 
           {!expanded && !flipped && (
             <>
@@ -595,8 +610,6 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
 */}
           {expanded && (
             <>
-              <Typography> {nuuid} </Typography>
-              <br />
               <Content thingReport={data && data.thingReport} />
               <br />
               TOTAL CHARACTERS RECEIVED DATA {totalBytesReceivedData}
@@ -627,7 +640,14 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
                   thing={data && data.thing}
                   agent_input={webPrefix}
                 />
+{data && data.thingReport && data.thingReport.agent}
 
+MESSAGES
+{messages && messages.map((message)=>{
+
+return (<>{message}<br /></>);
+
+})}
                 <br />
               </div>
               <div>

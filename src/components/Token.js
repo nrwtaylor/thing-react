@@ -7,9 +7,10 @@ import useToken from "../useToken";
 import useIdentity from "../useIdentity";
 
 
-import { humanTime, humanAge } from "./../util/time.js";
+import { humanTime, humanAge, humanRuntime } from "./../util/time.js";
 import Reauthorize from "../components/Reauthorize.js";
 import Login from "../components/Login.js";
+import Logout from "../components/Logout.js";
 
 
 
@@ -20,6 +21,9 @@ export default function Token({ token, setToken, setIdentity }) {
   const [currentTime, setCurrentTime] = useState();
   const updateInterval = 1000;
   // Display token.
+
+  const { deleteToken } = useToken();
+
 
   useEffect(() => {
     if (!token) {
@@ -34,21 +38,17 @@ export default function Token({ token, setToken, setIdentity }) {
 
     const t = jwt_decode(token);
 
-    console.log("Token setExpiresAt", t.exp);
+//    console.log("Token setExpiresAt", t.exp);
     setRefreshedAt(t.iat);
 
     setExpiresAt(t.exp);
   }, [token]);
 
-  //useEffect(()=>{
-  //console.log("Token start");
-  //},[]);
-
   useEffect(() => {
     updateAge();
 
     const interval = setInterval(() => {
-console.log("Token tick");
+      console.log("Token tick");
       setCurrentTime(Date.now());
       updateAge(expiresAt);
     }, 500); // 20 Hz was 200.
@@ -57,21 +57,16 @@ console.log("Token tick");
   }, [expiresAt]);
 
   function updateAge() {
-    console.log("Token updateAge", age, expiresAt);
+//    console.log("Token updateAge", age, expiresAt);
 
     //if (!expiresAt) {return;}
     //setAge(Date.now() - expiresAt*1000);
 
     const t = parseFloat(expiresAt) * 1000 - Date.now();
 
-    console.log("xkcd", t, expiresAt, Date.now());
-
     setAge(t);
   }
 
-  useEffect(() => {
-    console.log("Token expiresAt", expiresAt);
-  }, [expiresAt]);
 
   return (
     <>
@@ -84,26 +79,27 @@ console.log("Token tick");
       {token && token.isString && <>{"STRING" + token}</>}
       {/*token && token*/}
       <br />
-      EXPIRES AT{" "}
+      {age < 0 && "EXPIRED"} {age >=0 && "EXPIRES"} AT{" "}
       {expiresAt && (
         <>
-          {expiresAt} {humanTime(expiresAt)}
+          {humanTime(expiresAt)}
         </>
       )}
       <br />
       REFRESHED AT{" "}
       {refreshedAt && (
         <>
-          {refreshedAt} {humanTime(refreshedAt)}
+          {humanTime(refreshedAt)}
         </>
       )}
-      <br />
-      AGE {age}ms
 <br />
 
-{(age<0) && (<>TOKEN EXPIRED            <Login setToken={setToken} setIdentity={setIdentity} />
+{(age<0) && (<>TOKEN EXPIRED {humanRuntime(age, 'text', 'ago')} <Login setToken={setToken} setIdentity={setIdentity} />
 </>)}
-{(age>=0) && (<>TOKEN CURRENT<Reauthorize /></>)} 
+{(age>=0) && (<>TOKEN CURRENT {humanRuntime(age, 'text', 'remaining')} <Reauthorize />
+            <Logout deleteToken={deleteToken} /> 
+
+</>)} 
       <br />
     </>
   );

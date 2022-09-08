@@ -20,6 +20,12 @@ export default function Content({ thingReport }) {
       setContent(thingReport.snippet);
       return;
     }
+
+    if (thingReport && thingReport.email) {
+      setContent(thingReport.email);
+      return;
+    }
+
     if (thingReport && thingReport.message) {
       setContent(thingReport.message);
       return;

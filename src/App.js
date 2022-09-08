@@ -9,7 +9,6 @@ import Token from "../src/components/Token.js";
 import Identity from "../src/components/Identity.js";
 import Snapshot from "../src/components/Snapshot.js";
 
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Input from "../src/components/Input.js";
 
@@ -41,7 +40,7 @@ export default function App() {
       createdAt: Date.now(),
       uuid: uuidv4(),
       input: "start",
-//      webPrefix: "http://192.168.10.10/snapshot.json",
+      //      webPrefix: "http://192.168.10.10/snapshot.json",
     },
     {
       index: 21,
@@ -50,10 +49,8 @@ export default function App() {
       createdAt: Date.now(),
       uuid: testUuid0,
       input: "start",
-//      webPrefix: "http://192.168.10.10/snapshot.json",
+      //      webPrefix: "http://192.168.10.10/snapshot.json",
     },
-
-
   ];
 
   const pathname = window.location.pathname;
@@ -227,32 +224,29 @@ export default function App() {
 
   //}
 
-function handleCollectionChange(things) {
-
-//setThings(things);
-
-
-}
+  function handleCollectionChange(things) {
+    //setThings(things);
+  }
 
   return (
     <>
       <Identity identity={identity} />
       <BrowserRouter>
-
-
-           <Routes>
-                 <Route exact path='/' element={<>
-
-
-        THING-REACT 6 September 2022
-        {!token && (
-          <>
-            <Login setToken={setToken} setIdentity={setIdentity} />
-            <Signup />
-          </>
-        )}
-        <Input setInput={setInput} />
-        {/*
+        <Routes>
+          <Route
+            exact
+            path="/"
+            element={
+              <>
+                THING-REACT 7 September 2022
+                {!token && (
+                  <>
+                    <Login setToken={setToken} setIdentity={setIdentity} />
+                    <Signup />
+                  </>
+                )}
+                <Input setInput={setInput} />
+                {/*
         <div key={"2"}>
           <Thing
             token={token}
@@ -267,29 +261,48 @@ function handleCollectionChange(things) {
           />
         </div>
 */}
-<br />
-<Token token={token} setToken={setToken} setIdentity={setIdentity} />
-<br />
-        {token && things && (
-          <>
-            <Logout deleteToken={deleteToken} />
+                <br />
+                <Token
+                  token={token}
+                  setToken={setToken}
+                  setIdentity={setIdentity}
+                />
+                <br />
+                {token && things && (
+                  <>
+                    {/*            <Logout deleteToken={deleteToken} /> */}
 
-            <Container maxWidth="sm">
-              <Collection
-                token={token}
-                things={things}
-                onCollectionChange={(c) => {handleCollectionChange(c)}}
+                    <Container maxWidth="sm">
+                      <Collection
+                        token={token}
+                        things={things}
+                        onCollectionChange={(c) => {
+                          handleCollectionChange(c);
+                        }}
+                      />
+                    </Container>
+                  </>
+                )}
+              </>
+            }
+          ></Route>
+
+          <Route
+            exact
+            path="/thing/:text"
+            element={
+              <Thing
+                datagram={{
+                  to: "agent",
+                  subject: "thing",
+                  webPrefix: webPrefix,
+                }}
               />
-            </Container>
-          </>
-        )}
-
- </>}></Route>
-
-           <Route exact path='/thing/:text' element={< Thing datagram={{to:"agent", subject:"thing", webPrefix:webPrefix }} />}></Route>
-{/*<Route exact path = '/thing/:text' render={(routeParams) => <Thing datagram={{to:"thing", subject:"hello", subject2:routeParams.text}} width={200} />} />*/}
-{/*<Route exact path = '/thing/:text' render={(props) => {<Thing datagram={{to:"thing", subject:props.match.params.text}} />} }/>*/}
-{/*<Route exact path="/thing/" render={(props) => (
+            }
+          ></Route>
+          {/*<Route exact path = '/thing/:text' render={(routeParams) => <Thing datagram={{to:"thing", subject:"hello", subject2:routeParams.text}} width={200} />} />*/}
+          {/*<Route exact path = '/thing/:text' render={(props) => {<Thing datagram={{to:"thing", subject:props.match.params.text}} />} }/>*/}
+          {/*<Route exact path="/thing/" render={(props) => (
 <>
 foo
     <Thing agentInput={""}/>
@@ -297,12 +310,10 @@ bar
 </>
 )} />*/}
 
-                 <Route exact path='/snapshot/:text' element={< Snapshot />}></Route>
-          </Routes>
-
+          <Route exact path="/snapshot/:text" element={<Snapshot />}></Route>
+        </Routes>
       </BrowserRouter>
-End.
+      End.
     </>
   );
 }
-
