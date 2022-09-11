@@ -266,7 +266,7 @@ setThings(
             {things.map((thing) => (
               <>
                 <Card
-                  key={thing.uuid}
+                  key={"card_"+thing.uuid}
                   id={`${thing.index}`}
                   card={thing}
                   text={thing && thing.text}

@@ -6,14 +6,16 @@ import crypto from "crypto";
 import useToken from "../useToken";
 import useIdentity from "../useIdentity";
 
-
-async function loginUser(credentials) {
   const { REACT_APP_CLIENT_SECRET } = process.env;
   const { REACT_APP_API_PREFIX } = process.env;
 
-  console.log("Login loginUser credentials", credentials);
+async function loginUser(credentials) {
+  // const { REACT_APP_CLIENT_SECRET } = process.env;
+  // const { REACT_APP_API_PREFIX } = process.env;
+  const url = REACT_APP_API_PREFIX + "auth/signin";
+  console.log("Login loginUser url credentials", url, credentials);
 
-  return fetch(REACT_APP_API_PREFIX + "auth/signin", {
+  return fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -22,24 +24,29 @@ async function loginUser(credentials) {
   }).then((data) => {
     return data.json();
   }).catch((error)=>{
-console.error(error);
+console.error("Login loginUser error", error);
+
+return {message:"Error"};
+//return ({data:null, error:{message:error}});
 });
 }
 
-export default function Login() {
+export default function Login({token, setToken}) {
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
 
-  const { token, setToken, deleteToken } = useToken();
-  const { identity, setIdentity, deleteIdentity } = useIdentity();
+  const [message, setMessage] = useState();
 
+  //const { token, setToken } = useToken();
+  const { identity, setIdentity, deleteIdentity } = useIdentity();
+  //const [ error, setError ] = useState();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const hash = crypto.createHmac(
       "sha256",
-      process.env.REACT_APP_CLIENT_SECRET
+      REACT_APP_CLIENT_SECRET
     );
     // Salted hash of username and password.
     // Using client provided salt.
@@ -54,11 +61,16 @@ export default function Login() {
       password: pass,
     });
 
+if (token && token.message) {setMessage(token.message);} else {
+
+setMessage("No message.");
+}
+
     console.log("Login handleSubmit", token);
 
     // Authentication ... and Authorisation.
     // Keep roles out of JWT.
-
+    // setError(response.error);
     setIdentity(gen_hash); //tbd
     setToken(token);
   };
@@ -82,6 +94,7 @@ export default function Login() {
           <button type="submit">Submit</button>
         </div>
       </form>
+{message}
     </div>
   );
 }

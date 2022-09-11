@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React from 'react';
 //import './Login.css';
-import PropTypes from 'prop-types';
+//import PropTypes from 'prop-types';
 
 async function reauthorizeUser(credentials) {
  return fetch('http://localhost:8080/login', {
@@ -23,7 +23,9 @@ export default function Reauthorize({}) {
 //      username,
 //      password
 //    });
+const credentials = null;
 console.log("Logout handleSubmit");
+reauthorizeUser(credentials);
 //    const token = false;
 //    deleteToken(token);
   }

@@ -1,9 +1,12 @@
-import React, {useState} from 'react';
+import React from 'react';
 //import './Login.css';
 import PropTypes from 'prop-types';
 
 
-async function logoutUser(credentials) {
+async function logoutUser(token) {
+
+//deleteToken(token);
+/*
  return fetch('http://localhost:8080/login', {
    method: 'POST',
    headers: {
@@ -12,6 +15,7 @@ async function logoutUser(credentials) {
    body: JSON.stringify(credentials)
  })
    .then(data => data.json())
+*/
 }
 
 export default function Logout({deleteToken}) {
@@ -29,6 +33,7 @@ export default function Logout({deleteToken}) {
 console.log("Logout handleSubmit");
     const token = false;
     deleteToken(token);
+logoutUser(token);
   }
 
 

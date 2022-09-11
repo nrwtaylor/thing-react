@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import jwt_decode from "jwt-decode";
+//import jwt_decode from "jwt-decode";
 
-import Typography from "@mui/material/Typography";
+//import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 
-import { setThing } from "../util/database.js";
+//import { setThing } from "../util/database.js";
 
 import { humanTime } from "./../util/time.js";
 

@@ -194,7 +194,7 @@ export default function App() {
   }
 
   useEffect(() => {
-    console.log("token", token);
+    console.log("App token", token);
     //setIdentity(token);
     //console.log("identity",identity);
 
@@ -238,7 +238,7 @@ export default function App() {
             path="/"
             element={
               <>
-                THING-REACT 7 September 2022
+                THING-REACT 10 September 2022
                 {!token && (
                   <>
                     <Login setToken={setToken} setIdentity={setIdentity} />
