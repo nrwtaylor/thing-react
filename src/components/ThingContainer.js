@@ -3,7 +3,7 @@ import { Card } from "./Card.js";
 import { Grid, Box } from "@material-ui/core";
 import update from "immutability-helper";
 import { useDrop } from "react-dnd";
-import { ItemTypes } from "./ItemTypes";
+import { ItemTypes } from "./ItemTypes.js";
 import { FullscreenExitTwoTone } from "@material-ui/icons";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -258,6 +258,9 @@ setThings(
   }, [things, setThings]);
 
   const [, drop] = useDrop(() => ({ accept: ItemTypes.CARD }));
+
+  if (!token) {return (<>NO TOKEN</>);}
+
   return (
     <div ref={drop} style={style}>
       <Grid container spacing={3} direction="row">

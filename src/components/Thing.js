@@ -279,6 +279,13 @@ console.log("Thing setThing error", error);
         console.log("Thing getThingReport", result);
         setData(result);
 
+if (result && result.thingReport && result.thingReport.error && result.thingReport.error.message) { 
+        console.log("Thing getThingReport", result.thingReport.error.message);
+//        setData(result);
+
+        setError(result.thingReport.error.message);
+}
+
         const elapsedTime = Date.now() - requestedAt;
 
 if (result && result.thingReport && result.thingReport.png) {
@@ -293,10 +300,10 @@ if (result && result.thingReport && result.thingReport.png) {
         console.log("nextRunAt p", p, humanTime(p));
 
         setFlag("green");
-        setError(null);
+        //setError(null);
       })
       .catch((error) => {
-        setError("Did not get Thingreport.");
+        setError("Did not get Thingreport." + error);
         console.error(error);
       });
     return;
@@ -507,7 +514,7 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
           }
         />
 
-
+{error}
 
         <Button onClick={handleSpawnThing}>SPAWN</Button>
 

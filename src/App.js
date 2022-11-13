@@ -268,8 +268,6 @@ export default function App() {
                   setIdentity={setIdentity}
                 />
                 <br />
-                {token && things && (
-                  <>
                     {/*            <Logout deleteToken={deleteToken} /> */}
 
                     <Container maxWidth="sm">
@@ -281,8 +279,6 @@ export default function App() {
                         }}
                       />
                     </Container>
-                  </>
-                )}
               </>
             }
           ></Route>

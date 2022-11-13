@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import jwt_decode from "jwt-decode";
 
-import useToken from "../useToken";
-import useIdentity from "../useIdentity";
+import useToken from "../useToken.js";
+import useIdentity from "../useIdentity.js";
 
 
 import { humanTime, humanAge, humanRuntime } from "./../util/time.js";
