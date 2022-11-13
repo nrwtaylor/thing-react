@@ -186,20 +186,8 @@ function Stream(props) {
 
     console.log("Stream f", s);
     // Set state
-
     setStreamPoints(s);
-
-    //////////
-
-    //    const endTime = new Date();
-    //    const tf = endTime - startTime;
-    //    const timeDiff = tf;
-    //    setTracePeriod(timeDiff);
   }
-
-  useEffect(() => {
-    console.log("Stream start");
-  }, []);
 
   useEffect(() => {
     console.log("Stream amount", amount);
@@ -294,7 +282,7 @@ if (isNaN(amount)) {return;}
   }, [amount]);
 
   function callBack() {
-    console.log("Agent callBack called.");
+    console.log("Strean callBack called.");
   }
 
   const deleteButton = (

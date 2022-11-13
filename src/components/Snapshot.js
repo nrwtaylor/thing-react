@@ -29,10 +29,14 @@ import Forget from "../components/Forget.js";
 import Trace from "../components/Trace.js";
 import Stream from "../components/Stream.js";
 import BubbleLevel from "../components/BubbleLevel.js";
+import Inclinometer from "../components/Inclinometer.js";
+
 import Magnetometer from "../components/Magnetometer.js";
 
 import Ping from "../components/Ping.js";
 import { getSnapshot } from "../util/database.js";
+
+import { useSwipeable } from 'react-swipeable';
 
 function Snapshot(props) {
   const { datagram } = props;
@@ -57,6 +61,21 @@ function Snapshot(props) {
   const replyAgentDialog = (thing) => {
     setOpen(true);
   };
+
+const config = {
+  delta: 10,                             // min distance(px) before a swipe starts. *See Notes*
+  preventScrollOnSwipe: false,           // prevents scroll during swipe (*See Details*)
+  trackTouch: true,                      // track touch input
+  trackMouse: false,                     // track mouse input
+  rotationAngle: 0,                      // set a rotation angle
+  swipeDuration: Infinity,               // allowable duration of a swipe (ms). *See Notes*
+  touchEventOptions: { passive: true },  // options for touch listeners (*See Details*)
+};
+
+const handlers = useSwipeable({
+  onSwiped: (eventData) => console.log("User Swiped!", eventData),
+  ...config,
+});
 
   const handleClose = () => {
     setOpen(false);
@@ -221,6 +240,8 @@ setData(res.data.thingReport.snapshot);
         <br />
 */}
             <br />
+<div {...handlers}>MERP
+</div>
             <Stream
               hide={false}
               quantity={{
@@ -535,6 +556,56 @@ setData(res.data.thingReport.snapshot);
               }}
               period={1000}
             />
+            <br />
+
+            DISX:{" "}
+            {data &&
+              data.transducers &&
+              data.transducers.thdisxad0 &&
+              data.transducers.thdisxad0.amount}{" "}
+            ms2
+            <br />
+
+            DISY:{" "}
+            {data &&
+              data.transducers &&
+              data.transducers.thdisyad1 &&
+              data.transducers.thdisyad1.amount}{" "}
+            ms2
+            <br />
+
+            DISZ:{" "}
+            {data &&
+              data.transducers &&
+              data.transducers.thdiszax2 &&
+              data.transducers.thdiszax2.amount}{" "}
+            ms2
+            <br />
+
+            VELX:{" "}
+            {data &&
+              data.transducers &&
+              data.transducers.thvelxad0 &&
+              data.transducers.thvelxad0.amount}{" "}
+            ms2
+            <br />
+
+            VELY:{" "}
+            {data &&
+              data.transducers &&
+              data.transducers.thvelyad1 &&
+              data.transducers.thvelyad1.amount}{" "}
+            ms2
+            <br />
+
+            VELZ:{" "}
+            {data &&
+              data.transducers &&
+              data.transducers.thvelzax2 &&
+              data.transducers.thvelzax2.amount}{" "}
+            ms2
+            <br />
+
 
             <br />
             ACCZ:{" "}
@@ -570,7 +641,6 @@ setData(res.data.thingReport.snapshot);
               domain={{ maximum: 1000, minimum: 750 }}
             />
 <br />
-Magnetometer
 <Magnetometer vector={{z:data && data.transducers && data.transducers.thmagzax2, 
 y:data && data.transducers && data.transducers.thmagyad1, 
 x:data && data.transducers && data.transducers.thmagxad0}} />
@@ -606,6 +676,19 @@ x:1}} /> */}
               }}
             />
             PITCH:{" "}
+
+<Inclinometer
+              data={{
+                x:
+                  data &&
+                  data.transducers &&
+                  data.transducers.thptchad1 &&
+                  data.transducers.thptchad1.amount,
+              }}
+            />
+
+
+
             {data &&
               data.transducers &&
               data.transducers.thptchad1 &&
@@ -626,7 +709,21 @@ x:1}} /> */}
             />
             <br />
             ROLL:{" "}
-            {data &&
+ 
+
+<Inclinometer
+              data={{
+                x:
+                  data &&
+                  data.transducers &&
+                  data.transducers.throllad0 &&
+                  data.transducers.throllad0.amount,
+              }}
+            />
+
+
+
+           {data &&
               data.transducers &&
               data.transducers.throllad0 &&
               data.transducers.throllad0.amount}{" "}
