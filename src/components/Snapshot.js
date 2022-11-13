@@ -272,6 +272,49 @@ setData(res.data.thingReport.snapshot);
               period={1 * 60 * 1000}
             />
             <br />
+
+
+
+ CLB0:{" "}
+            {data &&
+              data.transducers &&
+              data.transducers.thclb0ax2 &&
+              data.transducers.thclb0ax2.amount}{" "}
+            C<br />
+            {/*     <Trace data={ampPoints} />
+        <br />
+*/}
+            <br />
+            <Stream
+              hide={true}
+              quantity={{
+                units: "C",
+                amount:
+                  data &&
+                  data.transducers &&
+                  data.transducers.thclb0ax2 &&
+                  data.transducers.thclb0ax2.amount,
+              }}
+              period={100}
+            />
+            <br />
+            <Stream
+              hide={true}
+              quantity={{
+                units: "C",
+                amount:
+                  data &&
+                  data.transducers &&
+                  data.transducers.thclb0ax2 &&
+                  data.transducers.thclb0ax2.amount,
+              }}
+              period={1 * 60 * 1000}
+            />
+            <br />
+
+
+
+
             VLT0 (HOUSE):{" "}
             {data &&
               data.transducers &&

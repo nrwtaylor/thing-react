@@ -238,7 +238,7 @@ export default function App() {
             path="/"
             element={
               <>
-                THING-REACT 10 September 2022
+                THING-REACT 12 November 2022
                 {!token && (
                   <>
                     <Login setToken={setToken} setIdentity={setIdentity} />
