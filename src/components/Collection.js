@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import ThingContainer from "./../components/ThingContainer";
+import ThingContainerDnd from "./../components/ThingContainerDnd";
+
 import { Box, Grid } from "@material-ui/core";
 
 const thumb = {
@@ -31,6 +33,8 @@ const img = {
 
 function Collection(props) {
   const { things, token } = props;
+
+const dndFlag=true;
 /*
   useEffect(() => {
     console.log("images");
@@ -45,12 +49,11 @@ function Collection(props) {
 
   return (
     <>
-
       <DndProvider backend={HTML5Backend}>
-     
         <ThingContainer things={things} onCollectionChange={handleCollectionChange} token={token} />
-   
-      </DndProvider>
+       </DndProvider>
+
+
 
     </>
   );

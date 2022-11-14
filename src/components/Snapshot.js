@@ -33,10 +33,12 @@ import Inclinometer from "../components/Inclinometer.js";
 
 import Magnetometer from "../components/Magnetometer.js";
 
+import MotionReference from "../components/MotionReference.js";
+
 import Ping from "../components/Ping.js";
 import { getSnapshot } from "../util/database.js";
 
-import { useSwipeable } from 'react-swipeable';
+import { useSwipeable } from "react-swipeable";
 
 function Snapshot(props) {
   const { datagram } = props;
@@ -62,20 +64,20 @@ function Snapshot(props) {
     setOpen(true);
   };
 
-const config = {
-  delta: 10,                             // min distance(px) before a swipe starts. *See Notes*
-  preventScrollOnSwipe: false,           // prevents scroll during swipe (*See Details*)
-  trackTouch: true,                      // track touch input
-  trackMouse: false,                     // track mouse input
-  rotationAngle: 0,                      // set a rotation angle
-  swipeDuration: Infinity,               // allowable duration of a swipe (ms). *See Notes*
-  touchEventOptions: { passive: true },  // options for touch listeners (*See Details*)
-};
+  const config = {
+    delta: 10, // min distance(px) before a swipe starts. *See Notes*
+    preventScrollOnSwipe: false, // prevents scroll during swipe (*See Details*)
+    trackTouch: true, // track touch input
+    trackMouse: false, // track mouse input
+    rotationAngle: 0, // set a rotation angle
+    swipeDuration: Infinity, // allowable duration of a swipe (ms). *See Notes*
+    touchEventOptions: { passive: true }, // options for touch listeners (*See Details*)
+  };
 
-const handlers = useSwipeable({
-  onSwiped: (eventData) => console.log("User Swiped!", eventData),
-  ...config,
-});
+  const handlers = useSwipeable({
+    onSwiped: (eventData) => console.log("User Swiped!", eventData),
+    ...config,
+  });
 
   const handleClose = () => {
     setOpen(false);
@@ -123,17 +125,19 @@ const handlers = useSwipeable({
     //    const webPrefix = process.env.REACT_APP_WEB_PREFIX
     //setRequestedAt(Date.now());
     console.log("Snapshot getSnapshot to", to);
-//    const url = "http://192.168.10.10/snapshot.json";
+    //    const url = "http://192.168.10.10/snapshot.json";
 
-const url = to;
-//console.log("Snapshot getSnapshot datagram", datagram);
+    const url = to;
+    //console.log("Snapshot getSnapshot datagram", datagram);
     return getSnapshot(url, "")
       .then((result) => {
         //getSnapshot(webPrefix,"").then((result)=>{
 
         console.log("Snapshot getSnapshot result", result);
 
-        if (!result) {return true;}
+        if (!result) {
+          return true;
+        }
 
         if (result && result.thingReport === false) {
           // No thing report. Do not update snapshot.
@@ -240,8 +244,7 @@ setData(res.data.thingReport.snapshot);
         <br />
 */}
             <br />
-<div {...handlers}>MERP
-</div>
+            <div {...handlers}>MERP</div>
             <Stream
               hide={false}
               quantity={{
@@ -265,6 +268,7 @@ setData(res.data.thingReport.snapshot);
                   data.transducers.thamp0ad0.amount,
               }}
               period={100}
+              domain={[-50, 50]}
             />
             <br />
             <Stream
@@ -291,12 +295,10 @@ setData(res.data.thingReport.snapshot);
                   data.transducers.thamp0ad0.amount,
               }}
               period={1 * 60 * 1000}
+              domain={[-50, 50]}
             />
             <br />
-
-
-
- CLB0:{" "}
+            CLB0:{" "}
             {data &&
               data.transducers &&
               data.transducers.thclb0ax2 &&
@@ -332,10 +334,6 @@ setData(res.data.thingReport.snapshot);
               period={1 * 60 * 1000}
             />
             <br />
-
-
-
-
             VLT0 (HOUSE):{" "}
             {data &&
               data.transducers &&
@@ -355,7 +353,8 @@ setData(res.data.thingReport.snapshot);
                   data.transducers.thvlt0ad1.amount,
               }}
               period={100}
-              domain={{ maximum: 16, minimum: 10 }}
+              //              domain={{ maximum: 16, minimum: 10 }}
+              domain={[0, 24]}
             />
             <br />
             <Stream
@@ -369,6 +368,7 @@ setData(res.data.thingReport.snapshot);
                   data.transducers.thvlt0ad1.amount,
               }}
               period={1 * 60 * 1000}
+              domain={[0, 24]}
             />
             <br />
             <Stream
@@ -400,7 +400,8 @@ setData(res.data.thingReport.snapshot);
                   data.transducers.thvlt1ad1.amount,
               }}
               period={100}
-              domain={{ maximum: 16, minimum: 10 }}
+              //              domain={{ maximum: 16, minimum: 10 }}
+              domain={[0, 24]}
             />
             <br />
             <Stream
@@ -413,6 +414,7 @@ setData(res.data.thingReport.snapshot);
                   data.transducers.thvlt1ad1.amount,
               }}
               period={1 * 60 * 1000}
+              domain={[0, 24]}
             />
             <br />
             <Stream
@@ -557,62 +559,132 @@ setData(res.data.thingReport.snapshot);
               period={1000}
             />
             <br />
-
             DISX:{" "}
             {data &&
               data.transducers &&
-              data.transducers.thdisxad0 &&
-              data.transducers.thdisxad0.amount}{" "}
-            ms2
+              data.transducers.thdisxxm0 &&
+              data.transducers.thdisxxm0.amount}{" "}
+            m
             <br />
-
             DISY:{" "}
             {data &&
               data.transducers &&
-              data.transducers.thdisyad1 &&
-              data.transducers.thdisyad1.amount}{" "}
-            ms2
+              data.transducers.thdisyxm1 &&
+              data.transducers.thdisyxm1.amount}{" "}
+            m
             <br />
-
             DISZ:{" "}
             {data &&
               data.transducers &&
-              data.transducers.thdiszax2 &&
-              data.transducers.thdiszax2.amount}{" "}
-            ms2
+              data.transducers.thdiszxm2 &&
+              data.transducers.thdiszxm2.amount}{" "}
+            m
             <br />
-
             VELX:{" "}
             {data &&
               data.transducers &&
-              data.transducers.thvelxad0 &&
-              data.transducers.thvelxad0.amount}{" "}
-            ms2
+              data.transducers.thvelxxx0 &&
+              data.transducers.thvelxxx0.amount}{" "}
+            ms
             <br />
-
             VELY:{" "}
             {data &&
               data.transducers &&
-              data.transducers.thvelyad1 &&
-              data.transducers.thvelyad1.amount}{" "}
-            ms2
+              data.transducers.thvelyxx1 &&
+              data.transducers.thvelyxx1.amount}{" "}
+            ms
             <br />
-
             VELZ:{" "}
             {data &&
               data.transducers &&
-              data.transducers.thvelzax2 &&
-              data.transducers.thvelzax2.amount}{" "}
+              data.transducers.thvelzxx2 &&
+              data.transducers.thvelzxx2.amount}{" "}
+            ms
+            <br />
+            ACCX:{" "}
+            {data &&
+              data.transducers &&
+              data.transducers.thaccxxx0 &&
+              data.transducers.thaccxxx0.amount}{" "}
             ms2
             <br />
-
-
+            ACCY:{" "}
+            {data &&
+              data.transducers &&
+              data.transducers.thaccyxx1 &&
+              data.transducers.thaccyxx1.amount}{" "}
+            ms2
             <br />
             ACCZ:{" "}
             {data &&
               data.transducers &&
-              data.transducers.thacczax2 &&
-              data.transducers.thacczax2.amount}{" "}
+              data.transducers.thacczxx2 &&
+              data.transducers.thacczxx2.amount}{" "}
+            ms2
+            <br />
+            <MotionReference
+              data={{
+                displacement: {
+                  y:
+                    data &&
+                    data.transducers &&
+                    data.transducers.thdisyxm1 &&
+                    data.transducers.thdisyxm1.amount,
+                  x:
+                    data &&
+                    data.transducers &&
+                    data.transducers.thdisxxm0 &&
+                    data.transducers.thdisxxm0.amount,
+                  z:
+                    data &&
+                    data.transducers &&
+                    data.transducers.thdiszxm2 &&
+                    data.transducers.thdiszxm2.amount,
+                },
+
+                velocity: {
+                  y:
+                    data &&
+                    data.transducers &&
+                    data.transducers.thvelyxm1 &&
+                    data.transducers.thvelyxm1.amount,
+                  x:
+                    data &&
+                    data.transducers &&
+                    data.transducers.thvelxxm0 &&
+                    data.transducers.thvelxxm0.amount,
+                  z:
+                    data &&
+                    data.transducers &&
+                    data.transducers.thvelzxm2 &&
+                    data.transducers.thvelzxm2.amount,
+                },
+
+                acceleration: {
+                  y:
+                    data &&
+                    data.transducers &&
+                    data.transducers.thaccyxx1 &&
+                    data.transducers.thaccyxx1.amount,
+                  x:
+                    data &&
+                    data.transducers &&
+                    data.transducers.thaccxxx0 &&
+                    data.transducers.thaccxxx0.amount,
+                  z:
+                    data &&
+                    data.transducers &&
+                    data.transducers.thacczxx2 &&
+                    data.transducers.thacczxx2.amount,
+                },
+              }}
+            />
+            <br />
+            ACCZ:{" "}
+            {data &&
+              data.transducers &&
+              data.transducers.thacczxx2 &&
+              data.transducers.thacczxx2.amount}{" "}
             ms2
             <br />
             <Stream
@@ -621,8 +693,8 @@ setData(res.data.thingReport.snapshot);
                 amount:
                   data &&
                   data.transducers &&
-                  data.transducers.thacczax2 &&
-                  data.transducers.thacczax2.amount,
+                  data.transducers.thacczxx2 &&
+                  data.transducers.thacczxx2.amount,
                 units: "ms-2",
               }}
             />
@@ -633,22 +705,24 @@ setData(res.data.thingReport.snapshot);
                 amount:
                   data &&
                   data.transducers &&
-                  data.transducers.thacczax2 &&
-                  data.transducers.thacczax2.amount,
+                  data.transducers.thacczxx2 &&
+                  data.transducers.thacczxx2.amount,
                 units: "ms-2",
               }}
               period={50}
               domain={{ maximum: 1000, minimum: 750 }}
             />
-<br />
-<Magnetometer vector={{z:data && data.transducers && data.transducers.thmagzax2, 
-y:data && data.transducers && data.transducers.thmagyad1, 
-x:data && data.transducers && data.transducers.thmagxad0}} />
-
-{/* <Magnetometer vector={{z:1, 
+            <br />
+            <Magnetometer
+              vector={{
+                z: data && data.transducers && data.transducers.thmagzxx2,
+                y: data && data.transducers && data.transducers.thmagyxx1,
+                x: data && data.transducers && data.transducers.thmagxxx0,
+              }}
+            />
+            {/* <Magnetometer vector={{z:1, 
 y:1, 
 x:1}} /> */}
-
             <br />
             BUBBLE LEVEL
             <BubbleLevel
@@ -666,8 +740,8 @@ x:1}} /> */}
                 z:
                   data &&
                   data.transducers &&
-                  data.transducers.thyawax2 &&
-                  data.transducers.thyawax2.amount,
+                  data.transducers.thyawad2 &&
+                  data.transducers.thyawad2.amount,
                 dotZ:
                   data &&
                   data.transducers &&
@@ -676,8 +750,7 @@ x:1}} /> */}
               }}
             />
             PITCH:{" "}
-
-<Inclinometer
+            <Inclinometer
               data={{
                 x:
                   data &&
@@ -686,9 +759,6 @@ x:1}} /> */}
                   data.transducers.thptchad1.amount,
               }}
             />
-
-
-
             {data &&
               data.transducers &&
               data.transducers.thptchad1 &&
@@ -706,12 +776,11 @@ x:1}} /> */}
                 units: "degrees",
               }}
               period={50}
+              domain={[-30, 30]}
             />
             <br />
             ROLL:{" "}
- 
-
-<Inclinometer
+            <Inclinometer
               data={{
                 x:
                   data &&
@@ -720,10 +789,7 @@ x:1}} /> */}
                   data.transducers.throllad0.amount,
               }}
             />
-
-
-
-           {data &&
+            {data &&
               data.transducers &&
               data.transducers.throllad0 &&
               data.transducers.throllad0.amount}{" "}
@@ -740,6 +806,7 @@ x:1}} /> */}
                 units: "degrees",
               }}
               period={50}
+              domain={[-30, 30]}
             />
             <br />
             YAW:{" "}
@@ -768,32 +835,28 @@ ACCZ: {data && data.transducers && data.transducers.thacczax2 && data.transducer
         <br />
         SPEED IN KNOTS: {data && data.speed_in_knots} knots
         <br />
-            <Stream
-              hide={true}
-              quantity={{
-                amount:
-                data && data.speed_in_knots,
-                units: "knots",
-              }}
-              period={50}
-            />
-            <br />
-
+        <Stream
+          hide={true}
+          quantity={{
+            amount: data && data.speed_in_knots,
+            units: "knots",
+          }}
+          period={50}
+        />
+        <br />
         TRUE COURSE: {data && data.true_course}
         <br />
         NUMBER OF SATELLITES: {data && data.number_of_satellites}
         <br />
-            <Stream
-              hide={true}
-              quantity={{
-                amount:
-data && data.number_of_satellites,
-                units: "",
-              }}
-              period={50}
-            />
-            <br />
-
+        <Stream
+          hide={true}
+          quantity={{
+            amount: data && data.number_of_satellites,
+            units: "",
+          }}
+          period={50}
+        />
+        <br />
         HDOP: {data && data.horizontal_dilution_of_precision}
         <br />
         ALTITUDE: {data && data.altitude_above_mean_sea_level}m (MSL)

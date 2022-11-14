@@ -256,12 +256,12 @@ setThings(
     props.onCollectionChange(reindexedThings);
   }, [things, setThings]);
 
-//  const [, drop] = useDrop(() => ({ accept: ItemTypes.CARD }));
+  const [, drop] = useDrop(() => ({ accept: ItemTypes.CARD }));
 
   if (!token) {return (<>NO TOKEN</>);}
 
   return (
-    <div style={style}>
+    <div ref={drop} style={style}>
       <Grid container spacing={3} direction="row">
         {things && (
           <>
