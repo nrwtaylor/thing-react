@@ -31,17 +31,39 @@ import {
 
 import Frequency from "../components/Frequency.js";
 
+import {humanRuntime} from "../util/time.js";
+
+
 function Trace(props) {
   const { data } = props;
 
+  const [spread, setSpread] = useState();
+
   useEffect(() => {
-    console.log("data[0]", data[0]);
+if (data === undefined) {return;}
+if (Array.isArray(data) && data.length === 0) {return;}
+
+//console.log("Trace data", data);
+
+
+
+const firstEvent= new Date(data[0].at);
+const lastEvent = new Date(data[data.length - 1].at);
+const spreadEvent = lastEvent - firstEvent;
+
+//console.log("Trace spreadEvent", spreadEvent);
+
+//if (spreadEvent) {
+setSpread(spreadEvent);
+//}
   }, [data]);
 
   //return (<>NOTHING</>);
   //        <LineChart data={data} margin={{ right: 300 }}>
   // https://stackoverflow.com/questions/50078787/recharts-set-y-axis-range
   // <YAxis type="number" domain={[dataMin => (0 - Math.abs(dataMin)), dataMax => (dataMax * 2)]} />
+
+//return (<>HEY</>);
 
   return (
     <>
@@ -121,6 +143,7 @@ function Trace(props) {
         </LineChart>
       </ResponsiveContainer>
 */}
+{humanRuntime(spread)}
         <br />
         <p />
       </Box>

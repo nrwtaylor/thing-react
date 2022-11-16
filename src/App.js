@@ -5,9 +5,16 @@ import Logout from "../src/components/Logout.js";
 import Signup from "../src/components/Signup.js";
 import { getThings, createThing } from "../src/util/database.js";
 
+import ZuluTime from "../src/components/ZuluTime.js";
+
 import Token from "../src/components/Token.js";
 import Identity from "../src/components/Identity.js";
+
+// For the snapshot and history routes.
+// Refactor to do this programatically.
 import Snapshot from "../src/components/Snapshot.js";
+import History from "../src/components/History.js";
+
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Input from "../src/components/Input.js";
@@ -238,7 +245,7 @@ export default function App() {
             path="/"
             element={
               <>
-                THING-REACT 13 November 2022 aaaa
+                THING-REACT 15 November 2022 f799
                 {!token && (
                   <>
                     <Login setToken={setToken} setIdentity={setIdentity} />
@@ -307,8 +314,38 @@ bar
 )} />*/}
 
           <Route exact path="/snapshot/:text" element={<Snapshot />}></Route>
+
+
+
+
+
+  <Route exact path="/history/:text" element={<History
+                datagram={{
+                  to: "agent",
+                  subject: pathname.replace("/history/",""),
+                  webPrefix: webPrefix,
+                }}
+
+ />}></Route>
+
+
+{/*
+  <Route exact path="/history/:text" element={props => <History
+                datagram={{
+                  to: "agent",
+                  subject: "thing",
+                  webPrefix: webPrefix
+                }}
+ /> } />
+*/}
+
+
+
         </Routes>
       </BrowserRouter>
+
+<ZuluTime />
+
       End.
     </>
   );

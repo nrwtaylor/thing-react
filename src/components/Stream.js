@@ -31,7 +31,7 @@ import Forget from "../components/Forget.js";
 import Trace from "../components/Trace.js";
 
 function Stream(props) {
-  const { quantities, quantity, period, hide } = props;
+  const { at, quantities, quantity, period, hide } = props;
 
   const { amount, units } = quantity;
 
@@ -169,6 +169,7 @@ function Stream(props) {
       amount: conditionedAmount,
       amount2: amounts && amounts[0],
       amount3: amounts && amounts[2],
+      at: at,
     });
 
     const maxStreamPoints = 100;

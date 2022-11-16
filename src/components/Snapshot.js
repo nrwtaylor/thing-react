@@ -38,6 +38,9 @@ import MotionReference from "../components/MotionReference.js";
 import Ping from "../components/Ping.js";
 import { getSnapshot } from "../util/database.js";
 
+import useSnapshot from "../useSnapshot";
+
+
 import { useSwipeable } from "react-swipeable";
 
 function Snapshot(props) {
@@ -47,15 +50,22 @@ function Snapshot(props) {
   const user_name = props.user_name; // TODO
   const agent_input = props.agent_input;
   const webPrefix = agent_input;
-  const [flag, setFlag] = useState();
+  //const [flag, setFlag] = useState();
   //const [requestedAt, setRequestedAt] = useState();
   const [reply, setReply] = useState("");
   const [snapshotInterval, setSnapshotInterval] = useState(50);
+
+  const toSnapshot = "http://192.168.10.10/snapshot.json";
+  const {snapshot, flag} = useSnapshot(toSnapshot);
+
+
 
   const [data, setData] = useState({
     thing: { uuid: "X" },
     thing_report: { sms: "No response. Yet." },
   });
+
+
 
   const [open, setOpen] = useState(false);
 
@@ -83,15 +93,9 @@ function Snapshot(props) {
     setOpen(false);
   };
 
-  useEffect(() => {
-    getSnapshot2();
-
-    const interval = setInterval(() => {
-      getSnapshot2();
-    }, snapshotInterval); // 20 Hz was 200.
-
-    return () => clearInterval(interval);
-  }, []);
+useEffect(()=>{
+setData(snapshot);
+},[snapshot]);
 
   function humanTime(timestamp) {
     const ts = new Date();
@@ -114,7 +118,7 @@ function Snapshot(props) {
     var date = Date.now();
     return date.toString();
   }
-
+/*
   function getSnapshot2(agent) {
     const startTime = new Date();
     if (flag === "red") {
@@ -160,34 +164,8 @@ function Snapshot(props) {
         console.error("Snapshot getSnapshot error", error);
         return error;
       });
-    /*
-    axios
-      .get(url)
-      .then((res) => {
-        console.log("Got " + url);
-        //console.log("snapshot", res);
-        let thingy = res.data;
-        console.log("Snapshot res.data", res.data);
-if (res && res.data && res.data.thingReport && res.data.thingReport.snapshot) {
-setData(res.data.thingReport.snapshot);
-} else {
-      setData(res.data);
-
-}
-        // dev flag available not available
-        setFlag("green");
-        const endTime = new Date();
-        setSnapshotGetTime(endTime - startTime);
-        //setFlag("green");
-      })
-      .catch((error) => {
-        setFlag("red");
-
-        console.log("Get error", url, error);
-      });
-*/
   }
-
+*/
   const [ampDataPointer, setAmpDataPointer] = useState(0);
   const [ampPoints, setAmpPoints] = useState([]);
   const startTime = new Date();
@@ -244,7 +222,7 @@ setData(res.data.thingReport.snapshot);
         <br />
 */}
             <br />
-            <div {...handlers}>MERP</div>
+{/*            <div {...handlers}>MERP</div>  */}
             <Stream
               hide={false}
               quantity={{

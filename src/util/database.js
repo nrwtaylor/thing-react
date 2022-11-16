@@ -97,6 +97,9 @@ export function forgetThing(datagram, token) {
 }
 
 
+export function getWebJson(webPrefix, token) {
+return getSnapshot(webPrefix, token);
+}
 
 export function getSnapshot(webPrefix, token) {
 if (!webPrefix) {return Promise.reject();}

@@ -1,4 +1,0 @@
-sudo npm run build
-cd /var/www/thing-react-test/build
-sudo cp -r . /var/www/thing-react
-sudo service nginx restart
