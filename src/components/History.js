@@ -216,9 +216,9 @@ setHistoryPoints(p);
 
               }}
               period={100}
-              domain={[-50, 50]}
+//              domain={[-50, 50]}
             />
-*
+
             <br />
 
 

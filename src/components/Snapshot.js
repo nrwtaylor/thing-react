@@ -215,8 +215,8 @@ setData(snapshot);
             AMP0:{" "}
             {data &&
               data.transducers &&
-              data.transducers.thamp0ad0 &&
-              data.transducers.thamp0ad0.amount}{" "}
+              data.transducers.thamp0ax0 &&
+              data.transducers.thamp0ax0.amount}{" "}
             A<br />
             {/*     <Trace data={ampPoints} />
         <br />
@@ -230,8 +230,8 @@ setData(snapshot);
                 amount:
                   data &&
                   data.transducers &&
-                  data.transducers.thamp0ad0 &&
-                  data.transducers.thamp0ad0.amount,
+                  data.transducers.thamp0ax0 &&
+                  data.transducers.thamp0ax0.amount,
               }}
             />
             <br />
@@ -242,8 +242,8 @@ setData(snapshot);
                 amount:
                   data &&
                   data.transducers &&
-                  data.transducers.thamp0ad0 &&
-                  data.transducers.thamp0ad0.amount,
+                  data.transducers.thamp0ax0 &&
+                  data.transducers.thamp0ax0.amount,
               }}
               period={100}
               domain={[-50, 50]}
@@ -256,8 +256,8 @@ setData(snapshot);
                 amount:
                   data &&
                   data.transducers &&
-                  data.transducers.thamp0ad0 &&
-                  data.transducers.thamp0ad0.amount,
+                  data.transducers.thamp0ax0 &&
+                  data.transducers.thamp0ax0.amount,
               }}
               period={5 * 1000}
             />
@@ -269,8 +269,8 @@ setData(snapshot);
                 amount:
                   data &&
                   data.transducers &&
-                  data.transducers.thamp0ad0 &&
-                  data.transducers.thamp0ad0.amount,
+                  data.transducers.thamp0ax0 &&
+                  data.transducers.thamp0ax0.amount,
               }}
               period={1 * 60 * 1000}
               domain={[-50, 50]}
@@ -315,8 +315,8 @@ setData(snapshot);
             VLT0 (HOUSE):{" "}
             {data &&
               data.transducers &&
-              data.transducers.thvlt0ad1 &&
-              data.transducers.thvlt0ad1.amount}{" "}
+              data.transducers.thvlt0ax1 &&
+              data.transducers.thvlt0ax1.amount}{" "}
             V<br />
             <br />
             {/*     <Trace data={voltPoints} /> */}
@@ -327,8 +327,8 @@ setData(snapshot);
                 amount:
                   data &&
                   data.transducers &&
-                  data.transducers.thvlt0ad1 &&
-                  data.transducers.thvlt0ad1.amount,
+                  data.transducers.thvlt0ax1 &&
+                  data.transducers.thvlt0ax1.amount,
               }}
               period={100}
               //              domain={{ maximum: 16, minimum: 10 }}
@@ -342,8 +342,8 @@ setData(snapshot);
                 amount:
                   data &&
                   data.transducers &&
-                  data.transducers.thvlt0ad1 &&
-                  data.transducers.thvlt0ad1.amount,
+                  data.transducers.thvlt0ax1 &&
+                  data.transducers.thvlt0ax1.amount,
               }}
               period={1 * 60 * 1000}
               domain={[0, 24]}
@@ -356,16 +356,16 @@ setData(snapshot);
                 amount:
                   data &&
                   data.transducers &&
-                  data.transducers.thvlt0ad1 &&
-                  data.transducers.thvlt0ad1.amount,
+                  data.transducers.thvlt0ax1 &&
+                  data.transducers.thvlt0ax1.amount,
               }}
             />
             <br />
             VLT1 (START):{" "}
             {data &&
               data.transducers &&
-              data.transducers.thvlt1ad1 &&
-              data.transducers.thvlt1ad1.amount}{" "}
+              data.transducers.thvlt1ax1 &&
+              data.transducers.thvlt1ax1.amount}{" "}
             V<br />
             <Stream
               hide={true}
@@ -374,8 +374,8 @@ setData(snapshot);
                 amount:
                   data &&
                   data.transducers &&
-                  data.transducers.thvlt1ad1 &&
-                  data.transducers.thvlt1ad1.amount,
+                  data.transducers.thvlt1ax1 &&
+                  data.transducers.thvlt1ax1.amount,
               }}
               period={100}
               //              domain={{ maximum: 16, minimum: 10 }}
@@ -388,8 +388,8 @@ setData(snapshot);
                 amount:
                   data &&
                   data.transducers &&
-                  data.transducers.thvlt1ad1 &&
-                  data.transducers.thvlt1ad1.amount,
+                  data.transducers.thvlt1ax1 &&
+                  data.transducers.thvlt1ax1.amount,
               }}
               period={1 * 60 * 1000}
               domain={[0, 24]}
@@ -402,8 +402,8 @@ setData(snapshot);
                 amount:
                   data &&
                   data.transducers &&
-                  data.transducers.thvlt1ad1 &&
-                  data.transducers.thvlt1ad1.amount,
+                  data.transducers.thvlt1ax1 &&
+                  data.transducers.thvlt1ax1.amount,
               }}
             />
             <br />
