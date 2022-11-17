@@ -32,12 +32,33 @@ import useInput from "./useInput";
 
 import axios from "axios";
 
+import { useSwipeable } from "react-swipeable";
+
+  const config = {
+    delta: 10, // min distance(px) before a swipe starts. *See Notes*
+    preventScrollOnSwipe: false, // prevents scroll during swipe (*See Details*)
+    trackTouch: true, // track touch input
+    trackMouse: false, // track mouse input
+    rotationAngle: 0, // set a rotation angle
+    swipeDuration: Infinity, // allowable duration of a swipe (ms). *See Notes*
+    touchEventOptions: { passive: true }, // options for touch listeners (*See Details*)
+  };
+
+
+
 export default function App() {
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
   const testUuid0 = process.env.REACT_APP_THING_0;
   const testUuid1 = process.env.REACT_APP_THING_1;
   const apiPrefix = process.env.REACT_APP_API_PREFIX;
   const stack0Prefix = process.env.REACT_APP_STACK_0;
+
+  const handlers = useSwipeable({
+    onSwiped: (eventData) => console.log("User Swiped!", eventData),
+    ...config,
+  });
+
+
 
   const defaultThings = [
     {
@@ -245,11 +266,20 @@ export default function App() {
             path="/"
             element={
               <>
-                THING-REACT 15 November 2022 4479
+                THING-REACT 16 November 2022 2aec
                 {!token && (
                   <>
+            <div {...handlers}>
+
                     <Login setToken={setToken} setIdentity={setIdentity} />
                     <Signup />
+
+
+</div>  */}
+
+
+
+
                   </>
                 )}
                 <Input setInput={setInput} />
