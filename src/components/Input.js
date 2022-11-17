@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 //import { useRouter } from "./../util/router.js";
 //import Section from "./Section";
 import AppBar from "@material-ui/core/AppBar";
@@ -37,10 +37,10 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import GavelIcon from "@material-ui/icons/Gavel";
 import LocalShippingIcon from "@material-ui/icons/LocalShipping";
-import StoreIcon from '@material-ui/icons/Store';
+import StoreIcon from "@material-ui/icons/Store";
 
 //import { isSeller } from "../util/identity.js";
-import ViewListIcon from '@material-ui/icons/ViewList';
+import ViewListIcon from "@material-ui/icons/ViewList";
 
 const { REACT_APP_LOGO, REACT_APP_DESCRIPTION } = process.env;
 
@@ -48,7 +48,6 @@ const useStyles = makeStyles((theme) => ({
   logo: {
     height: 28,
     marginRight: theme.spacing(2),
-    
   },
   drawerList: {
     width: 250,
@@ -64,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: theme.shape.borderRadius,
     // backgroundColor: "#e2e2e2",
     color: "black",
-    fontWeight:'600',
+    fontWeight: "600",
     border: "1px solid #e2e2e2",
 
     // backgroundColor: fade(theme.palette.common.black, 0.05),
@@ -92,9 +91,9 @@ const useStyles = makeStyles((theme) => ({
   },
 
   inputInput: {
-    fontSize:'1em',
+    fontSize: "1em",
     color: "black",
-    fontWeight:'700',
+    fontWeight: "700",
     padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
@@ -103,34 +102,33 @@ const useStyles = makeStyles((theme) => ({
     // height: '28px',
     [theme.breakpoints.up("sm")]: {
       width: "35ch",
-      fontSize:'1em',
+      fontSize: "1em",
     },
     [theme.breakpoints.up("md")]: {
       width: "35ch",
-  
     },
   },
   inputRoot: {
-    display:'flex',
-  }
+    display: "flex",
+  },
 }));
 
-function Navbar(props) {
+function Input(props) {
   const classes = useStyles();
- // const router = useRouter();
+  // const router = useRouter();
   //const id = router.query.itemid;
 
- // const path = router.pathname;
-const path = window.location.pathname 
-const {setInput} = props;
+  // const path = router.pathname;
+  const path = window.location.pathname;
+  const { setInput } = props;
   const searchEnabled = false; // Algolia / Elastic search. Pay to play. Disable for launch.
 
-const darkMode = false;
-//  const darkMode = useDarkMode();
+  const darkMode = false;
+  //  const darkMode = useDarkMode();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [menuState, setMenuState] = useState(null);
 
-const [keywords, setKeywords] = useState(null);
+  const [keywords, setKeywords] = useState(null);
 
   // Use inverted logo if specified
   // and we are in dark mode
@@ -143,21 +141,20 @@ const [keywords, setKeywords] = useState(null);
     setMenuState({ anchor: event.currentTarget, id });
   };
 
-    let history = useNavigate();
-
+  let history = useNavigate();
 
   const handleSubmit = (event) => {
-event.preventDefault();
+    event.preventDefault();
     // change url
-//const slug = getSlug(keywords);
-//window.location.href = "http://localhost:3000/" + slug;
+    //const slug = getSlug(keywords);
+    //window.location.href = "http://localhost:3000/" + slug;
 
-//    let path = slug;
-//    let history = useHistory();
-//    history.push(path);
-//history(path);
+    //    let path = slug;
+    //    let history = useHistory();
+    //    history.push(path);
+    //history(path);
 
-setInput(keywords);
+    setInput(keywords);
   };
 
   const handleCloseMenu = () => {
@@ -165,16 +162,22 @@ setInput(keywords);
   };
 
   return (
-<>
+    <>
       <AppBar position="static" color="transparent" elevation={0}>
-        <Container disableGutters={true} >
-          <Toolbar >
-   {/*         <Link to="/" style={{ textDecoration: "none" }}> */}
-              {/* <img src={logo} alt="Logo" className={classes.logo} /> */}
-          
-           {/* Desktop view */}   
+        <Container disableGutters={true}>
+          <Toolbar>
+            {/*         <Link to="/" style={{ textDecoration: "none" }}> */}
+            {/* <img src={logo} alt="Logo" className={classes.logo} /> */}
 
-              <Box style={{backgroundColor:'#f44336', height:'2.5em', width:'2.9em'}} >
+            {/* Desktop view */}
+
+            <Box
+              style={{
+                backgroundColor: "#f44336",
+                height: "2.5em",
+                width: "2.9em",
+              }}
+            >
               <Typography
                 color="primary"
                 style={{
@@ -182,9 +185,9 @@ setInput(keywords);
                   fontWeight: "900",
                   fontFamily: "'Fredoka One', 'cursive'",
                   fontWeight: "700",
-                  color:'#ffffff',
-                  textAlign:'left'
-             
+                  color: "#ffffff",
+                  textAlign: "left",
+
                   // textAlign: 'center',
                   // position :'absolute',
                   // top: '50%',
@@ -192,42 +195,36 @@ setInput(keywords);
                   // transform: 'translate(-50%, -50%)',
                 }}
               >
-                { REACT_APP_LOGO }
+                {REACT_APP_LOGO}
               </Typography>
-             </Box>
- 
+            </Box>
 
-  
-
- {/*           </Link>*/}
-<form onSubmit={handleSubmit} style={{width:'100%'}} >
-        <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
+            {/*           </Link>*/}
+            <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+              <div className={classes.search}>
+                <div className={classes.searchIcon}>
+                  <SearchIcon />
+                </div>
+                <InputBase
+                  placeholder={REACT_APP_DESCRIPTION}
+                  classes={{
+                    root: classes.inputRoot,
+                    input: classes.inputInput,
+                  }}
+                  inputProps={{ "aria-label": "search" }}
+                  onChange={(e) => setKeywords(e.target.value)}
+                />
               </div>
-              <InputBase
-             
-                placeholder={REACT_APP_DESCRIPTION}
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput
-                }}
-                inputProps={{ "aria-label": "search" }}
-                onChange={e => setKeywords(e.target.value)}
-              />
-            </div>
-   </form>
+            </form>
           </Toolbar>
         </Container>
       </AppBar>
 
+      {/* Mobile view */}
 
-{/* Mobile view */}
-
-
-    
-  {/*  </Section> */}
-</>  );
+      {/*  </Section> */}
+    </>
+  );
 }
 
-export default Navbar;
+export default Input;

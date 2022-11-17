@@ -261,7 +261,9 @@ setThings(
   if (!token) {return (<>NO TOKEN</>);}
 
   return (
+<>
     <div style={style}>
+
       <Grid container spacing={3} direction="row">
         {things && (
           <>
@@ -286,7 +288,8 @@ setThings(
           </>
         )}
       </Grid>
-    </div>
+   </div> 
+</>
   );
 });
 

@@ -33,7 +33,11 @@ export default function Logout({deleteToken}) {
 console.log("Logout handleSubmit");
     const token = false;
     deleteToken(token);
-logoutUser(token);
+    logoutUser(token);
+
+    window.history.replaceState(null, null, "/"); 
+
+
   }
 
 
@@ -41,7 +45,7 @@ logoutUser(token);
     <div className="logout-wrapper">
       <form onSubmit={handleSubmit}>
         <div>
-          <button type="submit">Deauthorize client</button>
+          <button type="submit">Logout</button>
         </div>
       </form>
     </div>

@@ -15,7 +15,6 @@ import Identity from "../src/components/Identity.js";
 import Snapshot from "../src/components/Snapshot.js";
 import History from "../src/components/History.js";
 
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Input from "../src/components/Input.js";
 
@@ -23,6 +22,9 @@ import Container from "@mui/material/Container";
 import ThingsContainer from "../src/components/ThingContainer.js";
 
 import Collection from "../src/components/Collection.js";
+import Host from "../src/components/Host.js";
+
+import MetaStack from "../src/components/MetaStack.js";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -34,17 +36,15 @@ import axios from "axios";
 
 import { useSwipeable } from "react-swipeable";
 
-  const config = {
-    delta: 10, // min distance(px) before a swipe starts. *See Notes*
-    preventScrollOnSwipe: false, // prevents scroll during swipe (*See Details*)
-    trackTouch: true, // track touch input
-    trackMouse: false, // track mouse input
-    rotationAngle: 0, // set a rotation angle
-    swipeDuration: Infinity, // allowable duration of a swipe (ms). *See Notes*
-    touchEventOptions: { passive: true }, // options for touch listeners (*See Details*)
-  };
-
-
+const config = {
+  delta: 10, // min distance(px) before a swipe starts. *See Notes*
+  preventScrollOnSwipe: false, // prevents scroll during swipe (*See Details*)
+  trackTouch: true, // track touch input
+  trackMouse: false, // track mouse input
+  rotationAngle: 0, // set a rotation angle
+  swipeDuration: Infinity, // allowable duration of a swipe (ms). *See Notes*
+  touchEventOptions: { passive: true }, // options for touch listeners (*See Details*)
+};
 
 export default function App() {
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
@@ -58,7 +58,7 @@ export default function App() {
     ...config,
   });
 
-
+  const [uuid, setUuid] = useState();
 
   const defaultThings = [
     {
@@ -87,7 +87,7 @@ export default function App() {
 
   const matches = pathname.match(reg);
   //  const input = { uuids: matches };
-  const uuid = uuidv4();
+  //const uuid = uuidv4();
 
   const [things, setThings] = useState(defaultThings);
 
@@ -103,7 +103,7 @@ export default function App() {
   //  const testUuid0 = process.env.REACT_APP_THING_0;
   //  const testUuid1 = process.env.REACT_APP_THING_1;
   // const apiPrefix = process.env.REACT_APP_API_PREFIX;
-
+  const [devStack, setDevStack] = useState();
   useEffect(() => {
     if (!identity) {
       //      defaultThings();
@@ -120,6 +120,13 @@ export default function App() {
   useEffect(() => {
     //      defaultThings();
   }, []);
+
+  //useEffect(() =>{
+
+  //const n = Date.now() - createdAt;
+  //setDevStack(Date.now());
+
+  //});
 
   function loadThings() {
     console.log("App loadThings token", token);
@@ -253,12 +260,31 @@ export default function App() {
   //}
 
   function handleCollectionChange(things) {
-    //setThings(things);
+    //   setThings(things);
+    if (things && things[0] && things[0].uuid) {
+      console.log("App setUuid", things[0].uuid);
+      setUuid(things[0].uuid);
+      return;
+    }
+
+    const u = uuidv4();
+    setUuid(u);
   }
 
   return (
     <>
+      THING-REACT 17 November 2022 47f5
+      <br />
       <Identity identity={identity} />
+      <Token token={token} setToken={setToken} setIdentity={setIdentity} />
+      {!token && (
+        <>
+          <div {...handlers}>
+            <Login setToken={setToken} setIdentity={setIdentity} />
+            <Signup />
+          </div>
+        </>
+      )}
       <BrowserRouter>
         <Routes>
           <Route
@@ -266,23 +292,8 @@ export default function App() {
             path="/"
             element={
               <>
-                THING-REACT 16 November 2022 2aec
-                {!token && (
-                  <>
-            <div {...handlers}>
-
-                    <Login setToken={setToken} setIdentity={setIdentity} />
-                    <Signup />
-
-
-</div>  */}
-
-
-
-
-                  </>
-                )}
                 <Input setInput={setInput} />
+
                 {/*
         <div key={"2"}>
           <Thing
@@ -299,23 +310,17 @@ export default function App() {
         </div>
 */}
                 <br />
-                <Token
-                  token={token}
-                  setToken={setToken}
-                  setIdentity={setIdentity}
-                />
-                <br />
-                    {/*            <Logout deleteToken={deleteToken} /> */}
+                {/*            <Logout deleteToken={deleteToken} /> */}
 
-                    <Container maxWidth="sm">
-                      <Collection
-                        token={token}
-                        things={things}
-                        onCollectionChange={(c) => {
-                          handleCollectionChange(c);
-                        }}
-                      />
-                    </Container>
+                <Container maxWidth="sm">
+                  <Collection
+                    token={token}
+                    things={things}
+                    onCollectionChange={(c) => {
+                      handleCollectionChange(c);
+                    }}
+                  />
+                </Container>
               </>
             }
           ></Route>
@@ -325,6 +330,8 @@ export default function App() {
             path="/thing/:text"
             element={
               <Thing
+                token={token}
+                things={things}
                 datagram={{
                   to: "agent",
                   subject: "thing",
@@ -333,6 +340,27 @@ export default function App() {
               />
             }
           ></Route>
+
+          <Route
+            exact
+            path="/thing"
+            element={
+              <>
+                {things.length - 1} more thing.
+                <Thing
+                  token={token}
+                  things={things}
+                  uuid={uuid}
+                  datagram={{
+                    to: "agent",
+                    subject: "thing",
+                    webPrefix: webPrefix,
+                  }}
+                />
+              </>
+            }
+          ></Route>
+
           {/*<Route exact path = '/thing/:text' render={(routeParams) => <Thing datagram={{to:"thing", subject:"hello", subject2:routeParams.text}} width={200} />} />*/}
           {/*<Route exact path = '/thing/:text' render={(props) => {<Thing datagram={{to:"thing", subject:props.match.params.text}} />} }/>*/}
           {/*<Route exact path="/thing/" render={(props) => (
@@ -345,21 +373,21 @@ bar
 
           <Route exact path="/snapshot/:text" element={<Snapshot />}></Route>
 
-
-
-
-
-  <Route exact path="/history/:text" element={<History
+          <Route
+            exact
+            path="/history/:text"
+            element={
+              <History
                 datagram={{
                   to: "agent",
-                  subject: pathname.replace("/history/",""),
+                  subject: pathname.replace("/history/", ""),
                   webPrefix: webPrefix,
                 }}
+              />
+            }
+          ></Route>
 
- />}></Route>
-
-
-{/*
+          {/*
   <Route exact path="/history/:text" element={props => <History
                 datagram={{
                   to: "agent",
@@ -368,15 +396,12 @@ bar
                 }}
  /> } />
 */}
-
-
-
         </Routes>
       </BrowserRouter>
-
-<ZuluTime />
-
-      End.
+      <ZuluTime />
+      <Host />
+      <MetaStack />
+      {devStack} ms End.
     </>
   );
 }
