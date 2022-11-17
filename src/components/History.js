@@ -53,13 +53,14 @@ function History(props) {
 //  const subject = "thamp0ad0";
 const {subject} = datagram;
 
-const ref = subject.replace("transducers-","");
+const ref = subject.replace("transducers-","").replace("history-","").replace("history ","");
+const historyRef = subject.replace("history/","").replace("history-","").replace("history ","");
 
   const to = "http://192.168.10.10/snapshot2.json";
 
 //const historyTo = "http://192.168.10.10/transducers-" + subject + ".json";
 
-const historyTo = "http://192.168.10.10/" + subject + ".json";
+const historyTo = "http://192.168.10.10/" + historyRef + ".json";
 
 
 const {snapshot:snapshot, flag:snapshotFlag} = useSnapshot(to);
@@ -197,8 +198,13 @@ setHistoryPoints(p);
   return (
     <>
       <div>HISTORY</div>
-{subject}
+SUBJECT {subject}
 <br />
+REF {ref}
+<br />
+HISTORYREF {historyRef}
+<br />
+
             <Trace data={historyPoints} /> 
 
 <br />

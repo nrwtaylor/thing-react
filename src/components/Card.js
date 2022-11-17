@@ -122,7 +122,7 @@ export const Card = memo(function Card({
         item
         xs={12}
         sm={12}
-//        ref={(node) => drag(drop(node))}
+        ref={(node) => drag(drop(node))}
         style={{ ...style, opacity }}
       >
         <Box
@@ -132,7 +132,7 @@ export const Card = memo(function Card({
             padding: "4px",
             height: "100%",
             display: "flex",
-        //    cursor: "move",
+            cursor: "move",
           }}
         >
           <Thing
@@ -156,7 +156,7 @@ export const Card = memo(function Card({
       item
       xs={12}
       sm={3}
-//      ref={(node) => drag(drop(node))}
+      ref={(node) => drag(drop(node))}
       style={{ ...style, opacity }}
     >
       <Box
@@ -166,7 +166,7 @@ export const Card = memo(function Card({
           padding: "4px",
           height: "100%",
           display: "flex",
-//          cursor: "move",
+          cursor: "move",
         }}
       >
         <Thing

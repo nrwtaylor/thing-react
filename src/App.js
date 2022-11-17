@@ -25,6 +25,7 @@ import Collection from "../src/components/Collection.js";
 import Host from "../src/components/Host.js";
 
 import MetaStack from "../src/components/MetaStack.js";
+import ThingCarousel from "../src/components/ThingCarousel.js";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -34,8 +35,12 @@ import useInput from "./useInput";
 
 import axios from "axios";
 
-import { useSwipeable } from "react-swipeable";
+//import { useSwipeable } from "react-swipeable";
 
+import { Carousel } from 'react-responsive-carousel';
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+
+/*
 const config = {
   delta: 10, // min distance(px) before a swipe starts. *See Notes*
   preventScrollOnSwipe: false, // prevents scroll during swipe (*See Details*)
@@ -45,19 +50,19 @@ const config = {
   swipeDuration: Infinity, // allowable duration of a swipe (ms). *See Notes*
   touchEventOptions: { passive: true }, // options for touch listeners (*See Details*)
 };
-
+*/
 export default function App() {
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
   const testUuid0 = process.env.REACT_APP_THING_0;
   const testUuid1 = process.env.REACT_APP_THING_1;
   const apiPrefix = process.env.REACT_APP_API_PREFIX;
   const stack0Prefix = process.env.REACT_APP_STACK_0;
-
+/*
   const handlers = useSwipeable({
     onSwiped: (eventData) => console.log("User Swiped!", eventData),
     ...config,
   });
-
+*/
   const [uuid, setUuid] = useState();
 
   const defaultThings = [
@@ -276,15 +281,33 @@ export default function App() {
       THING-REACT 17 November 2022 47f5
       <br />
       <Identity identity={identity} />
+    {/*  <Token token={token} setToken={setToken} setIdentity={setIdentity} /> */}
+<Carousel showThumbs={false} showStatus={false} useKeyboardArrows >
+{token && (
+<div>
       <Token token={token} setToken={setToken} setIdentity={setIdentity} />
-      {!token && (
-        <>
-          <div {...handlers}>
+
+</div>)}
+{!token && (
+<div>
             <Login setToken={setToken} setIdentity={setIdentity} />
+</div>)}
+
+{!token &&(
+<div>
+
             <Signup />
-          </div>
-        </>
-      )}
+</div>)}
+</Carousel>
+
+
+
+
+{token && token.message}
+
+
+
+
       <BrowserRouter>
         <Routes>
           <Route
@@ -346,6 +369,9 @@ export default function App() {
             path="/thing"
             element={
               <>
+
+<ThingCarousel />
+{/*
                 {things.length - 1} more thing.
                 <Thing
                   token={token}
@@ -357,6 +383,7 @@ export default function App() {
                     webPrefix: webPrefix,
                   }}
                 />
+*/}
               </>
             }
           ></Route>

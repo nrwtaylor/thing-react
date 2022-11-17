@@ -9,6 +9,9 @@ import Subject from "../components/Subject.js";
 import Content from "../components/Content.js";
 import Message from "../components/Message.js";
 import Text from "../components/Text.js";
+import History from "../components/History.js";
+import Ping from "../components/Ping.js";
+
 
 import Associations from "../components/Associations.js";
 
@@ -640,6 +643,30 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
                   />
                 </div>
               )}
+
+              {subject && subject.toLowerCase().indexOf("history") !== -1 && (
+                <div>
+                  <History
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
+
+              {subject && subject.toLowerCase().indexOf("ping") !== -1 && (
+                <div>
+                  <Ping
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
+
+
 
               {subject && subject.toLowerCase().indexOf("text") !== -1 && (
                 <div>

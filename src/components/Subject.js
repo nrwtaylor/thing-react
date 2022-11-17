@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 //import jwt_decode from "jwt-decode";
 
@@ -16,10 +16,17 @@ export default function Subject({ subject, setSubject, token }) {
 
   const [s, setS] = useState(subject);
 
+  useEffect(()=>{
+setS(subject);
+  }, [subject]);
+
   function subjectChange(e) {
     console.log("Subejct subjectChange", subject);
     var d = e.target.value;
     setS(d);
+
+
+
     setSubject(d);
 
     //setThing(thing.uuid, {subject:d}, token);
