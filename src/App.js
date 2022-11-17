@@ -278,7 +278,7 @@ export default function App() {
 
   return (
     <>
-      THING-REACT 17 November 2022 47f5
+      THING-REACT 17 November 2022 701d
       <br />
       <Identity identity={identity} />
     {/*  <Token token={token} setToken={setToken} setIdentity={setIdentity} /> */}
