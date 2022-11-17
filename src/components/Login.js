@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 //import './Login.css';
 import PropTypes from "prop-types";
 import crypto from "crypto";
@@ -22,11 +22,12 @@ async function loginUser(credentials) {
     },
     body: JSON.stringify(credentials),
   }).then((data) => {
+console.log("Login loginUser data", data);
     return data.json();
   }).catch((error)=>{
-console.error("Login loginUser error", error);
+console.log("Login loginUser error", error);
 
-return {message:"Error"};
+return {message:error.code};
 //return ({data:null, error:{message:error}});
 });
 }
@@ -35,6 +36,7 @@ export default function Login({token, setToken}) {
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
 
+  const [submit, setSubmit] = useState();
   const [message, setMessage] = useState();
 
   //const { token, setToken } = useToken();
@@ -56,24 +58,68 @@ export default function Login({token, setToken}) {
 
     const pass = "";
 
-    const token = await loginUser({
+    const t = await loginUser({
       username: gen_hash,
       password: pass,
     });
 
-if (token && token.message) {setMessage(token.message);} else {
+setToken(t);
 
+    console.log("Login handleSubmit token", token);
+
+
+if (t && t.message) {setMessage(t.message);
+console.log("Login token message", t.message);
+
+setMessage("Got token message.");
+
+} else {
+
+// Change window location here... route.
+console.log("Login change window location");
+//window.location.href = "http://localhost:3000/" + "thing";
+//window.history.replaceState(null, null, /product/${this.props.product.id}); 
+
+window.history.replaceState(null, null, /thing/); 
 setMessage("No message.");
 }
 
-    console.log("Login handleSubmit", token);
 
     // Authentication ... and Authorisation.
     // Keep roles out of JWT.
     // setError(response.error);
     setIdentity(gen_hash); //tbd
-    setToken(token);
+    //setToken(token);
   };
+
+function handlePassword(e) {
+handleChange(e);
+setPassword(e.target.value);
+}
+
+function handleUsername(e) {
+handleChange(e);
+setUserName(e.target.value);
+}
+
+
+
+function handleChange() {
+
+handleSubmitButton();
+
+}
+
+function handleSubmitButton() {
+
+//if (!username) {setSubmit(false); return;}
+//if (!password) {setSubmit(false); return;}
+
+//setSubmit(true);
+
+}
+
+if (!token) {
 
   return (
     <div className="login-wrapper">
@@ -81,22 +127,29 @@ setMessage("No message.");
       <form onSubmit={handleSubmit}>
         <label>
           <p>Username</p>
-          <input type="text" onChange={(e) => setUserName(e.target.value)} />
+          <input type="text" onChange={(e) => {handleUsername(e)}} />
         </label>
         <label>
           <p>Password</p>
           <input
             type="password"
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {handlePassword(e);}}
           />
         </label>
+
         <div>
-          <button type="submit">Submit</button>
+          <button disabled={submit} type="submit">Submit</button>
         </div>
+
       </form>
 {message}
     </div>
   );
+
+}
+
+return (<>Login Token {message}</>);
+
 }
 
 Login.propTypes = {

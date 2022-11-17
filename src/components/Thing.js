@@ -8,7 +8,7 @@ import Poll from "../components/Poll.js";
 import Subject from "../components/Subject.js";
 import Content from "../components/Content.js";
 import Message from "../components/Message.js";
-
+import Text from "../components/Text.js";
 
 import Associations from "../components/Associations.js";
 
@@ -16,7 +16,7 @@ import Associations from "../components/Associations.js";
 
 import { v4 as uuidv4, uuid as uuidLibrary } from "uuid";
 import { getThingReport, setThing } from "../util/database.js";
-import { humanTime } from "../util/time.js";
+import { humanTime, zuluTime } from "../util/time.js";
 
 import useMessages from "../useMessages";
 
@@ -196,15 +196,19 @@ console.log("Thing setThing error", error);
 
   useEffect(() => {
     if (props.uuid === undefined) {
+//return;
     }
     if (text === undefined) {
     }
-
+console.log("Thing props.uuid",props.uuid);
     const u = props.uuid ? props.uuid : uuidv4();
+//    const u = props.uuid;
     const n = u.substring(0, 4);
 
     setUuid(u);
     setNuuid(n);
+
+
   }, [props.uuid, text]);
 
   const [error, setError] = useState();
@@ -304,7 +308,7 @@ if (result && result.thingReport && result.thingReport.png) {
       })
       .catch((error) => {
         setError("Did not get Thingreport." + error);
-        console.error(error);
+        console.error("Thing getThing error", error);
       });
     return;
   }
@@ -513,7 +517,7 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
 </>
           }
         />
-
+{token && token.message}
 {error}
 
         <Button onClick={handleSpawnThing}>SPAWN</Button>
@@ -624,10 +628,6 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
               <br />
               {error && error.message}
               <br />
-              TICK {tick} {timedTickInterval}
-              <br />
-              BAR {bar} {timedBarInterval}
-              <br />
               <Typography>RUNTIME {runTime}</Typography>
               {!data && <>NOT DATA</>}
               {subject && subject.toLowerCase().indexOf("snapshot") !== -1 && (
@@ -640,6 +640,28 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
                   />
                 </div>
               )}
+
+              {subject && subject.toLowerCase().indexOf("text") !== -1 && (
+                <div>
+                  <Text
+                    setText={(t)=>{
+const a = {text:{value:t,refreshedAt:zuluTime()}}
+
+
+console.log("Thing text a",a);
+
+
+setDatagram({...datagram, variables:{...datagram.variables, a}});
+}}
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
+
+
               <div>
                 <br />
                 {/*      <Agent user={null} thing={data.thing} agent_input="http://localhost" />*/}
@@ -665,6 +687,12 @@ return (<>{message}<br /></>);
               </div>
             </>
           )}
+
+              TICK {tick} {timedTickInterval} ms
+              <br/>
+              BAR {bar} {timedBarInterval} ms
+              <br />
+
 
           {/*https://www.designcise.com/web/tutorial/how-to-hide-a-broken-image-in-react*/}
         </div>

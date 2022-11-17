@@ -95,9 +95,15 @@ return sign * Math.floor(milliseconds) + " ms" + postFix;
   }
 
 export function zuluTime(at) {
-  var epochtime = Date.parse(at);
 
-  var d = new Date(epochtime);
+var d = new Date();
+
+if (at !== undefined) {
+  var epochtime = Date.parse(at);
+  d = new Date(epochtime);
+}
+
+
   return d.toISOString();
 }
 

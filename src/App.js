@@ -16,6 +16,10 @@ import Container from "@mui/material/Container";
 import ThingsContainer from "../src/components/ThingContainer.js";
 
 import Collection from "../src/components/Collection.js";
+import Host from "../src/components/Host.js";
+
+import MetaStack from "../src/components/MetaStack.js";
+
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -31,6 +35,8 @@ export default function App() {
   const testUuid1 = process.env.REACT_APP_THING_1;
   const apiPrefix = process.env.REACT_APP_API_PREFIX;
   const stack0Prefix = process.env.REACT_APP_STACK_0;
+
+  const [uuid, setUuid] = useState();
 
   const defaultThings = [
     {
@@ -59,7 +65,7 @@ export default function App() {
 
   const matches = pathname.match(reg);
   //  const input = { uuids: matches };
-  const uuid = uuidv4();
+  //const uuid = uuidv4();
 
   const [things, setThings] = useState(defaultThings);
 
@@ -75,7 +81,7 @@ export default function App() {
   //  const testUuid0 = process.env.REACT_APP_THING_0;
   //  const testUuid1 = process.env.REACT_APP_THING_1;
   // const apiPrefix = process.env.REACT_APP_API_PREFIX;
-
+const [devStack, setDevStack] = useState();
   useEffect(() => {
     if (!identity) {
       //      defaultThings();
@@ -92,6 +98,15 @@ export default function App() {
   useEffect(() => {
     //      defaultThings();
   }, []);
+
+
+//useEffect(() =>{
+
+//const n = Date.now() - createdAt;
+//setDevStack(Date.now());
+
+//});
+
 
   function loadThings() {
     console.log("App loadThings token", token);
@@ -225,12 +240,39 @@ export default function App() {
   //}
 
   function handleCollectionChange(things) {
-    //setThings(things);
+ //   setThings(things);
+if (things && things[0] && things[0].uuid) {
+console.log("App setUuid", things[0].uuid);
+    setUuid(things[0].uuid);
+return;
+}
+
+  const u = uuidv4();
+  setUuid(u);
+
   }
 
   return (
     <>
+                THING-REACT 12 November 2022 44fa
+<br />
       <Identity identity={identity} />
+
+                <Token
+                  token={token}
+                  setToken={setToken}
+                  setIdentity={setIdentity}
+                />
+
+                {!token && (
+                  <>
+                    <Login setToken={setToken} setIdentity={setIdentity} />
+                    <Signup />
+                  </>
+                )}
+
+
+
       <BrowserRouter>
         <Routes>
           <Route
@@ -238,14 +280,11 @@ export default function App() {
             path="/"
             element={
               <>
-                THING-REACT 12 November 2022
-                {!token && (
-                  <>
-                    <Login setToken={setToken} setIdentity={setIdentity} />
-                    <Signup />
-                  </>
-                )}
+
                 <Input setInput={setInput} />
+
+
+
                 {/*
         <div key={"2"}>
           <Thing
@@ -261,12 +300,6 @@ export default function App() {
           />
         </div>
 */}
-                <br />
-                <Token
-                  token={token}
-                  setToken={setToken}
-                  setIdentity={setIdentity}
-                />
                 <br />
                     {/*            <Logout deleteToken={deleteToken} /> */}
 
@@ -288,6 +321,8 @@ export default function App() {
             path="/thing/:text"
             element={
               <Thing
+                token={token}
+                things={things}
                 datagram={{
                   to: "agent",
                   subject: "thing",
@@ -296,6 +331,31 @@ export default function App() {
               />
             }
           ></Route>
+
+
+          <Route
+            exact
+            path="/thing"
+            element={
+<>
+{things.length - 1} more thing.
+              <Thing
+                token={token}
+                things={things}
+                uuid={uuid}
+                datagram={{
+                  to: "agent",
+                  subject: "thing",
+                  webPrefix: webPrefix,
+                }}
+              />
+</>
+            }
+          ></Route>
+
+
+
+
           {/*<Route exact path = '/thing/:text' render={(routeParams) => <Thing datagram={{to:"thing", subject:"hello", subject2:routeParams.text}} width={200} />} />*/}
           {/*<Route exact path = '/thing/:text' render={(props) => {<Thing datagram={{to:"thing", subject:props.match.params.text}} />} }/>*/}
           {/*<Route exact path="/thing/" render={(props) => (
@@ -309,6 +369,9 @@ bar
           <Route exact path="/snapshot/:text" element={<Snapshot />}></Route>
         </Routes>
       </BrowserRouter>
+      <Host />
+<MetaStack />
+{devStack} ms
       End.
     </>
   );
