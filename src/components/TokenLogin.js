@@ -2,14 +2,9 @@ import React, { useEffect, useState } from "react";
 //import './Login.css';
 import PropTypes from "prop-types";
 import crypto from "crypto";
-import { v4 as uuidv4 } from "uuid";
-
 
 import useToken from "../useToken";
 import useIdentity from "../useIdentity";
-
-import { createThing } from "../util/database.js";
-
 
   const { REACT_APP_CLIENT_SECRET } = process.env;
   const { REACT_APP_API_PREFIX } = process.env;
@@ -37,18 +32,14 @@ return {message:error.code};
 });
 }
 
-export default function Login({datagram}) {
-
-  const {webPrefix} = datagram;
-
-//export default function Login({token, setToken}) {
+export default function Login({token, setToken}) {
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
 
   const [submit, setSubmit] = useState();
   const [message, setMessage] = useState();
 
-  const { token, setToken } = useToken();
+  //const { token, setToken } = useToken();
   const { identity, setIdentity, deleteIdentity } = useIdentity();
   //const [ error, setError ] = useState();
 
@@ -89,36 +80,7 @@ console.log("Login change window location");
 //window.location.href = "http://localhost:3000/" + "thing";
 //window.history.replaceState(null, null, /product/${this.props.product.id}); 
 
-//window.history.replaceState(null, null, /thing/); 
-
-
-  const defaultThings = [
-    {
-      index: 20,
-      to: "localhost",
-      subject: "Log Out",
-      createdAt: Date.now(),
-      uuid: uuidv4(),
-      input: "Logout",
-      //      webPrefix: "http://192.168.10.10/snapshot.json",
-    },
-    {
-      index: 21,
-      to: "localhost",
-      subject: "Here is your token",
-      createdAt: Date.now(),
-      uuid: uuidv4(),
-      input: "Token",
-      //      webPrefix: "http://192.168.10.10/snapshot.json",
-    },
-  ];
-       
-
-
-createThing(webPrefix, defaultThings[0], token);
-createThing(webPrefix, defaultThings[1], token);
-
-
+window.history.replaceState(null, null, /thing/); 
 setMessage("No message.");
 }
 
@@ -157,7 +119,7 @@ function handleSubmitButton() {
 
 }
 
-//if (!token) {
+if (!token) {
 
   return (
     <div className="login-wrapper">
@@ -184,9 +146,9 @@ function handleSubmitButton() {
     </div>
   );
 
-//setToken={setToken} setIdentity={setIdentity}}
+}
 
-//return (<>Login Token {message}</>);
+return (<>Login Token {message}</>);
 
 }
 

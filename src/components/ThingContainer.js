@@ -188,22 +188,7 @@ export const ThingContainer = memo(function ThingContainer(props) {
         .catch((error) => {
           console.log("spawnThing createThing error", error);
         });
-      //    setThings(update(things, {
-      //        $splice: [[index,1]],
-      //    }));
-      /*
-setThings(
-        update(things, {
-          $splice: [
-            [index, 0, newThing],
-          ],
-        })
 
-
-);
-
-      props.onCollectionChange(things)
-*/
     },
     [things]
   );
@@ -258,10 +243,11 @@ setThings(
 
   const [, drop] = useDrop(() => ({ accept: ItemTypes.CARD }));
 
-  if (!token) {return (<>NO TOKEN</>);}
+  //if (!token) {return (<>NO TOKEN</>);}
 
   return (
 <>
+{(!token) ? "ThingContainer No Token" : "ThingContainer Token"}
     <div ref={drop} style={style}>
 
       <Grid container spacing={3} direction="row">

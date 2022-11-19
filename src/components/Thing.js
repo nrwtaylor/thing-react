@@ -11,7 +11,13 @@ import Message from "../components/Message.js";
 import Text from "../components/Text.js";
 import History from "../components/History.js";
 import Ping from "../components/Ping.js";
+import Login from "../components/Login.js";
 
+import Token from "../components/Token.js";
+import Signup from "../components/Signup.js";
+
+
+import {isText} from "../util/text.js";
 
 import Associations from "../components/Associations.js";
 
@@ -72,7 +78,15 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 export default function Thing(props) {
   //  const text = props.match.params.text;
 
-  const { datagram, token, agentInput } = props;
+  const { datagram, token } = props;
+
+  var {agentInput} = props;
+
+  if (datagram.input) {
+
+    agentInput = datagram.input;
+
+  }
 
   const { text } = useParams();
 
@@ -460,10 +474,16 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
     }
   };
 
+
   const handleSpawnThing = (e) => {
     if (props.onChange) {
       props.onChange("spawn");
+      return;
     }
+
+//spawnThing(webPrefix, thing, token);
+
+
   };
 
   const handleOpenThing = (e) => {
@@ -623,6 +643,37 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
             </ExpandMore>
           </div>
 */}
+
+              {agentInput && isText(agentInput) && agentInput.toLowerCase().indexOf("login") !== -1 && (
+                <div>
+            <Login token={token} datagram={datagram} flavour={'card'} />
+                </div>
+              )}
+
+              {agentInput && isText(agentInput) && agentInput.toLowerCase().indexOf("signup") !== -1 && (
+                <div>
+            <Signup token={token} datagram={datagram} flavour={'card'} />
+                </div>
+              )}
+
+{/*
+            <Token
+              token={token}
+              setToken={setToken}
+              setIdentity={setIdentity}
+            />
+*/}
+
+              {agentInput && isText(agentInput) && agentInput.toLowerCase().indexOf("token") !== -1 && (
+                <div>
+
+
+            <Token token={token} datagram={datagram} flavour={'card'} />
+                </div>
+              )}
+
+
+
           {expanded && (
             <>
               <Content thingReport={data && data.thingReport} />
@@ -633,6 +684,12 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
               <br />
               <Typography>RUNTIME {runTime}</Typography>
               {!data && <>NOT DATA</>}
+
+
+              )}
+
+
+
               {subject && subject.toLowerCase().indexOf("snapshot") !== -1 && (
                 <div>
                   <Snapshot

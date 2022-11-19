@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Thing from "../src/components/Thing.js";
 import Login from "../src/components/Login.js";
+import TokenLogin from "../src/components/TokenLogin.js";
+
 import Logout from "../src/components/Logout.js";
 import Signup from "../src/components/Signup.js";
+import ThingCards from "../src/components/ThingCards.js";
+
 import { getThings, createThing } from "../src/util/database.js";
 
 import ZuluTime from "../src/components/ZuluTime.js";
@@ -37,7 +41,7 @@ import axios from "axios";
 
 //import { useSwipeable } from "react-swipeable";
 
-import { Carousel } from 'react-responsive-carousel';
+import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 /*
@@ -57,7 +61,8 @@ export default function App() {
   const testUuid1 = process.env.REACT_APP_THING_1;
   const apiPrefix = process.env.REACT_APP_API_PREFIX;
   const stack0Prefix = process.env.REACT_APP_STACK_0;
-/*
+
+  /*
   const handlers = useSwipeable({
     onSwiped: (eventData) => console.log("User Swiped!", eventData),
     ...config,
@@ -69,32 +74,33 @@ export default function App() {
     {
       index: 20,
       to: "localhost",
-      subject: "start",
+      subject: "Please Log In",
       createdAt: Date.now(),
       uuid: uuidv4(),
-      input: "start",
+      input: "Login",
       //      webPrefix: "http://192.168.10.10/snapshot.json",
     },
     {
       index: 21,
       to: "localhost",
-      subject: "snapshot 03bf6037-3644-48da-999b-c3bdc6cee39f kokopelli",
+      subject: "Please Sign Up",
       createdAt: Date.now(),
       uuid: testUuid0,
-      input: "start",
+      input: "Signup",
       //      webPrefix: "http://192.168.10.10/snapshot.json",
     },
   ];
 
   const pathname = window.location.pathname;
 
-  const reg = /\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/g;
+  const reg =
+    /\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/g;
 
   const matches = pathname.match(reg);
   //  const input = { uuids: matches };
   //const uuid = uuidv4();
 
-  const [things, setThings] = useState(defaultThings);
+  const [things, setThings] = useState([]);
 
   const { username, token, setToken, deleteToken } = useToken();
   const { identity, setIdentity, deleteIdentity } = useIdentity();
@@ -123,8 +129,14 @@ export default function App() {
   }, [identity]);
 
   useEffect(() => {
+    loadThings();
+    //    setThings(defaultThings);
     //      defaultThings();
   }, []);
+
+  useEffect(() => {
+    console.log("App things", things);
+  }, [things]);
 
   //useEffect(() =>{
 
@@ -133,6 +145,33 @@ export default function App() {
 
   //});
 
+  function mergeObjectsInUnique<T>(array: T[], property: any): T[] {
+    const newArray = new Map();
+
+    array.forEach((item: T) => {
+      const propertyValue = item[property];
+      newArray.has(propertyValue)
+        ? newArray.set(propertyValue, {
+            ...item,
+            ...newArray.get(propertyValue),
+          })
+        : newArray.set(propertyValue, item);
+    });
+
+    return Array.from(newArray.values());
+  }
+
+  const merge = (a1, a2) => {
+    return a1
+      .map((x) => {
+        const y = a2.find((item) => x.uuid === item.uuid);
+        if (y) {
+          return Object.assign({}, x, y);
+        } else return x;
+      })
+      .concat(a2.filter((item) => a1.every((x) => x.name !== item.uuid)));
+  };
+
   function loadThings() {
     console.log("App loadThings token", token);
     console.log("App loadThings apiPrefix", apiPrefix);
@@ -140,42 +179,27 @@ export default function App() {
       .then((result) => {
         console.log("App loadThings result", result);
 
-        if (result.things.length === 0) {
-          // Load the defaultThings into stack
-
-          things.map((thing) => {
-            const doNotWait = createThing(webPrefix, thing, token)
-              .then((result) => {
-                console.log("App createThing result", result);
-
-                //          newThing.associations = {
-                //            ...newThing.associations,
-                //            uuid: result.uuid,
-                //          };
-
-                //          setThings(
-                //            update(things, {
-                //              $splice: [[index, 0, newThing]],
-                //            })
-                //          );
-
-                //          props.onCollectionChange(things);
-                return;
-              })
-              .catch((error) => {
-                console.log("App createThing error", error);
-                return;
-              });
-          });
-
-          return;
+        var combinedThings = [];
+        if (result && result.things && result.things.length !== 0) {
+          combinedThings = mergeObjectsInUnique(
+            [...things, ...result.things],
+            "uuid"
+          );
         }
 
-        //const combinedThings = [...things, ...result.things];
-
-        const combinedThings = [...result.things];
-
-        console.log("App combinedThings", combinedThings);
+        if (combinedThings.length === 0) {
+          combinedThings = defaultThings;
+        } else {
+          combinedThings.push({
+            index: 21,
+            to: "localhost",
+            subject: "Token",
+            createdAt: Date.now(),
+            uuid: uuidv4(),
+            input: "Token",
+            //      webPrefix: "http://192.168.10.10/snapshot.json",
+          });
+        }
 
         const uuids = combinedThings.map((o) => o.uuid);
         const deduplicatedThings = combinedThings.filter(
@@ -192,59 +216,29 @@ export default function App() {
         //  ))
         //)
 
-        console.log("App conditionedThings", conditionedThings);
+        console.log("App loadThings conditionedThings", conditionedThings);
 
         setThings(conditionedThings);
       })
       .catch((error) => {
+        setThings(defaultThings);
+
         console.log("App loadThings error", error);
       });
-
-    /*;
-
-    const u = apiPrefix + "things/";
-    axios
-      .get(u, {
-        headers: {
-          Authorization: "my secret token",
-          "x-access-token": token,
-        },
-      })
-
-      .then((res) => {
-        let thingy = res.data;
-        console.log("Things axios res", res);
-        console.log("Things axios res.data", res.data);
-
-
-
-        //setThings({...things, ...thingy});
-
-        // agent etime info json:null thing etc
-        //        setData(res.data);
-
-        //        const elapsedTime = Date.now() - requestedAt;
-      })
-      .catch((error) => {
-        console.log("Thing error", u, error);
-        //        setError({ ...error, message: "Problem" });
-      });
-
-*/
   }
 
   useEffect(() => {
     console.log("App token", token);
     //setIdentity(token);
     //console.log("identity",identity);
-
+    /*
     if (!token) {
       return;
     }
     if (token === null) {
       return;
     }
-
+*/
     loadThings();
   }, [token]);
 
@@ -274,80 +268,24 @@ export default function App() {
 
     const u = uuidv4();
     setUuid(u);
+
+    loadThings();
   }
 
   return (
     <>
-      THING-REACT 17 November 2022 701d
+      THING-REACT 19 November 2022 58eb
       <br />
       <Identity identity={identity} />
-    {/*  <Token token={token} setToken={setToken} setIdentity={setIdentity} /> */}
-<Carousel showThumbs={false} showStatus={false} useKeyboardArrows >
-{token && (
-<div>
-      <Token token={token} setToken={setToken} setIdentity={setIdentity} />
-
-</div>)}
-{!token && (
-<div>
-            <Login setToken={setToken} setIdentity={setIdentity} />
-</div>)}
-
-{!token &&(
-<div>
-
-            <Signup />
-</div>)}
-</Carousel>
-
-
-
-
-{token && token.message}
-
-
-
-
+      {/*  <Token token={token} setToken={setToken} setIdentity={setIdentity} /> */}
+      {token && token.message}
+{/*      <ThingCarousel things={things} /> */}
       <BrowserRouter>
         <Routes>
-          <Route
-            exact
-            path="/"
-            element={
-              <>
-                <Input setInput={setInput} />
-
-                {/*
-        <div key={"2"}>
-          <Thing
-            token={token}
-            datagram={{
-              to: "agent",
-              subject: input,
-              createdAt: 0,
-              input: "web",
-              webPrefix: webPrefix,
-            }}
-            //                      webPrefix={webPrefix}
-          />
-        </div>
+{/*
+          <Route exact path="/" element={<></>}></Route>
 */}
-                <br />
-                {/*            <Logout deleteToken={deleteToken} /> */}
-
-                <Container maxWidth="sm">
-                  <Collection
-                    token={token}
-                    things={things}
-                    onCollectionChange={(c) => {
-                      handleCollectionChange(c);
-                    }}
-                  />
-                </Container>
-              </>
-            }
-          ></Route>
-
+{/*
           <Route
             exact
             path="/thing/:text"
@@ -363,27 +301,49 @@ export default function App() {
               />
             }
           ></Route>
+*/}
 
           <Route
             exact
-            path="/thing"
+            path="/"
+            element={
+
+<>
+
+      <ThingCarousel token={token} things={things} />
+{/*
+
+
+              <Thing
+                token={token}
+                things={things}
+                datagram={{
+                  to: "agent",
+                  subject: pathname,
+                  webPrefix: webPrefix,
+                }}
+              />
+*/}
+
+</>
+            }
+          ></Route>
+
+
+
+
+          <Route
+            exact
+            path="/things"
             element={
               <>
-
-<ThingCarousel />
-{/*
-                {things.length - 1} more thing.
-                <Thing
+                <ThingCards
                   token={token}
                   things={things}
-                  uuid={uuid}
-                  datagram={{
-                    to: "agent",
-                    subject: "thing",
-                    webPrefix: webPrefix,
+                  onCollectionChange={(c) => {
+                    handleCollectionChange(c);
                   }}
                 />
-*/}
               </>
             }
           ></Route>
@@ -414,6 +374,36 @@ bar
             }
           ></Route>
 
+
+          <Route
+            exact
+            path="/:text"
+            element={
+
+<>
+
+      <ThingCarousel token={token} things={[{to:"agent", subject:pathname, webPrefix:webPrefix},...things]} />
+{/*
+
+
+              <Thing
+                token={token}
+                things={things}
+                datagram={{
+                  to: "agent",
+                  subject: pathname,
+                  webPrefix: webPrefix,
+                }}
+              />
+*/}
+
+</>
+            }
+          ></Route>
+
+
+
+
           {/*
   <Route exact path="/history/:text" element={props => <History
                 datagram={{
@@ -425,6 +415,31 @@ bar
 */}
         </Routes>
       </BrowserRouter>
+      {/*
+THING CARDS Start.
+
+      <ThingCards
+        token={token}
+        things={things}
+        onCollectionChange={(c) => {
+          handleCollectionChange(c);
+        }}
+      />
+
+THING CARD End.
+*/}
+      {/*
+
+                <Container maxWidth="sm">
+                  <Collection
+                    token={token}
+                    things={things}
+                    onCollectionChange={(c) => {
+                      handleCollectionChange(c);
+                    }}
+                  />
+                </Container>
+*/}
       <ZuluTime />
       <Host />
       <MetaStack />

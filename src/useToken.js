@@ -10,7 +10,7 @@ export default function useToken(inputToken) {
     try {
       userToken = JSON.parse(tokenString);
     } catch (e) {
-      console.log("Problem with localStorage token");
+      console.log("useToken Error Problem with localStorage token", e);
       return null;
     }
 
@@ -33,6 +33,7 @@ export default function useToken(inputToken) {
     if (!userToken) {
       return false;
     }
+
     console.log("useToken saveToken userToken", userToken);
 
     localStorage.setItem("token", JSON.stringify(userToken));

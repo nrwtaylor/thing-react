@@ -173,8 +173,8 @@ export function getThings(prefix = null, token = null) {
 
     .then((res) => {
       let thingy = res.data;
-      console.log("Things axios res", res);
-      console.log("Things axios res.data", res.data);
+      console.log("database getThings axios res", res);
+      console.log("database getThings axios res.data", res.data);
       return thingy;
       // agent etime info json:null thing etc
       //        setData(res.data);
@@ -182,7 +182,8 @@ export function getThings(prefix = null, token = null) {
       //        const elapsedTime = Date.now() - requestedAt;
     })
     .catch((error) => {
-      console.log("Thing error", u, error);
+      console.log("database getThings axios error", u, error);
+      return {things:[]};
       //        setError({ ...error, message: "Problem" });
     });
 }

@@ -11,3 +11,6 @@ export function getSlug(text) {
 
 }
 
+export function isText(x) {
+  return Object.prototype.toString.call(x) === "[object String]"
+}
