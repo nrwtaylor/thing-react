@@ -10,14 +10,19 @@ import Content from "../components/Content.js";
 import Message from "../components/Message.js";
 import Text from "../components/Text.js";
 import History from "../components/History.js";
+
+import ThingThumbnail from "../components/ThingThumbnail.js";
+
 import Ping from "../components/Ping.js";
 import Login from "../components/Login.js";
 
 import Token from "../components/Token.js";
 import Signup from "../components/Signup.js";
 
+import Box from "@material-ui/core/Box";
+import { makeStyles } from "@material-ui/core/styles";
 
-import {isText} from "../util/text.js";
+import { isText } from "../util/text.js";
 
 import Associations from "../components/Associations.js";
 
@@ -28,7 +33,6 @@ import { getThingReport, setThing } from "../util/database.js";
 import { humanTime, zuluTime } from "../util/time.js";
 
 import useMessages from "../useMessages";
-
 
 //import{ Collapse} from '@mui/core';
 
@@ -64,6 +68,70 @@ interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
 }
 
+const useStyles = makeStyles((theme) => ({
+  gridItem: {
+    // Add border that contrasts lightly with background color.
+    // We use boxShadow  so that it's hidden around outer edge
+    // due to container <Card> having overflow: hidden
+    //    boxShadow: `1px 1px 0 0 ${emphasize(theme.palette.background.paper, 0.08)}`,
+    textAlign: "center",
+  },
+
+  stripImageContainer: {
+    margin: "0 auto",
+
+    "& img": {
+      // width: "100%",
+      width: "80px",
+      maxHeight: "125px",
+      maxWidth: "100px",
+    },
+  },
+
+  media: {
+    // minHeight: "200px",
+    height: "auto",
+    // width:'100%',
+    alignItems: "center",
+    [theme.breakpoints.down("xs")]: {
+      height: "auto",
+    },
+    // height: "auto",
+    justifyContent: "center",
+    alignItems: "center",
+    display: "flex",
+  },
+
+  cartImageContainer: {
+    // margin: "0 auto",
+    // height:'200px',
+    width: "100%",
+    "& img": {
+      width: "100%",
+      maxHeight: "100px",
+      objectFit: "contain",
+      // width: "100%",
+      // height: "auto",
+      // height:"75px",
+    },
+  },
+
+  cardImageContainer: {
+    margin: "0 auto",
+    // maxWidth: "200px",
+
+    "& img": {
+      maxHeight: "180px",
+      width: "100%",
+      [theme.breakpoints.down("xs")]: {
+        maxHeight: "150px",
+      },
+      // width: "auto",
+      // height:'200px'
+    },
+  },
+}));
+
 const ExpandMore = styled((props: ExpandMoreProps) => {
   const { expand, ...other } = props;
   return <IconButton {...other} />;
@@ -78,23 +146,21 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 export default function Thing(props) {
   //  const text = props.match.params.text;
 
+  const classes = useStyles();
+
   const { datagram, token } = props;
 
-  var {agentInput} = props;
+  var { agentInput } = props;
 
   if (datagram.input) {
-
     agentInput = datagram.input;
-
   }
 
   const { text } = useParams();
 
   const variables = { poll: { interval: 20000, aggressive: "yes" } };
 
-  const {messages, addMessage} = useMessages();
-
-  
+  const { messages, addMessage } = useMessages();
 
   const { to, subject, webPrefix } = datagram;
 
@@ -145,18 +211,17 @@ export default function Thing(props) {
     if (!datagram) return;
     setTimedInterval(datagram.pollInterval);
 
-console.log("Thing setThing uuid", uuid);
+    console.log("Thing setThing uuid", uuid);
 
-    setThing(datagram.uuid, datagram, token).then((result)=>{
+    setThing(datagram.uuid, datagram, token)
+      .then((result) => {
+        addMessage(datagram.subject);
 
-addMessage(datagram.subject);
-
-console.log("Thing setThing result", result);
-}).catch((error)=>{
-
-console.log("Thing setThing error", error);
-
-});
+        console.log("Thing setThing result", result);
+      })
+      .catch((error) => {
+        console.log("Thing setThing error", error);
+      });
   }, [datagram]);
 
   const [aggressivePoll, setAggressivePoll] = useState();
@@ -213,19 +278,17 @@ console.log("Thing setThing error", error);
 
   useEffect(() => {
     if (props.uuid === undefined) {
-//return;
+      //return;
     }
     if (text === undefined) {
     }
-console.log("Thing props.uuid",props.uuid);
+    console.log("Thing props.uuid", props.uuid);
     const u = props.uuid ? props.uuid : uuidv4();
-//    const u = props.uuid;
+    //    const u = props.uuid;
     const n = u.substring(0, 4);
 
     setUuid(u);
     setNuuid(n);
-
-
   }, [props.uuid, text]);
 
   const [error, setError] = useState();
@@ -300,19 +363,24 @@ console.log("Thing props.uuid",props.uuid);
         console.log("Thing getThingReport", result);
         setData(result);
 
-if (result && result.thingReport && result.thingReport.error && result.thingReport.error.message) { 
-        console.log("Thing getThingReport", result.thingReport.error.message);
-//        setData(result);
+        if (
+          result &&
+          result.thingReport &&
+          result.thingReport.error &&
+          result.thingReport.error.message
+        ) {
+          console.log("Thing getThingReport", result.thingReport.error.message);
+          //        setData(result);
 
-        setError(result.thingReport.error.message);
-}
+          setError(result.thingReport.error.message);
+        }
 
         const elapsedTime = Date.now() - requestedAt;
 
-if (result && result.thingReport && result.thingReport.png) {
-        var base64Icon = "data:image/png;base64," + result.thingReport.png;
-        setPNG(base64Icon);
-}
+        if (result && result.thingReport && result.thingReport.png) {
+          var base64Icon = "data:image/png;base64," + result.thingReport.png;
+          setPNG(base64Icon);
+        }
 
         setTimedInterval(elapsedTime);
 
@@ -338,9 +406,10 @@ if (result && result.thingReport && result.thingReport.png) {
 
     //if (datagram && datagram.pollInterval && datagram.pollInterval
     if (aggressivePoll) {
-      const p = (timedInterval * 1.1 < minimumPollInterval
-        ? minimumPollInterval
-        : timedInterval * 1.1
+      const p = (
+        timedInterval * 1.1 < minimumPollInterval
+          ? minimumPollInterval
+          : timedInterval * 1.1
       ).toFixed(0);
 
       // Testing at 10%.
@@ -474,16 +543,13 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
     }
   };
 
-
   const handleSpawnThing = (e) => {
     if (props.onChange) {
       props.onChange("spawn");
       return;
     }
 
-//spawnThing(webPrefix, thing, token);
-
-
+    //spawnThing(webPrefix, thing, token);
   };
 
   const handleOpenThing = (e) => {
@@ -522,43 +588,38 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
         style={{
           maxWidth: "100%",
           borderColor: flag === "red" ? bRed : bGreen,
-  border: "10px solid",
-//          backgroundColor: flag === "red" ? bRed : bGreen,
+          border: "10px solid",
+          //          backgroundColor: flag === "red" ? bRed : bGreen,
         }}
         raised={flag === "red" ? true : false}
       >
         <CardHeader
           action={
-<>
-    <Typography>{nuuid}</Typography>
+            <>
+              <Typography>{nuuid}</Typography>
 
-
-{/*            <IconButton>
+              {/*            <IconButton>
               <MoreVertIcon />
             </IconButton>
 */}
-</>
+            </>
           }
         />
-{token && token.message}
-{error}
+        {token && token.message}
+        {error}
 
         <Button onClick={handleSpawnThing}>SPAWN</Button>
 
         <Button onClick={handleForgetThing}>FORGET</Button>
 
-        {!expanded && <Button onClick={handleFlipThing}>
-
-{flipped ? "MESSAGE" : "SOURCE"}
-
-</Button>}
+        {!expanded && (
+          <Button onClick={handleFlipThing}>
+            {flipped ? "MESSAGE" : "SOURCE"}
+          </Button>
+        )}
 
         {expanded && <Button onClick={handleFoldThing}>FOLD</Button>}
         {!expanded && <Button onClick={handleOpenThing}>OPEN</Button>}
-
-
-
-
 
         {/*<div onClick={handleExpandClick} >*/}
         <div>
@@ -577,12 +638,12 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
               <br />
               TIMED INTERVAL {timedInterval}
               <br />
-        <Poll
-          variables={variables && variables.poll}
-          poll={{ interval: pollInterval, aggressive: aggressivePoll }}
-          onPoll={handlePollIntervalButton}
-        />
-<br />
+              <Poll
+                variables={variables && variables.poll}
+                poll={{ interval: pollInterval, aggressive: aggressivePoll }}
+                onPoll={handlePollIntervalButton}
+              />
+              <br />
               <RequestedAt />
               <br />
               NEXT RUN AT {humanTime(nextRunAt)}
@@ -596,35 +657,35 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
               <br />
             </>
           )}
-
-{!expanded && !flipped && (
-          <Subject subject={subject} setSubject={setSubject} token={token} /> )}
-
+          {!expanded && !flipped && (
+            <Subject subject={subject} setSubject={setSubject} token={token} />
+          )}
           {!expanded && !flipped && (
             <>
               {PNG && (
-                <img
-                  height="140"
-                  src={PNG}
-                  onError={(event) => (event.target.style.display = "none")}
-                />
+                <Box className={classes.cardImageContainer}>
+                  <div className={classes.media}>
+                    <ThingThumbnail src={PNG} />
+                  </div>
+                </Box>
               )}
               <div>{data && data.sms}</div>
               {/*
               <div>{data && data.thingReport && data.thingReport.sms}</div>*/}
               {/*             <Typography>TOGOTIME {nextRunAt - currentAt}</Typography> */}
 
-<Message message={{subject:data && data.thingReport && data.thingReport.sms}} />
+              <Message
+                message={{
+                  subject: data && data.thingReport && data.thingReport.sms,
+                }}
+              />
 
               <ToGoTime
                 toGoTime={nextRunAt - currentAt}
                 onRefresh={handleRefresh}
               />
-
-
             </>
           )}
-
           {expanded && (
             <CardMedia
               component="img"
@@ -643,35 +704,34 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
             </ExpandMore>
           </div>
 */}
-
-              {agentInput && isText(agentInput) && agentInput.toLowerCase().indexOf("login") !== -1 && (
-                <div>
-            <Login token={token} datagram={datagram} flavour={'card'} />
-                </div>
-              )}
-
-              {agentInput && isText(agentInput) && agentInput.toLowerCase().indexOf("signup") !== -1 && (
-                <div>
-            <Signup token={token} datagram={datagram} flavour={'card'} />
-                </div>
-              )}
-
-{/*
+          {agentInput &&
+            isText(agentInput) &&
+            agentInput.toLowerCase().indexOf("login") !== -1 && (
+              <div>
+                <Login token={token} datagram={datagram} flavour={"card"} />
+              </div>
+            )}
+          {agentInput &&
+            isText(agentInput) &&
+            agentInput.toLowerCase().indexOf("signup") !== -1 && (
+              <div>
+                <Signup token={token} datagram={datagram} flavour={"card"} />
+              </div>
+            )}
+          {/*
             <Token
               token={token}
               setToken={setToken}
               setIdentity={setIdentity}
             />
 */}
-
-              {agentInput && isText(agentInput) && agentInput.toLowerCase().indexOf("token") !== -1 && (
-                <div>
-
-
-            <Token token={token} datagram={datagram} flavour={'card'} />
-                </div>
-              )}
-
+          {agentInput &&
+            isText(agentInput) &&
+            agentInput.toLowerCase().indexOf("token") !== -1 && (
+              <div>
+                <Token token={token} datagram={datagram} flavour={"card"} />
+              </div>
+            )}
 
 
           {expanded && (
@@ -684,11 +744,6 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
               <br />
               <Typography>RUNTIME {runTime}</Typography>
               {!data && <>NOT DATA</>}
-
-
-              )}
-
-
 
               {subject && subject.toLowerCase().indexOf("snapshot") !== -1 && (
                 <div>
@@ -723,20 +778,19 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
                 </div>
               )}
 
-
-
               {subject && subject.toLowerCase().indexOf("text") !== -1 && (
                 <div>
                   <Text
-                    setText={(t)=>{
-const a = {text:{value:t,refreshedAt:zuluTime()}}
+                    setText={(t) => {
+                      const a = { text: { value: t, refreshedAt: zuluTime() } };
 
+                      console.log("Thing text a", a);
 
-console.log("Thing text a",a);
-
-
-setDatagram({...datagram, variables:{...datagram.variables, a}});
-}}
+                      setDatagram({
+                        ...datagram,
+                        variables: { ...datagram.variables, a },
+                      });
+                    }}
                     user={null}
                     //thing={data.thing}
                     datagram={datagram}
@@ -754,14 +808,17 @@ setDatagram({...datagram, variables:{...datagram.variables, a}});
                   thing={data && data.thing}
                   agent_input={webPrefix}
                 />
-{data && data.thingReport && data.thingReport.agent}
-
-MESSAGES
-{messages && messages.map((message)=>{
-
-return (<>{message}<br /></>);
-
-})}
+                {data && data.thingReport && data.thingReport.agent}
+                MESSAGES
+                {messages &&
+                  messages.map((message) => {
+                    return (
+                      <>
+                        {message}
+                        <br />
+                      </>
+                    );
+                  })}
                 <br />
               </div>
               <div>
@@ -769,15 +826,18 @@ return (<>{message}<br /></>);
                 <div dangerouslySetInnerHTML={{ __html: data && data.web }} />
                 <div>UUID {data && data.thing && data.thing.uuid}</div>
               </div>
+
+          TICK {tick} {timedTickInterval} ms
+          <br />
+          BAR {bar} {timedBarInterval} ms
+          <br />
+
+
             </>
+
+
+
           )}
-
-              TICK {tick} {timedTickInterval} ms
-              <br/>
-              BAR {bar} {timedBarInterval} ms
-              <br />
-
-
           {/*https://www.designcise.com/web/tutorial/how-to-hide-a-broken-image-in-react*/}
         </div>
       </Card>

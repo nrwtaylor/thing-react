@@ -141,7 +141,7 @@ function Agent(props) {
 {thing && thing.from}
       <TextField
         multiline
-        autoFocus
+//        autoFocus
         margin="normal"
         label="INPUT"
         type="text"
@@ -190,7 +190,7 @@ function Agent(props) {
 
       <TextField
         multiline
-        autoFocus
+//        autoFocus
         margin="normal"
         label="Type your reply here... (TODO)"
         type="text"

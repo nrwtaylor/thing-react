@@ -247,7 +247,6 @@ export const ThingContainer = memo(function ThingContainer(props) {
 
   return (
 <>
-{(!token) ? "ThingContainer No Token" : "ThingContainer Token"}
     <div ref={drop} style={style}>
 
       <Grid container spacing={3} direction="row">
