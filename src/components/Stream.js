@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 import "../index.css";
 import {
@@ -33,7 +34,17 @@ import Trace from "../components/Trace.js";
 function Stream(props) {
   const { at, quantities, quantity, period, hide } = props;
 
-  const { amount, units } = quantity;
+  var { amount, units } = quantity;
+
+  var { transducer } = props;
+  if (transducer && transducer.amount) {
+    amount = transducer.amount;
+  }
+
+  if (transducer && transducer.units && transducer.units !== "X") {
+    units = transducer.units;
+  }
+
 
   const user_name = props.user_name; // TODO
   const agent_input = props.agent_input;
@@ -115,7 +126,6 @@ function Stream(props) {
     console.log("Datagram");
     console.log(datagram);
 
-
     setOpen(false);
   };
 
@@ -192,20 +202,7 @@ function Stream(props) {
 
   useEffect(() => {
     console.log("Stream amount", amount);
-    /* 
-   if (amount === undefined) {
-      return;
-    }
 
-if (isNaN(amount)) {return;}
-*/
-    //getStream();
-
-    //getStream(amount);
-    //return
-    //}, [amount]);
-
-    //function getStream() {
     const startTime = new Date();
     const d = startTime - refreshedAt;
     setRefreshedAt(startTime);
@@ -214,9 +211,6 @@ if (isNaN(amount)) {return;}
 
     // Create a new array based on current state:
     let f = [...dataPoints];
-
-
-
 
     const amounts = [];
     if (quantities) {
@@ -238,22 +232,6 @@ if (isNaN(amount)) {return;}
       amount3: amounts && amounts[2],
     });
 
-
-
-
-
-
-
-    // Add item to it
-/*
-    f.push({
-      name: "asdf",
-      student: 24,
-      fees: 1,
-      value: conditionedAmount,
-      amount: conditionedAmount,
-    });
-*/
     const maxAmpPoints = 100;
 
     const excessPoints = f.length - maxAmpPoints;
@@ -262,13 +240,8 @@ if (isNaN(amount)) {return;}
       const a = (dataPointer + 1) % maxAmpPoints;
 
       setDataPointer(a);
-
-      //f.splice(0, excessPoints);
       f.shift();
     }
-
-    //console.log(f);
-    // Set state
 
     setDataPoints(f);
 
@@ -277,9 +250,7 @@ if (isNaN(amount)) {return;}
     const endTime = new Date();
     const tf = endTime - startTime;
     const timeDiff = tf;
-    //setTracePeriod(timeDiff);
     setTracePeriod(d);
-    //  }
   }, [amount]);
 
   function callBack() {
@@ -298,11 +269,10 @@ if (isNaN(amount)) {return;}
             {" "}
             <Trace data={streamPoints} domain={props.domain} />
             <br />
-            Period {humanPeriod(period)}
-            <Typography>
+<Typography>
+            Period {humanPeriod(period)}{' '}
               <Frequency frequency={1000 / period} /> requested
-            </Typography>
-            <Typography>
+{' '}
               <Frequency frequency={1000 / tracePeriod} /> observed
             </Typography>
           </>
@@ -312,8 +282,7 @@ if (isNaN(amount)) {return;}
           <>
             <Trace data={dataPoints} domain={props.domain} />
             <br />
-            <Typography>Period {humanPeriod(tracePeriod)}</Typography>
-            <Typography>
+            <Typography>Period {humanPeriod(tracePeriod)}{' '}
               <Frequency frequency={1000 / tracePeriod} />
             </Typography>
           </>
@@ -323,7 +292,12 @@ if (isNaN(amount)) {return;}
           <>
             amount {amount} {units}
             <br />
-            pointer {dataPointer}
+
+            {transducer && (
+              <Link to={"" + "history/transducers-" + transducer.sensor_id}>
+                transducer-{transducer && transducer.sensor_id}
+              </Link>
+            )}
             <br />
           </>
         )}

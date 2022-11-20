@@ -315,7 +315,7 @@ if (isNaN(amount)) {return;}
   return (
     <>
 {frequency && (<> 
-humanFrequency {humanFrequency(frequency)}
+{humanFrequency(frequency)}
 </>)}
 
 {frequency === undefined && (<>

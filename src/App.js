@@ -39,22 +39,9 @@ import useInput from "./useInput";
 
 import axios from "axios";
 
-//import { useSwipeable } from "react-swipeable";
-
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
-/*
-const config = {
-  delta: 10, // min distance(px) before a swipe starts. *See Notes*
-  preventScrollOnSwipe: false, // prevents scroll during swipe (*See Details*)
-  trackTouch: true, // track touch input
-  trackMouse: false, // track mouse input
-  rotationAngle: 0, // set a rotation angle
-  swipeDuration: Infinity, // allowable duration of a swipe (ms). *See Notes*
-  touchEventOptions: { passive: true }, // options for touch listeners (*See Details*)
-};
-*/
 export default function App() {
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
   const testUuid0 = process.env.REACT_APP_THING_0;
@@ -62,12 +49,6 @@ export default function App() {
   const apiPrefix = process.env.REACT_APP_API_PREFIX;
   const stack0Prefix = process.env.REACT_APP_STACK_0;
 
-  /*
-  const handlers = useSwipeable({
-    onSwiped: (eventData) => console.log("User Swiped!", eventData),
-    ...config,
-  });
-*/
   const [uuid, setUuid] = useState();
 
   const defaultThings = [
@@ -109,11 +90,6 @@ export default function App() {
   //const [identity, setIdentity] = useState();
   const createdAt = Date.now();
 
-  // dev here user supplied channels.
-  //  const webPrefix = process.env.REACT_APP_WEB_PREFIX;
-  //  const testUuid0 = process.env.REACT_APP_THING_0;
-  //  const testUuid1 = process.env.REACT_APP_THING_1;
-  // const apiPrefix = process.env.REACT_APP_API_PREFIX;
   const [devStack, setDevStack] = useState();
   useEffect(() => {
     if (!identity) {
@@ -130,20 +106,11 @@ export default function App() {
 
   useEffect(() => {
     loadThings();
-    //    setThings(defaultThings);
-    //      defaultThings();
   }, []);
 
   useEffect(() => {
     console.log("App things", things);
   }, [things]);
-
-  //useEffect(() =>{
-
-  //const n = Date.now() - createdAt;
-  //setDevStack(Date.now());
-
-  //});
 
   function mergeObjectsInUnique<T>(array: T[], property: any): T[] {
     const newArray = new Map();
@@ -229,34 +196,12 @@ export default function App() {
 
   useEffect(() => {
     console.log("App token", token);
-    //setIdentity(token);
-    //console.log("identity",identity);
-    /*
-    if (!token) {
-      return;
-    }
-    if (token === null) {
-      return;
-    }
-*/
     loadThings();
   }, [token]);
 
   useEffect(() => {
     console.log("App identity", identity);
   }, [identity]);
-
-  //  function defaultThings() {}
-  //function defaultThings() {
-
-  //console.log("defaultThings");
-
-  //  setThings(defaultThings);
-  //}
-  //  console.log("REACT THING");
-  //  console.log("Started Thing ", uuid);
-
-  //}
 
   function handleCollectionChange(things) {
     //   setThings(things);
@@ -274,34 +219,13 @@ export default function App() {
 
   return (
     <>
-      THING-REACT 19 November 2022 58eb
+      THING-REACT 19 November 2022 01fe
       <br />
-      <Identity identity={identity} />
-      {/*  <Token token={token} setToken={setToken} setIdentity={setIdentity} /> */}
+      {identity && <Identity identity={identity} />}
+
       {token && token.message}
-{/*      <ThingCarousel things={things} /> */}
       <BrowserRouter>
         <Routes>
-{/*
-          <Route exact path="/" element={<></>}></Route>
-*/}
-{/*
-          <Route
-            exact
-            path="/thing/:text"
-            element={
-              <Thing
-                token={token}
-                things={things}
-                datagram={{
-                  to: "agent",
-                  subject: "thing",
-                  webPrefix: webPrefix,
-                }}
-              />
-            }
-          ></Route>
-*/}
 
           <Route
             exact
@@ -311,26 +235,10 @@ export default function App() {
 <>
 
       <ThingCarousel token={token} things={things} />
-{/*
-
-
-              <Thing
-                token={token}
-                things={things}
-                datagram={{
-                  to: "agent",
-                  subject: pathname,
-                  webPrefix: webPrefix,
-                }}
-              />
-*/}
 
 </>
             }
           ></Route>
-
-
-
 
           <Route
             exact
@@ -348,15 +256,6 @@ export default function App() {
             }
           ></Route>
 
-          {/*<Route exact path = '/thing/:text' render={(routeParams) => <Thing datagram={{to:"thing", subject:"hello", subject2:routeParams.text}} width={200} />} />*/}
-          {/*<Route exact path = '/thing/:text' render={(props) => {<Thing datagram={{to:"thing", subject:props.match.params.text}} />} }/>*/}
-          {/*<Route exact path="/thing/" render={(props) => (
-<>
-foo
-    <Thing agentInput={""}/>
-bar
-</>
-)} />*/}
 
           <Route exact path="/snapshot/:text" element={<Snapshot />}></Route>
 
@@ -383,19 +282,6 @@ bar
 <>
 
       <ThingCarousel token={token} things={[{to:"agent", subject:pathname, webPrefix:webPrefix},...things]} />
-{/*
-
-
-              <Thing
-                token={token}
-                things={things}
-                datagram={{
-                  to: "agent",
-                  subject: pathname,
-                  webPrefix: webPrefix,
-                }}
-              />
-*/}
 
 </>
             }
@@ -404,42 +290,9 @@ bar
 
 
 
-          {/*
-  <Route exact path="/history/:text" element={props => <History
-                datagram={{
-                  to: "agent",
-                  subject: "thing",
-                  webPrefix: webPrefix
-                }}
- /> } />
-*/}
         </Routes>
       </BrowserRouter>
-      {/*
-THING CARDS Start.
 
-      <ThingCards
-        token={token}
-        things={things}
-        onCollectionChange={(c) => {
-          handleCollectionChange(c);
-        }}
-      />
-
-THING CARD End.
-*/}
-      {/*
-
-                <Container maxWidth="sm">
-                  <Collection
-                    token={token}
-                    things={things}
-                    onCollectionChange={(c) => {
-                      handleCollectionChange(c);
-                    }}
-                  />
-                </Container>
-*/}
       <ZuluTime />
       <Host />
       <MetaStack />
