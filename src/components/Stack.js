@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
 import Skeleton from "@material-ui/lab/Skeleton";
 import { getSlug } from "./../util/text";
-import { keywordsByGoogleSheet } from "./../util/gimmu";
+//import { keywordsByGoogleSheet } from "./../util/gimmu";
 
 const { REACT_APP_GOOGLE_SHEET } = process.env;
 const { REACT_APP_KEYWORD } = process.env;

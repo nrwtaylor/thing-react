@@ -2,17 +2,7 @@ import React, { lazy, useState, useEffect } from "react";
 import { useParams } from "react-router";
 import Agent from "../components/Agent.js";
 import Snapshot from "../components/Snapshot.js";
-import TextSnapshot from "../components/TextSnapshot.js";
-
 import Datagram from "../components/Datagram.js";
-
-import MotionReference from "../components/MotionReference.js";
-
-
-
-import GlobalPositioningSystem from "../components/GlobalPositioningSystem.js";
-
-
 import ToGoTime from "../components/ToGoTime.js";
 import Poll from "../components/Poll.js";
 import Subject from "../components/Subject.js";
@@ -20,9 +10,6 @@ import Content from "../components/Content.js";
 import Message from "../components/Message.js";
 import Text from "../components/Text.js";
 import History from "../components/History.js";
-
-import InertialReference from "../components/InertialReference.js";
-
 
 import ThingThumbnail from "../components/ThingThumbnail.js";
 
@@ -271,15 +258,18 @@ export default function Thing(props) {
 
   const runTime = Date.now() - startAt;
 
-  const [expanded, setExpanded] = React.useState();
+  const [expanded, setExpanded] = React.useState(false);
 
-  const [flipped, setFlipped] = React.useState();
+  const [flipped, setFlipped] = React.useState(false);
 
-  const handleExpandClick = () => {
+  const handleExpandClick = (t) => {
+if (props.onExpand) {props.onExpand(t);}
     setExpanded(true);
   };
 
   const handleFoldClick = () => {
+if (props.onFold) {props.onFold(t);}
+
     setExpanded(false);
   };
 
@@ -306,23 +296,17 @@ export default function Thing(props) {
 
   const [error, setError] = useState();
 
+  //const [url, setUrl] = useState();
+
   const [data, setData] = useState({
     thing: { uuid: "X" },
     thing_report: { sms: "No response. Yet." },
   });
 
   useEffect(() => {
-    console.info("Thing started");
     getUuid();
     getResponse(webPrefix);
   }, []);
-
-
-  useEffect(() => {
-if (!uuid) {return;}
-    console.info("Thing uuid", uuid);
-  }, [uuid]);
-
 
   useEffect(() => {
     console.log("Thing subject changed", subject);
@@ -336,6 +320,9 @@ if (!uuid) {return;}
   }
 
   function handleRefresh() {
+
+
+
     getResponse(webPrefix, true);
   }
 
@@ -363,6 +350,16 @@ if (!uuid) {return;}
       return;
     }
     setFlag("red");
+    console.log("Thing getResponse flag subject", flag, subject);
+    //    const s = currentAt + defaultPollInterval;
+
+    //    setNextRunAt(s);
+
+    //    var t = { subject: subject };
+    //    var thingy = { thing: null, thing_report: null };
+
+    //   const s = currentAt + defaultPollInterval;
+    //   setNextRunAt(s);
 
     const requestedAt = Date.now();
     setAgentRequestedAt(requestedAt);
@@ -445,10 +442,6 @@ if (!uuid) {return;}
     if (props.onChange) {
       props.onChange("forget");
     }
-
-    if (props.onForget) {
-      props.onForget(e);
-    }
   };
 
   // Call getResponse on a Timer.
@@ -521,13 +514,15 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
     return <>REQUESTED AT {i}</>;
   };
 
-  // Test dynamic loading
-  async function load() {
-    let say = await import("./Snapshot.js");
-    //    say.hi(); // Hello!
-    //    say.bye(); // Bye!
-    //    say.default(); // Module loaded (export default)!
-  }
+
+// Test dynamic loading
+async function load() {
+
+    let say = await import('./Snapshot.js');
+//    say.hi(); // Hello!
+//    say.bye(); // Bye!
+//    say.default(); // Module loaded (export default)!
+}
 
   useEffect(() => {
     // If still processing the last one,
@@ -562,10 +557,6 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
     if (props.onChange) {
       props.onChange("flip");
     }
-
-    if (props.onFlip) {
-      props.onFlip(e);
-    }
   };
 
   const handleSpawnThing = (e) => {
@@ -574,22 +565,13 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
       return;
     }
 
-    if (props.onSpawn) {
-      props.onSpawn(e);
-    }
-
     //spawnThing(webPrefix, thing, token);
   };
 
   const handleOpenThing = (e) => {
-setExpanded(true);
-    handleExpandClick(e);
+    handleExpandClick();
     if (props.onChange) {
       props.onChange("open");
-    }
-
-    if (props.onOpen) {
-      props.onOpen(e);
     }
   };
 
@@ -597,10 +579,6 @@ setExpanded(true);
     handleFoldClick();
     if (props.onChange) {
       props.onChange("fold");
-    }
-
-    if (props.onFold) {
-      props.onFold(e);
     }
   };
 
@@ -649,7 +627,7 @@ setExpanded(true);
         <Button onClick={handleSpawnThing}>SPAWN</Button>
 
         <Button onClick={handleForgetThing}>FORGET</Button>
-{expanded ? "EXPANDED" : "NOT EXPANDED"}
+
         {!expanded && (
           <Button onClick={handleFlipThing}>
             {flipped ? "MESSAGE" : "SOURCE"}
@@ -805,32 +783,6 @@ setExpanded(true);
               <br />
               <Typography>RUNTIME {runTime}</Typography>
               {!data && <>NOT DATA</>}
-
-              {subject && subject.toLowerCase().indexOf("text-snapshot") !== -1 && (
-                <div>
-                  <TextSnapshot
-                    user={null}
-                    //thing={data.thing}
-                    datagram={datagram}
-                    agent_input={webPrefix}
-                  />
-                </div>
-              )}
-
-
-              {subject && subject.toLowerCase().indexOf("global-positioning-system") !== -1 && (
-                <div>
-                  <GlobalPositioningSystem
-                    user={null}
-                    //thing={data.thing}
-                    datagram={datagram}
-                    agent_input={webPrefix}
-                  />
-                </div>
-              )}
-
-
-
               {subject && subject.toLowerCase().indexOf("snapshot") !== -1 && (
                 <div>
                   <Snapshot
@@ -841,20 +793,6 @@ setExpanded(true);
                   />
                 </div>
               )}
-
-              {subject && subject.toLowerCase().indexOf("motion-reference") !== -1 && (
-                <div>
-                  <MotionReference
-                    user={null}
-                    //thing={data.thing}
-                    datagram={datagram}
-                    agent_input={webPrefix}
-                  />
-                </div>
-              )}
-
-
-
               {subject && subject.toLowerCase().indexOf("history") !== -1 && (
                 <div>
                   <History
@@ -865,8 +803,6 @@ setExpanded(true);
                   />
                 </div>
               )}
-
-
               {subject && subject.toLowerCase().indexOf("ping") !== -1 && (
                 <div>
                   <Ping
@@ -877,20 +813,6 @@ setExpanded(true);
                   />
                 </div>
               )}
-
-              {subject && subject.toLowerCase().indexOf("inertial-reference") !== -1 && (
-                <div>
-                  <InertialReference
-                    user={null}
-                    //thing={data.thing}
-                    datagram={datagram}
-                    agent_input={webPrefix}
-                  />
-                </div>
-              )}
-
-
-
               {subject && subject.toLowerCase().indexOf("text") !== -1 && (
                 <div>
                   <Text

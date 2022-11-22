@@ -28,7 +28,7 @@ export const ThingContainer = memo(function ThingContainer(props) {
 
   const { token } = props;
   const [things, setThings] = useState(props.things);
-  const {dragAndDrop} = props;
+  //const {dragAndDrop} = props;
   const findThing = useCallback(
     (id) => {
       const thing = things.filter((c) => `${c.index}` === id)[0];

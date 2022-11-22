@@ -40,7 +40,7 @@ import { getSnapshot } from "../util/database.js";
 
 import useSnapshot from "../useSnapshot";
 
-import { useSwipeable } from "react-swipeable";
+//import { useSwipeable } from "react-swipeable";
 
 function Snapshot(props) {
   const { datagram } = props;
@@ -52,7 +52,7 @@ function Snapshot(props) {
   //const [flag, setFlag] = useState();
   //const [requestedAt, setRequestedAt] = useState();
   const [reply, setReply] = useState("");
-  const [snapshotInterval, setSnapshotInterval] = useState(50);
+  const [snapshotInterval, setSnapshotInterval] = useState(250);
 
   const toSnapshot = "http://192.168.10.10/snapshot.json";
   const { snapshot, flag, snapshotGetTime } = useSnapshot(toSnapshot);
@@ -68,7 +68,7 @@ function Snapshot(props) {
   const replyAgentDialog = (thing) => {
     setOpen(true);
   };
-
+/*
   const config = {
     delta: 10, // min distance(px) before a swipe starts. *See Notes*
     preventScrollOnSwipe: false, // prevents scroll during swipe (*See Details*)
@@ -83,7 +83,7 @@ function Snapshot(props) {
     onSwiped: (eventData) => console.log("User Swiped!", eventData),
     ...config,
   });
-
+*/
   const handleClose = () => {
     setOpen(false);
   };
@@ -195,27 +195,7 @@ function Snapshot(props) {
         <br />
         GET TIME {snapshotGetTime}ms {Math.round(1000 / snapshotGetTime, 1)}Hz
         <br />
-        {data && data.ping && (
-          <>
-            PING
-            <br />
-          </>
-        )}
-        {data && data.ping && <Ping ping={data.ping} />}
-        {data &&
-          data.ping &&
-          data.ping.map((ping, index) => {
-            return (
-              <>
-                {ping.host}
-                <br />
-                {ping.data}
-                <br />
-                {ping.refreshedAt}
-                <br />
-              </>
-            );
-          })}
+
         {data && data.transducers && (
           <>
             {Object.keys(data.transducers).map((transducer) => {
@@ -232,6 +212,7 @@ function Snapshot(props) {
                       data.transducers[transducer] &&
                       data.transducers[transducer].amount,
                   }}
+                  period={snapshotInterval}
                   transducer={data.transducers[transducer]}
                 />
               );

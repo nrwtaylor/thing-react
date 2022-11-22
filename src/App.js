@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
 import Thing from "../src/components/Thing.js";
 import Login from "../src/components/Login.js";
 import TokenLogin from "../src/components/TokenLogin.js";
@@ -42,7 +42,21 @@ import axios from "axios";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
-export default function App() {
+//export default function App() {
+/*
+const config = {
+  delta: 10, // min distance(px) before a swipe starts. *See Notes*
+  preventScrollOnSwipe: false, // prevents scroll during swipe (*See Details*)
+  trackTouch: true, // track touch input
+  trackMouse: false, // track mouse input
+  rotationAngle: 0, // set a rotation angle
+  swipeDuration: Infinity, // allowable duration of a swipe (ms). *See Notes*
+  touchEventOptions: { passive: true }, // options for touch listeners (*See Details*)
+};
+*/
+export default function App({ componentName, ...props }) {
+  const DynamicComponent = lazy(() => import(`./components/${componentName}`));
+
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
   const testUuid0 = process.env.REACT_APP_THING_0;
   const testUuid1 = process.env.REACT_APP_THING_1;
@@ -70,16 +84,31 @@ export default function App() {
       input: "Signup",
       //      webPrefix: "http://192.168.10.10/snapshot.json",
     },
+    {
+      index: 21,
+      to: "localhost",
+      subject: "Privacy",
+      createdAt: Date.now(),
+      uuid: uuidv4(),
+      input: "Privacy",
+      //      webPrefix: "http://192.168.10.10/snapshot.json",
+    },
+    {
+      index: 21,
+      to: "localhost",
+      subject: "Terms of Use",
+      createdAt: Date.now(),
+      uuid: uuidv4(),
+      input: "TermsOfUse",
+      //      webPrefix: "http://192.168.10.10/snapshot.json",
+    },
   ];
 
   const pathname = window.location.pathname;
 
-  const reg =
-    /\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/g;
+  const reg = /\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/g;
 
   const matches = pathname.match(reg);
-  //  const input = { uuids: matches };
-  //const uuid = uuidv4();
 
   const [things, setThings] = useState([]);
 
@@ -87,10 +116,10 @@ export default function App() {
   const { identity, setIdentity, deleteIdentity } = useIdentity();
   const { input, setInput, deleteInput } = useInput();
 
-  //const [identity, setIdentity] = useState();
   const createdAt = Date.now();
 
   const [devStack, setDevStack] = useState();
+
   useEffect(() => {
     if (!identity) {
       //      defaultThings();
@@ -219,24 +248,19 @@ export default function App() {
 
   return (
     <>
-      THING-REACT 19 November 2022 01fe
+      THING-REACT 21 November 2022 3e67
       <br />
       {identity && <Identity identity={identity} />}
-
       {token && token.message}
       <BrowserRouter>
         <Routes>
-
           <Route
             exact
             path="/"
             element={
-
-<>
-
-      <ThingCarousel token={token} things={things} />
-
-</>
+              <>
+                <ThingCarousel token={token} things={things} />
+              </>
             }
           ></Route>
 
@@ -256,7 +280,6 @@ export default function App() {
             }
           ></Route>
 
-
           <Route exact path="/snapshot/:text" element={<Snapshot />}></Route>
 
           <Route
@@ -273,26 +296,23 @@ export default function App() {
             }
           ></Route>
 
-
           <Route
             exact
             path="/:text"
             element={
-
-<>
-
-      <ThingCarousel token={token} things={[{to:"agent", subject:pathname, webPrefix:webPrefix},...things]} />
-
-</>
+              <>
+                <ThingCarousel
+                  token={token}
+                  things={[
+                    { to: "agent", subject: pathname, webPrefix: webPrefix },
+                    ...things,
+                  ]}
+                />
+              </>
             }
           ></Route>
-
-
-
-
         </Routes>
       </BrowserRouter>
-
       <ZuluTime />
       <Host />
       <MetaStack />

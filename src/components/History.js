@@ -68,7 +68,7 @@ function History(props) {
 
   const historyTo = "http://192.168.10.10/" + historyRef + ".json";
 
-  const { snapshot: data, flag: snapshotFlag, snapshotGetTime:snapshotGetTime } = useSnapshot(to);
+  const { snapshot: data, flag: snapshotFlag, snapshotGetTime:snapshotGetTime } = useSnapshot(to, 1000);
 
   const { snapshot: history, flag: historyFlag, snapshotGetTime:historyGetTime } = useSnapshot(
     historyTo, 60000
@@ -206,8 +206,10 @@ function History(props) {
         data.transducers &&
         data.transducers[ref] &&
         data.transducers[ref].amount}
+
       <Stream
         hide={true}
+        period={1000}
         quantity={{
           units: "A",
           amount:

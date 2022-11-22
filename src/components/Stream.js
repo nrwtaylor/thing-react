@@ -31,6 +31,8 @@ import Frequency from "../components/Frequency.js";
 import Forget from "../components/Forget.js";
 import Trace from "../components/Trace.js";
 
+import {zuluTime} from "../util/time.js";
+
 function Stream(props) {
   const { at, quantities, quantity, period, hide } = props;
 
@@ -66,7 +68,7 @@ function Stream(props) {
 
   useInterval(() => {
     // Your custom logic here
-    console.log("Stream useInterval amount", amount);
+    //console.log("Stream useInterval amount", amount);
     getStream();
   }, period);
 
@@ -123,8 +125,8 @@ function Stream(props) {
       from: user_name,
       association: thing.uuid,
     };
-    console.log("Datagram");
-    console.log(datagram);
+    //console.log("Datagram");
+    //console.log(datagram);
 
     setOpen(false);
   };
@@ -154,11 +156,11 @@ function Stream(props) {
   function getStream() {
     //console.log("Stream tick");
     const a = amountRef.current;
-    console.log("Stream mountRef.current", a);
+    //console.log("Stream mountRef.current", a);
 
     var conditionedAmount = parseFloat(a);
 
-    console.log("Stream conditionedAmountt", conditionedAmount);
+   // console.log("Stream conditionedAmountt", conditionedAmount);
     // Create a new array based on current state:
     let s = [...streamPoints];
     const amounts = [];
@@ -169,6 +171,8 @@ function Stream(props) {
       });
       conditionedAmount = amounts[1];
     }
+var atTemp = at;
+if (atTemp === undefined) {atTemp = zuluTime();}
 
     // Add item to it
     s.push({
@@ -179,7 +183,7 @@ function Stream(props) {
       amount: conditionedAmount,
       amount2: amounts && amounts[0],
       amount3: amounts && amounts[2],
-      at: at,
+      at: atTemp,
     });
 
     const maxStreamPoints = 100;
@@ -195,13 +199,13 @@ function Stream(props) {
       s.shift();
     }
 
-    console.log("Stream f", s);
+    //console.log("Stream f", s);
     // Set state
     setStreamPoints(s);
   }
 
   useEffect(() => {
-    console.log("Stream amount", amount);
+   // console.log("Stream amount", amount);
 
     const startTime = new Date();
     const d = startTime - refreshedAt;

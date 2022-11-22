@@ -10,7 +10,7 @@ export default function useSnapshot(input, inputSnapshotPollInterval) {
 
   const to = input;
 
-  const [snapshotInterval, setSnapshotInterval] = useState(25);
+  const [snapshotInterval, setSnapshotInterval] = useState(50);
 
   const [flag, setFlag] = useState();
 

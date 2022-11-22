@@ -15,11 +15,6 @@ const {x,y,z} = data;
 
   }, []);
 
-useEffect(()=>{
-
-console.log("BubbleLevel data",data);
-
-}, [data]);
   return (
     <div className="App">
       <svg>
