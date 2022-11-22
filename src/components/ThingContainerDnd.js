@@ -4,6 +4,7 @@ import { Grid, Box } from "@material-ui/core";
 import update from "immutability-helper";
 import { useDrop } from "react-dnd";
 import { ItemTypes } from "./ItemTypes.js";
+import { ThingContainer } from "./ThingContainer.js";
 import { FullscreenExitTwoTone } from "@material-ui/icons";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -23,7 +24,7 @@ const style = {
   // spacing:'1'
 };
 
-export const ThingContainer = memo(function ThingContainer(props) {
+export const ThingContainerDnd = memo(function ThingContainer(props) {
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 
   const { token } = props;
@@ -260,6 +261,24 @@ setThings(
 
   if (!token) {return (<>NO TOKEN</>);}
 
+
+
+
+
+
+  return (
+    <div ref={drop} style={style}>
+<ThingContainer things={things} />
+    </div>
+  );
+
+
+
+
+
+
+
+
   return (
     <div ref={drop} style={style}>
       <Grid container spacing={3} direction="row">
@@ -290,4 +309,4 @@ setThings(
   );
 });
 
-export default ThingContainer;
+export default ThingContainerDnd;

@@ -4,7 +4,6 @@ export default function useSlug(inputToken) {
   const getSlug = () => {
     const slugString = localStorage.getItem("slug");
 
-    //console.log("useToken getToken tokenString", tokenString);
     var userToken = null;
 
     try {
@@ -26,7 +25,7 @@ export default function useSlug(inputToken) {
     //    if (props.token) {props.token = token;}
   }, [slug]);
 
-  const [slug, setSlug] = useState(getToken());
+  const [slug, setSlug] = useState(getSlug());
   const [username, setUsername] = useState();
 
   const saveSlug = (userSlug) => {

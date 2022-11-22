@@ -262,11 +262,14 @@ export default function Thing(props) {
 
   const [flipped, setFlipped] = React.useState(false);
 
-  const handleExpandClick = () => {
+  const handleExpandClick = (t) => {
+if (props.onExpand) {props.onExpand(t);}
     setExpanded(true);
   };
 
   const handleFoldClick = () => {
+if (props.onFold) {props.onFold(t);}
+
     setExpanded(false);
   };
 
@@ -293,6 +296,8 @@ export default function Thing(props) {
 
   const [error, setError] = useState();
 
+  //const [url, setUrl] = useState();
+
   const [data, setData] = useState({
     thing: { uuid: "X" },
     thing_report: { sms: "No response. Yet." },
@@ -315,6 +320,9 @@ export default function Thing(props) {
   }
 
   function handleRefresh() {
+
+
+
     getResponse(webPrefix, true);
   }
 
@@ -342,6 +350,16 @@ export default function Thing(props) {
       return;
     }
     setFlag("red");
+    console.log("Thing getResponse flag subject", flag, subject);
+    //    const s = currentAt + defaultPollInterval;
+
+    //    setNextRunAt(s);
+
+    //    var t = { subject: subject };
+    //    var thingy = { thing: null, thing_report: null };
+
+    //   const s = currentAt + defaultPollInterval;
+    //   setNextRunAt(s);
 
     const requestedAt = Date.now();
     setAgentRequestedAt(requestedAt);
@@ -424,10 +442,6 @@ export default function Thing(props) {
     if (props.onChange) {
       props.onChange("forget");
     }
-
-    if (props.onForget) {
-      props.onForget(e);
-    }
   };
 
   // Call getResponse on a Timer.
@@ -500,13 +514,15 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
     return <>REQUESTED AT {i}</>;
   };
 
-  // Test dynamic loading
-  async function load() {
-    let say = await import("./Snapshot.js");
-    //    say.hi(); // Hello!
-    //    say.bye(); // Bye!
-    //    say.default(); // Module loaded (export default)!
-  }
+
+// Test dynamic loading
+async function load() {
+
+    let say = await import('./Snapshot.js');
+//    say.hi(); // Hello!
+//    say.bye(); // Bye!
+//    say.default(); // Module loaded (export default)!
+}
 
   useEffect(() => {
     // If still processing the last one,
@@ -541,10 +557,6 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
     if (props.onChange) {
       props.onChange("flip");
     }
-
-    if (props.onFlip) {
-      props.onFlip(e);
-    }
   };
 
   const handleSpawnThing = (e) => {
@@ -553,22 +565,13 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
       return;
     }
 
-    if (props.onSpawn) {
-      props.onSpawn(e);
-    }
-
     //spawnThing(webPrefix, thing, token);
   };
 
   const handleOpenThing = (e) => {
-setExpanded(true);
-    handleExpandClick(e);
+    handleExpandClick();
     if (props.onChange) {
       props.onChange("open");
-    }
-
-    if (props.onOpen) {
-      props.onOpen(e);
     }
   };
 
@@ -576,10 +579,6 @@ setExpanded(true);
     handleFoldClick();
     if (props.onChange) {
       props.onChange("fold");
-    }
-
-    if (props.onFold) {
-      props.onFold(e);
     }
   };
 
@@ -628,7 +627,7 @@ setExpanded(true);
         <Button onClick={handleSpawnThing}>SPAWN</Button>
 
         <Button onClick={handleForgetThing}>FORGET</Button>
-{expanded ? "EXPANDED" : "NOT EXPANDED"}
+
         {!expanded && (
           <Button onClick={handleFlipThing}>
             {flipped ? "MESSAGE" : "SOURCE"}
