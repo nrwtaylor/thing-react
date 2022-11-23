@@ -11,6 +11,9 @@ import Message from "../components/Message.js";
 import Text from "../components/Text.js";
 import History from "../components/History.js";
 
+import Error from "../components/Error.js";
+
+
 import ThingThumbnail from "../components/ThingThumbnail.js";
 
 import Ping from "../components/Ping.js";
@@ -220,6 +223,7 @@ export default function Thing(props) {
         console.log("Thing setThing result", result);
       })
       .catch((error) => {
+        setError(error);
         console.log("Thing setThing error", error);
       });
   }, [datagram]);
@@ -357,9 +361,8 @@ export default function Thing(props) {
           result.thingReport.error &&
           result.thingReport.error.message
         ) {
-          console.log("Thing getThingReport", result.thingReport.error.message);
-          //        setData(result);
-
+          //console.log("Thing getThingReport", result.thingReport.error.message);
+          console.error("Thing getThingReport error", result.thingReport.error);
           setError(result.thingReport.error.message);
         }
 
@@ -448,16 +451,10 @@ export default function Thing(props) {
     getResponse(webPrefix);
 
     const interval = setInterval(() => {
-      //<<<<<<< Updated upstream
+
       getResponse(webPrefix);
       console.log("This will run every: " + pollInterval);
-      //=======
-      //    const webPrefix = process.env.REACT_APP_WEB_PREFIX;
-      //    const path = subject + `.json`;
 
-      //      getResponse(path);
-      console.log("This will run every five minutes!");
-      //>>>>>>> Stashed changes
     }, pollInterval);
     console.log("interval", interval);
 
@@ -546,6 +543,13 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
       props.onFlip(e);
     }
   };
+
+useEffect(() =>{
+if (!error) {return;}
+handleSpawnThing({'subject':error.message});
+
+}, [error]);
+
 
   const handleSpawnThing = (e) => {
     if (props.onChange) {
@@ -784,6 +788,20 @@ setExpanded(true);
               <br />
               <Typography>RUNTIME {runTime}</Typography>
               {!data && <>NOT DATA</>}
+
+
+              {subject && subject.toLowerCase().indexOf("error") !== -1 && (
+                <div>
+                  <Error
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
+
+
               {subject && subject.toLowerCase().indexOf("snapshot") !== -1 && (
                 <div>
                   <Snapshot

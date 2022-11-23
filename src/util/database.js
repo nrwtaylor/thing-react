@@ -71,6 +71,8 @@ console.log("database setThing token", token);
     })
     .catch((error) => {
       console.log("database setThing u error", u, error);
+      return {thingReport:{error:error}};
+
     });
 }
 

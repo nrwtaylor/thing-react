@@ -257,7 +257,7 @@ export default function App({componentName, ...props}) {
 
   return (
     <>
-      THING-REACT 19 November 2022 58eb
+      THING-REACT 22 November 2022 c7bc
       <br />
       <Identity identity={identity} />
 
