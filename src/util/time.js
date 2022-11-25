@@ -67,9 +67,13 @@ if (seconds > 24 * 60 * 60 * 7) {
 return sign * Math.floor(seconds / (24 * 60 * 60 * 7)) + " weeks" + postFix;
 }
 
+if (seconds > 2* 24 * 60 * 60) {
+return sign * Math.floor(seconds / (24 * 60 * 60)) + " days" + postFix;
+}
+
 
 if (seconds > 24 * 60 * 60) {
-return sign * Math.floor(seconds / (24 * 60 * 60)) + " days" + postFix;
+return sign * Math.floor(seconds / (60 * 60)) + " hours" + postFix;
 }
 
 

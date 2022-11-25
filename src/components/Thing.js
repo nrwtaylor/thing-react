@@ -20,6 +20,14 @@ import Content from "../components/Content.js";
 import Message from "../components/Message.js";
 import Text from "../components/Text.js";
 import History from "../components/History.js";
+import Power from "../components/Power.js";
+
+import Weather from "../components/Weather.js";
+
+
+import TemperatureHumidity from "../components/TemperatureHumidity.js";
+
+
 
 import InertialReference from "../components/InertialReference.js";
 
@@ -42,7 +50,7 @@ import Associations from "../components/Associations.js";
 //import useDatagram from "./useDatagram";
 
 import { v4 as uuidv4, uuid as uuidLibrary } from "uuid";
-import { getThingReport, setThing } from "../util/database.js";
+import { getThingReport, setThing, txCount, rxCount, txData, rxData ,rxErrorCount, txErrorCount} from "../util/database.js";
 import { humanTime, zuluTime } from "../util/time.js";
 
 import useMessages from "../useMessages";
@@ -582,7 +590,7 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
   };
 
   const handleOpenThing = (e) => {
-setExpanded(true);
+//setExpanded(true);
     handleExpandClick(e);
     if (props.onChange) {
       props.onChange("open");
@@ -618,8 +626,33 @@ setExpanded(true);
   const bRed = "#ff000080";
   const bGreen = "#00ff0000";
 
+const DataReport = () =>{
+
+return (
+<>
+TXPACKETS{' '}{txCount}
+<br />
+RXPACKETS{' '}{rxCount}
+<br />
+
+
+TXDATA{' '}{txData}
+<br />
+RXDATA{' '}{rxData}
+<br />
+RXERRORCOUNT{' '}{rxErrorCount}
+<br />
+TXERRORCOUNT{' '}{txErrorCount}
+<br />
+</>
+)
+
+}
+
   return (
     <>
+
+
       <Card
         disableGutters={true}
         //sx={{ borderColor: flag }}
@@ -842,6 +875,18 @@ setExpanded(true);
                 </div>
               )}
 
+              {subject && subject.toLowerCase().indexOf("weather") !== -1 && (
+                <div>
+                  <Weather
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
+
+
               {subject && subject.toLowerCase().indexOf("motion-reference") !== -1 && (
                 <div>
                   <MotionReference
@@ -852,7 +897,6 @@ setExpanded(true);
                   />
                 </div>
               )}
-
 
 
               {subject && subject.toLowerCase().indexOf("history") !== -1 && (
@@ -889,6 +933,39 @@ setExpanded(true);
                 </div>
               )}
 
+              {subject && subject.toLowerCase().indexOf("power") !== -1 && (
+                <div>
+                  <Power
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
+
+
+              {subject && subject.toLowerCase().indexOf("temperature-humidity") !== -1 && (
+                <div>
+                  <TemperatureHumidity
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
+
+              {subject && subject.toLowerCase().indexOf("humidity-temperature") !== -1 && (
+                <div>
+                  <TemperatureHumidity
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
 
 
               {subject && subject.toLowerCase().indexOf("text") !== -1 && (
@@ -945,7 +1022,10 @@ setExpanded(true);
           )}
           {/*https://www.designcise.com/web/tutorial/how-to-hide-a-broken-image-in-react*/}
         </div>
+<DataReport />
       </Card>
+
+
     </>
   );
 }

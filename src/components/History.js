@@ -47,6 +47,8 @@ import useSnapshot from "../useSnapshot";
 function History(props) {
   const { datagram } = props;
 
+  const {showLive } =props;
+
   const { subject } = datagram;
 
   const ref = subject
@@ -68,7 +70,12 @@ function History(props) {
 
   const historyTo = "http://192.168.10.10/" + historyRef + ".json";
 
-  const { snapshot: data, flag: snapshotFlag, snapshotGetTime:snapshotGetTime } = useSnapshot(to, 1000);
+var snapshotInterval = 1000;
+//if (showLive === false) {
+//snapshotInterval = -1;
+//}
+
+  const { snapshot: data, flag: snapshotFlag, snapshotGetTime:snapshotGetTime } = useSnapshot(to, snapshotInterval);
 
   const { snapshot: history, flag: historyFlag, snapshotGetTime:historyGetTime } = useSnapshot(
     historyTo, 60000
@@ -206,7 +213,7 @@ function History(props) {
         data.transducers &&
         data.transducers[ref] &&
         data.transducers[ref].amount}
-
+{showLive && (
       <Stream
         hide={true}
         period={1000}
@@ -222,6 +229,7 @@ function History(props) {
         //              period={100}
         //              domain={[-50, 50]}
       />
+)}
       <br />
       <div>SUBJECT {subject}</div>
       <div>

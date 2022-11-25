@@ -204,7 +204,7 @@ function InertialReference(props) {
         REQUEST INTERVAL {snapshotInterval}ms{" "}
         {Math.round(1000 / snapshotInterval, 1)}Hz
         <br />
-        {inertialReference && <>Intetial array seen</>}
+        {inertialReference && <>Inertial array seen</>}
 
 <MotionReference data={inertialReference} />
 
