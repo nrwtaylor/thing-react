@@ -159,13 +159,11 @@ thclb0ax2":{"talker_identifier":"TH","type":"A","amount":"1142011.6","units":"X"
       <div>POWER</div>
       <div>URL {toSnapshot}</div>
       <div>
-        FLAG {flag} COLOUR
-        <br />
         GET TIME {snapshotGetTime}ms {Math.round(1000 / snapshotGetTime, 1)}Hz
         REQUEST INTERVAL {snapshotInterval}ms{" "}
         {Math.round(1000 / snapshotInterval, 1)}Hz
         <br />
-
+<br />
 HOUSE AMPS
                   <History
                     user={null}
@@ -174,7 +172,7 @@ HOUSE AMPS
                     agent_input={webPrefix}
                     showLive={true}
                   />
-
+<br />
 HOUSE VOLTS
                   <History
                     user={null}
@@ -183,21 +181,23 @@ HOUSE VOLTS
                     agent_input={webPrefix}
                     showLive={true}
                   />
-
+<br />
 HOUSE COLOUMBS > AMP-HOUR
                   <History
                     user={null}
                     //thing={data.thing}
                     datagram={{...datagram, subject:"transducers-thclb0ax2-10m"}}
                     agent_input={webPrefix}
+                    showLive={true}
                   />
-
+<br />
 START VOLTS
                   <History
                     user={null}
                     //thing={data.thing}
                     datagram={{...datagram, subject:"transducers-thvlt1ax1-10m"}}
                     agent_input={webPrefix}
+                    showLive={true}
                   />
 
 
