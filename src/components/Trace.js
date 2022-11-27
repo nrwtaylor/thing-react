@@ -37,7 +37,12 @@ import {humanRuntime} from "../util/time.js";
 function Trace(props) {
   const { data } = props;
 
+  const [timeSeriesData, setTimeSeriesData] = useState();
+
   const [spread, setSpread] = useState();
+
+  const [firstAt, setFirstAt] = useState();
+  const [lastAt, setLastAt] = useState();
 
   useEffect(() => {
 if (data === undefined) {return;}
@@ -47,13 +52,19 @@ if (Array.isArray(data) && data.length === 0) {return;}
 
 
 
-const firstEvent= new Date(data[0].at);
-const lastEvent = new Date(data[data.length - 1].at);
-const spreadEvent = lastEvent - firstEvent;
+const first= new Date(data[0].at);
+const last = new Date(data[data.length - 1].at);
+const spreadEvent = last - first;
+setFirstAt(data[0].at);
+setLastAt(data[data.length - 1].at);
 
-//console.log("Trace spreadEvent", spreadEvent);
+const t = data.map((d)=>{
 
-//if (spreadEvent) {
+return {...d, at:(new Date(d.at))}
+
+})
+
+setTimeSeriesData(t);
 setSpread(spreadEvent);
 //}
   }, [data]);
@@ -67,10 +78,15 @@ setSpread(spreadEvent);
 
   return (
     <>
+<br />
+{lastAt}{' to '}
+{firstAt}
+<br />
       <Box>
         <ResponsiveContainer width="100%" aspect={3}>
           <LineChart data={data}>
-            {/*   <CartesianGrid /> */}
+{/* <XAxis scale={'time'} />  */}
+          {/*   <CartesianGrid /> */}
             {props.domain && (
               <YAxis
                 tickFormatter={(value) =>

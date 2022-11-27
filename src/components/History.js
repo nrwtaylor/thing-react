@@ -71,9 +71,9 @@ function History(props) {
   const historyTo = "http://192.168.10.10/" + historyRef + ".json";
 
 var snapshotInterval = 1000;
-//if (showLive === false) {
-//snapshotInterval = -1;
-//}
+if (showLive === false) {
+  snapshotInterval = true;
+}
 
   const { snapshot: data, flag: snapshotFlag, snapshotGetTime:snapshotGetTime } = useSnapshot(to, snapshotInterval);
 

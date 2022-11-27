@@ -33,6 +33,7 @@ setSnapshotInterval(inputSnapshotPollInterval);
 }, [inputSnapshotPollInterval]);
 
   useEffect(() => {
+console.log("useSnapshot snapshotInterval", snapshotInterval);
     getSnapshot();
 
     const interval = setInterval(() => {

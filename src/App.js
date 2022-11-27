@@ -248,7 +248,7 @@ export default function App({ componentName, ...props }) {
 
   return (
     <>
-      THING-REACT 25 November 2022 a0dd
+      THING-REACT 26 November 2022 0156
       <br />
       {identity && <Identity identity={identity} />}
       {token && token.message}

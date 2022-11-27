@@ -111,7 +111,6 @@ export default function ThingCarousel(props) {
         showStatus={false}
         swipeScrollTolerance={100}
         preventMovementUntilSwipeScrollTolerance={true}
-        infiniteLoop={true}
       >
         {things.map((thing) => (
           <div key={thing.uuid}>
