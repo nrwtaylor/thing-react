@@ -39,11 +39,10 @@ import useInput from "./useInput";
 
 import axios from "axios";
 
-//import { useSwipeable } from "react-swipeable";
-
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
+//export default function App() {
 /*
 const config = {
   delta: 10, // min distance(px) before a swipe starts. *See Notes*
@@ -55,10 +54,8 @@ const config = {
   touchEventOptions: { passive: true }, // options for touch listeners (*See Details*)
 };
 */
-export default function App({componentName, ...props}) {
-
-
- const DynamicComponent = lazy(() => import(`./components/${componentName}`));
+export default function App({ componentName, ...props }) {
+  const DynamicComponent = lazy(() => import(`./components/${componentName}`));
 
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
   const testUuid0 = process.env.REACT_APP_THING_0;
@@ -105,15 +102,11 @@ export default function App({componentName, ...props}) {
       input: "TermsOfUse",
       //      webPrefix: "http://192.168.10.10/snapshot.json",
     },
-
-
-
   ];
 
   const pathname = window.location.pathname;
 
-  const reg =
-    /\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/g;
+  const reg = /\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/g;
 
   const matches = pathname.match(reg);
 
@@ -126,7 +119,6 @@ export default function App({componentName, ...props}) {
   const createdAt = Date.now();
 
   const [devStack, setDevStack] = useState();
-
 
   useEffect(() => {
     if (!identity) {
@@ -148,7 +140,6 @@ export default function App({componentName, ...props}) {
   useEffect(() => {
     console.log("App things", things);
   }, [things]);
-
 
   function mergeObjectsInUnique<T>(array: T[], property: any): T[] {
     const newArray = new Map();
@@ -257,29 +248,21 @@ export default function App({componentName, ...props}) {
 
   return (
     <>
-      THING-REACT 22 November 2022 c7bc
+      THING-REACT 27 November 2022 a24a
       <br />
-      <Identity identity={identity} />
-
+      {identity && <Identity identity={identity} />}
       {token && token.message}
       <BrowserRouter>
         <Routes>
-
           <Route
             exact
             path="/"
             element={
-
-<>
-
-      <ThingCarousel token={token} things={things} />
-
-</>
+              <>
+                <ThingCarousel token={token} things={things} />
+              </>
             }
           ></Route>
-
-
-
 
           <Route
             exact
@@ -313,23 +296,21 @@ export default function App({componentName, ...props}) {
             }
           ></Route>
 
-
           <Route
             exact
             path="/:text"
             element={
-
-<>
-
-      <ThingCarousel token={token} things={[{to:"agent", subject:pathname, webPrefix:webPrefix},...things]} />
-
-</>
+              <>
+                <ThingCarousel
+                  token={token}
+                  things={[
+                    { to: "agent", subject: pathname, webPrefix: webPrefix },
+                    ...things,
+                  ]}
+                />
+              </>
             }
           ></Route>
-
-
-
-
         </Routes>
       </BrowserRouter>
       <ZuluTime />

@@ -22,15 +22,6 @@ const {streamPoints} = useStream(x);
 
   }, []);
 
-useEffect(()=>{
-console.log("Inclinometer x", x);
-}, [x]);
-
-useEffect(()=>{
-
-console.log("Inclinometer data",data);
-
-}, [data]);
 
 function shadeColor(color, percent) {
 var R = parseInt(color.substring(1,3),16);
@@ -76,16 +67,10 @@ var RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
 var GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
 var BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
 
-console.log("RGB", R,G,B, RR,GG,BB);
 
 return "#"+RR+GG+BB;
 }
 
-useEffect(()=>{
-
-console.log("Inclinometer streamPoints",streamPoints);
-
-}, [streamPoints]);
 
 
   return (
@@ -149,7 +134,6 @@ var i = (1 - index / streamPoints.length) * 35;
 i = i + 50;
 //var colour = shadeColor('#000000', i);
 var colour = shadeGreyPercent(i);
-console.log("Inclinometer i", i, colour);
 
 
 var strokeWidth = 5;

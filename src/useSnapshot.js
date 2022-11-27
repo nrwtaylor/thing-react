@@ -6,11 +6,11 @@ import { getWebJson, getSnapshot } from "./util/database.js";
 
 
 //export default function useToken(inputToken) {
-export default function useSnapshot(input) {
+export default function useSnapshot(input, inputSnapshotPollInterval) {
 
   const to = input;
 
-  const [snapshotInterval, setSnapshotInterval] = useState(25);
+  const [snapshotInterval, setSnapshotInterval] = useState(50);
 
   const [flag, setFlag] = useState();
 
@@ -22,7 +22,18 @@ export default function useSnapshot(input) {
 
   const [snapshotGetTime, setSnapshotGetTime] = useState();
 
+  useEffect(()=>{
+
+if (!inputSnapshotPollInterval) {return;}
+
+console.log("useSnapshot inputSnapshotPollInterval",inputSnapshotPollInterval);
+
+setSnapshotInterval(inputSnapshotPollInterval);
+
+}, [inputSnapshotPollInterval]);
+
   useEffect(() => {
+console.log("useSnapshot snapshotInterval", snapshotInterval);
     getSnapshot();
 
     const interval = setInterval(() => {
@@ -30,7 +41,7 @@ export default function useSnapshot(input) {
     }, snapshotInterval); // 20 Hz was 200.
 
     return () => clearInterval(interval);
-  }, []);
+  }, [snapshotInterval]);
 
   function getSnapshot() {
     const startTime = new Date();
@@ -91,5 +102,7 @@ export default function useSnapshot(input) {
     setSnapshot: saveSnapshot,
     snapshot,
     flag,
+    snapshotGetTime,
+    snapshotInterval
   };
 }

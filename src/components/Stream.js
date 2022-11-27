@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 import "../index.css";
 import {
@@ -30,10 +31,32 @@ import Frequency from "../components/Frequency.js";
 import Forget from "../components/Forget.js";
 import Trace from "../components/Trace.js";
 
-function Stream(props) {
-  const { at, quantities, quantity, period, hide } = props;
+import {zuluTime} from "../util/time.js";
 
-  const { amount, units } = quantity;
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+
+
+function Stream(props) {
+  const { at, quantities, quantity, period:inputPeriod, hide } = props;
+const canSwipe = true;
+
+const [period, setPeriod] = useState(inputPeriod);
+  var { amount, units } = quantity;
+
+  var { transducer } = props;
+  if (transducer && transducer.amount) {
+    amount = transducer.amount;
+  }
+
+  if (transducer && transducer.units && transducer.units !== "X") {
+    units = transducer.units;
+  }
+
+const availableWindows = [
+'', '1m', '2m', '10m', '15m', '30m', '1h' 
+]
+
 
   const user_name = props.user_name; // TODO
   const agent_input = props.agent_input;
@@ -55,7 +78,7 @@ function Stream(props) {
 
   useInterval(() => {
     // Your custom logic here
-    console.log("Stream useInterval amount", amount);
+    //console.log("Stream useInterval amount", amount);
     getStream();
   }, period);
 
@@ -112,9 +135,8 @@ function Stream(props) {
       from: user_name,
       association: thing.uuid,
     };
-    console.log("Datagram");
-    console.log(datagram);
-
+    //console.log("Datagram");
+    //console.log(datagram);
 
     setOpen(false);
   };
@@ -130,9 +152,19 @@ function Stream(props) {
   const [dataPointer, setDataPointer] = useState(0);
   const [dataPoints, setDataPoints] = useState([]);
 
+  const [windowIndex, setWindowIndex] = useState(0);
+
   const startTime = new Date();
   const [voltPoints, setVoltPoints] = useState([]);
   const [tracePeriod, setTracePeriod] = useState();
+
+function handleChange(windowIndex, b) {
+
+
+
+console.log("Stream handleChange windowIndex b", windowIndex,b);
+
+}
 
   function humanPeriod(p) {
     //if (p>0) {return "1/"+Math.round(p / 1000, 0) + " Hz"}
@@ -144,11 +176,11 @@ function Stream(props) {
   function getStream() {
     //console.log("Stream tick");
     const a = amountRef.current;
-    console.log("Stream mountRef.current", a);
+    //console.log("Stream mountRef.current", a);
 
     var conditionedAmount = parseFloat(a);
 
-    console.log("Stream conditionedAmountt", conditionedAmount);
+   // console.log("Stream conditionedAmountt", conditionedAmount);
     // Create a new array based on current state:
     let s = [...streamPoints];
     const amounts = [];
@@ -159,6 +191,8 @@ function Stream(props) {
       });
       conditionedAmount = amounts[1];
     }
+var atTemp = at;
+if (atTemp === undefined) {atTemp = zuluTime();}
 
     // Add item to it
     s.push({
@@ -169,7 +203,7 @@ function Stream(props) {
       amount: conditionedAmount,
       amount2: amounts && amounts[0],
       amount3: amounts && amounts[2],
-      at: at,
+      at: atTemp,
     });
 
     const maxStreamPoints = 100;
@@ -185,27 +219,14 @@ function Stream(props) {
       s.shift();
     }
 
-    console.log("Stream f", s);
+    //console.log("Stream f", s);
     // Set state
     setStreamPoints(s);
   }
 
   useEffect(() => {
-    console.log("Stream amount", amount);
-    /* 
-   if (amount === undefined) {
-      return;
-    }
+   // console.log("Stream amount", amount);
 
-if (isNaN(amount)) {return;}
-*/
-    //getStream();
-
-    //getStream(amount);
-    //return
-    //}, [amount]);
-
-    //function getStream() {
     const startTime = new Date();
     const d = startTime - refreshedAt;
     setRefreshedAt(startTime);
@@ -214,9 +235,6 @@ if (isNaN(amount)) {return;}
 
     // Create a new array based on current state:
     let f = [...dataPoints];
-
-
-
 
     const amounts = [];
     if (quantities) {
@@ -238,22 +256,6 @@ if (isNaN(amount)) {return;}
       amount3: amounts && amounts[2],
     });
 
-
-
-
-
-
-
-    // Add item to it
-/*
-    f.push({
-      name: "asdf",
-      student: 24,
-      fees: 1,
-      value: conditionedAmount,
-      amount: conditionedAmount,
-    });
-*/
     const maxAmpPoints = 100;
 
     const excessPoints = f.length - maxAmpPoints;
@@ -262,13 +264,8 @@ if (isNaN(amount)) {return;}
       const a = (dataPointer + 1) % maxAmpPoints;
 
       setDataPointer(a);
-
-      //f.splice(0, excessPoints);
       f.shift();
     }
-
-    //console.log(f);
-    // Set state
 
     setDataPoints(f);
 
@@ -277,9 +274,7 @@ if (isNaN(amount)) {return;}
     const endTime = new Date();
     const tf = endTime - startTime;
     const timeDiff = tf;
-    //setTracePeriod(timeDiff);
     setTracePeriod(d);
-    //  }
   }, [amount]);
 
   function callBack() {
@@ -296,13 +291,49 @@ if (isNaN(amount)) {return;}
         {period && hide && (
           <>
             {" "}
+
+
+
+      <Carousel
+        useKeyBoardArrows={canSwipe}
+        showArrows={canSwipe}
+        swipeable={canSwipe}
+        showThumbs={false}
+        showIndicators={false}
+        showStatus={false}
+        swipeScrollTolerance={100}
+        preventMovementUntilSwipeScrollTolerance={true}
+        onChange={(a,b)=>handleChange(a,b)}
+      >
+
+{availableWindows.map((availableWindow) =>{
+
+//const w=  windowIndex + 1;
+//setWindowIndex(w);
+
+return(
+
+
+
+
+<>
+{availableWindow}
             <Trace data={streamPoints} domain={props.domain} />
+</>
+)})}
+</Carousel>
+
+
+
+
+
+
+
             <br />
-            Period {humanPeriod(period)}
-            <Typography>
+<Typography>
+            Period {humanPeriod(period)}{' '}
               <Frequency frequency={1000 / period} /> requested
-            </Typography>
-            <Typography>
+{' '}
               <Frequency frequency={1000 / tracePeriod} /> observed
             </Typography>
           </>
@@ -312,8 +343,7 @@ if (isNaN(amount)) {return;}
           <>
             <Trace data={dataPoints} domain={props.domain} />
             <br />
-            <Typography>Period {humanPeriod(tracePeriod)}</Typography>
-            <Typography>
+            <Typography>Period {humanPeriod(tracePeriod)}{' '}
               <Frequency frequency={1000 / tracePeriod} />
             </Typography>
           </>
@@ -323,7 +353,12 @@ if (isNaN(amount)) {return;}
           <>
             amount {amount} {units}
             <br />
-            pointer {dataPointer}
+
+            {transducer && (
+              <Link to={"" + "history/transducers-" + transducer.sensor_id}>
+                transducer-{transducer && transducer.sensor_id}
+              </Link>
+            )}
             <br />
           </>
         )}

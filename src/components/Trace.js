@@ -34,10 +34,41 @@ import Frequency from "../components/Frequency.js";
 import {humanRuntime} from "../util/time.js";
 
 
+//import { Carousel } from "react-responsive-carousel";
+//import "react-responsive-carousel/lib/styles/carousel.min.css";
+
+
+/*
+
+      <Carousel
+        useKeyBoardArrows={canSwipe}
+        showArrows={canSwipe}
+        swipeable={canSwipe}
+        showThumbs={false}
+        showIndicators={false}
+        showStatus={false}
+        swipeScrollTolerance={100}
+        preventMovementUntilSwipeScrollTolerance={true}
+      >
+        {things.map((thing) => (
+          <div key={thing.uuid}>
+
+*/
+
 function Trace(props) {
   const { data } = props;
+//  const [canSwipe, setCanSwipe] = useState();
+const canSwipe = true;
+  const [timeSeriesData, setTimeSeriesData] = useState();
 
   const [spread, setSpread] = useState();
+
+  const [firstAt, setFirstAt] = useState();
+  const [lastAt, setLastAt] = useState();
+
+const availableWindows = [
+'', '1m', '2m', '10m', '15m', '30m', '1h' 
+]
 
   useEffect(() => {
 if (data === undefined) {return;}
@@ -47,13 +78,19 @@ if (Array.isArray(data) && data.length === 0) {return;}
 
 
 
-const firstEvent= new Date(data[0].at);
-const lastEvent = new Date(data[data.length - 1].at);
-const spreadEvent = lastEvent - firstEvent;
+const first= new Date(data[0].at);
+const last = new Date(data[data.length - 1].at);
+const spreadEvent = last - first;
+setFirstAt(data[0].at);
+setLastAt(data[data.length - 1].at);
 
-//console.log("Trace spreadEvent", spreadEvent);
+const t = data.map((d)=>{
 
-//if (spreadEvent) {
+return {...d, at:(new Date(d.at))}
+
+})
+
+setTimeSeriesData(t);
 setSpread(spreadEvent);
 //}
   }, [data]);
@@ -67,10 +104,19 @@ setSpread(spreadEvent);
 
   return (
     <>
+<br />
+{lastAt}{' to '}
+{firstAt}
+<br />
+
       <Box>
+
+
+
         <ResponsiveContainer width="100%" aspect={3}>
           <LineChart data={data}>
-            {/*   <CartesianGrid /> */}
+{/* <XAxis scale={'time'} />  */}
+          {/*   <CartesianGrid /> */}
             {props.domain && (
               <YAxis
                 tickFormatter={(value) =>
@@ -135,7 +181,6 @@ setSpread(spreadEvent);
             />
           </LineChart>
         </ResponsiveContainer>
-
         {/*
       <ResponsiveContainer width="100%" height="100%">
         <LineChart width={300} height={100} data={data}>
@@ -147,8 +192,9 @@ setSpread(spreadEvent);
         <br />
         <p />
       </Box>
-    </>
-  );
+</>
+);
+
 }
 
 export default Trace;

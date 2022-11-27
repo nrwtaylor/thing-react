@@ -29,16 +29,33 @@ import Forget from "../components/Forget.js";
 import Trace from "../components/Trace.js";
 import Stream from "../components/Stream.js";
 import BubbleLevel from "../components/BubbleLevel.js";
+import useSnapshot from "../useSnapshot.js";
+
+
 
 function Ping(props) {
   const user_name = props.user_name; // TODO
   const agent_input = props.agent_input;
   const webPrefix = agent_input;
-  const [flag, setFlag] = useState();
+  //const [flag, setFlag] = useState();
   //const [requestedAt, setRequestedAt] = useState();
   const [reply, setReply] = useState("");
 
-  const ping = props.ping;
+const [ping, setPing] = useState();
+
+  const toSnapshot = "http://192.168.10.10/snapshot-ping.json";
+  const { snapshot, flag, snapshotGetTime } = useSnapshot(toSnapshot);
+
+useEffect(() =>{
+
+if (props.ping) {setPing(props.ping); return;}
+
+if (snapshot && snapshot.ping) {
+setPing(snapshot.ping);
+}
+}, [snapshot]);
+
+
 
   const [data, setData] = useState({
     ping: ping,
@@ -48,7 +65,7 @@ function Ping(props) {
   const [pings, setPings] = useState([]);
   const [open, setOpen] = useState(false);
 
-  const [snapshotGetTime, setSnapshotGetTime] = useState();
+//  const [snapshotGetTime, setSnapshotGetTime] = useState();
 
   function humanTime(timestamp) {
     const ts = new Date();
@@ -71,6 +88,8 @@ function Ping(props) {
     if (!ping) {
       return;
     }
+
+console.log("Ping ping", ping);
     ping.map((p) => {
       if (!p.data) {
         return;

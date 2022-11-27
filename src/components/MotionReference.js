@@ -1,17 +1,33 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import * as d3 from "d3";
 
 import useStream from "../useStream.js";
+import useSnapshot from "../useSnapshot.js";
 
 export default function MotionReference(props) {
-  const { data } = props;
+  //const { data } = props;
 
   const canvasCenterX = 150;
   const canvasCenterY = 75;
-  const { displacement } = data;
+//  const { displacement } = data;
 
   //const y = x;
   //const z = x;
+
+const [interval, setInterval] = useState();
+
+const [data, setData] = useState();
+const [displacement, setDisplacement] = useState();
+
+  const toSnapshot = "http://192.168.10.10/snapshot.json";
+  const { snapshot, flag, snapshotGetTime } = useSnapshot(toSnapshot);
+
+useEffect(() =>{
+
+//console.log("Snapshot", snapshot);
+setData(snapshot);
+setDisplacement(snapshot && snapshot.displacement)
+}, [snapshot]);
 
   const { streamPoints } = useStream(displacement);
 
@@ -21,11 +37,11 @@ export default function MotionReference(props) {
   }, []);
 
   useEffect(() => {
-    console.log("MotionReference displacement", displacement);
+   // console.log("MotionReference displacement", displacement);
   }, [displacement]);
 
   useEffect(() => {
-    console.log("MotionReference data", data);
+   // console.log("MotionReference data", data);
   }, [data]);
 
   function shadeColor(color, percent) {
@@ -69,14 +85,11 @@ export default function MotionReference(props) {
     var GG = G.toString(16).length == 1 ? "0" + G.toString(16) : G.toString(16);
     var BB = B.toString(16).length == 1 ? "0" + B.toString(16) : B.toString(16);
 
-    console.log("RGB", R, G, B, RR, GG, BB);
+   // console.log("RGB", R, G, B, RR, GG, BB);
 
     return "#" + RR + GG + BB;
   }
 
-  useEffect(() => {
-    console.log("MotionReference streamPoints", streamPoints);
-  }, [streamPoints]);
 
   return (
     <div className="App">
@@ -111,7 +124,7 @@ export default function MotionReference(props) {
           i = i + 50;
           //var colour = shadeColor('#000000', i);
           var colour = shadeGreyPercent(i);
-          console.log("MotionReference i", i, colour);
+         // console.log("MotionReference i", i, colour);
 
           var strokeWidth = 5;
           if (index === streamPoints.length - 1) {
@@ -124,13 +137,18 @@ export default function MotionReference(props) {
             strokeWidth = 5;
           }
 
+
+const x= displacement && displacement.x ? displacement.x : 0;
+const y= displacement && displacement.y ? displacement.y : 0;
+
+
           return (
             <circle
               class="ring"
               style={{ fill: "white" }}
               stroke="black"
-              cx={canvasCenterX + displacement.x * 10}
-              cy={canvasCenterY + displacement.y * 10}
+              cx={canvasCenterX + x * 10}
+              cy={canvasCenterY + y * 10}
               // r={1*parseFloat(90)/90}
               r={1}
             ></circle>

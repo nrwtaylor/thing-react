@@ -2,7 +2,17 @@ import React, { lazy, useState, useEffect } from "react";
 import { useParams } from "react-router";
 import Agent from "../components/Agent.js";
 import Snapshot from "../components/Snapshot.js";
+import TextSnapshot from "../components/TextSnapshot.js";
+
 import Datagram from "../components/Datagram.js";
+
+import MotionReference from "../components/MotionReference.js";
+
+
+
+import GlobalPositioningSystem from "../components/GlobalPositioningSystem.js";
+
+
 import ToGoTime from "../components/ToGoTime.js";
 import Poll from "../components/Poll.js";
 import Subject from "../components/Subject.js";
@@ -10,6 +20,17 @@ import Content from "../components/Content.js";
 import Message from "../components/Message.js";
 import Text from "../components/Text.js";
 import History from "../components/History.js";
+import Power from "../components/Power.js";
+
+import Weather from "../components/Weather.js";
+
+
+import TemperatureHumidity from "../components/TemperatureHumidity.js";
+
+
+
+import InertialReference from "../components/InertialReference.js";
+
 
 import Error from "../components/Error.js";
 
@@ -32,7 +53,7 @@ import Associations from "../components/Associations.js";
 //import useDatagram from "./useDatagram";
 
 import { v4 as uuidv4, uuid as uuidLibrary } from "uuid";
-import { getThingReport, setThing } from "../util/database.js";
+import { getThingReport, setThing, txCount, rxCount, txData, rxData ,rxErrorCount, txErrorCount} from "../util/database.js";
 import { humanTime, zuluTime } from "../util/time.js";
 
 import useMessages from "../useMessages";
@@ -262,9 +283,9 @@ export default function Thing(props) {
 
   const runTime = Date.now() - startAt;
 
-  const [expanded, setExpanded] = React.useState(false);
+  const [expanded, setExpanded] = React.useState();
 
-  const [flipped, setFlipped] = React.useState(false);
+  const [flipped, setFlipped] = React.useState();
 
   const handleExpandClick = () => {
     setExpanded(true);
@@ -303,9 +324,17 @@ export default function Thing(props) {
   });
 
   useEffect(() => {
+    console.info("Thing started");
     getUuid();
     getResponse(webPrefix);
   }, []);
+
+
+  useEffect(() => {
+if (!uuid) {return;}
+    console.info("Thing uuid", uuid);
+  }, [uuid]);
+
 
   useEffect(() => {
     console.log("Thing subject changed", subject);
@@ -565,7 +594,7 @@ handleSpawnThing({'subject':error.message});
   };
 
   const handleOpenThing = (e) => {
-setExpanded(true);
+//setExpanded(true);
     handleExpandClick(e);
     if (props.onChange) {
       props.onChange("open");
@@ -601,8 +630,33 @@ setExpanded(true);
   const bRed = "#ff000080";
   const bGreen = "#00ff0000";
 
+const DataReport = () =>{
+
+return (
+<>
+TXPACKETS{' '}{txCount}
+<br />
+RXPACKETS{' '}{rxCount}
+<br />
+
+
+TXDATA{' '}{txData}
+<br />
+RXDATA{' '}{rxData}
+<br />
+RXERRORCOUNT{' '}{rxErrorCount}
+<br />
+TXERRORCOUNT{' '}{txErrorCount}
+<br />
+</>
+)
+
+}
+
   return (
     <>
+
+
       <Card
         disableGutters={true}
         //sx={{ borderColor: flag }}
@@ -802,6 +856,31 @@ setExpanded(true);
               )}
 
 
+              {subject && subject.toLowerCase().indexOf("text-snapshot") !== -1 && (
+                <div>
+                  <TextSnapshot
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
+
+
+              {subject && subject.toLowerCase().indexOf("global-positioning-system") !== -1 && (
+                <div>
+                  <GlobalPositioningSystem
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
+
+
+
               {subject && subject.toLowerCase().indexOf("snapshot") !== -1 && (
                 <div>
                   <Snapshot
@@ -812,6 +891,31 @@ setExpanded(true);
                   />
                 </div>
               )}
+
+              {subject && subject.toLowerCase().indexOf("weather") !== -1 && (
+                <div>
+                  <Weather
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
+
+
+              {subject && subject.toLowerCase().indexOf("motion-reference") !== -1 && (
+                <div>
+                  <MotionReference
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
+
+
               {subject && subject.toLowerCase().indexOf("history") !== -1 && (
                 <div>
                   <History
@@ -822,6 +926,8 @@ setExpanded(true);
                   />
                 </div>
               )}
+
+
               {subject && subject.toLowerCase().indexOf("ping") !== -1 && (
                 <div>
                   <Ping
@@ -832,6 +938,53 @@ setExpanded(true);
                   />
                 </div>
               )}
+
+              {subject && subject.toLowerCase().indexOf("inertial-reference") !== -1 && (
+                <div>
+                  <InertialReference
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
+
+              {subject && subject.toLowerCase().indexOf("power") !== -1 && (
+                <div>
+                  <Power
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
+
+
+              {subject && subject.toLowerCase().indexOf("temperature-humidity") !== -1 && (
+                <div>
+                  <TemperatureHumidity
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
+
+              {subject && subject.toLowerCase().indexOf("humidity-temperature") !== -1 && (
+                <div>
+                  <TemperatureHumidity
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
+
+
               {subject && subject.toLowerCase().indexOf("text") !== -1 && (
                 <div>
                   <Text
@@ -886,7 +1039,10 @@ setExpanded(true);
           )}
           {/*https://www.designcise.com/web/tutorial/how-to-hide-a-broken-image-in-react*/}
         </div>
+<DataReport />
       </Card>
+
+
     </>
   );
 }
