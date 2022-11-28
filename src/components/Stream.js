@@ -293,7 +293,7 @@ if (atTemp === undefined) {atTemp = zuluTime();}
             {" "}
 
 
-
+{/*
       <Carousel
         useKeyBoardArrows={canSwipe}
         showArrows={canSwipe}
@@ -322,8 +322,9 @@ return(
 </>
 )})}
 </Carousel>
+*/}
 
-
+            <Trace data={streamPoints} domain={props.domain} />
 
 
 
