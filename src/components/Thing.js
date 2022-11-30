@@ -283,7 +283,9 @@ export default function Thing(props) {
 
   const runTime = Date.now() - startAt;
 
-  const [expanded, setExpanded] = React.useState();
+const {open:initialExpanded} = props.datagram;
+
+  const [expanded, setExpanded] = React.useState(initialExpanded === "open");
 
   const [flipped, setFlipped] = React.useState();
 
@@ -634,6 +636,7 @@ const DataReport = () =>{
 
 return (
 <>
+{expanded && (<>
 TXPACKETS{' '}{txCount}
 <br />
 RXPACKETS{' '}{rxCount}
@@ -647,7 +650,14 @@ RXDATA{' '}{rxData}
 RXERRORCOUNT{' '}{rxErrorCount}
 <br />
 TXERRORCOUNT{' '}{txErrorCount}
-<br />
+<br /></>)}
+
+
+{!expanded && (<>
+PACKETS{' '}{txCount}{'/'}{rxCount}
+<br /></>)}
+
+
 </>
 )
 

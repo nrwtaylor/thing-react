@@ -398,7 +398,7 @@ PERIOD UNDEFINED
             <br />
 
             {transducer && (
-              <div onClick={()=>navigate("" + "history/transducers-" + transducer.sensor_id)} >
+              <div onClick={()=>navigate("/" + "history/transducers-" + transducer.sensor_id)} >
                 transducer-{transducer && transducer.sensor_id}
               </div>
             )}
