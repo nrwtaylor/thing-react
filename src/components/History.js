@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 
+import { useNavigate } from 'react-router-dom';
+
+
 import "../index.css";
 import {
   Typography,
@@ -42,14 +45,25 @@ import { humanRuntime } from "../util/time.js";
 
 import useSnapshot from "../useSnapshot";
 
+import { useSwipeable } from "react-swipeable";
+
+
+
 //import { useSwipeable } from "react-swipeable";
 
 function History(props) {
+
+
+    const navigate = useNavigate();
+
+
   const { datagram } = props;
 
   const {showLive } =props;
 
   const { subject } = datagram;
+
+const [windowIndex, setWindowIndex] = useState();
 
   const ref = subject
     .replace("transducers-", "")
@@ -91,6 +105,40 @@ if (showLive === false) {
   //const [spread, setSpread] = useState();
 
   //const [data,setData] = useState();
+
+
+
+
+  const config = {
+    delta: 10, // min distance(px) before a swipe starts. *See Notes*
+    preventScrollOnSwipe: false, // prevents scroll during swipe (*See Details*)
+    trackTouch: true, // track touch input
+    trackMouse: false, // track mouse input
+    rotationAngle: 0, // set a rotation angle
+    swipeDuration: Infinity, // allowable duration of a swipe (ms). *See Notes*
+    touchEventOptions: { passive: true }, // options for touch listeners (*See Details*)
+  };
+
+  const handlers = useSwipeable({
+    onSwiped: (eventData) => {
+console.log("User Swiped test");
+handleSwipe(eventData);
+
+
+console.log("User Swiped!", eventData)},
+    ...config,
+  });
+
+
+const availableWindows = [
+'', '1m', '2m', '10m', '15m', '30m', '1h' 
+]
+
+
+
+
+
+
 
   const [reply, setReply] = useState("");
   //  const [snapshotInterval, setSnapshotInterval] = useState(50);
@@ -194,6 +242,48 @@ if (showLive === false) {
     console.log("Agent callBack called.");
   }
 
+
+function handleSwipe(e) {
+
+
+console.log("User Swiped e.dir", e.dir);
+
+if (e.dir === 'Left') {
+
+const w=  windowIndex + 1;
+setWindowIndex(w);
+
+
+console.log('User Swiped Left');
+if (props.onChangeStream) {
+ props.onChangeStream(w);
+}
+}
+
+if (e.dir === 'Right') {
+console.log('User Swiped  Right');
+
+const w=  windowIndex -1;
+if (w>=0) {
+setWindowIndex(w);
+
+
+if (props.onChangeStream) {
+ props.onChangeStream(w);
+}
+
+
+}
+
+}
+
+}
+
+
+
+
+
+
   const deleteButton = (
     <Forget uuid={datagram && datagram.uuid} callBack={callBack} />
   );
@@ -202,6 +292,9 @@ if (showLive === false) {
     <>
       <div>HISTORY</div>
       SUBJECT {subject}
+              <div onClick={()=>navigate("/" + "history/" + subject)} >
+{subject}
+</div>
       <br />
       REF {ref}
       <br />

@@ -5,7 +5,7 @@ import Snapshot from "../components/Snapshot.js";
 import TextSnapshot from "../components/TextSnapshot.js";
 
 import Datagram from "../components/Datagram.js";
-
+import Barometer from "../components/Barometer.js";
 import MotionReference from "../components/MotionReference.js";
 
 
@@ -871,6 +871,17 @@ TXERRORCOUNT{' '}{txErrorCount}
               {subject && subject.toLowerCase().indexOf("global-positioning-system") !== -1 && (
                 <div>
                   <GlobalPositioningSystem
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
+
+              {subject && subject.toLowerCase().indexOf("barometer") !== -1 && (
+                <div>
+                  <Barometer
                     user={null}
                     //thing={data.thing}
                     datagram={datagram}

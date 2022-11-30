@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 
+
 import "../index.css";
 import {
   Typography,
@@ -54,7 +55,11 @@ function Snapshot(props) {
   const [reply, setReply] = useState("");
   const [snapshotInterval, setSnapshotInterval] = useState(250);
 
-  const toSnapshot = "http://192.168.10.10/snapshot.json";
+  const defaultToSnapshot = "http://192.168.10.10/snapshot.json";
+
+  const [toSnapshot, setToSnapshot] = useState(defaultToSnapshot);
+
+//  const toSnapshot = "http://192.168.10.10/snapshot.json";
   const { snapshot, flag, snapshotGetTime } = useSnapshot(toSnapshot);
 
   const [data, setData] = useState({
@@ -120,6 +125,10 @@ function Snapshot(props) {
   const [voltPoints, setVoltPoints] = useState([]);
   const [tracePeriod, setTracePeriod] = useState();
 
+  function handleChangeStream(c) {
+console.log("Snapshot handleChangeStream c",c);
+  }
+
   function callBack() {
     console.log("Agent callBack called.");
   }
@@ -176,6 +185,7 @@ function Snapshot(props) {
                         data.transducers[transducer].amount,
                     }}
                     transducer={data.transducers[transducer]}
+                    onChangeStream={ (c)=>{handleChangeStream(c)}}
                   />
                 );
               })}

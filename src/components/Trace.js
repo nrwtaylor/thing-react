@@ -60,7 +60,7 @@ function Trace(props) {
 
   const now = new Date().getTime();
   const [timeSeriesData, setTimeSeriesData] = useState();
-
+const [currentTime, setCurrentTime] = useState();
   const [spread, setSpread] = useState();
 
   const [firstAt, setFirstAt] = useState();
@@ -93,6 +93,22 @@ function Trace(props) {
     //}
   }, [data]);
 
+
+  useEffect(() => {
+    updateTime();
+
+    const interval = setInterval(() => {
+      updateTime();
+    }, 100); // 20 Hz was 200.
+},[]);
+
+function updateTime() {
+const x = new Date().getTime();
+      setCurrentTime(x);
+//setXMax=
+}
+
+
   //return (<>NOTHING</>);
   //        <LineChart data={data} margin={{ right: 300 }}>
   // https://stackoverflow.com/questions/50078787/recharts-set-y-axis-range
@@ -115,8 +131,7 @@ function Trace(props) {
           <LineChart data={timeSeriesData}>
             <XAxis
               dataKey="time"
-              domain={["dataMin", "dataMax"]}
-              domain={["auto", "auto"]}
+              domain={["dataMin", currentTime]}
               type="number"
               tick={false}
             />{" "}
@@ -143,10 +158,10 @@ function Trace(props) {
                 }
                 domain={[
                   (dataMin) => {
-                    return 0.9 * dataMin;
+                    return 1.0 * dataMin; // With large numbers this can be a problem.
                   },
                   (dataMax) => {
-                    return 1.1 * dataMax;
+                    return 1.0 * dataMax;
                   },
                 ]}
               ></YAxis>

@@ -29,6 +29,10 @@ import Forget from "../components/Forget.js";
 import Trace from "../components/Trace.js";
 import Stream from "../components/Stream.js";
 import BubbleLevel from "../components/BubbleLevel.js";
+
+import Barometer from "../components/Barometer.js";
+
+
 import Inclinometer from "../components/Inclinometer.js";
 
 import Magnetometer from "../components/Magnetometer.js";
@@ -167,6 +171,7 @@ thclb0ax2":{"talker_identifier":"TH","type":"A","amount":"1142011.6","units":"X"
         <br />
 
 PRESSURE
+
                   <History
                     user={null}
                     //thing={data.thing}
@@ -174,6 +179,11 @@ PRESSURE
                     agent_input={webPrefix}
                   />
 
+
+<Barometer pressure={data &&
+              data.transducers &&
+              data.transducers.thprsapb0 &&
+              data.transducers.thprsapb0.amount} />
 
 
         {data && data.transducers && (
