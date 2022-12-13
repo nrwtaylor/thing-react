@@ -3,17 +3,16 @@ import { useState, useEffect } from "react";
 import jwt_decode from "jwt-decode";
 
 import { getWebJson, getSnapshot } from "./util/database.js";
+import { humanTime, zuluTime } from "./util/time.js";
 
 
 //export default function useToken(inputToken) {
 export default function useSnapshot(input, inputSnapshotPollInterval) {
-
   const to = input;
 
   const [snapshotInterval, setSnapshotInterval] = useState(50);
 
   const [flag, setFlag] = useState();
-
 
   const [snapshot, setSnapshot] = useState({
     thing: { uuid: "X" },
@@ -21,19 +20,23 @@ export default function useSnapshot(input, inputSnapshotPollInterval) {
   });
 
   const [snapshotGetTime, setSnapshotGetTime] = useState();
+  const [snapshotResults, setSnapshotResults] = useState([]);
+const [sequentialErrorCount, setSequentialErrorCount] = useState();
+  useEffect(() => {
+    if (!inputSnapshotPollInterval) {
+      return;
+    }
 
-  useEffect(()=>{
+    console.log(
+      "useSnapshot inputSnapshotPollInterval",
+      inputSnapshotPollInterval
+    );
 
-if (!inputSnapshotPollInterval) {return;}
-
-console.log("useSnapshot inputSnapshotPollInterval",inputSnapshotPollInterval);
-
-setSnapshotInterval(inputSnapshotPollInterval);
-
-}, [inputSnapshotPollInterval]);
+    setSnapshotInterval(inputSnapshotPollInterval);
+  }, [inputSnapshotPollInterval]);
 
   useEffect(() => {
-console.log("useSnapshot snapshotInterval", snapshotInterval);
+    console.log("useSnapshot snapshotInterval", snapshotInterval);
     getSnapshot();
 
     const interval = setInterval(() => {
@@ -43,19 +46,56 @@ console.log("useSnapshot snapshotInterval", snapshotInterval);
     return () => clearInterval(interval);
   }, [snapshotInterval]);
 
+useEffect(()=>{
+if (snapshot === undefined) {
+console.log("useSnapshot snapshot undefined");
+
+return;}
+if (snapshotResults === undefined) {
+console.log("useSnapshot snapshotResults undefined");
+setSnapshotResults([{...snapshot, snapshotAt:zuluTime()}]);
+
+
+return;}
+
+console.log("useSnapshot snapshot", snapshot);
+
+
+//const s = snapshotResults.push(snapshot);
+//setSnapshotResults({...s, snapshotAt:zuluTime()});
+
+const count = 0;
+//snapshotResults.reverse().forEach((snapshotResult)=>{
+
+for (const snapshotResult of snapshotResults.reverse()) {
+
+if (snapshotResult.error) {count += 1;}
+if (!snapshot.error) {break;}
+console.log(snapshotResult);
+};
+setSequentialErrorCount(count);
+
+}, [snapshot]);
+
+
+useEffect(() =>{
+
+console.log("sequentialErrorCount", sequentialErrorCount);
+
+}, [sequentialErrorCount]);
   function getSnapshot() {
     const startTime = new Date();
     if (flag === "red") {
       return;
     }
-//    console.log("useSnapshot getSnapshot call " + agent);
-//    console.log("useSnapshot getSnapshot to", to);
+    //    console.log("useSnapshot getSnapshot call " + agent);
+    //    console.log("useSnapshot getSnapshot to", to);
 
     const url = to;
-
+    console.log("useSnapshot url", url);
     return getWebJson(url, "")
       .then((result) => {
-//        console.log("useSnapshot getWebJson result", result);
+        console.log("useSnapshot getWebJson url result", url, result);
 
         if (!result) {
           return true;
@@ -80,12 +120,11 @@ console.log("useSnapshot snapshotInterval", snapshotInterval);
       })
       .catch((error) => {
         console.error("useSnapshot getWebJson error", error);
-        setFlag('yellow');
-        return snapshot;
+        setFlag("yellow");
+        return {...snapshot, error};
         //return;
       });
   }
-
 
   const saveSnapshot = (userSnapshot) => {
     console.log("useSnapshot saveSnapshot userSnapshot", userSnapshot);
@@ -103,6 +142,6 @@ console.log("useSnapshot snapshotInterval", snapshotInterval);
     snapshot,
     flag,
     snapshotGetTime,
-    snapshotInterval
+    snapshotInterval,
   };
 }

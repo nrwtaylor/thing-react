@@ -25,6 +25,9 @@ import Input from "../src/components/Input.js";
 import Container from "@mui/material/Container";
 import ThingsContainer from "../src/components/ThingContainer.js";
 
+import TemperatureHumidity from "../src/components/TemperatureHumidity.js";
+
+
 import Collection from "../src/components/Collection.js";
 import Host from "../src/components/Host.js";
 
@@ -33,6 +36,7 @@ import ThingCarousel from "../src/components/ThingCarousel.js";
 
 import { v4 as uuidv4 } from "uuid";
 
+import useThings from "./useThings";
 import useToken from "./useToken";
 import useIdentity from "./useIdentity";
 import useInput from "./useInput";
@@ -110,7 +114,9 @@ export default function App({ componentName, ...props }) {
 
   const matches = pathname.match(reg);
 
-  const [things, setThings] = useState([]);
+//  const [things, setThings] = useState([]);
+
+const {things, getThings, setThings } = useThings(token);
 
   const { username, token, setToken, deleteToken } = useToken();
   const { identity, setIdentity, deleteIdentity } = useIdentity();
@@ -134,98 +140,19 @@ export default function App({ componentName, ...props }) {
   }, [identity]);
 
   useEffect(() => {
-    loadThings();
+console.log("App [] start");
+//    loadThings();
+getThings(token);
   }, []);
 
   useEffect(() => {
     console.log("App things", things);
   }, [things]);
 
-  function mergeObjectsInUnique<T>(array: T[], property: any): T[] {
-    const newArray = new Map();
-
-    array.forEach((item: T) => {
-      const propertyValue = item[property];
-      newArray.has(propertyValue)
-        ? newArray.set(propertyValue, {
-            ...item,
-            ...newArray.get(propertyValue),
-          })
-        : newArray.set(propertyValue, item);
-    });
-
-    return Array.from(newArray.values());
-  }
-
-  const merge = (a1, a2) => {
-    return a1
-      .map((x) => {
-        const y = a2.find((item) => x.uuid === item.uuid);
-        if (y) {
-          return Object.assign({}, x, y);
-        } else return x;
-      })
-      .concat(a2.filter((item) => a1.every((x) => x.name !== item.uuid)));
-  };
-
-  function loadThings() {
-    console.log("App loadThings token", token);
-    console.log("App loadThings apiPrefix", apiPrefix);
-    getThings(apiPrefix, token)
-      .then((result) => {
-        console.log("App loadThings result", result);
-
-        var combinedThings = [];
-        if (result && result.things && result.things.length !== 0) {
-          combinedThings = mergeObjectsInUnique(
-            [...things, ...result.things],
-            "uuid"
-          );
-        }
-
-        if (combinedThings.length === 0) {
-          combinedThings = defaultThings;
-        } else {
-          combinedThings.push({
-            index: 21,
-            to: "localhost",
-            subject: "Token",
-            createdAt: Date.now(),
-            uuid: uuidv4(),
-            input: "Token",
-            //      webPrefix: "http://192.168.10.10/snapshot.json",
-          });
-        }
-
-        const uuids = combinedThings.map((o) => o.uuid);
-        const deduplicatedThings = combinedThings.filter(
-          ({ uuid }, index) => !uuids.includes(uuid, index + 1)
-        );
-
-        const conditionedThings = deduplicatedThings.map((thing, index) => {
-          return { ...thing, index: index };
-        });
-
-        //const deduplicatedThings = combinedThings.filter((value, index, self) =>
-        //  index === self.findIndex((t) => (
-        //    t.uuid === value.uuid
-        //  ))
-        //)
-
-        console.log("App loadThings conditionedThings", conditionedThings);
-
-        setThings(conditionedThings);
-      })
-      .catch((error) => {
-        setThings(defaultThings);
-
-        console.log("App loadThings error", error);
-      });
-  }
-
   useEffect(() => {
     console.log("App token", token);
-    loadThings();
+//    loadThings();
+getThings(token);
   }, [token]);
 
   useEffect(() => {
@@ -242,13 +169,14 @@ export default function App({ componentName, ...props }) {
 
     const u = uuidv4();
     setUuid(u);
-
-    loadThings();
+    setThings(things);
+    getThings(token);
+//    loadThings();
   }
 
   return (
     <>
-      THING-REACT 27 November 2022 a24a
+      THING-REACT 12 December 2022 ec03
       <br />
       {identity && <Identity identity={identity} />}
       {token && token.message}
@@ -262,7 +190,7 @@ export default function App({ componentName, ...props }) {
                 <ThingCarousel token={token} things={things} />
               </>
             }
-          ></Route>
+          >SLASH THINGCAROUSEL</Route>
 
           <Route
             exact
@@ -278,9 +206,19 @@ export default function App({ componentName, ...props }) {
                 />
               </>
             }
-          ></Route>
+          >THINGS</Route>
 
-          <Route exact path="/snapshot/:text" element={<Snapshot />}></Route>
+          <Route exact path="/snapshot/:uuid/temperature-humidity" element={<Snapshot
+                datagram={{
+                  to: "agent",
+                  subject: pathname.replace("/snapshot/", "").replace("/temperature-humidity/",""),
+                  webPrefix: webPrefix,
+                }}
+
+ />}>SNAPSHOT</Route>
+
+
+          <Route exact path="/snapshot/:text" element={<Snapshot />}>SNAPSHOT</Route>
 
           <Route
             exact
@@ -294,7 +232,40 @@ export default function App({ componentName, ...props }) {
                 }}
               />
             }
-          ></Route>
+          >HISTORY</Route>
+
+          <Route
+            exact
+            path="/:channel/:uuid/:text"
+            element={
+              <>
+                <ThingCarousel
+                  token={token}
+                  things={[
+                    { to: "agent", subject: pathname, webPrefix: webPrefix },
+                    ...things,
+                  ]}
+                />
+              </>
+            }
+          >THINGCAROUSEL</Route>
+
+          <Route
+            exact
+            path="/:uuid/:text"
+            element={
+              <>
+                <ThingCarousel
+                  token={token}
+                  things={[
+                    { to: "agent", subject: pathname, webPrefix: webPrefix },
+                    ...things,
+                  ]}
+                />
+              </>
+            }
+          >THINGCAROUSEL</Route>
+
 
           <Route
             exact
@@ -310,7 +281,7 @@ export default function App({ componentName, ...props }) {
                 />
               </>
             }
-          ></Route>
+          >THINGCAROUSEL</Route>
         </Routes>
       </BrowserRouter>
       <ZuluTime />
@@ -320,3 +291,4 @@ export default function App({ componentName, ...props }) {
     </>
   );
 }
+

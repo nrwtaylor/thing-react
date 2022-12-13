@@ -44,7 +44,12 @@ import useSnapshot from "../useSnapshot";
 
 //import { useSwipeable } from "react-swipeable";
 
+//const webPrefix = process.env.REACT_APP_WEB_PREFIX;
+
+
 function History(props) {
+
+
   const { datagram } = props;
 
   const {showLive } =props;
@@ -68,7 +73,18 @@ function History(props) {
 
   //const historyTo = "http://192.168.10.10/transducers-" + subject + ".json";
 
-  const historyTo = "http://192.168.10.10/" + historyRef + ".json";
+//  const historyTo = "http://192.168.10.10/" + historyRef + ".json";
+//  const historyTo = "http://localhost:3003/history/" + historyRef + ".json";
+//  const historyTo = "https://stackr.ca/history/" + historyRef + ".json";
+
+  const user_name = props.user_name; // TODO
+  const agent_input = props.agent_input;
+  const webPrefix = agent_input === undefined ? process.env.REACT_APP_WEB_PREFIX : agent_input;
+
+
+  const historyTo = webPrefix + "history/" + historyRef + ".json";
+
+
 
 var snapshotInterval = 1000;
 if (showLive === false) {
@@ -81,9 +97,10 @@ if (showLive === false) {
     historyTo, 60000
   );
 
-  const user_name = props.user_name; // TODO
-  const agent_input = props.agent_input;
-  const webPrefix = agent_input;
+
+
+
+
   const [flag, setFlag] = useState();
   const [historyPoints, setHistoryPoints] = useState([]);
   //const [requestedAt, setRequestedAt] = useState();
@@ -123,17 +140,42 @@ if (showLive === false) {
     }
     console.log("History history", history);
 
-    if (!history.agent_input) {
-      return;
-    }
-    console.log("History agent_input", history.agent_input);
-    if (!Array.isArray(history.agent_input)) {
-      return;
-    }
 
-    const hist = history.agent_input;
+var hist = false;
+
+    if (history.agent_input) {
+    if (Array.isArray(history.agent_input)) {
+
+hist = history.agent_input;
+}
+    }
+//    console.log("History agent_input", history.agent_input);
+
+
+//    if (!Array.isArray(history.agent_input)) {
+//      return;
+//    }
+//    const hist = history.agent_input;
+
+if (history.thingReport && history.thingReport.history) {
+  hist = history.thingReport.history;
+}
+
+if (hist === false) {return;}
+
+//    const hist = history.agent_input;
     const p = hist.map((h) => {
-      const amount = parseFloat(h.event.amount);
+var amount = null;
+
+if (typeof h.event === 'string' || h.event instanceof String) {
+  amount = parseFloat(h.event);
+}
+
+if (h.event.amount) {
+      amount = parseFloat(h.event.amount);
+}
+
+
 
       // Add item to it
       const f = {
@@ -201,11 +243,15 @@ if (showLive === false) {
   return (
     <>
       <div>HISTORY</div>
+
       SUBJECT {subject}
       <br />
       REF {ref}
       <br />
       HISTORYREF {historyRef}
+<br />
+HISTORYTO {historyTo}
+
       <br />
       <Trace data={historyPoints} />
       <br />

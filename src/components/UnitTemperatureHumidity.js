@@ -59,8 +59,9 @@ function TemperatureHumidity(props) {
   const [reply, setReply] = useState("");
   //const [snapshotInterval, setSnapshotInterval] = useState(500);
 
-  const toSnapshot = "http://192.168.10.10/snapshot.json";
+//  const toSnapshot = "http://192.168.10.10/snapshot.json";
 
+const toSnapshot = "https://stackr.ca/snapshot/56f2dbb4-fde9-4f5c-89cf-35fb19494b8e/coop.json";
 
   const { snapshot, flag, snapshotGetTime, snapshotInterval } = useSnapshot(
     toSnapshot,

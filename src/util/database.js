@@ -1,11 +1,10 @@
 import axios from "axios";
 const apiPrefix = process.env.REACT_APP_API_PREFIX;
 
-
 axios.defaults.headers = {
-  'Cache-Control': 'no-cache',
-  'Pragma': 'no-cache',
-  'Expires': '0',
+  "Cache-Control": "no-cache",
+  Pragma: "no-cache",
+  Expires: "0",
 };
 
 export var txData = 0;
@@ -14,62 +13,64 @@ export var rxErrorCount = 0;
 
 export var txCount = 0;
 export var rxCount = 0;
-export var txErrorCount =0;
+export var txErrorCount = 0;
 
 // Add a request interceptor
-axios.interceptors.request.use(function (config) {
-//const dataSize = JSON.stringify(config.data).length;
-//const headerSize = JSON.stringify(config.headers).length;
+axios.interceptors.request.use(
+  function (config) {
+    //const dataSize = JSON.stringify(config.data).length;
+    //const headerSize = JSON.stringify(config.headers).length;
 
-//txData += dataSize + headerSize;
+    //txData += dataSize + headerSize;
 
-txCount += 1;
-
+    txCount += 1;
 
     // Do something before request is sent
     return config;
-  }, function (error) {
+  },
+  function (error) {
+    console.log("database request error", error);
 
-console.log("database request error", error);
-
-txErrorCount += 1;
+    txErrorCount += 1;
     // Do something with request error
     return Promise.reject(error);
-  });
+  }
+);
 
 // Add a response interceptor
-axios.interceptors.response.use(function (response) {
-console.log("database response", response);
-//rxData += response.data.length + response.headers.length;
+axios.interceptors.response.use(
+  function (response) {
+    console.log("database response", response);
+    //rxData += response.data.length + response.headers.length;
 
-//if (response && response.data && response.headers) {
-//const dataSize = JSON.stringify(response.data).length;
-//const headerSize = JSON.stringify(response.headers).length;
+    //if (response && response.data && response.headers) {
+    //const dataSize = JSON.stringify(response.data).length;
+    //const headerSize = JSON.stringify(response.headers).length;
 
-//rxData += dataSize + headerSize;
-//}
+    //rxData += dataSize + headerSize;
+    //}
 
-rxCount +=1;
+    rxCount += 1;
 
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
     return response;
-  }, function (error) {
-rxErrorCount += 1;
-console.log("database response error", error);
+  },
+  function (error) {
+    rxErrorCount += 1;
+    console.log("database response error", error);
 
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
     return Promise.reject(error);
-  });
-
+  }
+);
 
 export function Get(thing) {
   console.log("Axios call " + thing.subject);
 
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
   const apiPrefix = process.env.REACT_APP_API_PREFIX;
-
 
   axios
     .get(webPrefix + thing.subject + `.json`)
@@ -113,9 +114,8 @@ export function createThing(webPrefix, datagram, token) {
 }
 
 export function setThing(uuid, datagram, token) {
-
-console.log("database setThing datagram", datagram);
-console.log("database setThing token", token);
+  console.log("database setThing datagram", datagram);
+  console.log("database setThing token", token);
 
   const u = apiPrefix + "/thing/" + uuid;
   return axios
@@ -133,53 +133,54 @@ console.log("database setThing token", token);
     })
     .catch((error) => {
       console.log("database setThing u error", u, error);
-      return {thingReport:{error:error}};
-
+      return { thingReport: { error: error } };
     });
 }
 
-
 export function forgetThing(datagram, token) {
+  console.log("database forgetThing datagram", datagram);
+
   const u = apiPrefix + "/thing/" + datagram.uuid;
   return axios
     .delete(u, {
       headers: {
         Authorization: "my secret token",
         "x-access-token": token,
-//        "Content-Type": "application/json",
+        //        "Content-Type": "application/json",
       },
     })
     .then((res) => {
       //let thingy = res.data;
       console.log("database forgetThing", res);
       return res.data;
- //     return thingy;
+      //     return thingy;
     })
     .catch((error) => {
       console.log("database forgetThing error", error);
     });
 }
 
-
 export function getWebJson(webPrefix, token) {
-return getSnapshot(webPrefix, token);
+  return getSnapshot(webPrefix, token);
 }
 
 export function getSnapshot(webPrefix, token) {
-if (!webPrefix) {return Promise.reject();}
+  if (!webPrefix) {
+    return Promise.reject();
+  }
   var u = webPrefix;
 
-//if (!u.endsWith('snapshot.json')) {
-// u = webPrefix + "snapshot.json";
-//}
+  //if (!u.endsWith('snapshot.json')) {
+  // u = webPrefix + "snapshot.json";
+  //}
   console.log("database getSnapshot u", u);
   console.log("database getSnapshot webPrefix", webPrefix);
 
   return axios
     .get(u, {
       headers: {
-//  'Access-Control-Allow-Origin': '*',
-//  'Access-Control-Allow-Headers': '*',
+        //  'Access-Control-Allow-Origin': '*',
+        //  'Access-Control-Allow-Headers': '*',
         Authorization: "my secret token",
         "x-access-token": token,
         "Content-Type": "application/json",
@@ -198,7 +199,6 @@ if (!webPrefix) {return Promise.reject();}
 export function getThingReport(datagram, token) {
   console.log("database getThingReport datagram", datagram);
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
-
 
   const u = webPrefix + "/api/whitefox/message";
 
@@ -224,6 +224,7 @@ export function getThingReport(datagram, token) {
 // https://kollox.com/cancel-axios-request-very-quick-solution/
 
 export function getThings(prefix = null, token = null) {
+console.log("database getThings prefix token", prefix, token);
   var u = apiPrefix + "things/";
   if (prefix !== null) {
     u = prefix + "things/";
@@ -249,8 +250,38 @@ export function getThings(prefix = null, token = null) {
     })
     .catch((error) => {
       console.log("database getThings axios error", u, error);
-      return {things:[]};
+      return { things: [] };
       //        setError({ ...error, message: "Problem" });
     });
 }
 //}
+
+export function makeObservable(target) {
+  let listeners = []; // initial listeners can be passed an an argument aswell
+  let value = target;
+
+  function get() {
+    return value;
+  }
+
+  function set(newValue) {
+    if (value === newValue) return;
+    value = newValue;
+    listeners.forEach((l) => l(value));
+  }
+
+  function subscribe(listenerFunc) {
+    listeners.push(listenerFunc);
+    return () => unsubscribe(listenerFunc); // will be used inside React.useEffect
+  }
+
+  function unsubscribe(listenerFunc) {
+    listeners = listeners.filter((l) => l !== listenerFunc);
+  }
+
+  return {
+    get,
+    set,
+    subscribe,
+  };
+}

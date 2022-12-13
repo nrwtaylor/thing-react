@@ -225,17 +225,17 @@ export default function Thing(props) {
   function setDatagram(d) {
     if (!d) return;
 
-    console.log("hey", d);
+    console.log("Thing setDatagram d", d);
     if (!d.pollInterval) return;
     //setPollInterval(d.pollInterval);
   }
 
   useEffect(() => {
-    console.log("datagram", datagram);
+    console.log("Thing datagram", datagram);
     if (!datagram) return;
     setTimedInterval(datagram.pollInterval);
 
-    console.log("Thing setThing uuid", uuid);
+    console.log("Thing datagram uuid", uuid);
 
     setThing(datagram.uuid, datagram, token)
       .then((result) => {
@@ -244,7 +244,7 @@ export default function Thing(props) {
         console.log("Thing setThing result", result);
       })
       .catch((error) => {
-        setError(error);
+        setError(error.message);
         console.log("Thing setThing error", error);
       });
   }, [datagram]);
@@ -964,6 +964,7 @@ TXERRORCOUNT{' '}{txErrorCount}
 
               {subject && subject.toLowerCase().indexOf("temperature-humidity") !== -1 && (
                 <div>
+
                   <TemperatureHumidity
                     user={null}
                     //thing={data.thing}

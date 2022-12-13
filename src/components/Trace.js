@@ -8,6 +8,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  ReferenceLine
 } from "recharts";
 
 import "../index.css";
@@ -31,12 +32,12 @@ import {
 
 import Frequency from "../components/Frequency.js";
 
-import {humanRuntime} from "../util/time.js";
+import { humanRuntime, zuluTextSpread } from "../util/time.js";
 
+import { useSwipeable } from "react-swipeable";
 
 //import { Carousel } from "react-responsive-carousel";
 //import "react-responsive-carousel/lib/styles/carousel.min.css";
-
 
 /*
 
@@ -57,8 +58,8 @@ import {humanRuntime} from "../util/time.js";
 
 function Trace(props) {
   const { data } = props;
-//  const [canSwipe, setCanSwipe] = useState();
-const canSwipe = true;
+  //  const [canSwipe, setCanSwipe] = useState();
+  const canSwipe = true;
   const [timeSeriesData, setTimeSeriesData] = useState();
 
   const [spread, setSpread] = useState();
@@ -66,33 +67,31 @@ const canSwipe = true;
   const [firstAt, setFirstAt] = useState();
   const [lastAt, setLastAt] = useState();
 
-const availableWindows = [
-'', '1m', '2m', '10m', '15m', '30m', '1h' 
-]
+  const availableWindows = ["", "1m", "2m", "10m", "15m", "30m", "1h"];
 
   useEffect(() => {
-if (data === undefined) {return;}
-if (Array.isArray(data) && data.length === 0) {return;}
+    if (data === undefined) {
+      return;
+    }
+    if (Array.isArray(data) && data.length === 0) {
+      return;
+    }
 
-//console.log("Trace data", data);
+    //console.log("Trace data", data);
 
+    const first = new Date(data[0].at);
+    const last = new Date(data[data.length - 1].at);
+    const spreadEvent = last - first;
+    setFirstAt(data[0].at);
+    setLastAt(data[data.length - 1].at);
 
+    const t = data.map((d) => {
+      return { ...d, at: new Date(d.at) };
+    });
 
-const first= new Date(data[0].at);
-const last = new Date(data[data.length - 1].at);
-const spreadEvent = last - first;
-setFirstAt(data[0].at);
-setLastAt(data[data.length - 1].at);
-
-const t = data.map((d)=>{
-
-return {...d, at:(new Date(d.at))}
-
-})
-
-setTimeSeriesData(t);
-setSpread(spreadEvent);
-//}
+    setTimeSeriesData(t);
+    setSpread(spreadEvent);
+    //}
   }, [data]);
 
   //return (<>NOTHING</>);
@@ -100,23 +99,19 @@ setSpread(spreadEvent);
   // https://stackoverflow.com/questions/50078787/recharts-set-y-axis-range
   // <YAxis type="number" domain={[dataMin => (0 - Math.abs(dataMin)), dataMax => (dataMax * 2)]} />
 
-//return (<>HEY</>);
+  //return (<>HEY</>);
 
   return (
     <>
-<br />
-{lastAt}{' to '}
-{firstAt}
-<br />
+      <br />
+      {zuluTextSpread(firstAt, lastAt)}
+      <br />
 
       <Box>
-
-
-
         <ResponsiveContainer width="100%" aspect={3}>
-          <LineChart data={data}>
-{/* <XAxis scale={'time'} />  */}
-          {/*   <CartesianGrid /> */}
+          <LineChart data={timeSeriesData}>
+            {/*   <CartesianGrid /> */}
+{/*<XAxis dataKey = 'at' type = 'number' />*/}
             {props.domain && (
               <YAxis
                 tickFormatter={(value) =>
@@ -188,13 +183,12 @@ setSpread(spreadEvent);
         </LineChart>
       </ResponsiveContainer>
 */}
-{humanRuntime(spread)}
+        {humanRuntime(spread)}
         <br />
         <p />
       </Box>
-</>
-);
-
+    </>
+  );
 }
 
 export default Trace;

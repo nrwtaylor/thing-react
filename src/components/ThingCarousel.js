@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from "uuid";
 import useToken from "../useToken";
 import useIdentity from "../useIdentity";
 import useInput from "../useInput";
+import useThings from "../useThings";
 
 import axios from "axios";
 
@@ -20,6 +21,8 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 export default function ThingCarousel(props) {
   const { things } = props;
+
+
 
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
   const testUuid0 = process.env.REACT_APP_THING_0;
@@ -37,6 +40,8 @@ export default function ThingCarousel(props) {
   const matches = pathname.match(reg);
 
   const [canSwipe, setCanSwipe] = useState(true);
+
+//const {things } = useThings(token);
 
   const { username, token, setToken, deleteToken } = useToken();
   const { identity, setIdentity, deleteIdentity } = useIdentity();

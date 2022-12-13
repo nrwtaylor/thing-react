@@ -54,7 +54,9 @@ function Snapshot(props) {
   const [reply, setReply] = useState("");
   const [snapshotInterval, setSnapshotInterval] = useState(250);
 
-  const toSnapshot = "http://192.168.10.10/snapshot.json";
+  //const toSnapshot = "http://192.168.10.10/snapshot.json";
+  const toSnapshot = "https://stackr.ca/snapshot/56f2dbb4-fde9-4f5c-89cf-35fb19494b8e/coop-temperature-humidity.json";
+
   const { snapshot, flag, snapshotGetTime } = useSnapshot(toSnapshot);
 
   const [data, setData] = useState({
@@ -96,6 +98,10 @@ function Snapshot(props) {
     const ts = new Date();
     return ts.toISOString();
   }
+
+useEffect(()=>{
+console.log("Snapshot data", data);
+},[data]);
 
   function fromName() {
     if (datagram === undefined) {
@@ -159,6 +165,7 @@ function Snapshot(props) {
                 </>
               );
             })}
+
           {data && data.transducers && (
             <>
               {Object.keys(data.transducers).map((transducer) => {
@@ -195,6 +202,42 @@ function Snapshot(props) {
         <br />
         GET TIME {snapshotGetTime}ms {Math.round(1000 / snapshotGetTime, 1)}Hz
         <br />
+
+
+
+{data && (
+
+
+            <>
+FLERP
+              {Object.keys(data).map((transducer) => {
+                console.log("Snapshot transducer", transducer);
+if (!(['temperature','humidity']).includes(transducer)) {return;} 
+
+                return (
+                  <Stream
+                    key={transducer}
+                    hide={true}
+                    quantity={{
+                      units: "A",
+                      amount:
+                        data &&
+                        data[transducer]
+                    }}
+                    transducer={data[transducer]}
+                  />
+                );
+
+             })}
+         </>
+
+
+
+)}
+
+
+
+
 
         {data && data.transducers && (
           <>

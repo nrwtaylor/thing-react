@@ -7,8 +7,9 @@ import { v4 as uuidv4 } from "uuid";
 
 import useToken from "../useToken";
 import useIdentity from "../useIdentity";
+import useThings from "../useThings";
 
-import { createThing } from "../util/database.js";
+import { createThing, forgetThing } from "../util/database.js";
 
 
   const { REACT_APP_CLIENT_SECRET } = process.env;
@@ -40,7 +41,7 @@ return {message:error.code};
 export default function Login({datagram}) {
 
   const {webPrefix} = datagram;
-
+  const {things, getThings} = useThings(token);
 //export default function Login({token, setToken}) {
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
@@ -51,6 +52,12 @@ export default function Login({datagram}) {
   const { token, setToken } = useToken();
   const { identity, setIdentity, deleteIdentity } = useIdentity();
   //const [ error, setError ] = useState();
+
+useEffect(() => {
+
+console.log("Login things", things);
+
+}, [things]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -80,7 +87,7 @@ setToken(t);
 if (t && t.message) {setMessage(t.message);
 console.log("Login token message", t.message);
 
-setMessage("Got token message.");
+setMessage("Got token message. " + t.message);
 
 } else {
 
@@ -118,8 +125,29 @@ console.log("Login change window location");
 createThing(webPrefix, defaultThings[0], token);
 createThing(webPrefix, defaultThings[1], token);
 
+getThings(token);
+// Get things to forget
 
-setMessage("No message.");
+const forgetStrings = ['sign up', 'log in'];
+if (things && things.length > 0) {
+const thingsToBeForgotten = things.filter((t)=>{
+  var found = false;
+  forgetStrings.forEach(forgetString => {
+    if (t.subject.toLowerCase().includes(forgetString.toLowerCase())) {
+      found = true;
+    }
+  });
+  return !found;
+
+});
+console.log("thingsToBeForgotten", thingsToBeForgotten);
+
+thingsToBeForgotten.map((thingToBeForgotten) =>{
+forgetThing(thingToBeForgotten, token);
+})
+
+}
+setMessage("Made a Token card. Made a Log Out card. Removed non-conguent cards. Swipe Right.");
 }
 
 

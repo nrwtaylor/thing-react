@@ -20,6 +20,26 @@ return (Date.now() - at)
 
 }
 
+export function zuluTextSpread(zuluA,zuluB) {
+
+if (zuluA === undefined) {return;}
+if (zuluB === undefined) {return;}
+
+const partsA = zuluA.split("T");
+const partsB = zuluB.split("T");
+
+if (partsA[0] === partsB[0]) {
+
+return zuluA + " to " +partsB[1];
+}
+
+return zuluA + " to " + zuluB;
+//      {lastAt}
+//      {" to "}
+//      {firstAt}
+
+
+}
 
 export function ageMinutes(at) {
 
