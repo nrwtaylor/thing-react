@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 
+
 import "../index.css";
 import {
   Typography,
@@ -42,6 +43,9 @@ import useSnapshot from "../useSnapshot";
 
 //import { useSwipeable } from "react-swipeable";
 
+const { REACT_APP_SNAPSHOT } = process.env;
+
+
 function Snapshot(props) {
   const { datagram } = props;
   const { to } = datagram;
@@ -54,9 +58,10 @@ function Snapshot(props) {
   const [reply, setReply] = useState("");
   const [snapshotInterval, setSnapshotInterval] = useState(250);
 
-  //const toSnapshot = "http://192.168.10.10/snapshot.json";
-  const toSnapshot = "https://stackr.ca/snapshot/56f2dbb4-fde9-4f5c-89cf-35fb19494b8e/coop-temperature-humidity.json";
+  const defaultToSnapshot = REACT_APP_SNAPSHOT;
+  const [toSnapshot, setToSnapshot] = useState(defaultToSnapshot);
 
+//  const toSnapshot = "http://192.168.10.10/snapshot.json";
   const { snapshot, flag, snapshotGetTime } = useSnapshot(toSnapshot);
 
   const [data, setData] = useState({
@@ -126,6 +131,10 @@ console.log("Snapshot data", data);
   const [voltPoints, setVoltPoints] = useState([]);
   const [tracePeriod, setTracePeriod] = useState();
 
+  function handleChangeStream(c) {
+console.log("Snapshot handleChangeStream c",c);
+  }
+
   function callBack() {
     console.log("Agent callBack called.");
   }
@@ -183,6 +192,7 @@ console.log("Snapshot data", data);
                         data.transducers[transducer].amount,
                     }}
                     transducer={data.transducers[transducer]}
+                    onChangeStream={ (c)=>{handleChangeStream(c)}}
                   />
                 );
               })}

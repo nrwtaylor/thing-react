@@ -97,6 +97,12 @@ function InertialReference(props) {
     setData(snapshot);
   }, [snapshot]);
 
+/*
+              data={{
+                displacement: {
+
+*/
+
   useEffect(() => {
     const i = {
       displacement: {
@@ -206,8 +212,14 @@ function InertialReference(props) {
         <br />
         {inertialReference && <>Inertial array seen</>}
 
+<br />
+Motion Reference component
+<br />
 <MotionReference data={inertialReference} />
 
+<br />
+Intertial Reference parameters
+<br />
         {inertialReference && (
           <>
             {Object.keys(inertialReference).map((aspect) => {
@@ -215,7 +227,7 @@ function InertialReference(props) {
 
               return (<>{Object.keys(inertialReference[aspect]).map((dimension) => {
                 //console.log("InertialReference dimension", dimension);
-                return <div>{aspect}{' '}{dimension}{inertialReference[aspect][dimension]}</div>;
+                return <div>{aspect}{' '}{dimension}{' '}{inertialReference[aspect][dimension]}</div>;
 
               })}<br /></>);
 

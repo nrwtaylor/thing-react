@@ -25,8 +25,20 @@ const [displacement, setDisplacement] = useState();
 useEffect(() =>{
 
 //console.log("Snapshot", snapshot);
+
+if (props.data) {
+
+setData(props.data);
+setDisplacement(props.data && props.data.displacement)
+return;
+
+}
+
+
 setData(snapshot);
 setDisplacement(snapshot && snapshot.displacement)
+
+
 }, [snapshot]);
 
   const { streamPoints } = useStream(displacement);
@@ -93,6 +105,7 @@ setDisplacement(snapshot && snapshot.displacement)
 
   return (
     <div className="App">
+      Motion Reference
       <svg>
         <line
           x1={canvasCenterX - 200}

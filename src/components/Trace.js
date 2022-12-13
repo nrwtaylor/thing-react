@@ -32,9 +32,10 @@ import {
 
 import Frequency from "../components/Frequency.js";
 
-import { humanRuntime, zuluTextSpread } from "../util/time.js";
+import { humanTime, humanRuntime, zuluTextSpread } from "../util/time.js";
 
 import { useSwipeable } from "react-swipeable";
+//import { humanRuntime } from "../util/time.js";
 
 //import { Carousel } from "react-responsive-carousel";
 //import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -60,8 +61,10 @@ function Trace(props) {
   const { data } = props;
   //  const [canSwipe, setCanSwipe] = useState();
   const canSwipe = true;
-  const [timeSeriesData, setTimeSeriesData] = useState();
 
+  const now = new Date().getTime();
+  const [timeSeriesData, setTimeSeriesData] = useState();
+const [currentTime, setCurrentTime] = useState();
   const [spread, setSpread] = useState();
 
   const [firstAt, setFirstAt] = useState();
@@ -86,7 +89,7 @@ function Trace(props) {
     setLastAt(data[data.length - 1].at);
 
     const t = data.map((d) => {
-      return { ...d, at: new Date(d.at) };
+      return { ...d, time: new Date(d.at).getTime() };
     });
 
     setTimeSeriesData(t);
@@ -94,24 +97,55 @@ function Trace(props) {
     //}
   }, [data]);
 
+
+  useEffect(() => {
+    updateTime();
+
+    const interval = setInterval(() => {
+      updateTime();
+    }, 100); // 20 Hz was 200.
+},[]);
+
+function updateTime() {
+const x = new Date().getTime();
+      setCurrentTime(x);
+//setXMax=
+}
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
+
   //return (<>NOTHING</>);
   //        <LineChart data={data} margin={{ right: 300 }}>
   // https://stackoverflow.com/questions/50078787/recharts-set-y-axis-range
   // <YAxis type="number" domain={[dataMin => (0 - Math.abs(dataMin)), dataMax => (dataMax * 2)]} />
 
   //return (<>HEY</>);
+  // https://github.com/recharts/recharts/issues/956
+function formatXAxis(tickItem) {
+const ts = new Date(tickItem);
+const x = ts.toLocaleDateString();
+return x;
 
+}
   return (
     <>
       <br />
       {zuluTextSpread(firstAt, lastAt)}
+      {lastAt}
+      {" to "}
+      {firstAt}
       <br />
 
       <Box>
         <ResponsiveContainer width="100%" aspect={3}>
           <LineChart data={timeSeriesData}>
-            {/*   <CartesianGrid /> */}
-{/*<XAxis dataKey = 'at' type = 'number' />*/}
+            <XAxis
+              dataKey="time"
+              domain={["dataMin", currentTime]}
+              type="number"
+              tick={true}
+tickFormatter={formatXAxis}
+            />{" "}
+            }{/*   <CartesianGrid /> */}
             {props.domain && (
               <YAxis
                 tickFormatter={(value) =>
@@ -123,7 +157,6 @@ function Trace(props) {
                 domain={props.domain}
               ></YAxis>
             )}
-
             {props.domain === undefined && (
               <YAxis
                 type="number"
@@ -135,15 +168,14 @@ function Trace(props) {
                 }
                 domain={[
                   (dataMin) => {
-                    return 0.9 * dataMin;
+                    return 1.0 * dataMin; // With large numbers this can be a problem.
                   },
                   (dataMax) => {
-                    return 1.1 * dataMax;
+                    return 1.0 * dataMax;
                   },
                 ]}
               ></YAxis>
             )}
-
             {/*    <Legend /> */}
             {/*   <Tooltip /> */}
             {/*  <Line type="monotone" stroke="#8884d8" dataKey="amount" strokeWidth={2}
@@ -157,7 +189,6 @@ function Trace(props) {
                 dot={false}
               />
             )}
-
             {data && data[0] && data[0].amount3 && (
               <Line
                 isAnimationActive={false}

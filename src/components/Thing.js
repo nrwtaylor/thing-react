@@ -5,7 +5,7 @@ import Snapshot from "../components/Snapshot.js";
 import TextSnapshot from "../components/TextSnapshot.js";
 
 import Datagram from "../components/Datagram.js";
-
+import Barometer from "../components/Barometer.js";
 import MotionReference from "../components/MotionReference.js";
 
 
@@ -283,7 +283,9 @@ export default function Thing(props) {
 
   const runTime = Date.now() - startAt;
 
-  const [expanded, setExpanded] = React.useState();
+const {open:initialExpanded} = props.datagram;
+
+  const [expanded, setExpanded] = React.useState(initialExpanded === "open");
 
   const [flipped, setFlipped] = React.useState();
 
@@ -634,6 +636,7 @@ const DataReport = () =>{
 
 return (
 <>
+{expanded && (<>
 TXPACKETS{' '}{txCount}
 <br />
 RXPACKETS{' '}{rxCount}
@@ -647,7 +650,14 @@ RXDATA{' '}{rxData}
 RXERRORCOUNT{' '}{rxErrorCount}
 <br />
 TXERRORCOUNT{' '}{txErrorCount}
-<br />
+<br /></>)}
+
+
+{!expanded && (<>
+PACKETS{' '}{txCount}{'/'}{rxCount}
+<br /></>)}
+
+
 </>
 )
 
@@ -871,6 +881,17 @@ TXERRORCOUNT{' '}{txErrorCount}
               {subject && subject.toLowerCase().indexOf("global-positioning-system") !== -1 && (
                 <div>
                   <GlobalPositioningSystem
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
+
+              {subject && subject.toLowerCase().indexOf("barometer") !== -1 && (
+                <div>
+                  <Barometer
                     user={null}
                     //thing={data.thing}
                     datagram={datagram}

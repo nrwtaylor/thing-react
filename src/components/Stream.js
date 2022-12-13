@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+
+import { useNavigate } from 'react-router-dom';
+
+//import { Link } from "react-router-dom";
 
 import "../index.css";
 import {
@@ -36,10 +39,37 @@ import {zuluTime} from "../util/time.js";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
+import { useSwipeable } from "react-swipeable";
 
 function Stream(props) {
+
+    const navigate = useNavigate();
+
+
   const { at, quantities, quantity, period:inputPeriod, hide } = props;
 const canSwipe = true;
+
+  const config = {
+    delta: 10, // min distance(px) before a swipe starts. *See Notes*
+    preventScrollOnSwipe: false, // prevents scroll during swipe (*See Details*)
+    trackTouch: true, // track touch input
+    trackMouse: false, // track mouse input
+    rotationAngle: 0, // set a rotation angle
+    swipeDuration: Infinity, // allowable duration of a swipe (ms). *See Notes*
+    touchEventOptions: { passive: true }, // options for touch listeners (*See Details*)
+  };
+
+  const handlers = useSwipeable({
+    onSwiped: (eventData) => {
+console.log("User Swiped test");
+handleSwipe(eventData);
+
+
+console.log("User Swiped!", eventData)},
+    ...config,
+  });
+
+
 
 const [period, setPeriod] = useState(inputPeriod);
   var { amount, units } = quantity;
@@ -90,6 +120,45 @@ const availableWindows = [
   const handleClose = () => {
     setOpen(false);
   };
+
+
+function handleSwipe(e) {
+
+
+console.log("User Swiped e.dir", e.dir);
+
+if (e.dir === 'Left') {
+
+const w=  windowIndex + 1;
+setWindowIndex(w);
+
+
+console.log('User Swiped Left');
+if (props.onChangeStream) {
+ props.onChangeStream(w);
+}
+}
+
+if (e.dir === 'Right') {
+console.log('User Swiped  Right');
+
+const w=  windowIndex -1;
+if (w>=0) {
+setWindowIndex(w);
+
+
+if (props.onChangeStream) {
+ props.onChangeStream(w);
+}
+
+
+}
+
+}
+
+}
+
+
 
   function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -287,43 +356,16 @@ if (atTemp === undefined) {atTemp = zuluTime();}
 
   return (
     <>
-      <div>
+            <div {...handlers}>
+{availableWindows[windowIndex]}
         {period && hide && (
           <>
+PERIOD{" "}{period}
             {" "}
 
 
 
-      <Carousel
-        useKeyBoardArrows={canSwipe}
-        showArrows={canSwipe}
-        swipeable={canSwipe}
-        showThumbs={false}
-        showIndicators={false}
-        showStatus={false}
-        swipeScrollTolerance={100}
-        preventMovementUntilSwipeScrollTolerance={true}
-        onChange={(a,b)=>handleChange(a,b)}
-      >
-
-{availableWindows.map((availableWindow) =>{
-
-//const w=  windowIndex + 1;
-//setWindowIndex(w);
-
-return(
-
-
-
-
-<>
-{availableWindow}
             <Trace data={streamPoints} domain={props.domain} />
-</>
-)})}
-</Carousel>
-
-
 
 
 
@@ -341,6 +383,7 @@ return(
 
         {period === undefined && hide && (
           <>
+PERIOD UNDEFINED
             <Trace data={dataPoints} domain={props.domain} />
             <br />
             <Typography>Period {humanPeriod(tracePeriod)}{' '}
@@ -355,9 +398,9 @@ return(
             <br />
 
             {transducer && (
-              <Link to={"" + "history/transducers-" + transducer.sensor_id}>
+              <div onClick={()=>navigate("/" + "history/transducers-" + transducer.sensor_id)} >
                 transducer-{transducer && transducer.sensor_id}
-              </Link>
+              </div>
             )}
             <br />
           </>
