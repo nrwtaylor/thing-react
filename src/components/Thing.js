@@ -21,9 +21,9 @@ import Message from "../components/Message.js";
 import Text from "../components/Text.js";
 import History from "../components/History.js";
 import Power from "../components/Power.js";
+import Nuuid from "../components/Nuuid.js";
 
 import Weather from "../components/Weather.js";
-
 
 import TemperatureHumidity from "../components/TemperatureHumidity.js";
 
@@ -691,7 +691,8 @@ PACKETS{' '}{txCount}{'/'}{rxCount}
           }
         />
         {token && token.message}
-        {error}
+
+        {error && (<Error error={error} agentInput={data.thingReport} />)}
 
         <Button onClick={handleSpawnThing}>SPAWN</Button>
 
@@ -1027,6 +1028,20 @@ PACKETS{' '}{txCount}{'/'}{rxCount}
                   />
                 </div>
               )}
+
+              {subject && subject.toLowerCase().indexOf("b97f") !== -1 && (
+                <div>
+                  <Nuuid
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
+
+
+
               <div>
                 <br />
                 {/*      <Agent user={null} thing={data.thing} agent_input="http://localhost" />*/}

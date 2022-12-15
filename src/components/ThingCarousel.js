@@ -20,7 +20,7 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 export default function ThingCarousel(props) {
-  const { things } = props;
+//  const { things } = props;
 
 
 
@@ -41,8 +41,12 @@ export default function ThingCarousel(props) {
 
   const [canSwipe, setCanSwipe] = useState(true);
 
-//const {things } = useThings(token);
+  const { things, getThings } = useThings(token);
 
+
+useEffect(()=>{
+getThings(token);
+}, []);
   const { username, token, setToken, deleteToken } = useToken();
   const { identity, setIdentity, deleteIdentity } = useIdentity();
   const { input, setInput, deleteInput } = useInput();

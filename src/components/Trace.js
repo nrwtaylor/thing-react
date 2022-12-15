@@ -8,7 +8,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  ReferenceLine
+  ReferenceLine,
 } from "recharts";
 
 import "../index.css";
@@ -31,6 +31,8 @@ import {
 } from "@material-ui/core";
 
 import Frequency from "../components/Frequency.js";
+
+import useThing from "../useThing.js";
 
 import { humanTime, humanRuntime, zuluTextSpread } from "../util/time.js";
 
@@ -64,13 +66,16 @@ function Trace(props) {
 
   const now = new Date().getTime();
   const [timeSeriesData, setTimeSeriesData] = useState();
-const [currentTime, setCurrentTime] = useState();
+  const [xSeriesData, setXSeriesData] = useState();
+  const [currentTime, setCurrentTime] = useState();
   const [spread, setSpread] = useState();
 
   const [firstAt, setFirstAt] = useState();
   const [lastAt, setLastAt] = useState();
 
   const availableWindows = ["", "1m", "2m", "10m", "15m", "30m", "1h"];
+
+const {thing} = useThing({subject:"day twilight"});
 
   useEffect(() => {
     if (data === undefined) {
@@ -92,11 +97,33 @@ const [currentTime, setCurrentTime] = useState();
       return { ...d, time: new Date(d.at).getTime() };
     });
 
+//    const x = t.map((d) => {
+//      return d.time;
+//    });
+
+const numberOfTicks = 4;
+//const maxTickSpacing = spreadEvent / numberOfTicks;
+const maxTickSpacing = 1000 * 60*60*4;
+var x = [];
+//for (let i = 0; i < numberOfTicks; i++) {
+var d2 = 0;
+var i = 0;
+while (d2 < last.getTime()) {
+if (d2 > last.getTime()) {break;}
+d2 = first.getTime() + i * maxTickSpacing;
+//if (d2 > last.getTime()) {brea
+i = i +1;
+  x.push(d2);
+}
+    setXSeriesData(x);
+    console.log("xSeriesData x", x);
+
+
+
     setTimeSeriesData(t);
     setSpread(spreadEvent);
     //}
   }, [data]);
-
 
   useEffect(() => {
     updateTime();
@@ -104,14 +131,14 @@ const [currentTime, setCurrentTime] = useState();
     const interval = setInterval(() => {
       updateTime();
     }, 100); // 20 Hz was 200.
-},[]);
+  }, []);
 
-function updateTime() {
-const x = new Date().getTime();
-      setCurrentTime(x);
-//setXMax=
-}
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
+  function updateTime() {
+    const x = new Date().getTime();
+    setCurrentTime(x);
+    //setXMax=
+  }
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
 
   //return (<>NOTHING</>);
   //        <LineChart data={data} margin={{ right: 300 }}>
@@ -120,30 +147,33 @@ const x = new Date().getTime();
 
   //return (<>HEY</>);
   // https://github.com/recharts/recharts/issues/956
-function formatXAxis(tickItem) {
-const ts = new Date(tickItem);
-const x = ts.toLocaleDateString();
-return x;
+  function formatXAxis(tickItem) {
+    const ts = new Date(tickItem);
+    //const x = ts.toLocaleDateString();
+    const x = ts.toJSON();
+return "";
+    //return x;
+  }
 
-}
+
+if (xSeriesData == null) {return null;}
   return (
     <>
       <br />
       {zuluTextSpread(firstAt, lastAt)}
-      {lastAt}
-      {" to "}
-      {firstAt}
       <br />
 
       <Box>
         <ResponsiveContainer width="100%" aspect={3}>
           <LineChart data={timeSeriesData}>
             <XAxis
+              interval={0}
+              ticks={xSeriesData.sort()}
               dataKey="time"
               domain={["dataMin", currentTime]}
               type="number"
               tick={true}
-tickFormatter={formatXAxis}
+              tickFormatter={formatXAxis}
             />{" "}
             }{/*   <CartesianGrid /> */}
             {props.domain && (

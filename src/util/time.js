@@ -1,8 +1,17 @@
-export function humanTime(timestamp) {
+export function humanTime(at) {
 
-if (!timestamp) {return true;}
-  const ts = new Date(timestamp * 1000);
-  return ts.toISOString();
+
+var d = new Date();
+
+if (at !== undefined) {
+  var epochtime = Date.parse(at);
+  d = new Date(epochtime);
+}
+
+//if (!timestamp) {return true;}
+//  const ts = new Date(timestamp * 1000);
+  return d.toLocaleString();
+//  return ts.toISOString();
 }
 
 export  function timeStamp() {
@@ -126,7 +135,6 @@ if (at !== undefined) {
   var epochtime = Date.parse(at);
   d = new Date(epochtime);
 }
-
 
   return d.toISOString();
 }

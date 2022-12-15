@@ -31,8 +31,18 @@ import Stream from "../components/Stream.js";
 import BubbleLevel from "../components/BubbleLevel.js";
 
 function Error(props) {
+
+
+  const {error} = props;
+const {agentInput} = props;
   const user_name = props.user_name; // TODO
-  const agent_input = props.agent_input;
+var agent_input = props.agent_input
+if (props.agent_input == null) {
+  agent_input = agentInput;
+}
+
+//  const agent_input = props.agent_input;
+//  const agent _input = props.agentInput;
   const webPrefix = agent_input;
   const [flag, setFlag] = useState();
   //const [requestedAt, setRequestedAt] = useState();
@@ -91,9 +101,26 @@ if (!pingArray[1]) {return;}
     setPings(ps);
   }, [ping]);
 
+useEffect(()=>{
+
+console.log("Error agentInput", agentInput);
+
+}, [agentInput]);
+if (error == null) {return;}
+
   return (
     <>
-      <div>PING</div>
+
+{error && (<div>ERROR</div>)}
+
+{error && (<div style={{backgroundColor: "red"}} >{error}</div>)}
+
+{error.toLowerCase() === "network error" && "What now? Add Access-Control-Allow-Headers and Access-Control-Allow-Credentials in browser CORS control"}
+{/*
+{agentInput.thingReport.error.message}
+*/}
+
+{agentInput.error.config.url}
       <div>
         <br />
         GET TIME {snapshotGetTime}ms {Math.round(1000 / snapshotGetTime, 1)}Hz

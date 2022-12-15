@@ -7,11 +7,12 @@ import Button from "@mui/material/Button";
 import UpdateIcon from "@mui/icons-material/Update";
 
 import { humanTime, humanAge, humanRuntime, zuluTime } from "./../util/time.js";
-import { zuluTime as zuluTimeF } from "./../util/time.js";
+import { zuluTime as zuluTimeF, humanTime as humanTimeF } from "./../util/time.js";
 
 export default function ZuluTime({ zulutime, onRefresh }) {
   const [zuluTime, setZuluTime] = useState();
   const [posixTime, setPosixTime] = useState();
+  const [humanTime, setHumanTime] = useState();
 
   useEffect(() => {
     updateZuluTime();
@@ -28,6 +29,7 @@ export default function ZuluTime({ zulutime, onRefresh }) {
 
     setZuluTime(zuluTimeF());
     setPosixTime(ts);
+    setHumanTime(humanTimeF());
   }
 
   useEffect(() => {
@@ -46,6 +48,7 @@ export default function ZuluTime({ zulutime, onRefresh }) {
       <br />
       POSIX {posixTime}
       <br />
+      HUMANTIME {humanTime}
     </>
   );
 }

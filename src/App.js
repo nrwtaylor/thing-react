@@ -68,7 +68,7 @@ export default function App({ componentName, ...props }) {
   const stack0Prefix = process.env.REACT_APP_STACK_0;
 
   const [uuid, setUuid] = useState();
-
+/*
   const defaultThings = [
     {
       index: 20,
@@ -107,7 +107,7 @@ export default function App({ componentName, ...props }) {
       //      webPrefix: "http://192.168.10.10/snapshot.json",
     },
   ];
-
+*/
   const pathname = window.location.pathname;
 
   const reg = /\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/g;
