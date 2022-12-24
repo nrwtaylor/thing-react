@@ -123,7 +123,7 @@ export const ThingContainer = memo(function ThingContainer(props) {
 
       // dev?
       setThing(newThing.uuid, newThing, token).then((result) => {
-        console.log(result);
+        console.log("ThingContainer setThing result", result);
       });
 
       props.onCollectionChange(things);
@@ -253,7 +253,6 @@ export const ThingContainer = memo(function ThingContainer(props) {
         {things && (
           <>
             {things.map((thing) => (
-              <>
                 <Card
                   key={"card_"+thing.uuid}
                   id={`${thing.index}`}
@@ -268,7 +267,6 @@ export const ThingContainer = memo(function ThingContainer(props) {
                   findCard={findThing}
                   token={token}
                 />
-              </>
             ))}
           </>
         )}

@@ -68,46 +68,7 @@ export default function App({ componentName, ...props }) {
   const stack0Prefix = process.env.REACT_APP_STACK_0;
 
   const [uuid, setUuid] = useState();
-/*
-  const defaultThings = [
-    {
-      index: 20,
-      to: "localhost",
-      subject: "Please Log In",
-      createdAt: Date.now(),
-      uuid: uuidv4(),
-      input: "Login",
-      //      webPrefix: "http://192.168.10.10/snapshot.json",
-    },
-    {
-      index: 21,
-      to: "localhost",
-      subject: "Please Sign Up",
-      createdAt: Date.now(),
-      uuid: testUuid0,
-      input: "Signup",
-      //      webPrefix: "http://192.168.10.10/snapshot.json",
-    },
-    {
-      index: 21,
-      to: "localhost",
-      subject: "Privacy",
-      createdAt: Date.now(),
-      uuid: uuidv4(),
-      input: "Privacy",
-      //      webPrefix: "http://192.168.10.10/snapshot.json",
-    },
-    {
-      index: 21,
-      to: "localhost",
-      subject: "Terms of Use",
-      createdAt: Date.now(),
-      uuid: uuidv4(),
-      input: "TermsOfUse",
-      //      webPrefix: "http://192.168.10.10/snapshot.json",
-    },
-  ];
-*/
+
   const pathname = window.location.pathname;
 
   const reg = /\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/g;
@@ -176,7 +137,7 @@ getThings(token);
 
   return (
     <>
-      THING-REACT 12 December 2022 ec03
+      THING-REACT 23 December 2022 3fdd
       <br />
       {identity && <Identity identity={identity} />}
       {token && token.message}

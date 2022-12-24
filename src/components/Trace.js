@@ -67,6 +67,8 @@ function Trace(props) {
   const now = new Date().getTime();
   const [timeSeriesData, setTimeSeriesData] = useState();
   const [xSeriesData, setXSeriesData] = useState();
+  const [ySeriesData, setYSeriesData] = useState();
+
   const [currentTime, setCurrentTime] = useState();
   const [spread, setSpread] = useState();
 
@@ -75,7 +77,7 @@ function Trace(props) {
 
   const availableWindows = ["", "1m", "2m", "10m", "15m", "30m", "1h"];
 
-const {thing} = useThing({subject:"day twilight"});
+  const { thing } = useThing({ subject: "day twilight" });
 
   useEffect(() => {
     if (data === undefined) {
@@ -97,31 +99,62 @@ const {thing} = useThing({subject:"day twilight"});
       return { ...d, time: new Date(d.at).getTime() };
     });
 
-//    const x = t.map((d) => {
-//      return d.time;
-//    });
+    //    const x = t.map((d) => {
+    //      return d.time;
+    //    });
 
-const numberOfTicks = 4;
-//const maxTickSpacing = spreadEvent / numberOfTicks;
-const maxTickSpacing = 1000 * 60*60*4;
-var x = [];
-//for (let i = 0; i < numberOfTicks; i++) {
-var d2 = 0;
-var i = 0;
-while (d2 < last.getTime()) {
-if (d2 > last.getTime()) {break;}
-d2 = first.getTime() + i * maxTickSpacing;
-//if (d2 > last.getTime()) {brea
-i = i +1;
-  x.push(d2);
-}
+    const numberOfTicks = 4;
+    //const maxTickSpacing = spreadEvent / numberOfTicks;
+    const maxTickSpacing = 1000 * 60 * 60 * 4;
+    var x = [];
+    //for (let i = 0; i < numberOfTicks; i++) {
+    var d2 = 0;
+    var i = 0;
+    while (d2 < last.getTime()) {
+      if (d2 > last.getTime()) {
+        break;
+      }
+      d2 = first.getTime() + i * maxTickSpacing;
+      //if (d2 > last.getTime()) {brea
+      i = i + 1;
+      x.push(d2);
+    }
     setXSeriesData(x);
     console.log("xSeriesData x", x);
 
-
-
     setTimeSeriesData(t);
     setSpread(spreadEvent);
+
+    var yVals = data.map(function (val) {
+      return val.amount;
+    });
+    var minY = Math.min.apply(Math, yVals);
+    var maxY = Math.max.apply(Math, yVals);
+    console.log("Trace miny maxy", minY, maxY);
+    const maxYTickSpacing = 1;
+
+    var y = [];
+    //for (let i = 0; i < numberOfTicks; i++) {
+    var d3 = 0;
+    var i = 0;
+    const numberOfYTicks = 4;
+    const increment = Math.ceil((maxY - minY) / numberOfYTicks);
+
+    while (d3 < Math.ceil(maxY)) {
+      if (d3 > maxY) {
+        break;
+      }
+      d3 = Math.floor(minY) + i * maxYTickSpacing;
+      //if (d2 > last.getTime()) {brea
+      i = i + increment;
+      y.push(d3);
+    }
+    //if (y.length > 4) {
+
+    //}
+
+    setYSeriesData(y);
+
     //}
   }, [data]);
 
@@ -151,12 +184,13 @@ i = i +1;
     const ts = new Date(tickItem);
     //const x = ts.toLocaleDateString();
     const x = ts.toJSON();
-return "";
+    return "";
     //return x;
   }
 
-
-if (xSeriesData == null) {return null;}
+  if (xSeriesData == null) {
+    return null;
+  }
   return (
     <>
       <br />
@@ -178,6 +212,9 @@ if (xSeriesData == null) {return null;}
             }{/*   <CartesianGrid /> */}
             {props.domain && (
               <YAxis
+                interval={0}
+                tick={true}
+                ticks={ySeriesData.sort()}
                 tickFormatter={(value) =>
                   new Intl.NumberFormat("en", {
                     notation: "compact",
@@ -189,6 +226,9 @@ if (xSeriesData == null) {return null;}
             )}
             {props.domain === undefined && (
               <YAxis
+                interval={0}
+                tick={true}
+                ticks={ySeriesData.sort()}
                 type="number"
                 tickFormatter={(value) =>
                   new Intl.NumberFormat("en", {

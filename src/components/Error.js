@@ -106,7 +106,7 @@ useEffect(()=>{
 console.log("Error agentInput", agentInput);
 
 }, [agentInput]);
-if (error == null) {return;}
+if (error == null) {return null;}
 
   return (
     <>

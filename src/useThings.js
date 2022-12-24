@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { getThings as getThingies, makeObservable } from "./util/database.js";
+import { getThings as getThingies, createThing, makeObservable } from "./util/database.js";
 
 import jwt_decode from "jwt-decode";
 import { v4 as uuidv4 } from "uuid";
@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 const userThings = makeObservable({ things: [], count: 0 });
 
 const apiPrefix = process.env.REACT_APP_API_PREFIX;
-
+const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 
   const defaultThings = [
     {
@@ -44,6 +44,15 @@ const apiPrefix = process.env.REACT_APP_API_PREFIX;
     },
   ];
 
+  const errorThing = 
+    {
+      index: 20,
+      to: "localhost",
+      subject: "Error",
+      createdAt: Date.now(),
+      uuid: uuidv4(),
+      input: "Error",
+    };
 
 
 export default function useThings(token) {
@@ -101,8 +110,9 @@ setThings(conditionedThings);
       .catch((error) => {
 
 // Add an error card in. Up front and center?
-        setThings(defaultThings);
-
+        //setThings(defaultThings);
+//webPrefix, defaultThings[1], token
+createThing(webPrefix, errorThing, token);
         console.log("App loadThings error", error);
       });
 
@@ -135,6 +145,7 @@ setThings(conditionedThings);
   }, [things])
 
   const saveThings = (userThings) => {
+if (userThings.length === 0) {return;} // never allow zero cards.
     console.log("useThings saveThings userThings", userThings);
     setThings(userThings);
   };

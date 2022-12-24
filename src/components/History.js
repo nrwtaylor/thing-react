@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { useNavigate } from 'react-router-dom';
-
+import { useNavigate } from "react-router-dom";
 
 import "../index.css";
 import {
@@ -42,31 +41,29 @@ import Ping from "../components/Ping.js";
 import { getSnapshot } from "../util/database.js";
 
 import { humanRuntime } from "../util/time.js";
+import { extractUuid } from "../util/text.js";
 
 import useSnapshot from "../useSnapshot";
+import useThingReport from "../useThingReport";
+
+
 
 import { useSwipeable } from "react-swipeable";
-
-
 
 //import { useSwipeable } from "react-swipeable";
 
 //const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 
-
 function History(props) {
-
-
-    const navigate = useNavigate();
-
+  const navigate = useNavigate();
 
   const { datagram } = props;
 
-  const {showLive } =props;
+  const { showLive } = props;
 
   const { subject } = datagram;
 
-const [windowIndex, setWindowIndex] = useState();
+  const [windowIndex, setWindowIndex] = useState();
 
   const ref = subject
     .replace("transducers-", "")
@@ -81,48 +78,59 @@ const [windowIndex, setWindowIndex] = useState();
     .replace("history-", "")
     .replace("history ", "");
 
-  const to = "http://192.168.10.10/snapshot.json";
-
-  //const historyTo = "http://192.168.10.10/transducers-" + subject + ".json";
-
-//  const historyTo = "http://192.168.10.10/" + historyRef + ".json";
-//  const historyTo = "http://localhost:3003/history/" + historyRef + ".json";
-//  const historyTo = "https://stackr.ca/history/" + historyRef + ".json";
-
   const user_name = props.user_name; // TODO
   const agent_input = props.agent_input;
-  const webPrefix = agent_input === undefined ? process.env.REACT_APP_WEB_PREFIX : agent_input;
+  const webPrefix =
+    agent_input === undefined ? process.env.REACT_APP_WEB_PREFIX : agent_input;
 
+  const [snapshotTo, setSnapshotTo] = useState();
+
+  //const to = webPrefix + "/snapshot/" + history.uuid + "/hey.json";
 
   const historyTo = webPrefix + "history/" + historyRef + ".json";
 
+  var snapshotInterval = 1000;
+  if (showLive === false) {
+    snapshotInterval = true;
+  }
+
+  const {
+    snapshot: data,
+    flag: snapshotFlag,
+    snapshotGetTime: snapshotGetTime,
+  } = useSnapshot(snapshotTo, snapshotInterval);
+
+  const {
+    thingReport,
+    flag: thingReportFlag,
+    thingReportGetTime: thingReportGetTime,
+  } = useThingReport(snapshotTo, snapshotInterval);
 
 
-var snapshotInterval = 1000;
-if (showLive === false) {
-  snapshotInterval = true;
-}
+  const {
+    snapshot: history,
+    flag: historyFlag,
+    snapshotGetTime: historyGetTime,
+  } = useSnapshot(historyTo, 60000);
 
-  const { snapshot: data, flag: snapshotFlag, snapshotGetTime:snapshotGetTime } = useSnapshot(to, snapshotInterval);
+  useEffect(() => {
 
-  const { snapshot: history, flag: historyFlag, snapshotGetTime:historyGetTime } = useSnapshot(
-    historyTo, 60000
-  );
+    // Extract uuid from datagram. 
+    // To provide access to the snapshot.
+    // Consider: Can refactor this code into useSnapshot().
+    console.log("History datagram", snapshotTo, datagram.subject);
+    const uuid = extractUuid(datagram.subject);
+    const to = webPrefix + "/snapshot/" + uuid + "/hey.json";
+    setSnapshotTo(to);
 
-
-
-
+  }, [datagram]);
 
   const [flag, setFlag] = useState();
   const [historyPoints, setHistoryPoints] = useState([]);
+
   //const [requestedAt, setRequestedAt] = useState();
-
   //const [spread, setSpread] = useState();
-
   //const [data,setData] = useState();
-
-
-
 
   const config = {
     delta: 10, // min distance(px) before a swipe starts. *See Notes*
@@ -136,24 +144,15 @@ if (showLive === false) {
 
   const handlers = useSwipeable({
     onSwiped: (eventData) => {
-console.log("User Swiped test");
-handleSwipe(eventData);
+      console.log("User Swiped test");
+      handleSwipe(eventData);
 
-
-console.log("User Swiped!", eventData)},
+      console.log("User Swiped!", eventData);
+    },
     ...config,
   });
 
-
-const availableWindows = [
-'', '1m', '2m', '10m', '15m', '30m', '1h' 
-]
-
-
-
-
-
-
+  const availableWindows = ["", "1m", "2m", "10m", "15m", "30m", "1h"];
 
   const [reply, setReply] = useState("");
   //  const [snapshotInterval, setSnapshotInterval] = useState(50);
@@ -163,7 +162,7 @@ const availableWindows = [
     thing_report: { sms: "No response. Yet." },
   });
 */
-//  const [data, setData] = useState([]);
+  //  const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
 
   const replyAgentDialog = (thing) => {
@@ -174,11 +173,10 @@ const availableWindows = [
     setOpen(false);
   };
 
-//  useEffect(() => {
-//    setData(snapshot);
-//  }, [snapshot]);
 
-  // http://192.168.10.10/transducers-thaccyxx1.json
+  useEffect(() => {
+    console.log("History data", snapshotTo, data);
+  }, [data]);
 
   useEffect(() => {
     if (!history) {
@@ -186,42 +184,41 @@ const availableWindows = [
     }
     console.log("History history", history);
 
+    //setSnapshotTo(webPrefix + "/snapshot/" + history.uuid + "/hey.json");
 
-var hist = false;
+    var hist = false;
 
     if (history.agent_input) {
-    if (Array.isArray(history.agent_input)) {
-
-hist = history.agent_input;
-}
+      if (Array.isArray(history.agent_input)) {
+        hist = history.agent_input;
+      }
     }
-//    console.log("History agent_input", history.agent_input);
+    //    console.log("History agent_input", history.agent_input);
 
+    //    if (!Array.isArray(history.agent_input)) {
+    //      return;
+    //    }
+    //    const hist = history.agent_input;
 
-//    if (!Array.isArray(history.agent_input)) {
-//      return;
-//    }
-//    const hist = history.agent_input;
+    if (history.thingReport && history.thingReport.history) {
+      hist = history.thingReport.history;
+    }
 
-if (history.thingReport && history.thingReport.history) {
-  hist = history.thingReport.history;
-}
+    if (hist === false) {
+      return;
+    }
 
-if (hist === false) {return;}
-
-//    const hist = history.agent_input;
+    //    const hist = history.agent_input;
     const p = hist.map((h) => {
-var amount = null;
+      var amount = null;
 
-if (typeof h.event === 'string' || h.event instanceof String) {
-  amount = parseFloat(h.event);
-}
+      if (typeof h.event === "string" || h.event instanceof String) {
+        amount = parseFloat(h.event);
+      }
 
-if (h.event.amount) {
-      amount = parseFloat(h.event.amount);
-}
-
-
+      if (h.event.amount) {
+        amount = parseFloat(h.event.amount);
+      }
 
       // Add item to it
       const f = {
@@ -282,47 +279,32 @@ if (h.event.amount) {
     console.log("Agent callBack called.");
   }
 
+  function handleSwipe(e) {
+    console.log("User Swiped e.dir", e.dir);
 
-function handleSwipe(e) {
+    if (e.dir === "Left") {
+      const w = windowIndex + 1;
+      setWindowIndex(w);
 
+      console.log("User Swiped Left");
+      if (props.onChangeStream) {
+        props.onChangeStream(w);
+      }
+    }
 
-console.log("User Swiped e.dir", e.dir);
+    if (e.dir === "Right") {
+      console.log("User Swiped  Right");
 
-if (e.dir === 'Left') {
+      const w = windowIndex - 1;
+      if (w >= 0) {
+        setWindowIndex(w);
 
-const w=  windowIndex + 1;
-setWindowIndex(w);
-
-
-console.log('User Swiped Left');
-if (props.onChangeStream) {
- props.onChangeStream(w);
-}
-}
-
-if (e.dir === 'Right') {
-console.log('User Swiped  Right');
-
-const w=  windowIndex -1;
-if (w>=0) {
-setWindowIndex(w);
-
-
-if (props.onChangeStream) {
- props.onChangeStream(w);
-}
-
-
-}
-
-}
-
-}
-
-
-
-
-
+        if (props.onChangeStream) {
+          props.onChangeStream(w);
+        }
+      }
+    }
+  }
 
   const deleteButton = (
     <Forget uuid={datagram && datagram.uuid} callBack={callBack} />
@@ -331,18 +313,17 @@ if (props.onChangeStream) {
   return (
     <>
       <div>HISTORY</div>
-
+TEXT {thingReport && thingReport.text}
+<br />
+      {data && data.thingReport && data.thingReport.text}
       SUBJECT {subject}
-              <div onClick={()=>navigate("/" + "history/" + subject)} >
-{subject}
-</div>
+      <div onClick={() => navigate("/" + "history/" + subject)}>{subject}</div>
       <br />
       REF {ref}
       <br />
       HISTORYREF {historyRef}
-<br />
-HISTORYTO {historyTo}
-
+      <br />
+      HISTORYTO {historyTo}
       <br />
       <Trace data={historyPoints} />
       <br />
@@ -350,33 +331,33 @@ HISTORYTO {historyTo}
         data.transducers &&
         data.transducers[ref] &&
         data.transducers[ref].amount}
-{showLive && (
-      <Stream
-        hide={true}
-        period={1000}
-        quantity={{
-          units: "A",
-          amount:
-            data &&
-            data.transducers &&
-            data.transducers[ref] &&
-            data.transducers[ref].amount,
-        }}
-        //             transducer={data && data.transducers && data.transducers[ref]}
-        //              period={100}
-        //              domain={[-50, 50]}
-      />
-)}
+      {showLive && (
+        <Stream
+          hide={true}
+          period={1000}
+          quantity={{
+            units: "A",
+            amount:
+              data &&
+              data.transducers &&
+              data.transducers[ref] &&
+              data.transducers[ref].amount,
+          }}
+          //             transducer={data && data.transducers && data.transducers[ref]}
+          //              period={100}
+          //              domain={[-50, 50]}
+        />
+      )}
       <br />
       <div>SUBJECT {subject}</div>
       <div>
         FLAG {flag} COLOUR
         <br />
-        SNAPSHOT GET TIME {snapshotGetTime}ms {Math.round(1000 / snapshotGetTime, 1)}Hz
-       <br />
-        HISTORY GET TIME {historyGetTime}ms {Math.round(1000 / historyGetTime, 1)}Hz
-
-
+        SNAPSHOT GET TIME {snapshotGetTime}ms{" "}
+        {Math.round(1000 / snapshotGetTime, 1)}Hz
+        <br />
+        HISTORY GET TIME {historyGetTime}ms{" "}
+        {Math.round(1000 / historyGetTime, 1)}Hz
       </div>
     </>
   );

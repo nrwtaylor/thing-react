@@ -1,5 +1,9 @@
 import axios from "axios";
+import { zuluTime, zuluTimeDifferenceMilliseconds } from "./time.js";
+import { getSlug, extractUuid } from "./text.js";
 const apiPrefix = process.env.REACT_APP_API_PREFIX;
+
+const snapshotCacheTimeMilliseconds = 60000;
 
 axios.defaults.headers = {
   "Cache-Control": "no-cache",
@@ -14,6 +18,10 @@ export var rxErrorCount = 0;
 export var txCount = 0;
 export var rxCount = 0;
 export var txErrorCount = 0;
+
+// Create a local non-persistent session cache.
+// To track requests and responses.
+const stack = {};
 
 // Add a request interceptor
 axios.interceptors.request.use(
@@ -58,7 +66,7 @@ axios.interceptors.response.use(
   },
   function (error) {
     rxErrorCount += 1;
-    console.log("database response error", error);
+    console.log("database response error", rxErrorCount, error);
 
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
@@ -118,6 +126,9 @@ export function setThing(uuid, datagram, token) {
   console.log("database setThing token", token);
 
   const u = apiPrefix + "/thing/" + uuid;
+
+  console.log("database setThing u", u);
+
   return axios
     .put(u, datagram, {
       headers: {
@@ -175,6 +186,25 @@ export function getSnapshot(webPrefix, token) {
   //}
   console.log("database getSnapshot u", u);
   console.log("database getSnapshot webPrefix", webPrefix);
+  const slug = getSlug(u);
+
+  //console.log("database getSnapshot slug", slug);
+
+  if (stack[slug]) {
+    const nowAt = zuluTime();
+    const age = zuluTimeDifferenceMilliseconds(stack[slug].refreshedAt, nowAt);
+
+    console.log(
+      "database getSnapshot slug cache",
+      slug,
+      age,
+      stack[slug].refreshedAt
+    );
+
+    if (age < snapshotCacheTimeMilliseconds) {
+      return Promise.resolve(stack[slug]);
+    }
+  }
 
   return axios
     .get(u, {
@@ -188,10 +218,15 @@ export function getSnapshot(webPrefix, token) {
     })
     .then((res) => {
       let thingy = res.data;
+
+      stack[slug] = { ...thingy, error: null, refreshedAt: zuluTime() };
+
       console.log("database getSnapshot", u, thingy);
       return thingy;
     })
     .catch((error) => {
+      stack[slug] = { error: error, refreshedAt: zuluTime() };
+
       console.log("database getSnapshot u error", u, webPrefix, error);
     });
 }
@@ -201,6 +236,13 @@ export function getThingReport(datagram, token) {
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 
   const u = webPrefix + "/api/whitefox/message";
+  console.log("database getThingReport stack", stack);
+  if (stack[datagram.uuid]) {
+    console.log(
+      "database getThingReport cache",
+      stack[datagram.uuid].refreshedAt
+    );
+  }
 
   return axios
     .post(u, datagram, {
@@ -212,6 +254,9 @@ export function getThingReport(datagram, token) {
     })
     .then((res) => {
       let thingy = res.data;
+
+      stack[thingy.uuid] = { ...thingy, refreshedAt: zuluTime() };
+
       console.log("database getThingReport", u, datagram, thingy);
       return thingy;
     })
@@ -224,7 +269,7 @@ export function getThingReport(datagram, token) {
 // https://kollox.com/cancel-axios-request-very-quick-solution/
 
 export function getThings(prefix = null, token = null) {
-console.log("database getThings prefix token", prefix, token);
+  console.log("database getThings prefix token", prefix, token);
   var u = apiPrefix + "things/";
   if (prefix !== null) {
     u = prefix + "things/";

@@ -25,10 +25,9 @@ export default function ThingCarousel(props) {
 
 
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
-  const testUuid0 = process.env.REACT_APP_THING_0;
-  const testUuid1 = process.env.REACT_APP_THING_1;
+  //const testUuid0 = process.env.REACT_APP_THING_0;
+  //const testUuid1 = process.env.REACT_APP_THING_1;
   const apiPrefix = process.env.REACT_APP_API_PREFIX;
-  const stack0Prefix = process.env.REACT_APP_STACK_0;
 
   const [uuid, setUuid] = useState();
 

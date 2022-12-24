@@ -154,7 +154,7 @@ setMessage("Made a Token card. Made a Log Out card. Removed non-conguent cards. 
     // Authentication ... and Authorisation.
     // Keep roles out of JWT.
     // setError(response.error);
-    setIdentity(gen_hash); //tbd
+    setIdentity(username); //tbd
     //setToken(token);
   };
 

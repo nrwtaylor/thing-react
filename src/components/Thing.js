@@ -227,6 +227,8 @@ export default function Thing(props) {
 
     console.log("Thing setDatagram d", d);
     if (!d.pollInterval) return;
+
+
     //setPollInterval(d.pollInterval);
   }
 
@@ -342,6 +344,7 @@ if (!uuid) {return;}
     console.log("Thing subject changed", subject);
     //setFlag('green');
     getResponse(webPrefix, true);
+    setDatagram({...datagram, subject: subject});
   }, [subject]);
 
   // refactor out

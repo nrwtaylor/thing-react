@@ -69,7 +69,16 @@ return humanTime(at);
 if (seconds > 60) {
 return Math.floor(seconds/60) + " minutes ago.";
 }
+
+if (seconds > 60) {
+return Math.floor(seconds/60) + " minute ago.";
+}
+
+if (seconds > 1) {
 return Math.floor(seconds) + " seconds ago.";
+}
+
+return Math.floor(seconds) + " second ago.";
 
   }
 
@@ -92,8 +101,13 @@ postFix = " " + inputPostFix;
 
 }
 
-if (seconds > 24 * 60 * 60 * 7) {
+if (seconds > 24 * 60 * 60 * 7 * 2) {
 return sign * Math.floor(seconds / (24 * 60 * 60 * 7)) + " weeks" + postFix;
+}
+
+
+if (seconds > 24 * 60 * 60 * 7) {
+return sign * Math.floor(seconds / (24 * 60 * 60 * 7)) + " week" + postFix;
 }
 
 if (seconds > 2* 24 * 60 * 60) {
@@ -102,20 +116,34 @@ return sign * Math.floor(seconds / (24 * 60 * 60)) + " days" + postFix;
 
 
 if (seconds > 24 * 60 * 60) {
+return sign * Math.floor(seconds / (24 * 60 * 60)) + " day" + postFix;
+}
+
+
+if (seconds > 2 * 60 * 60) {
 return sign * Math.floor(seconds / (60 * 60)) + " hours" + postFix;
 }
 
 
 if (seconds > 60 * 60) {
-return sign * Math.floor(seconds / (60 * 60)) + " hours" + postFix;
+return sign * Math.floor(seconds / (60 * 60)) + " hour" + postFix;
 }
 
-if (seconds > 60) {
+if (seconds > 2 * 60) {
 return sign * Math.floor(seconds/60) + " minutes." + postFix;
 }
 
-if (milliseconds > 999) {
+
+if (seconds > 60) {
+return sign * Math.floor(seconds/60) + " minute." + postFix;
+}
+
+if (milliseconds > 2 *1000) {
 return sign * Math.floor(seconds) + " seconds" + postFix;
+}
+
+if (milliseconds > 999) {
+return sign * Math.floor(seconds) + " second" + postFix;
 }
 
 if (milliseconds > 1) {
@@ -137,5 +165,23 @@ if (at !== undefined) {
 }
 
   return d.toISOString();
+}
+
+
+export function zuluTimeDifferenceMilliseconds(atA, atB) {
+
+//var d = new Date();
+
+//if (at !== undefined) {
+  const epochtimeA = Date.parse(atA);
+  const a = new Date(epochtimeA);
+//}
+
+  const epochtimeB = Date.parse(atB);
+  const b = new Date(epochtimeB);
+
+const differenceMilliseconds = b.getTime() - a.getTime();
+
+  return differenceMilliseconds;
 }
 
