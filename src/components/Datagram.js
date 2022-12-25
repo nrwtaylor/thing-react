@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import jwt_decode from "jwt-decode";
 
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";

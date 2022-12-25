@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 
-import jwt_decode from "jwt-decode";
-
 import { getWebJson, getSnapshot } from "./util/database.js";
 import { humanTime, zuluTime } from "./util/time.js";
 

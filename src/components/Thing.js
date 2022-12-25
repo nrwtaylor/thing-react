@@ -411,7 +411,7 @@ if (!uuid) {return;}
 
         const p = requestedAt + pollInterval;
         setNextRunAt(p);
-        console.log("nextRunAt p", p, humanTime(p));
+        console.log("nextRunAt p", p, zuluTime(new Date(p)));
 
         setFlag("green");
         //setError(null);
@@ -676,7 +676,9 @@ PACKETS{' '}{txCount}{'/'}{rxCount}
         style={{
           maxWidth: "100%",
           borderColor: flag === "red" ? bRed : bGreen,
-          border: "10px solid",
+          borderWidth: "10px",
+          borderStyle: "solid",
+//          border: "10px solid",
           //          backgroundColor: flag === "red" ? bRed : bGreen,
         }}
         raised={flag === "red" ? true : false}

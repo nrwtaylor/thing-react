@@ -32,7 +32,7 @@ export default function Token({ token, setToken, setIdentity }) {
 
     console.log("Token token", token);
 
-    if (token === null) {
+    if (token == null) {
       return;
     }
 

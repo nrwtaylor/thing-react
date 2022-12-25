@@ -285,8 +285,8 @@ export function getThings(prefix = null, token = null) {
 
     .then((res) => {
       let thingy = res.data;
-      console.log("database getThings axios res", res);
-      console.log("database getThings axios res.data", res.data);
+      console.log("database getThings axios res", u, res);
+      console.log("database getThings axios res.data", u, res.data);
       return thingy;
       // agent etime info json:null thing etc
       //        setData(res.data);

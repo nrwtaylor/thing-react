@@ -120,7 +120,7 @@ if (error == null) {return null;}
 {agentInput.thingReport.error.message}
 */}
 
-{agentInput.error.config.url}
+{agentInput && agentInput.error && agentInput.error.config && agentInput.error.config.url}
       <div>
         <br />
         GET TIME {snapshotGetTime}ms {Math.round(1000 / snapshotGetTime, 1)}Hz
@@ -139,7 +139,7 @@ if (error == null) {return null;}
                 {ping.host}
                 <Stream
                   hide={true}
-quantities={[{
+cquantities={[{
                     units: "ms",
                     amount: ping.amount,
                   },

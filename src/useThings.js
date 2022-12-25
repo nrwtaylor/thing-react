@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
 import { getThings as getThingies, createThing, makeObservable } from "./util/database.js";
 
-import jwt_decode from "jwt-decode";
 import { v4 as uuidv4 } from "uuid";
+
+import useToken from "./useToken.js";
 
 const userThings = makeObservable({ things: [], count: 0 });
 
@@ -55,14 +56,20 @@ const webPrefix = process.env.REACT_APP_WEB_PREFIX;
     };
 
 
-export default function useThings(token) {
+export default function useThings() {
 
+const {token} = useToken();
 
-  const getThings = (token) => {
-if (token === undefined) {
+  const getThings = () => {
+console.log("useThings getThings", token);
+if (token == null) {
+setThings(defaultThings);
+
   return;
+
 }
-    getThingies(apiPrefix, token)
+
+ getThingies(apiPrefix, token)
       .then((result) => {
         console.log("App loadThings result", result);
 
@@ -102,7 +109,7 @@ if (token === undefined) {
         //  ))
         //)
 
-        console.log("App loadThings conditionedThings", conditionedThings);
+        console.log("useThings loadThings conditionedThings", conditionedThings);
 
 setThings(conditionedThings);
 //return conditionedThings;
@@ -113,7 +120,7 @@ setThings(conditionedThings);
         //setThings(defaultThings);
 //webPrefix, defaultThings[1], token
 createThing(webPrefix, errorThing, token);
-        console.log("App loadThings error", error);
+        console.log("useThings loadThings error", error);
       });
 
 

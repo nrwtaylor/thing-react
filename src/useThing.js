@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Get as getThingy, createThing as createThingy, makeObservable } from "./util/database.js";
 
-import jwt_decode from "jwt-decode";
 import { v4 as uuidv4 } from "uuid";
 
 const userThing = makeObservable({ thing: [], count: 0 });

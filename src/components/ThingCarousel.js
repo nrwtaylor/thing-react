@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Thing from "./Thing.js";
-import { getThings, createThing } from "../util/database.js";
+//import { getThings, createThing } from "../util/database.js";
 import ThingContainer from "./ThingContainer.js";
 import Token from "./Token.js";
 import Identity from "./Identity.js";
@@ -21,9 +21,8 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 export default function ThingCarousel(props) {
 //  const { things } = props;
-
-
-
+//const {token:inputToken} = props;
+//const {token} = props;
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
   //const testUuid0 = process.env.REACT_APP_THING_0;
   //const testUuid1 = process.env.REACT_APP_THING_1;
@@ -40,15 +39,27 @@ export default function ThingCarousel(props) {
 
   const [canSwipe, setCanSwipe] = useState(true);
 
-  const { things, getThings } = useThings(token);
-
-
-useEffect(()=>{
-getThings(token);
-}, []);
-  const { username, token, setToken, deleteToken } = useToken();
+  const { username, token, getToken, setToken, deleteToken } = useToken();
   const { identity, setIdentity, deleteIdentity } = useIdentity();
   const { input, setInput, deleteInput } = useInput();
+
+  const { things, getThings } = useThings(token);
+
+useEffect(() =>{
+
+console.log("ThingCarousel inputToken token things", token, things);
+
+},[things]);
+
+useEffect(() =>{
+console.log("ThingCarousel token", token);
+//getToken();
+getThings(token);
+}, [token]);
+
+//useEffect(()=>{
+//getThings(token);
+//}, []);
 
   const createdAt = Date.now();
 
@@ -109,7 +120,7 @@ getThings(token);
   return (
     <>
       {canSwipe ? "SWIPE" : "NO SWIPING"}
-
+<br />
       <Carousel
         useKeyBoardArrows={canSwipe}
         showArrows={canSwipe}
@@ -120,6 +131,7 @@ getThings(token);
         swipeScrollTolerance={100}
         preventMovementUntilSwipeScrollTolerance={true}
       >
+
         {things.map((thing) => (
           <div key={thing.uuid}>
             <Thing

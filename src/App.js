@@ -27,7 +27,6 @@ import ThingsContainer from "../src/components/ThingContainer.js";
 
 import TemperatureHumidity from "../src/components/TemperatureHumidity.js";
 
-
 import Collection from "../src/components/Collection.js";
 import Host from "../src/components/Host.js";
 
@@ -71,15 +70,16 @@ export default function App({ componentName, ...props }) {
 
   const pathname = window.location.pathname;
 
-  const reg = /\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/g;
+  const reg =
+    /\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/g;
 
   const matches = pathname.match(reg);
 
-//  const [things, setThings] = useState([]);
+  //  const [things, setThings] = useState([]);
 
-const {things, getThings, setThings } = useThings(token);
+  const { things, getThings, setThings } = useThings();
 
-  const { username, token, setToken, deleteToken } = useToken();
+  const { username, token, setToken, deleteToken, isValidToken } = useToken();
   const { identity, setIdentity, deleteIdentity } = useIdentity();
   const { input, setInput, deleteInput } = useInput();
 
@@ -100,25 +100,25 @@ const {things, getThings, setThings } = useThings(token);
     //    loadThings();
   }, [identity]);
 
-  useEffect(() => {
-console.log("App [] start");
-//    loadThings();
-getThings(token);
-  }, []);
+//  useEffect(() => {
+//    console.log("App [] start");
+    //    loadThings();
+//    getThings(token);
+//  }, []);
 
   useEffect(() => {
     console.log("App things", things);
   }, [things]);
 
-  useEffect(() => {
-    console.log("App token", token);
-//    loadThings();
-getThings(token);
-  }, [token]);
+//  useEffect(() => {
+//    console.log("App token", token);
+    //    loadThings();
+//    getThings(token);
+//  }, [token]);
 
-  useEffect(() => {
-    console.log("App identity", identity);
-  }, [identity]);
+//  useEffect(() => {
+//    console.log("App identity", identity);
+//  }, [identity]);
 
   function handleCollectionChange(things) {
     //   setThings(things);
@@ -128,16 +128,18 @@ getThings(token);
       return;
     }
 
+if (things.length === 0) {return;}
+
     const u = uuidv4();
     setUuid(u);
     setThings(things);
     getThings(token);
-//    loadThings();
+    //    loadThings();
   }
 
   return (
     <>
-      THING-REACT 23 December 2022 3fdd
+      THING-REACT 25 December 2022 ec2c
       <br />
       {identity && <Identity identity={identity} />}
       {token && token.message}
@@ -151,7 +153,9 @@ getThings(token);
                 <ThingCarousel token={token} things={things} />
               </>
             }
-          >SLASH THINGCAROUSEL</Route>
+          >
+            SLASH THINGCAROUSEL
+          </Route>
 
           <Route
             exact
@@ -167,19 +171,31 @@ getThings(token);
                 />
               </>
             }
-          >THINGS</Route>
+          >
+            THINGS
+          </Route>
 
-          <Route exact path="/snapshot/:uuid/temperature-humidity" element={<Snapshot
+          <Route
+            exact
+            path="/snapshot/:uuid/temperature-humidity"
+            element={
+              <Snapshot
                 datagram={{
                   to: "agent",
-                  subject: pathname.replace("/snapshot/", "").replace("/temperature-humidity/",""),
+                  subject: pathname
+                    .replace("/snapshot/", "")
+                    .replace("/temperature-humidity/", ""),
                   webPrefix: webPrefix,
                 }}
+              />
+            }
+          >
+            SNAPSHOT
+          </Route>
 
- />}>SNAPSHOT</Route>
-
-
-          <Route exact path="/snapshot/:text" element={<Snapshot />}>SNAPSHOT</Route>
+          <Route exact path="/snapshot/:text" element={<Snapshot />}>
+            SNAPSHOT
+          </Route>
 
           <Route
             exact
@@ -193,7 +209,9 @@ getThings(token);
                 }}
               />
             }
-          >HISTORY</Route>
+          >
+            HISTORY
+          </Route>
 
           <Route
             exact
@@ -209,7 +227,9 @@ getThings(token);
                 />
               </>
             }
-          >THINGCAROUSEL</Route>
+          >
+            THINGCAROUSEL
+          </Route>
 
           <Route
             exact
@@ -225,8 +245,9 @@ getThings(token);
                 />
               </>
             }
-          >THINGCAROUSEL</Route>
-
+          >
+            THINGCAROUSEL
+          </Route>
 
           <Route
             exact
@@ -242,14 +263,21 @@ getThings(token);
                 />
               </>
             }
-          >THINGCAROUSEL</Route>
+          >
+            THINGCAROUSEL
+          </Route>
         </Routes>
       </BrowserRouter>
       <ZuluTime />
       <Host />
       <MetaStack />
-      {devStack} ms End.
+      {devStack} ms
+      <br />
+      {token}
+      <br />
+      {isValidToken ? "VALID TOKEN" : "NOT VALID TOKEN"}
+      <br />
+      End.
     </>
   );
 }
-
