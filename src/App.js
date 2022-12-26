@@ -86,6 +86,54 @@ export default function App({ componentName, ...props }) {
   const createdAt = Date.now();
 
   const [devStack, setDevStack] = useState();
+  const [slug, setSlug] = useState();
+
+  useEffect(() => {
+
+console.log("App pathname", pathname);
+setSlug(pathname);
+},[pathname]);
+
+useEffect(() =>{
+if (things == null) {return;}
+//const { thing, index } = findThing(id);
+      const newThing = {};
+      const uuid = uuidv4();
+      newThing.uuid = uuid;
+      newThing.subject = newThing.pathname;
+      newThing.createdAt = createdAt;
+      
+      //console.log("ThingContainer spawnThing thing", thing);
+      console.log("App pathname createThing token", token);
+
+      // Spawn thing on designated stack.
+
+      const doNotWait = createThing(webPrefix, newThing, token)
+        .then((result) => {
+          console.log("App pathname createThing result", result);
+
+          newThing.associations = {
+            ...newThing.associations,
+            uuid: result.uuid,
+          };
+
+//          setThings(
+//            update(things, {
+//              $splice: [[index, 0, newThing]],
+//            })
+//          );
+
+//          props.onCollectionChange(things);
+        })
+        .catch((error) => {
+          console.log("spawnThing createThing error", error);
+        });
+
+
+
+
+  }, [slug, things]);
+
 
   useEffect(() => {
     if (!identity) {
