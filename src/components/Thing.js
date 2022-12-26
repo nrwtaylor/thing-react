@@ -292,6 +292,7 @@ const {open:initialExpanded} = props.datagram;
   const [flipped, setFlipped] = React.useState();
 
   const handleExpandClick = () => {
+console.log("Thing handleExpandClick expanded");
     setExpanded(true);
   };
 
@@ -304,6 +305,16 @@ const {open:initialExpanded} = props.datagram;
 
   const [uuid, setUuid] = useState();
   const [nuuid, setNuuid] = useState();
+
+useEffect(() =>{
+console.log("Thing start uuid", datagram.uuid);
+},[]);
+
+useEffect(() =>{
+
+console.log("Thing expanded uuid", expanded, datagram.uuid);
+
+},[expanded]);
 
   useEffect(() => {
     if (props.uuid === undefined) {
