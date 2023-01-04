@@ -114,6 +114,10 @@ export default function App({ componentName, ...props }) {
 
     const doNotWait = createThing(webPrefix, newThing, token)
       .then((result) => {
+
+if (result == null) {return;}
+
+
         console.log("App pathname createThing result", result);
 
         newThing.associations = {
@@ -188,7 +192,7 @@ export default function App({ componentName, ...props }) {
 
   return (
     <>
-      THING-REACT 3 January 2023 e1f1
+      THING-REACT 3 January 2023 9d74
       <br />
       {identity && <Identity identity={identity} />}
       {token && token.message}

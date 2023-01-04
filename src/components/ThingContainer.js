@@ -13,6 +13,12 @@ import {
   setThing,
 } from "../util/database.js";
 
+import useThings from "../useThings.js";
+import useToken from "../useToken.js";
+import useIdentity from "../useIdentity.js";
+
+
+
 //import { wrap } from "analytics/lib/analytics.cjs";
 
 const style = {
@@ -26,8 +32,39 @@ const style = {
 export const ThingContainer = memo(function ThingContainer(props) {
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 
-  const { token } = props;
-  const [things, setThings] = useState(props.things);
+//  const { token } = props;
+
+  const { username, token, getToken, setToken, deleteToken } = useToken();
+  const { identity, setIdentity, deleteIdentity } = useIdentity();
+//  const { input, setInput, deleteInput } = useInput();
+
+  const [ modifiedThings, setModifiedThings ] = useState();
+
+//  const { things, getThings } = useThings(token);
+
+  useEffect(() => {
+    console.log("ThingCarousel token", token);
+    //getToken();
+    getThings(token);
+  }, [token]);
+
+
+
+  //  const [things, setThings] = useState(props.things);
+
+
+  const { things, getThings, setThings } = useThings();
+
+useEffect(() =>{
+console.log("ThingContainer token", token);
+}, [token]);
+
+useEffect(()=>{
+
+console.log("ThingContainer things", things);
+
+}, [things]);
+
   //const {dragAndDrop} = props;
   const findThing = useCallback(
     (id) => {
@@ -57,7 +94,7 @@ export const ThingContainer = memo(function ThingContainer(props) {
       );
 
       things.map((t, index) => {
-        const newT = { ...t, index:index };
+        const newT = { ...t, index: index };
 
         setThing(t.uuid, newT, token).then((result) => {
           console.log(result);
@@ -188,7 +225,6 @@ export const ThingContainer = memo(function ThingContainer(props) {
         .catch((error) => {
           console.log("spawnThing createThing error", error);
         });
-
     },
     [things]
   );
@@ -246,15 +282,14 @@ export const ThingContainer = memo(function ThingContainer(props) {
   //if (!token) {return (<>NO TOKEN</>);}
 
   return (
-<>
-    <div ref={drop} style={style}>
-
-      <Grid container spacing={3} direction="row">
-        {things && (
-          <>
-            {things.map((thing) => (
+    <>
+      <div ref={drop} style={style}>
+        <Grid container spacing={3} direction="row">
+          {things && (
+            <>
+              {things.map((thing) => (
                 <Card
-                  key={"card_"+thing.uuid}
+                  key={"card_" + thing.uuid}
                   id={`${thing.index}`}
                   card={thing}
                   text={thing && thing.text}
@@ -267,12 +302,12 @@ export const ThingContainer = memo(function ThingContainer(props) {
                   findCard={findThing}
                   token={token}
                 />
-            ))}
-          </>
-        )}
-      </Grid>
-   </div> 
-</>
+              ))}
+            </>
+          )}
+        </Grid>
+      </div>
+    </>
   );
 });
 

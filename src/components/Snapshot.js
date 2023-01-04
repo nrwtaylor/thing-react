@@ -144,6 +144,7 @@ console.log("Snapshot handleChangeStream c",c);
     <Forget uuid={datagram && datagram.uuid} callBack={callBack} />
   );
 
+//if (true) {
   if (false) {
     return (
       <>

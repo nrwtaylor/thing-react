@@ -134,8 +134,7 @@ export default function ThingCarousel(props) {
 
   return (
     <>
-      {pathname}
-      <br />
+      {/*pathname*/}
       {canSwipe ? "DECK VIEW" : "CARD VIEW"}
       <br />
       <Carousel
