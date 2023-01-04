@@ -76,8 +76,10 @@ function Trace(props) {
   const [lastAt, setLastAt] = useState();
 
   const availableWindows = ["", "1m", "2m", "10m", "15m", "30m", "1h"];
+ 
 
-  const { thing } = useThing({ subject: "day twilight" });
+  // This will get the twilight times.
+  //const { thing } = useThing({ subject: "day twilight" });
 
   useEffect(() => {
     if (data === undefined) {
@@ -187,6 +189,8 @@ function Trace(props) {
     return "";
     //return x;
   }
+
+  return <>Blank Trace 2</>;
 
   if (xSeriesData == null) {
     return null;
