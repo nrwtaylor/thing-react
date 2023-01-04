@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { getWebJson, getSnapshot } from "./util/database.js";
 import { humanTime, zuluTime } from "./util/time.js";
 
-
 //export default function useToken(inputToken) {
 export default function useSnapshot(input, inputSnapshotPollInterval) {
   const to = input;
@@ -19,7 +18,7 @@ export default function useSnapshot(input, inputSnapshotPollInterval) {
 
   const [snapshotGetTime, setSnapshotGetTime] = useState();
   const [snapshotResults, setSnapshotResults] = useState([]);
-const [sequentialErrorCount, setSequentialErrorCount] = useState();
+  const [sequentialErrorCount, setSequentialErrorCount] = useState();
   useEffect(() => {
     if (!inputSnapshotPollInterval) {
       return;
@@ -44,43 +43,43 @@ const [sequentialErrorCount, setSequentialErrorCount] = useState();
     return () => clearInterval(interval);
   }, [snapshotInterval]);
 
-useEffect(()=>{
-if (snapshot === undefined) {
-console.log("useSnapshot snapshot undefined");
+  useEffect(() => {
+    if (snapshot === undefined) {
+      console.log("useSnapshot snapshot undefined");
 
-return;}
-if (snapshotResults === undefined) {
-console.log("useSnapshot snapshotResults undefined");
-setSnapshotResults([{...snapshot, snapshotAt:zuluTime()}]);
+      return;
+    }
+    if (snapshotResults === undefined) {
+      console.log("useSnapshot snapshotResults undefined");
+      setSnapshotResults([{ ...snapshot, snapshotAt: zuluTime() }]);
 
+      return;
+    }
 
-return;}
+    console.log("useSnapshot snapshot", snapshot);
 
-console.log("useSnapshot snapshot", snapshot);
+    //const s = snapshotResults.push(snapshot);
+    //setSnapshotResults({...s, snapshotAt:zuluTime()});
 
+    const count = 0;
+    //snapshotResults.reverse().forEach((snapshotResult)=>{
 
-//const s = snapshotResults.push(snapshot);
-//setSnapshotResults({...s, snapshotAt:zuluTime()});
+    for (const snapshotResult of snapshotResults.reverse()) {
+      if (snapshotResult.error) {
+        count += 1;
+      }
+      if (!snapshot.error) {
+        break;
+      }
+      console.log(snapshotResult);
+    }
+    setSequentialErrorCount(count);
+  }, [snapshot]);
 
-const count = 0;
-//snapshotResults.reverse().forEach((snapshotResult)=>{
+  useEffect(() => {
+    console.log("sequentialErrorCount", sequentialErrorCount);
+  }, [sequentialErrorCount]);
 
-for (const snapshotResult of snapshotResults.reverse()) {
-
-if (snapshotResult.error) {count += 1;}
-if (!snapshot.error) {break;}
-console.log(snapshotResult);
-};
-setSequentialErrorCount(count);
-
-}, [snapshot]);
-
-
-useEffect(() =>{
-
-console.log("sequentialErrorCount", sequentialErrorCount);
-
-}, [sequentialErrorCount]);
   function getSnapshot() {
     const startTime = new Date();
     if (flag === "red") {
@@ -119,7 +118,7 @@ console.log("sequentialErrorCount", sequentialErrorCount);
       .catch((error) => {
         console.error("useSnapshot getWebJson error", error);
         setFlag("yellow");
-        return {...snapshot, error};
+        return { ...snapshot, error };
         //return;
       });
   }

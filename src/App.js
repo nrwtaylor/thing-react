@@ -89,51 +89,50 @@ export default function App({ componentName, ...props }) {
   const [slug, setSlug] = useState();
 
   useEffect(() => {
+    console.log("App pathname", pathname);
+    setSlug(pathname);
 
-console.log("App pathname", pathname);
-setSlug(pathname);
-},[pathname]);
+  }, [pathname]);
 
-useEffect(() =>{
-if (things == null) {return;}
-//const { thing, index } = findThing(id);
-      const newThing = {};
-      const uuid = uuidv4();
-      newThing.uuid = uuid;
-      newThing.subject = newThing.pathname;
-      newThing.createdAt = createdAt;
-      
-      //console.log("ThingContainer spawnThing thing", thing);
-      console.log("App pathname createThing token", token);
-
-      // Spawn thing on designated stack.
-
-      const doNotWait = createThing(webPrefix, newThing, token)
-        .then((result) => {
-          console.log("App pathname createThing result", result);
-
-          newThing.associations = {
-            ...newThing.associations,
-            uuid: result.uuid,
-          };
-
-//          setThings(
-//            update(things, {
-//              $splice: [[index, 0, newThing]],
-//            })
-//          );
-
-//          props.onCollectionChange(things);
-        })
-        .catch((error) => {
-          console.log("spawnThing createThing error", error);
-        });
+  useEffect(() => {
+    if (things == null) {
+      return;
+    }
 
 
+    //const { thing, index } = findThing(id);
+    const newThing = {};
+    const uuid = uuidv4();
+    newThing.uuid = uuid;
+    newThing.subject = newThing.pathname;
+    newThing.createdAt = createdAt;
 
+    //console.log("ThingContainer spawnThing thing", thing);
+    console.log("App pathname createThing token", token);
 
-  }, [slug, things]);
+    // Spawn thing on designated stack.
 
+    const doNotWait = createThing(webPrefix, newThing, token)
+      .then((result) => {
+        console.log("App pathname createThing result", result);
+
+        newThing.associations = {
+          ...newThing.associations,
+          uuid: result.uuid,
+        };
+
+        //          setThings(
+        //            update(things, {
+        //              $splice: [[index, 0, newThing]],
+        //            })
+        //          );
+
+        //          props.onCollectionChange(things);
+      })
+      .catch((error) => {
+        console.log("spawnThing createThing error", error);
+      });
+  }, [slug, things, token]);
 
   useEffect(() => {
     if (!identity) {
@@ -148,25 +147,25 @@ if (things == null) {return;}
     //    loadThings();
   }, [identity]);
 
-//  useEffect(() => {
-//    console.log("App [] start");
-    //    loadThings();
-//    getThings(token);
-//  }, []);
+  //  useEffect(() => {
+  //    console.log("App [] start");
+  //    loadThings();
+  //    getThings(token);
+  //  }, []);
 
   useEffect(() => {
     console.log("App things", things);
   }, [things]);
 
-//  useEffect(() => {
-//    console.log("App token", token);
-    //    loadThings();
-//    getThings(token);
-//  }, [token]);
+  //  useEffect(() => {
+  //    console.log("App token", token);
+  //    loadThings();
+  //    getThings(token);
+  //  }, [token]);
 
-//  useEffect(() => {
-//    console.log("App identity", identity);
-//  }, [identity]);
+  //  useEffect(() => {
+  //    console.log("App identity", identity);
+  //  }, [identity]);
 
   function handleCollectionChange(things) {
     //   setThings(things);
@@ -176,7 +175,9 @@ if (things == null) {return;}
       return;
     }
 
-if (things.length === 0) {return;}
+    if (things.length === 0) {
+      return;
+    }
 
     const u = uuidv4();
     setUuid(u);
@@ -187,7 +188,7 @@ if (things.length === 0) {return;}
 
   return (
     <>
-      THING-REACT 25 December 2022 ec2c
+      THING-REACT 3 January 2023 e1f1
       <br />
       {identity && <Identity identity={identity} />}
       {token && token.message}
@@ -241,7 +242,19 @@ if (things.length === 0) {return;}
             SNAPSHOT
           </Route>
 
-          <Route exact path="/snapshot/:text" element={<Snapshot />}>
+          <Route
+            exact
+            path="/snapshot/:text"
+            element={
+              <Snapshot
+                datagram={{
+                  to: "agent",
+                  subject: pathname,
+                  webPrefix: webPrefix,
+                }}
+              />
+            }
+          >
             SNAPSHOT
           </Route>
 
@@ -268,10 +281,10 @@ if (things.length === 0) {return;}
               <>
                 <ThingCarousel
                   token={token}
-                  things={[
-                    { to: "agent", subject: pathname, webPrefix: webPrefix },
-                    ...things,
-                  ]}
+ //                 things={[
+ //                   { to: "agent", subject: pathname, webPrefix: webPrefix },
+ //                   ...things,
+ //                 ]}
                 />
               </>
             }
@@ -286,10 +299,10 @@ if (things.length === 0) {return;}
               <>
                 <ThingCarousel
                   token={token}
-                  things={[
-                    { to: "agent", subject: pathname, webPrefix: webPrefix },
-                    ...things,
-                  ]}
+   //               things={[
+   //                 { to: "agent", subject: pathname, webPrefix: webPrefix },
+   //                 ...things,
+   //               ]}
                 />
               </>
             }
@@ -304,10 +317,10 @@ if (things.length === 0) {return;}
               <>
                 <ThingCarousel
                   token={token}
-                  things={[
-                    { to: "agent", subject: pathname, webPrefix: webPrefix },
-                    ...things,
-                  ]}
+     //             things={[
+     //               { to: "agent", subject: pathname, webPrefix: webPrefix },
+     //               ...things,
+     //             ]}
                 />
               </>
             }
@@ -321,7 +334,7 @@ if (things.length === 0) {return;}
       <MetaStack />
       {devStack} ms
       <br />
-      {token}
+      {/*token*/}
       <br />
       {isValidToken ? "VALID TOKEN" : "NOT VALID TOKEN"}
       <br />

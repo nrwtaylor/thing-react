@@ -96,6 +96,7 @@ function Snapshot(props) {
   };
 
   useEffect(() => {
+    console.log("Snapshot snapshot", snapshot);
     setData(snapshot);
   }, [snapshot]);
 

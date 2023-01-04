@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { getWebJson, getSnapshot } from "./util/database.js";
 import { humanTime, zuluTime } from "./util/time.js";
 
-
 //export default function useToken(inputToken) {
 export default function useThingReport(input, inputThingReportPollInterval) {
   const to = input;
@@ -19,7 +18,7 @@ export default function useThingReport(input, inputThingReportPollInterval) {
 
   const [thingReportGetTime, setThingReportGetTime] = useState();
   const [thingReportResults, setThingReportResults] = useState([]);
-const [sequentialErrorCount, setSequentialErrorCount] = useState();
+  const [sequentialErrorCount, setSequentialErrorCount] = useState();
   useEffect(() => {
     if (!inputThingReportPollInterval) {
       return;
@@ -44,43 +43,42 @@ const [sequentialErrorCount, setSequentialErrorCount] = useState();
     return () => clearInterval(interval);
   }, [thingReportInterval]);
 
-useEffect(()=>{
-if (thingReport === undefined) {
-console.log("useSnapshot snapshot undefined");
+  useEffect(() => {
+    if (thingReport === undefined) {
+      console.log("useSnapshot snapshot undefined");
 
-return;}
-if (thingReportResults === undefined) {
-console.log("useThingReport thingReportResults undefined");
-setThingReportResults([{...thingReport, thingReportAt:zuluTime()}]);
+      return;
+    }
+    if (thingReportResults === undefined) {
+      console.log("useThingReport thingReportResults undefined");
+      setThingReportResults([{ ...thingReport, thingReportAt: zuluTime() }]);
 
+      return;
+    }
 
-return;}
+    console.log("useSnapshot snapshot", thingReport);
 
-console.log("useSnapshot snapshot", thingReport);
+    //const s = snapshotResults.push(snapshot);
+    //setSnapshotResults({...s, snapshotAt:zuluTime()});
 
+    const count = 0;
+    //snapshotResults.reverse().forEach((snapshotResult)=>{
 
-//const s = snapshotResults.push(snapshot);
-//setSnapshotResults({...s, snapshotAt:zuluTime()});
+    for (const thingReportResult of thingReportResults.reverse()) {
+      if (thingReportResult.error) {
+        count += 1;
+      }
+      if (!thingReport.error) {
+        break;
+      }
+      console.log(thingReportResult);
+    }
+    setSequentialErrorCount(count);
+  }, [thingReport]);
 
-const count = 0;
-//snapshotResults.reverse().forEach((snapshotResult)=>{
-
-for (const thingReportResult of thingReportResults.reverse()) {
-
-if (thingReportResult.error) {count += 1;}
-if (!thingReport.error) {break;}
-console.log(thingReportResult);
-};
-setSequentialErrorCount(count);
-
-}, [thingReport]);
-
-
-useEffect(() =>{
-
-console.log("sequentialErrorCount", sequentialErrorCount);
-
-}, [sequentialErrorCount]);
+  useEffect(() => {
+    console.log("sequentialErrorCount", sequentialErrorCount);
+  }, [sequentialErrorCount]);
   function getThingReport() {
     const startTime = new Date();
     if (flag === "red") {
@@ -119,13 +117,16 @@ console.log("sequentialErrorCount", sequentialErrorCount);
       .catch((error) => {
         console.error("useSnapshot getWebJson error", error);
         setFlag("yellow");
-        return {...thingReport, error};
+        return { ...thingReport, error };
         //return;
       });
   }
 
   const saveThingReport = (userThingReport) => {
-    console.log("useThingReport saveThingReport userThingReport", userThingReport);
+    console.log(
+      "useThingReport saveThingReport userThingReport",
+      userThingReport
+    );
     setThingReport(userThingReport);
   };
 

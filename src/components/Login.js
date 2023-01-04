@@ -79,6 +79,13 @@ console.log("Login things", things);
       password: pass,
     });
 
+
+if (t === {}) {
+
+setMessage("Got an empty response.");
+
+}
+
 setToken(t);
 
     console.log("Login handleSubmit token", token);

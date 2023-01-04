@@ -103,6 +103,7 @@ export function Get(thing) {
 
 export function createThing(webPrefix, datagram, token) {
   const u = apiPrefix + "/thing/";
+  console.log("database createThing u", u);
   return axios
     .post(u, datagram, {
       headers: {

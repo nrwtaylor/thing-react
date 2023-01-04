@@ -20,9 +20,9 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 export default function ThingCarousel(props) {
-//  const { things } = props;
-//const {token:inputToken} = props;
-//const {token} = props;
+  //  const { things } = props;
+  //const {token:inputToken} = props;
+  //const {token} = props;
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
   //const testUuid0 = process.env.REACT_APP_THING_0;
   //const testUuid1 = process.env.REACT_APP_THING_1;
@@ -43,23 +43,23 @@ export default function ThingCarousel(props) {
   const { identity, setIdentity, deleteIdentity } = useIdentity();
   const { input, setInput, deleteInput } = useInput();
 
+  const [ modifiedThings, setModifiedThings ] = useState();
+
   const { things, getThings } = useThings(token);
 
-useEffect(() =>{
+  useEffect(() => {
+    console.log("ThingCarousel inputToken token things", token, things);
+  }, [things]);
 
-console.log("ThingCarousel inputToken token things", token, things);
+  useEffect(() => {
+    console.log("ThingCarousel token", token);
+    //getToken();
+    getThings(token);
+  }, [token]);
 
-},[things]);
-
-useEffect(() =>{
-console.log("ThingCarousel token", token);
-//getToken();
-getThings(token);
-}, [token]);
-
-//useEffect(()=>{
-//getThings(token);
-//}, []);
+  //useEffect(()=>{
+  //getThings(token);
+  //}, []);
 
   const createdAt = Date.now();
 
@@ -79,7 +79,12 @@ getThings(token);
 
   useEffect(() => {
     console.log("ThingCarousel things", things);
-  }, [things]);
+
+    const tempModifiedThings = things.map((thing) => {
+      return { ...thing, expanded: !canSwipe };
+    });
+    setModifiedThings(tempModifiedThings);
+  }, [things, canSwipe]);
 
   function handleCollectionChange(things) {
     //   setThings(things);
@@ -110,17 +115,29 @@ getThings(token);
 */
 
   function handleOpenThing(t) {
+    console.log("ThingCarousel handleOpenThing");
     setCanSwipe(false);
   }
 
   function handleFoldThing(t) {
+    console.log("ThingCarousel handleFoldThing");
     setCanSwipe(true);
+  }
+
+  if (canSwipe == null) {
+    return null;
+  }
+
+  if (modifiedThings == null) {
+    return null;
   }
 
   return (
     <>
-      {canSwipe ? "SWIPE" : "NO SWIPING"}
-<br />
+      {pathname}
+      <br />
+      {canSwipe ? "DECK VIEW" : "CARD VIEW"}
+      <br />
       <Carousel
         useKeyBoardArrows={canSwipe}
         showArrows={canSwipe}
@@ -131,24 +148,28 @@ getThings(token);
         swipeScrollTolerance={100}
         preventMovementUntilSwipeScrollTolerance={true}
       >
-
-        {things.map((thing) => (
-          <div key={thing.uuid}>
-            <Thing
-              flavour={"item"}
-              token={token}
-              things={things}
-              uuid={thing.uuid}
-              datagram={thing}
-              onFold={(t) => {
-                handleFoldThing(t);
-              }}
-              onOpen={(t) => {
-                handleOpenThing(t);
-              }}
-            />
-          </div>
-        ))}
+        {modifiedThings.map((thing) => {
+          //const modifiedThing = {...thing, expanded:canSwipe};
+          const modifiedThing = thing;
+          return (
+            <div key={thing.uuid}>
+              <Thing
+                key={thing.uuid}
+                flavour={"item"}
+                token={token}
+                things={things}
+                uuid={thing.uuid}
+                datagram={modifiedThing}
+                onFold={(t) => {
+                  handleFoldThing(t);
+                }}
+                onOpen={(t) => {
+                  handleOpenThing(t);
+                }}
+              />
+            </div>
+          );
+        })}
       </Carousel>
     </>
   );

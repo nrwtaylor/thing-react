@@ -4,13 +4,19 @@ import { getThings as getThingies, createThing, makeObservable } from "./util/da
 import { v4 as uuidv4 } from "uuid";
 
 import useToken from "./useToken.js";
-
 const userThings = makeObservable({ things: [], count: 0 });
 
 const apiPrefix = process.env.REACT_APP_API_PREFIX;
 const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 
   const defaultThings = [
+{
+to:"localhost",
+subject: window.location.pathname.replace(/^\/|\/$/g, ''),
+createdAt: Date.now(),
+uuid: uuidv4(),
+input:null
+},
     {
       index: 20,
       to: "localhost",

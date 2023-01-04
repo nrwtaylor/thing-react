@@ -22,6 +22,8 @@ import Text from "../components/Text.js";
 import History from "../components/History.js";
 import Power from "../components/Power.js";
 import Nuuid from "../components/Nuuid.js";
+import Messages from "../components/Messages.js";
+
 
 import Weather from "../components/Weather.js";
 
@@ -57,6 +59,8 @@ import { getThingReport, setThing, txCount, rxCount, txData, rxData ,rxErrorCoun
 import { humanTime, zuluTime } from "../util/time.js";
 
 import useMessages from "../useMessages";
+import useThingReport from "../useThingReport";
+import {getSlug} from "../util/text.js";
 
 //import{ Collapse} from '@mui/core';
 
@@ -186,6 +190,8 @@ export default function Thing(props) {
 
   const { messages, addMessage } = useMessages();
 
+  //const {thingReport} = useThingReport(datagram.subject);
+
   const { to, subject, webPrefix } = datagram;
 
   const startAt = props.createdAt;
@@ -287,7 +293,9 @@ export default function Thing(props) {
 
 const {open:initialExpanded} = props.datagram;
 
-  const [expanded, setExpanded] = React.useState(initialExpanded === "open");
+//  const [expanded, setExpanded] = React.useState(initialExpanded === "open");
+  const [expanded, setExpanded] = React.useState(props.datagram.expanded);
+
 
   const [flipped, setFlipped] = React.useState();
 
@@ -612,6 +620,7 @@ handleSpawnThing({'subject':error.message});
   const handleOpenThing = (e) => {
 //setExpanded(true);
     handleExpandClick(e);
+ //   setExpanded(true);
     if (props.onChange) {
       props.onChange("open");
     }
@@ -623,6 +632,7 @@ handleSpawnThing({'subject':error.message});
 
   const handleFoldThing = (e) => {
     handleFoldClick();
+//setExpanded(false);
     if (props.onChange) {
       props.onChange("fold");
     }
@@ -647,13 +657,13 @@ handleSpawnThing({'subject':error.message});
   const bGreen = "#00ff0000";
 
 const DataReport = () =>{
-
+//const expanded =true;
 return (
 <>
 {expanded && (<>
 TXPACKETS{' '}{txCount}
 <br />
-RXPACKETS{' '}{rxCount}
+RXPACKETS{' '}{rxCount + rxErrorCount}
 <br />
 
 
@@ -668,7 +678,7 @@ TXERRORCOUNT{' '}{txErrorCount}
 
 
 {!expanded && (<>
-PACKETS{' '}{txCount}{'/'}{rxCount}
+PACKETS{' '}{txCount}{'/'}{rxCount + rxErrorCount}
 <br /></>)}
 
 
@@ -676,6 +686,7 @@ PACKETS{' '}{txCount}{'/'}{rxCount}
 )
 
 }
+
 
   return (
     <>
@@ -713,7 +724,6 @@ PACKETS{' '}{txCount}{'/'}{rxCount}
         <Button onClick={handleSpawnThing}>SPAWN</Button>
 
         <Button onClick={handleForgetThing}>FORGET</Button>
-{expanded ? "EXPANDED" : "NOT EXPANDED"}
         {!expanded && (
           <Button onClick={handleFlipThing}>
             {flipped ? "MESSAGE" : "SOURCE"}
@@ -788,6 +798,14 @@ PACKETS{' '}{txCount}{'/'}{rxCount}
               subject: data && data.thingReport && data.thingReport.sms,
             }}
           />
+
+{data && data.thingReport && data.thingReport.link && (
+
+<><a href={data.thingReport.link} >{data.thingReport.link}</a>
+<br />
+</>
+
+)}
 
           {!expanded && !flipped && (
             <>
@@ -999,6 +1017,17 @@ PACKETS{' '}{txCount}{'/'}{rxCount}
                 </div>
               )}
 
+              {subject && subject.toLowerCase().indexOf("messages") !== -1 && (
+                <div>
+                  <Messages
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
+
 
               {subject && subject.toLowerCase().indexOf("temperature-humidity") !== -1 && (
                 <div>
@@ -1067,7 +1096,7 @@ PACKETS{' '}{txCount}{'/'}{rxCount}
                   agent_input={webPrefix}
                 />
                 {data && data.thingReport && data.thingReport.agent}
-                MESSAGES
+      {/*          MESSAGES
                 {messages &&
                   messages.map((message) => {
                     return (
@@ -1078,6 +1107,7 @@ PACKETS{' '}{txCount}{'/'}{rxCount}
                     );
                   })}
                 <br />
+*/}
               </div>
               <div>
                 {/* Note */}
