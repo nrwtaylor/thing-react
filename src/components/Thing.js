@@ -8,10 +8,7 @@ import Datagram from "../components/Datagram.js";
 import Barometer from "../components/Barometer.js";
 import MotionReference from "../components/MotionReference.js";
 
-
-
 import GlobalPositioningSystem from "../components/GlobalPositioningSystem.js";
-
 
 import ToGoTime from "../components/ToGoTime.js";
 import Poll from "../components/Poll.js";
@@ -24,18 +21,13 @@ import Power from "../components/Power.js";
 import Nuuid from "../components/Nuuid.js";
 import Messages from "../components/Messages.js";
 
-
 import Weather from "../components/Weather.js";
 
 import TemperatureHumidity from "../components/TemperatureHumidity.js";
 
-
-
 import InertialReference from "../components/InertialReference.js";
 
-
 import Error from "../components/Error.js";
-
 
 import ThingThumbnail from "../components/ThingThumbnail.js";
 
@@ -52,17 +44,25 @@ import { isText } from "../util/text.js";
 
 import Associations from "../components/Associations.js";
 
-//import useDatagram from "./useDatagram";
-
 import { v4 as uuidv4, uuid as uuidLibrary } from "uuid";
-import { getThingReport, setThing, txCount, rxCount, txData, rxData ,rxErrorCount, txErrorCount} from "../util/database.js";
+import {
+  getThingReport,
+  setThing,
+  txCount,
+  rxCount,
+  txData,
+  rxData,
+  rxErrorCount,
+  txErrorCount,
+} from "../util/database.js";
 import { humanTime, zuluTime } from "../util/time.js";
 
 import useMessages from "../useMessages";
 import useThingReport from "../useThingReport";
-import {getSlug} from "../util/text.js";
+import useThing from "../useThing";
 
-//import{ Collapse} from '@mui/core';
+
+import { getSlug } from "../util/text.js";
 
 import { styled } from "@mui/material/styles";
 
@@ -95,6 +95,8 @@ import { red } from "@mui/material/colors";
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
 }
+
+const defaultWebPrefix = process.env.REACT_APP_WEB_PREFIX;
 
 const useStyles = makeStyles((theme) => ({
   gridItem: {
@@ -176,7 +178,7 @@ export default function Thing(props) {
 
   const classes = useStyles();
 
-  const { datagram, token } = props;
+  const { datagram, token, canOpen, open, canFold } = props;
 
   var { agentInput } = props;
 
@@ -190,9 +192,23 @@ export default function Thing(props) {
 
   const { messages, addMessage } = useMessages();
 
-  //const {thingReport} = useThingReport(datagram.subject);
+  const webPrefix = datagram.webPrefix ? datagram.webPrefix : defaultWebPrefix;
+  //  const webPrefix = datagram.webPrefix ? datagram.webPrefix : "https://stackr.ca/";
 
-  const { to, subject, webPrefix } = datagram;
+const u = webPrefix+ getSlug(datagram.subject) + ".json";
+
+//  const { thingReport: data, getThingReport } = useThingReport(
+//    webPrefix + datagram.subject + ".json",
+//    10000
+//  );
+const { thing: t, spawnThing, flipThing, forgetThing } = useThing(datagram);
+  const { thingReport: data, getThingReport } = useThingReport(
+    u,
+    10000
+  );
+
+
+  const { to, subject } = datagram;
 
   const startAt = props.createdAt;
 
@@ -226,6 +242,7 @@ export default function Thing(props) {
   function setSubject(d) {
     datagram.subject = d;
     setDatagram({ ...datagram });
+    //refreshThingReport();
   }
 
   function setDatagram(d) {
@@ -234,20 +251,25 @@ export default function Thing(props) {
     console.log("Thing setDatagram d", d);
     if (!d.pollInterval) return;
 
-
     //setPollInterval(d.pollInterval);
   }
 
   useEffect(() => {
-    console.log("Thing datagram", datagram);
+    console.log(
+      "Thing datagram changed",
+      datagram && datagram.subject,
+      datagram
+    );
     if (!datagram) return;
     setTimedInterval(datagram.pollInterval);
+
+    //refreshThingReport();
 
     console.log("Thing datagram uuid", uuid);
 
     setThing(datagram.uuid, datagram, token)
       .then((result) => {
-        addMessage(datagram.subject);
+        addMessage("Set thing " + datagram.subject);
 
         console.log("Thing setThing result", result);
       })
@@ -291,16 +313,52 @@ export default function Thing(props) {
 
   const runTime = Date.now() - startAt;
 
-const {open:initialExpanded} = props.datagram;
+  //const { open: initialExpanded } = props.datagram;
 
-//  const [expanded, setExpanded] = React.useState(initialExpanded === "open");
-  const [expanded, setExpanded] = React.useState(props.datagram.expanded);
-
+  //  const [expanded, setExpanded] = React.useState(initialExpanded === "open");
+  //const [expanded, setExpanded] = React.useState(props.datagram.expanded);
+  const [expanded, setExpanded] = useState(open);
 
   const [flipped, setFlipped] = React.useState();
 
+  useEffect(() => {
+    const requestedAt = Date.now();
+    setAgentRequestedAt(requestedAt);
+
+    console.log(
+      "Thing thingReport data",
+      data && data.datagram && data.datagram.text,
+      data
+    );
+    //setData(thingReport);
+    if (
+      data.thingReport &&
+      data.thingReport.error &&
+      data.thingReport.error.message
+    ) {
+      //console.log("Thing getThingReport", result.thingReport.error.message);
+      console.error("Thing getThingReport error", data.thingReport.error);
+      setError(data.thingReport.error.message);
+    }
+
+    const elapsedTime = Date.now() - requestedAt;
+
+    if (data && data.thingReport && data.thingReport.png) {
+      var base64Icon = "data:image/png;base64," + data.thingReport.png;
+      setPNG(base64Icon);
+    }
+
+    setTimedInterval(elapsedTime);
+
+    const p = requestedAt + pollInterval;
+    setNextRunAt(p);
+    console.log("nextRunAt p", p, zuluTime(new Date(p)));
+
+    setFlag("green");
+  }, [data]);
+
   const handleExpandClick = () => {
-console.log("Thing handleExpandClick expanded");
+    console.log("Thing handleExpandClick expanded");
     setExpanded(true);
   };
 
@@ -314,15 +372,13 @@ console.log("Thing handleExpandClick expanded");
   const [uuid, setUuid] = useState();
   const [nuuid, setNuuid] = useState();
 
-useEffect(() =>{
-console.log("Thing start uuid", datagram.uuid);
-},[]);
+  useEffect(() => {
+    console.log("Thing start uuid", datagram.uuid);
+  }, []);
 
-useEffect(() =>{
-
-console.log("Thing expanded uuid", expanded, datagram.uuid);
-
-},[expanded]);
+  useEffect(() => {
+    console.log("Thing expanded uuid", expanded, datagram.uuid);
+  }, [expanded]);
 
   useEffect(() => {
     if (props.uuid === undefined) {
@@ -341,29 +397,31 @@ console.log("Thing expanded uuid", expanded, datagram.uuid);
 
   const [error, setError] = useState();
 
+  /*
   const [data, setData] = useState({
     thing: { uuid: "X" },
     thing_report: { sms: "No response. Yet." },
   });
+*/
 
   useEffect(() => {
     console.info("Thing started");
     getUuid();
-    getResponse(webPrefix);
+    //getResponse(webPrefix);
   }, []);
 
-
   useEffect(() => {
-if (!uuid) {return;}
+    if (!uuid) {
+      return;
+    }
     console.info("Thing uuid", uuid);
   }, [uuid]);
-
 
   useEffect(() => {
     console.log("Thing subject changed", subject);
     //setFlag('green');
-    getResponse(webPrefix, true);
-    setDatagram({...datagram, subject: subject});
+    //   getResponse(webPrefix, true);
+    setDatagram({ ...datagram, subject: subject });
   }, [subject]);
 
   // refactor out
@@ -372,7 +430,8 @@ if (!uuid) {return;}
   }
 
   function handleRefresh() {
-    getResponse(webPrefix, true);
+    //    getResponse(webPrefix, true);
+    getThingReport();
   }
 
   function handlePollIntervalButton() {
@@ -389,58 +448,6 @@ if (!uuid) {return;}
   useEffect(() => {
     console.log("Thing aggressivePoll", aggressivePoll);
   }, [aggressivePoll]);
-
-  function getResponse(webPrefix = null, flagOverride = false) {
-    if (webPrefix === null) {
-      webPrefix = process.env.REACT_APP_WEB_PREFIX;
-    }
-
-    if (flag === "red" && flagOverride === false) {
-      return;
-    }
-    setFlag("red");
-
-    const requestedAt = Date.now();
-    setAgentRequestedAt(requestedAt);
-
-    getThingReport(datagram, token)
-      .then((result) => {
-        console.log("Thing getThingReport", result);
-        setData(result);
-
-        if (
-          result &&
-          result.thingReport &&
-          result.thingReport.error &&
-          result.thingReport.error.message
-        ) {
-          //console.log("Thing getThingReport", result.thingReport.error.message);
-          console.error("Thing getThingReport error", result.thingReport.error);
-          setError(result.thingReport.error.message);
-        }
-
-        const elapsedTime = Date.now() - requestedAt;
-
-        if (result && result.thingReport && result.thingReport.png) {
-          var base64Icon = "data:image/png;base64," + result.thingReport.png;
-          setPNG(base64Icon);
-        }
-
-        setTimedInterval(elapsedTime);
-
-        const p = requestedAt + pollInterval;
-        setNextRunAt(p);
-        console.log("nextRunAt p", p, zuluTime(new Date(p)));
-
-        setFlag("green");
-        //setError(null);
-      })
-      .catch((error) => {
-        setError("Did not get Thingreport." + error);
-        console.error("Thing getThing error", error);
-      });
-    return;
-  }
 
   useEffect(() => {
     // This sets the polling rate to the maximum achievable.
@@ -477,6 +484,8 @@ if (!uuid) {return;}
   function Forget() {}
 
   const handleForgetThing = (e) => {
+//    forgetThing();
+//return;
     if (props.onChange) {
       props.onChange("forget");
     }
@@ -488,6 +497,8 @@ if (!uuid) {return;}
 
   // Call getResponse on a Timer.
   // Check if the flag has changed.
+
+  /*
   useEffect(() => {
     // If still processing the last one,
     // Skip a beat, do not request another.
@@ -514,6 +525,7 @@ if (!uuid) {return;}
     return () => clearInterval(interval);
     //  }, [flag]);
   }, [datagram]);
+*/
 
   useEffect(() => {
     // If still processing the last one,
@@ -587,7 +599,8 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
 
   const handleFlipThing = (e) => {
     setFlipped(!flipped);
-
+flipThing();
+return;
     if (props.onChange) {
       props.onChange("flip");
     }
@@ -597,14 +610,16 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
     }
   };
 
-useEffect(() =>{
-if (!error) {return;}
-handleSpawnThing({'subject':error.message});
-
-}, [error]);
-
+  useEffect(() => {
+    if (!error) {
+      return;
+    }
+    handleSpawnThing({ subject: error.message });
+  }, [error]);
 
   const handleSpawnThing = (e) => {
+    spawnThing();
+return;
     if (props.onChange) {
       props.onChange("spawn");
       return;
@@ -618,9 +633,9 @@ handleSpawnThing({'subject':error.message});
   };
 
   const handleOpenThing = (e) => {
-//setExpanded(true);
+    //setExpanded(true);
     handleExpandClick(e);
- //   setExpanded(true);
+    //   setExpanded(true);
     if (props.onChange) {
       props.onChange("open");
     }
@@ -632,7 +647,7 @@ handleSpawnThing({'subject':error.message});
 
   const handleFoldThing = (e) => {
     handleFoldClick();
-//setExpanded(false);
+    //setExpanded(false);
     if (props.onChange) {
       props.onChange("fold");
     }
@@ -656,42 +671,41 @@ handleSpawnThing({'subject':error.message});
   const bRed = "#ff000080";
   const bGreen = "#00ff0000";
 
-const DataReport = () =>{
-//const expanded =true;
-return (
-<>
-{expanded && (<>
-TXPACKETS{' '}{txCount}
-<br />
-RXPACKETS{' '}{rxCount + rxErrorCount}
-<br />
+  const DataReport = () => {
+    //const expanded =true;
+    return (
+      <>
+        {expanded && (
+          <>
+            TXPACKETS {txCount}
+            <br />
+            RXPACKETS {rxCount + rxErrorCount}
+            <br />
+            TXDATA {txData}
+            <br />
+            RXDATA {rxData}
+            <br />
+            RXERRORCOUNT {rxErrorCount}
+            <br />
+            TXERRORCOUNT {txErrorCount}
+            <br />
+          </>
+        )}
 
-
-TXDATA{' '}{txData}
-<br />
-RXDATA{' '}{rxData}
-<br />
-RXERRORCOUNT{' '}{rxErrorCount}
-<br />
-TXERRORCOUNT{' '}{txErrorCount}
-<br /></>)}
-
-
-{!expanded && (<>
-PACKETS{' '}{txCount}{'/'}{rxCount + rxErrorCount}
-<br /></>)}
-
-
-</>
-)
-
-}
-
+        {!expanded && (
+          <>
+            PACKETS {txCount}
+            {"/"}
+            {rxCount + rxErrorCount}
+            <br />
+          </>
+        )}
+      </>
+    );
+  };
 
   return (
     <>
-
-
       <Card
         disableGutters={true}
         //sx={{ borderColor: flag }}
@@ -700,7 +714,7 @@ PACKETS{' '}{txCount}{'/'}{rxCount + rxErrorCount}
           borderColor: flag === "red" ? bRed : bGreen,
           borderWidth: "10px",
           borderStyle: "solid",
-//          border: "10px solid",
+          //          border: "10px solid",
           //          backgroundColor: flag === "red" ? bRed : bGreen,
         }}
         raised={flag === "red" ? true : false}
@@ -719,7 +733,7 @@ PACKETS{' '}{txCount}{'/'}{rxCount + rxErrorCount}
         />
         {token && token.message}
 
-        {error && (<Error error={error} agentInput={data.thingReport} />)}
+        {error && <Error error={error} agentInput={data.thingReport} />}
 
         <Button onClick={handleSpawnThing}>SPAWN</Button>
 
@@ -730,8 +744,8 @@ PACKETS{' '}{txCount}{'/'}{rxCount + rxErrorCount}
           </Button>
         )}
 
-        {expanded && <Button onClick={handleFoldThing}>FOLD</Button>}
-        {!expanded && <Button onClick={handleOpenThing}>OPEN</Button>}
+        {canFold && expanded && <Button onClick={handleFoldThing}>FOLD</Button>}
+        {canOpen && !expanded && <Button onClick={handleOpenThing}>OPEN</Button>}
 
         {/*<div onClick={handleExpandClick} >*/}
         <div>
@@ -769,7 +783,7 @@ PACKETS{' '}{txCount}{'/'}{rxCount + rxErrorCount}
               <br />
             </>
           )}
-          {!expanded && !flipped && (
+          {!flipped && (
             <Subject subject={subject} setSubject={setSubject} token={token} />
           )}
           {!expanded && !flipped && (
@@ -799,13 +813,12 @@ PACKETS{' '}{txCount}{'/'}{rxCount + rxErrorCount}
             }}
           />
 
-{data && data.thingReport && data.thingReport.link && (
-
-<><a href={data.thingReport.link} >{data.thingReport.link}</a>
-<br />
-</>
-
-)}
+          {data && data.thingReport && data.thingReport.link && (
+            <>
+              <a href={data.thingReport.link}>{data.thingReport.link}</a>
+              <br />
+            </>
+          )}
 
           {!expanded && !flipped && (
             <>
@@ -887,8 +900,6 @@ PACKETS{' '}{txCount}{'/'}{rxCount + rxErrorCount}
               <br />
               <Typography>RUNTIME {runTime}</Typography>
               {!data && <>NOT DATA</>}
-
-
               {subject && subject.toLowerCase().indexOf("error") !== -1 && (
                 <div>
                   <Error
@@ -899,31 +910,29 @@ PACKETS{' '}{txCount}{'/'}{rxCount + rxErrorCount}
                   />
                 </div>
               )}
-
-
-              {subject && subject.toLowerCase().indexOf("text-snapshot") !== -1 && (
-                <div>
-                  <TextSnapshot
-                    user={null}
-                    //thing={data.thing}
-                    datagram={datagram}
-                    agent_input={webPrefix}
-                  />
-                </div>
-              )}
-
-
-              {subject && subject.toLowerCase().indexOf("global-positioning-system") !== -1 && (
-                <div>
-                  <GlobalPositioningSystem
-                    user={null}
-                    //thing={data.thing}
-                    datagram={datagram}
-                    agent_input={webPrefix}
-                  />
-                </div>
-              )}
-
+              {subject &&
+                subject.toLowerCase().indexOf("text-snapshot") !== -1 && (
+                  <div>
+                    <TextSnapshot
+                      user={null}
+                      //thing={data.thing}
+                      datagram={datagram}
+                      agent_input={webPrefix}
+                    />
+                  </div>
+                )}
+              {subject &&
+                subject.toLowerCase().indexOf("global-positioning-system") !==
+                  -1 && (
+                  <div>
+                    <GlobalPositioningSystem
+                      user={null}
+                      //thing={data.thing}
+                      datagram={datagram}
+                      agent_input={webPrefix}
+                    />
+                  </div>
+                )}
               {subject && subject.toLowerCase().indexOf("barometer") !== -1 && (
                 <div>
                   <Barometer
@@ -934,9 +943,6 @@ PACKETS{' '}{txCount}{'/'}{rxCount + rxErrorCount}
                   />
                 </div>
               )}
-
-
-
               {subject && subject.toLowerCase().indexOf("snapshot") !== -1 && (
                 <div>
                   <Snapshot
@@ -947,7 +953,6 @@ PACKETS{' '}{txCount}{'/'}{rxCount + rxErrorCount}
                   />
                 </div>
               )}
-
               {subject && subject.toLowerCase().indexOf("weather") !== -1 && (
                 <div>
                   <Weather
@@ -958,20 +963,17 @@ PACKETS{' '}{txCount}{'/'}{rxCount + rxErrorCount}
                   />
                 </div>
               )}
-
-
-              {subject && subject.toLowerCase().indexOf("motion-reference") !== -1 && (
-                <div>
-                  <MotionReference
-                    user={null}
-                    //thing={data.thing}
-                    datagram={datagram}
-                    agent_input={webPrefix}
-                  />
-                </div>
-              )}
-
-
+              {subject &&
+                subject.toLowerCase().indexOf("motion-reference") !== -1 && (
+                  <div>
+                    <MotionReference
+                      user={null}
+                      //thing={data.thing}
+                      datagram={datagram}
+                      agent_input={webPrefix}
+                    />
+                  </div>
+                )}
               {subject && subject.toLowerCase().indexOf("history") !== -1 && (
                 <div>
                   <History
@@ -982,8 +984,6 @@ PACKETS{' '}{txCount}{'/'}{rxCount + rxErrorCount}
                   />
                 </div>
               )}
-
-
               {subject && subject.toLowerCase().indexOf("ping") !== -1 && (
                 <div>
                   <Ping
@@ -994,18 +994,17 @@ PACKETS{' '}{txCount}{'/'}{rxCount + rxErrorCount}
                   />
                 </div>
               )}
-
-              {subject && subject.toLowerCase().indexOf("inertial-reference") !== -1 && (
-                <div>
-                  <InertialReference
-                    user={null}
-                    //thing={data.thing}
-                    datagram={datagram}
-                    agent_input={webPrefix}
-                  />
-                </div>
-              )}
-
+              {subject &&
+                subject.toLowerCase().indexOf("inertial-reference") !== -1 && (
+                  <div>
+                    <InertialReference
+                      user={null}
+                      //thing={data.thing}
+                      datagram={datagram}
+                      agent_input={webPrefix}
+                    />
+                  </div>
+                )}
               {subject && subject.toLowerCase().indexOf("power") !== -1 && (
                 <div>
                   <Power
@@ -1016,7 +1015,6 @@ PACKETS{' '}{txCount}{'/'}{rxCount + rxErrorCount}
                   />
                 </div>
               )}
-
               {subject && subject.toLowerCase().indexOf("messages") !== -1 && (
                 <div>
                   <Messages
@@ -1027,32 +1025,30 @@ PACKETS{' '}{txCount}{'/'}{rxCount + rxErrorCount}
                   />
                 </div>
               )}
-
-
-              {subject && subject.toLowerCase().indexOf("temperature-humidity") !== -1 && (
-                <div>
-
-                  <TemperatureHumidity
-                    user={null}
-                    //thing={data.thing}
-                    datagram={datagram}
-                    agent_input={webPrefix}
-                  />
-                </div>
-              )}
-
-              {subject && subject.toLowerCase().indexOf("humidity-temperature") !== -1 && (
-                <div>
-                  <TemperatureHumidity
-                    user={null}
-                    //thing={data.thing}
-                    datagram={datagram}
-                    agent_input={webPrefix}
-                  />
-                </div>
-              )}
-
-
+              {subject &&
+                subject.toLowerCase().indexOf("temperature-humidity") !==
+                  -1 && (
+                  <div>
+                    <TemperatureHumidity
+                      user={null}
+                      //thing={data.thing}
+                      datagram={datagram}
+                      agent_input={webPrefix}
+                    />
+                  </div>
+                )}
+              {subject &&
+                subject.toLowerCase().indexOf("humidity-temperature") !==
+                  -1 && (
+                  <div>
+                    <TemperatureHumidity
+                      user={null}
+                      //thing={data.thing}
+                      datagram={datagram}
+                      agent_input={webPrefix}
+                    />
+                  </div>
+                )}
               {subject && subject.toLowerCase().indexOf("text") !== -1 && (
                 <div>
                   <Text
@@ -1073,7 +1069,6 @@ PACKETS{' '}{txCount}{'/'}{rxCount + rxErrorCount}
                   />
                 </div>
               )}
-
               {subject && subject.toLowerCase().indexOf("b97f") !== -1 && (
                 <div>
                   <Nuuid
@@ -1084,9 +1079,6 @@ PACKETS{' '}{txCount}{'/'}{rxCount + rxErrorCount}
                   />
                 </div>
               )}
-
-
-
               <div>
                 <br />
                 {/*      <Agent user={null} thing={data.thing} agent_input="http://localhost" />*/}
@@ -1096,18 +1088,7 @@ PACKETS{' '}{txCount}{'/'}{rxCount + rxErrorCount}
                   agent_input={webPrefix}
                 />
                 {data && data.thingReport && data.thingReport.agent}
-      {/*          MESSAGES
-                {messages &&
-                  messages.map((message) => {
-                    return (
-                      <>
-                        {message}
-                        <br />
-                      </>
-                    );
-                  })}
-                <br />
-*/}
+
               </div>
               <div>
                 {/* Note */}
@@ -1122,10 +1103,8 @@ PACKETS{' '}{txCount}{'/'}{rxCount + rxErrorCount}
           )}
           {/*https://www.designcise.com/web/tutorial/how-to-hide-a-broken-image-in-react*/}
         </div>
-<DataReport />
+        <DataReport />
       </Card>
-
-
     </>
   );
 }

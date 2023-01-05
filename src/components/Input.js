@@ -118,8 +118,6 @@ function Input(props) {
   // const router = useRouter();
   //const id = router.query.itemid;
 
-  // const path = router.pathname;
-  const path = window.location.pathname;
   const { setInput } = props;
   const searchEnabled = false; // Algolia / Elastic search. Pay to play. Disable for launch.
 
@@ -145,14 +143,6 @@ function Input(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // change url
-    //const slug = getSlug(keywords);
-    //window.location.href = "http://localhost:3000/" + slug;
-
-    //    let path = slug;
-    //    let history = useHistory();
-    //    history.push(path);
-    //history(path);
 
     setInput(keywords);
   };

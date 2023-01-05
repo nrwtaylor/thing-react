@@ -32,10 +32,10 @@ const img = {
 };
 
 function Collection(props) {
-  const { things, token } = props;
+//  const { things, token } = props;
 
-const dndFlag=true;
-/*
+  const dndFlag = true;
+  /*
   useEffect(() => {
     console.log("images");
     console.log(images);
@@ -50,14 +50,14 @@ const dndFlag=true;
   return (
     <>
       <DndProvider backend={HTML5Backend}>
-        <ThingContainer things={things} onCollectionChange={handleCollectionChange} token={token} />
-       </DndProvider>
-
-
-
+        <ThingContainer
+//          things={things}
+          onCollectionChange={handleCollectionChange}
+//          token={token}
+        />
+      </DndProvider>
     </>
   );
 }
 
 export default Collection;
-

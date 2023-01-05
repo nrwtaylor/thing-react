@@ -7,7 +7,7 @@ import { humanTime, zuluTime } from "./util/time.js";
 export default function useThingReport(input, inputThingReportPollInterval) {
   const to = input;
 
-  const [thingReportInterval, setThingReportInterval] = useState(50);
+  const [thingReportInterval, setThingReportInterval] = useState();
 
   const [flag, setFlag] = useState();
 
@@ -25,7 +25,7 @@ export default function useThingReport(input, inputThingReportPollInterval) {
     }
 
     console.log(
-      "useSnapshot inputSnapshotPollInterval",
+      "useThingReport inputThingReportPollInterval",
       inputThingReportPollInterval
     );
 
@@ -34,6 +34,7 @@ export default function useThingReport(input, inputThingReportPollInterval) {
 
   useEffect(() => {
     console.log("useThingReport thingReportInterval", thingReportInterval);
+    if (thingReportInterval == null) {return;}
     getThingReport();
 
     const interval = setInterval(() => {
@@ -42,6 +43,11 @@ export default function useThingReport(input, inputThingReportPollInterval) {
 
     return () => clearInterval(interval);
   }, [thingReportInterval]);
+
+useEffect(() =>{
+console.log("useThingReport input changed", input);
+getThingReport();
+}, [input]);
 
   useEffect(() => {
     if (thingReport === undefined) {
@@ -79,6 +85,13 @@ export default function useThingReport(input, inputThingReportPollInterval) {
   useEffect(() => {
     console.log("sequentialErrorCount", sequentialErrorCount);
   }, [sequentialErrorCount]);
+
+  function refreshThingReport() {
+//console.log(input
+//    getThingReport();
+
+  }
+
   function getThingReport() {
     const startTime = new Date();
     if (flag === "red") {
@@ -142,5 +155,6 @@ export default function useThingReport(input, inputThingReportPollInterval) {
     flag,
     thingReportGetTime,
     thingReportInterval,
+    refreshThingReport,
   };
 }

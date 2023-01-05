@@ -118,10 +118,10 @@ export function createThing(webPrefix, datagram, token) {
       return thingy;
     })
     .catch((error) => {
-//return {error:true, message:error.data.message};
+      //return {error:true, message:error.data.message};
       console.log("database createThing u error", u, error);
       const apiErrorMessage = error.response.data.message;
-      return {error:{message:apiErrorMessage}};
+      return { error: { message: apiErrorMessage } };
     });
 }
 
@@ -153,6 +153,9 @@ export function setThing(uuid, datagram, token) {
 }
 
 export function forgetThing(datagram, token) {
+  if (datagram == null) {
+    return Promise.resolve({ error: { message: "No datagram provided." } });
+  }
   console.log("database forgetThing datagram", datagram);
 
   const u = apiPrefix + "/thing/" + datagram.uuid;
@@ -225,7 +228,7 @@ export function getSnapshot(webPrefix, token) {
 
       stack[slug] = { ...thingy, error: null, refreshedAt: zuluTime() };
 
-      console.log("database getSnapshot", u, thingy);
+      console.log("database getSnapshot result", u, thingy);
       return thingy;
     })
     .catch((error) => {

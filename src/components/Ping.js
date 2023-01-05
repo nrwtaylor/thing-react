@@ -31,17 +31,29 @@ import Stream from "../components/Stream.js";
 import BubbleLevel from "../components/BubbleLevel.js";
 import useSnapshot from "../useSnapshot.js";
 
+const defaultWebPrefix = process.env.REACT_APP_WEB_PREFIX;
+
+
 function Ping(props) {
   const user_name = props.user_name; // TODO
   const agent_input = props.agent_input;
-  const webPrefix = agent_input;
+  //const webPrefix = agent_input;
   //const [flag, setFlag] = useState();
   //const [requestedAt, setRequestedAt] = useState();
   const [reply, setReply] = useState("");
 
+const {datagram} = props;
+
+const webPrefix = datagram && datagram.webPrefix ? datagram.webPrefix : defaultWebPrefix;
+
   const [ping, setPing] = useState();
 
-  const toSnapshot = "http://192.168.10.10/snapshot-ping.json";
+//  const toSnapshot = "http://192.168.10.10/snapshot-ping.json";
+
+const u = webPrefix+ "/" + "snapshot.json";
+
+//  const toSnapshot = "http://127.0.0.1/snapshot.json";
+const toSnapshot = u;
   const { snapshot, flag, snapshotGetTime } = useSnapshot(toSnapshot);
 
   useEffect(() => {

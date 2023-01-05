@@ -1,5 +1,8 @@
 import React, { useEffect, useState, lazy, Suspense } from "react";
 import Thing from "../src/components/Thing.js";
+
+import ThingPage from "../src/components/ThingPage.js";
+
 import Login from "../src/components/Login.js";
 import TokenLogin from "../src/components/TokenLogin.js";
 
@@ -61,8 +64,6 @@ export default function App({ componentName, ...props }) {
   const DynamicComponent = lazy(() => import(`./components/${componentName}`));
 
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
-  const testUuid0 = process.env.REACT_APP_THING_0;
-  const testUuid1 = process.env.REACT_APP_THING_1;
   const apiPrefix = process.env.REACT_APP_API_PREFIX;
   const stack0Prefix = process.env.REACT_APP_STACK_0;
 
@@ -91,7 +92,6 @@ export default function App({ componentName, ...props }) {
   useEffect(() => {
     console.log("App pathname", pathname);
     setSlug(pathname);
-
   }, [pathname]);
 
   useEffect(() => {
@@ -99,6 +99,18 @@ export default function App({ componentName, ...props }) {
       return;
     }
 
+    // Do not create things.
+    // Consider: condition for when to create a thing.
+    console.log("App pathname", pathname);
+    if (pathname == null) {
+      return;
+    }
+    if (pathname === "/things") {
+      return;
+    }
+    if (pathname === "/") {
+      return;
+    }
 
     //const { thing, index } = findThing(id);
     const newThing = {};
@@ -114,9 +126,9 @@ export default function App({ componentName, ...props }) {
 
     const doNotWait = createThing(webPrefix, newThing, token)
       .then((result) => {
-
-if (result == null) {return;}
-
+        if (result == null) {
+          return;
+        }
 
         console.log("App pathname createThing result", result);
 
@@ -161,16 +173,6 @@ if (result == null) {return;}
     console.log("App things", things);
   }, [things]);
 
-  //  useEffect(() => {
-  //    console.log("App token", token);
-  //    loadThings();
-  //    getThings(token);
-  //  }, [token]);
-
-  //  useEffect(() => {
-  //    console.log("App identity", identity);
-  //  }, [identity]);
-
   function handleCollectionChange(things) {
     //   setThings(things);
     if (things && things[0] && things[0].uuid) {
@@ -192,7 +194,7 @@ if (result == null) {return;}
 
   return (
     <>
-      THING-REACT 3 January 2023 9d74
+      THING-REACT 5 January 2023 d4bf
       <br />
       {identity && <Identity identity={identity} />}
       {token && token.message}
@@ -203,7 +205,7 @@ if (result == null) {return;}
             path="/"
             element={
               <>
-                <ThingCarousel token={token} things={things} />
+                <ThingCarousel />
               </>
             }
           >
@@ -216,8 +218,6 @@ if (result == null) {return;}
             element={
               <>
                 <ThingCards
-                  token={token}
-                  things={things}
                   onCollectionChange={(c) => {
                     handleCollectionChange(c);
                   }}
@@ -225,7 +225,7 @@ if (result == null) {return;}
               </>
             }
           >
-            THINGS
+            THING CARDS
           </Route>
 
           <Route
@@ -284,11 +284,6 @@ if (result == null) {return;}
             element={
               <>
                 <ThingCarousel
-                  token={token}
- //                 things={[
- //                   { to: "agent", subject: pathname, webPrefix: webPrefix },
- //                   ...things,
- //                 ]}
                 />
               </>
             }
@@ -302,11 +297,6 @@ if (result == null) {return;}
             element={
               <>
                 <ThingCarousel
-                  token={token}
-   //               things={[
-   //                 { to: "agent", subject: pathname, webPrefix: webPrefix },
-   //                 ...things,
-   //               ]}
                 />
               </>
             }
@@ -319,17 +309,11 @@ if (result == null) {return;}
             path="/:text"
             element={
               <>
-                <ThingCarousel
-                  token={token}
-     //             things={[
-     //               { to: "agent", subject: pathname, webPrefix: webPrefix },
-     //               ...things,
-     //             ]}
-                />
+                <ThingPage />
               </>
             }
           >
-            THINGCAROUSEL
+            THINGPAGE
           </Route>
         </Routes>
       </BrowserRouter>

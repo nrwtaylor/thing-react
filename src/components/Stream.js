@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 //import { Link } from "react-router-dom";
 
@@ -34,7 +34,7 @@ import Frequency from "../components/Frequency.js";
 import Forget from "../components/Forget.js";
 import Trace from "../components/Trace.js";
 
-import {zuluTime} from "../util/time.js";
+import { zuluTime } from "../util/time.js";
 
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -42,12 +42,12 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { useSwipeable } from "react-swipeable";
 
 function Stream(props) {
+  const cycleDays = 1;
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-
-  const { at, quantities, quantity, period:inputPeriod, hide } = props;
-const canSwipe = true;
+  const { at, quantities, quantity, period: inputPeriod, hide } = props;
+  const canSwipe = true;
 
   const config = {
     delta: 10, // min distance(px) before a swipe starts. *See Notes*
@@ -61,17 +61,15 @@ const canSwipe = true;
 
   const handlers = useSwipeable({
     onSwiped: (eventData) => {
-console.log("User Swiped test");
-handleSwipe(eventData);
+      console.log("User Swiped test");
+      handleSwipe(eventData);
 
-
-console.log("User Swiped!", eventData)},
+      console.log("User Swiped!", eventData);
+    },
     ...config,
   });
 
-
-
-const [period, setPeriod] = useState(inputPeriod);
+  const [period, setPeriod] = useState(inputPeriod);
   var { amount, units } = quantity;
 
   var { transducer } = props;
@@ -83,10 +81,7 @@ const [period, setPeriod] = useState(inputPeriod);
     units = transducer.units;
   }
 
-const availableWindows = [
-'', '1m', '2m', '10m', '15m', '30m', '1h' 
-]
-
+  const availableWindows = ["", "1m", "2m", "10m", "15m", "30m", "1h"];
 
   const user_name = props.user_name; // TODO
   const agent_input = props.agent_input;
@@ -121,44 +116,32 @@ const availableWindows = [
     setOpen(false);
   };
 
+  function handleSwipe(e) {
+    console.log("User Swiped e.dir", e.dir);
 
-function handleSwipe(e) {
+    if (e.dir === "Left") {
+      const w = windowIndex + 1;
+      setWindowIndex(w);
 
+      console.log("User Swiped Left");
+      if (props.onChangeStream) {
+        props.onChangeStream(w);
+      }
+    }
 
-console.log("User Swiped e.dir", e.dir);
+    if (e.dir === "Right") {
+      console.log("User Swiped  Right");
 
-if (e.dir === 'Left') {
+      const w = windowIndex - 1;
+      if (w >= 0) {
+        setWindowIndex(w);
 
-const w=  windowIndex + 1;
-setWindowIndex(w);
-
-
-console.log('User Swiped Left');
-if (props.onChangeStream) {
- props.onChangeStream(w);
-}
-}
-
-if (e.dir === 'Right') {
-console.log('User Swiped  Right');
-
-const w=  windowIndex -1;
-if (w>=0) {
-setWindowIndex(w);
-
-
-if (props.onChangeStream) {
- props.onChangeStream(w);
-}
-
-
-}
-
-}
-
-}
-
-
+        if (props.onChangeStream) {
+          props.onChangeStream(w);
+        }
+      }
+    }
+  }
 
   function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -227,13 +210,9 @@ if (props.onChangeStream) {
   const [voltPoints, setVoltPoints] = useState([]);
   const [tracePeriod, setTracePeriod] = useState();
 
-function handleChange(windowIndex, b) {
-
-
-
-console.log("Stream handleChange windowIndex b", windowIndex,b);
-
-}
+  function handleChange(windowIndex, b) {
+    console.log("Stream handleChange windowIndex b", windowIndex, b);
+  }
 
   function humanPeriod(p) {
     //if (p>0) {return "1/"+Math.round(p / 1000, 0) + " Hz"}
@@ -249,7 +228,7 @@ console.log("Stream handleChange windowIndex b", windowIndex,b);
 
     var conditionedAmount = parseFloat(a);
 
-   // console.log("Stream conditionedAmountt", conditionedAmount);
+    // console.log("Stream conditionedAmountt", conditionedAmount);
     // Create a new array based on current state:
     let s = [...streamPoints];
     const amounts = [];
@@ -260,8 +239,10 @@ console.log("Stream handleChange windowIndex b", windowIndex,b);
       });
       conditionedAmount = amounts[1];
     }
-var atTemp = at;
-if (atTemp === undefined) {atTemp = zuluTime();}
+    var atTemp = at;
+    if (atTemp === undefined) {
+      atTemp = zuluTime();
+    }
 
     // Add item to it
     s.push({
@@ -272,6 +253,7 @@ if (atTemp === undefined) {atTemp = zuluTime();}
       amount: conditionedAmount,
       amount2: amounts && amounts[0],
       amount3: amounts && amounts[2],
+      amounts: amounts,
       at: atTemp,
     });
 
@@ -294,7 +276,7 @@ if (atTemp === undefined) {atTemp = zuluTime();}
   }
 
   useEffect(() => {
-   // console.log("Stream amount", amount);
+    // console.log("Stream amount", amount);
 
     const startTime = new Date();
     const d = startTime - refreshedAt;
@@ -323,6 +305,7 @@ if (atTemp === undefined) {atTemp = zuluTime();}
       amount: conditionedAmount,
       amount2: amounts && amounts[1],
       amount3: amounts && amounts[2],
+      amounts: amounts,
     });
 
     const maxAmpPoints = 100;
@@ -354,29 +337,17 @@ if (atTemp === undefined) {atTemp = zuluTime();}
     <Forget uuid={thing && thing.uuid} callBack={callBack} />
   );
 
-
   return (
     <>
-            <div {...handlers}>
-{availableWindows[windowIndex]}
+      <div {...handlers}>
+        {availableWindows[windowIndex]}
         {period && hide && (
           <>
-PERIOD{" "}{period}
-            {" "}
-
-
-
-            <Trace data={streamPoints} domain={props.domain} />
-
-
-
-
-
+            PERIOD {period} <Trace data={streamPoints} domain={props.domain} />
             <br />
-<Typography>
-            Period {humanPeriod(period)}{' '}
-              <Frequency frequency={1000 / period} /> requested
-{' '}
+            <Typography>
+              Period {humanPeriod(period)}{" "}
+              <Frequency frequency={1000 / period} /> requested{" "}
               <Frequency frequency={1000 / tracePeriod} /> observed
             </Typography>
           </>
@@ -384,10 +355,11 @@ PERIOD{" "}{period}
 
         {period === undefined && hide && (
           <>
-PERIOD UNDEFINED
+            PERIOD UNDEFINED
             <Trace data={dataPoints} domain={props.domain} />
             <br />
-            <Typography>Period {humanPeriod(tracePeriod)}{' '}
+            <Typography>
+              Period {humanPeriod(tracePeriod)}{" "}
               <Frequency frequency={1000 / tracePeriod} />
             </Typography>
           </>
@@ -397,9 +369,12 @@ PERIOD UNDEFINED
           <>
             amount {amount} {units}
             <br />
-
             {transducer && (
-              <div onClick={()=>navigate("/" + "history/transducers-" + transducer.sensor_id)} >
+              <div
+                onClick={() =>
+                  navigate("/" + "history/transducers-" + transducer.sensor_id)
+                }
+              >
                 transducer-{transducer && transducer.sensor_id}
               </div>
             )}

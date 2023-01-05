@@ -325,7 +325,7 @@ TEXT {thingReport && thingReport.text}
       <br />
       HISTORYTO {historyTo}
       <br />
-      <Trace data={historyPoints} />
+      <Trace data={historyPoints} cycle={1} />
       <br />
       {data &&
         data.transducers &&

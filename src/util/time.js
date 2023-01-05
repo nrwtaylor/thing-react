@@ -1,6 +1,5 @@
 export function humanTime(at) {
 
-
 var d = new Date();
 
 if (at !== undefined) {
@@ -13,6 +12,18 @@ if (at !== undefined) {
   return d.toLocaleString();
 //  return ts.toISOString();
 }
+
+export function humanPosixTime(posixSecondsAt) {
+
+//var d = new Date();
+var  d = new Date(posixSecondsAt*1000);
+
+if (posixSecondsAt == null) {
+  d = new Date();
+}
+  return d.toLocaleString();
+}
+
 
 export  function timeStamp() {
     var date = Date.now();
@@ -89,7 +100,8 @@ var sign = Math.sign(runTimeMilliseconds);
 
 //const a = new Date(at);
 var milliseconds = Math.abs(runTimeMilliseconds);
-var seconds = Math.floor(milliseconds/1000);
+//var seconds = Math.floor(milliseconds/1000);
+var seconds = Math.abs(milliseconds / 1000);
 var postFix = "";
 if (lens === 'text') {
 sign = 1;
@@ -100,6 +112,8 @@ postFix = " " + inputPostFix;
 }
 
 }
+
+//return seconds;
 
 if (seconds > 24 * 60 * 60 * 7 * 2) {
 return sign * Math.floor(seconds / (24 * 60 * 60 * 7)) + " weeks" + postFix;

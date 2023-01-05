@@ -7,7 +7,7 @@ import useToken from "../useToken.js";
 import useIdentity from "../useIdentity.js";
 
 
-import { humanTime, humanAge, humanRuntime } from "./../util/time.js";
+import { humanPosixTime,humanTime, humanAge, humanRuntime } from "./../util/time.js";
 import Reauthorize from "../components/Reauthorize.js";
 import Login from "../components/Login.js";
 import Logout from "../components/Logout.js";
@@ -43,6 +43,12 @@ export default function Token({ token, setToken, setIdentity }) {
 
     setExpiresAt(t.exp);
   }, [token]);
+
+useEffect(()=>{
+
+console.log("Token refreshedAt expiresAt", refreshedAt, humanPosixTime(refreshedAt), expiresAt, humanPosixTime(expiresAt));
+
+},[refreshedAt, expiresAt]);
 
   useEffect(() => {
     updateAge();
@@ -82,14 +88,14 @@ export default function Token({ token, setToken, setIdentity }) {
       {age < 0 && "EXPIRED"} {age >=0 && "EXPIRES"} AT{" "}
       {expiresAt && (
         <>
-          {humanTime(expiresAt)}
+          {humanPosixTime(expiresAt)}
         </>
       )}
       <br />
       REFRESHED AT{" "}
       {refreshedAt && (
         <>
-          {humanTime(refreshedAt)}
+          {humanPosixTime(refreshedAt)}
         </>
       )}
 <br />

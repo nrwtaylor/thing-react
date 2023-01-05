@@ -1,4 +1,4 @@
-import React, { PureComponent, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   LineChart,
   Line,
@@ -64,7 +64,7 @@ function Trace(props) {
   //  const [canSwipe, setCanSwipe] = useState();
   const canSwipe = true;
 
-  const now = new Date().getTime();
+  //const now = new Date().getTime();
   const [timeSeriesData, setTimeSeriesData] = useState();
   const [xSeriesData, setXSeriesData] = useState();
   const [ySeriesData, setYSeriesData] = useState();
@@ -76,31 +76,39 @@ function Trace(props) {
   const [lastAt, setLastAt] = useState();
 
   const availableWindows = ["", "1m", "2m", "10m", "15m", "30m", "1h"];
- 
 
   // This will get the twilight times.
-  //const { thing } = useThing({ subject: "day twilight" });
+  const { thing } = useThing({ subject: "day twilight" });
 
   useEffect(() => {
-    if (data === undefined) {
+    if (data == null) {
       return;
     }
     if (Array.isArray(data) && data.length === 0) {
       return;
     }
-
     //console.log("Trace data", data);
 
     const first = new Date(data[0].at);
     const last = new Date(data[data.length - 1].at);
+
+    //console.log("first last", first, last);
+    //return;
     const spreadEvent = last - first;
     setFirstAt(data[0].at);
     setLastAt(data[data.length - 1].at);
 
     const t = data.map((d) => {
+var cycle = 1; // 1 day
+//const milliseconds = new Date(d.at).getTime() -  new Date().getTime();
+//const cycleCount = (milliseconds / (cycle * 60 * 60 * 24 * 1000));
+
+//
+//d['amount'+cycleCount] = d; 
+
       return { ...d, time: new Date(d.at).getTime() };
     });
-
+    //return;
     //    const x = t.map((d) => {
     //      return d.time;
     //    });
@@ -114,13 +122,16 @@ function Trace(props) {
     var i = 0;
     while (d2 < last.getTime()) {
       if (d2 > last.getTime()) {
+        //        console.log("while break");
         break;
       }
+      //console.log("while loop");
       d2 = first.getTime() + i * maxTickSpacing;
       //if (d2 > last.getTime()) {brea
       i = i + 1;
       x.push(d2);
     }
+    //return;
     setXSeriesData(x);
     console.log("xSeriesData x", x);
 
@@ -140,19 +151,25 @@ function Trace(props) {
     var d3 = 0;
     var i = 0;
     const numberOfYTicks = 4;
-    const increment = Math.ceil((maxY - minY) / numberOfYTicks);
-
-    while (d3 < Math.ceil(maxY)) {
-      if (d3 > maxY) {
+    var increment = Math.ceil((maxY - minY) / numberOfYTicks);
+    if (increment <= 0) {
+      increment = 1;
+    }
+    console.log("d3 ceil maxY increment", d3, Math.ceil(maxY), maxY, increment);
+    //return;
+    while (d3 <= Math.ceil(maxY)) {
+      if (i > 10) {
+        //      if (d3 > Math.ceil(maxY)) {
+        console.log("while loop break d3 > maxY");
         break;
       }
+      console.log("while loop");
       d3 = Math.floor(minY) + i * maxYTickSpacing;
       //if (d2 > last.getTime()) {brea
       i = i + increment;
       y.push(d3);
     }
     //if (y.length > 4) {
-
     //}
 
     setYSeriesData(y);
@@ -165,7 +182,7 @@ function Trace(props) {
 
     const interval = setInterval(() => {
       updateTime();
-    }, 100); // 20 Hz was 200.
+    }, 10000); // 20 Hz was 200.
   }, []);
 
   function updateTime() {
@@ -190,7 +207,7 @@ function Trace(props) {
     //return x;
   }
 
-  return <>Blank Trace 2</>;
+  //  return <>Blank Trace 2</>;
 
   if (xSeriesData == null) {
     return null;
@@ -254,24 +271,56 @@ function Trace(props) {
             {/*   <Tooltip /> */}
             {/*  <Line type="monotone" stroke="#8884d8" dataKey="amount" strokeWidth={2}
                         stroke="black" activeDot={{ r: 8 }} /> */}
-            {data && data[0] && data[0].amount2 && (
-              <Line
-                isAnimationActive={false}
-                dataKey="amount2"
-                stroke="grey"
-                strokeWidth={4}
-                dot={false}
-              />
-            )}
-            {data && data[0] && data[0].amount3 && (
-              <Line
-                isAnimationActive={false}
-                dataKey="amount3"
-                stroke="grey"
-                strokeWidth={4}
-                dot={false}
-              />
-            )}
+            {false &&
+              data &&
+              data[0] &&
+              data[0].amounts &&
+              data[0].amounts[0] && (
+                <Line
+                  isAnimationActive={false}
+                  dataKey="amount2"
+                  stroke="grey"
+                  strokeWidth={4}
+                  dot={false}
+                />
+              )}
+            {false &&
+              data &&
+              data[0] &&
+              data[0].amounts &&
+              data[0].amounts[2] && (
+                <Line
+                  isAnimationActive={false}
+                  dataKey="amount3"
+                  stroke="grey"
+                  strokeWidth={4}
+                  dot={false}
+                />
+              )}
+            {Object.keys(data[0]).map((q) => {
+              if (q.startsWith("amount")) {
+                const x = q.replace("amount", "");
+
+                if (x === "") {
+                  return;
+                }
+                if (!Number.isInteger(parseInt(x))) {
+                  return;
+                }
+                return (
+                  <Line
+                    isAnimationActive={false}
+                    dataKey={"amount" + x}
+                    stroke="grey"
+                    strokeWidth={4}
+                    dot={false}
+                  />
+                );
+
+                console.log("Trace q", data[0][q]);
+              }
+              //return (<>x</>);
+            })}
             <Line
               isAnimationActive={false}
               dataKey="amount"

@@ -161,21 +161,8 @@ console.log("Snapshot handleChangeStream c",c);
               <br />
             </>
           )}
+
           {data && data.ping && <Ping ping={data.ping} />}
-          {data &&
-            data.ping &&
-            data.ping.map((ping, index) => {
-              return (
-                <>
-                  {ping.host}
-                  <br />
-                  {ping.data}
-                  <br />
-                  {ping.refreshedAt}
-                  <br />
-                </>
-              );
-            })}
 
           {data && data.transducers && (
             <>
@@ -214,6 +201,8 @@ console.log("Snapshot handleChangeStream c",c);
         <br />
         GET TIME {snapshotGetTime}ms {Math.round(1000 / snapshotGetTime, 1)}Hz
         <br />
+
+          {data && data.ping && <Ping ping={data.ping} />}
 
 
 

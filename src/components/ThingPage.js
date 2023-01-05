@@ -12,13 +12,13 @@ import useToken from "../useToken";
 import useIdentity from "../useIdentity";
 import useInput from "../useInput";
 import useThings from "../useThings";
-
+import useThing from "../useThing";
 import axios from "axios";
 
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
-export default function ThingCarousel(props) {
+export default function ThingPage(props) {
 
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
   const apiPrefix = process.env.REACT_APP_API_PREFIX;
@@ -38,27 +38,24 @@ export default function ThingCarousel(props) {
   const { identity, setIdentity, deleteIdentity } = useIdentity();
   const { input, setInput, deleteInput } = useInput();
 
+  const {thing, openThing, setThing} = useThing();
+
  // const [ modifiedThings, setModifiedThings ] = useState();
 
   const { things, getThings } = useThings();
 
   useEffect(() => {
-    console.log("ThingCarousel inputToken token things", token, things);
+    console.log("ThingPage things", things);
   }, [things]);
-
-//  useEffect(() => {
-//    console.log("ThingCarousel token", token);
-    //getToken();
-//    getThings(token);
-//  }, [token]);
-
-  //useEffect(()=>{
-  //getThings(token);
-  //}, []);
 
   const createdAt = Date.now();
 
   const [devStack, setDevStack] = useState();
+
+  useEffect(() =>{
+openThing();
+},[]);
+
   useEffect(() => {
     if (!identity) {
       //      defaultThings();
@@ -85,6 +82,21 @@ return;
     setUuid(u);
   }
 
+  /*
+  return (
+    <>
+
+<Carousel showThumbs={false} showIndicators={false} showStatus={false}>
+
+    <ThingContainer things={things} onCollectionChange={handleCollectionChange} token={token} />
+
+
+
+</Carousel>
+
+    </>
+  );
+*/
 
   function handleOpenThing(t) {
     console.log("ThingCarousel handleOpenThing");
@@ -100,25 +112,33 @@ return;
     return null;
   }
 
+ // if (modifiedThings == null) {
+ //   return null;
+ // }
+useEffect(() =>{
+if (matches == null) {return;}
+console.log("ThingPage matches", matches);
+/*
+{matches.map((match)=>{return (<>{match}</>) })
+}
+*/
+
+},[matches]);
+
+useEffect(()=>{
+console.log("ThingPage pathname", pathname);
+const d={
+                  to: "agent",
+                  subject: pathname,
+                  webPrefix: webPrefix,
+                };
+//setDatagram(d);
+setThing(d);
+}, [pathname]);
+
   return (
     <>
-      {/*pathname*/}
-      {canSwipe ? "DECK VIEW" : "CARD VIEW"}
-      <br />
-      <Carousel
-        useKeyBoardArrows={canSwipe}
-        showArrows={canSwipe}
-        swipeable={canSwipe}
-        showThumbs={false}
-        showIndicators={false}
-        showStatus={false}
-        swipeScrollTolerance={100}
-        preventMovementUntilSwipeScrollTolerance={true}
-      >
-        {things && things.map((thing) => {
-          //const modifiedThing = {...thing, expanded:canSwipe};
-          //const modifiedThing = thing;
-          return (
+
             <div key={thing.uuid}>
               <Thing
                 key={thing.uuid}
@@ -127,6 +147,9 @@ return;
    //             things={things}
                 uuid={thing.uuid}
                 datagram={thing}
+                canOpen={false}
+                canFold={false}
+                open={true}
                 onFold={(t) => {
                   handleFoldThing(t);
                 }}
@@ -135,9 +158,6 @@ return;
                 }}
               />
             </div>
-          );
-        })}
-      </Carousel>
     </>
   );
 }

@@ -114,7 +114,6 @@ console.log("Login change window location");
       createdAt: Date.now(),
       uuid: uuidv4(),
       input: "Logout",
-      //      webPrefix: "http://192.168.10.10/snapshot.json",
     },
     {
       index: 21,
@@ -123,7 +122,6 @@ console.log("Login change window location");
       createdAt: Date.now(),
       uuid: uuidv4(),
       input: "Token",
-      //      webPrefix: "http://192.168.10.10/snapshot.json",
     },
   ];
        

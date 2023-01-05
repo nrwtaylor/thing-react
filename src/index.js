@@ -4,6 +4,14 @@ import './index.css';
 import App from './App.js';
 import * as serviceWorker from './serviceWorker.js';
 
+// replace console.* for disable log on production
+// if ((process.env.REACT_APP_ENGINE_STATE === 'production') || (process.env.REACT_APP_ENGINE_STATE === 'pre_launch')) {
+//   console.log = () => {}
+//   console.error = () => {}
+//   console.debug = () => {}
+// }
+
+
 ReactDOM.render(
   <React.StrictMode>
     <App />

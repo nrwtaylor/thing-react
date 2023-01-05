@@ -14,6 +14,7 @@ export function getSlug(text) {
 
 export function extractUuid(input) {
   const uuids = extractUuids(input);
+if (uuids == null) {return false;}
 
   if (uuids.length === 1) {
     return uuids[0];
@@ -30,8 +31,7 @@ export function extractUuids(input) {
 
 
 export function getSlug(text) {
-    if (text === undefined) {return ""};
-    if (text === null) {return ""};
+    if (text == null) {return ""};
   //  return text.toLowerCase().replace(/\s+/g,"-");
   //  return slugify(text,"-").toLowerCase();
  // console.log("slugtest",text.toLowerCase()
