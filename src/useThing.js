@@ -173,9 +173,9 @@ export default function useThing(datagram) {
     };
   }, [thing]);
 
-  const saveThing = (userThing) => {
-    console.log("useThing saveThing userThing", userThing);
-    setThing(userThing);
+  const saveThing = (t) => {
+    console.log("useThing saveThing userThing", t);
+    setThing(t);
   };
 
   const deleteThing = useCallback(
@@ -309,6 +309,7 @@ export default function useThing(datagram) {
   return {
     //    deleteIdentity: deleteIdentity,
 //    state: thing,
+//    saveThing: setThing,
     setThing: saveThing,
     getThing: getThing,
     findThing: findThing,

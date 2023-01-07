@@ -80,6 +80,9 @@ function Trace(props) {
   // This will get the twilight times.
   const { thing } = useThing({ subject: "day twilight" });
 
+const maxCycles = 100;
+const cycles = Array.from(Array(maxCycles), (_,x) => x);
+
   useEffect(() => {
     if (data == null) {
       return;
@@ -226,6 +229,8 @@ var cycle = 1; // 1 day
               ticks={xSeriesData.sort()}
               dataKey="time"
               domain={["dataMin", currentTime]}
+//            domain={["dataMin", "dataMax"]}
+
               type="number"
               tick={true}
               tickFormatter={formatXAxis}
@@ -297,6 +302,7 @@ var cycle = 1; // 1 day
                   dot={false}
                 />
               )}
+
             {Object.keys(data[0]).map((q) => {
               if (q.startsWith("amount")) {
                 const x = q.replace("amount", "");
@@ -307,6 +313,8 @@ var cycle = 1; // 1 day
                 if (!Number.isInteger(parseInt(x))) {
                   return;
                 }
+
+
                 return (
                   <Line
                     isAnimationActive={false}
@@ -321,6 +329,25 @@ var cycle = 1; // 1 day
               }
               //return (<>x</>);
             })}
+
+{
+cycles.map((n) =>{
+
+                return (
+                  <Line
+                    isAnimationActive={false}
+                    dataKey={"amount" + n}
+                    stroke="grey"
+                    strokeWidth={4}
+                    dot={false}
+                  />
+                );
+
+
+})
+}
+
+
             <Line
               isAnimationActive={false}
               dataKey="amount"

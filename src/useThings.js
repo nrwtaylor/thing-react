@@ -153,10 +153,7 @@ getThings();
 
   useEffect(() => {
 if (things == null) {return;}
-    console.log("useThings things", things);
-//getThings();
-
-//setThings();
+//    console.log("useThings things", things);
   }, [things]);
 
 useEffect(() =>{
@@ -165,7 +162,7 @@ console.log("useThings setThings");
 }, [setThings]);
 
 useEffect(() =>{
-console.log("useThings getThings");
+//console.log("useThings getThings");
 }, [getThings]);
 
 useEffect(()=>{
@@ -216,6 +213,6 @@ getThings();
 //    state: things,
     setThings: saveThings,
     getThings: getThings,
-    things: things,
+    things,
   };
 }

@@ -17,12 +17,12 @@ import Logout from "../components/Logout.js";
 export default function Token({ token, setToken, setIdentity }) {
   const [refreshedAt, setRefreshedAt] = useState();
   const [expiresAt, setExpiresAt] = useState();
-  const [age, setAge] = useState();
+  //const [age, setAge] = useState();
   const [currentTime, setCurrentTime] = useState();
   const updateInterval = 1000;
   // Display token.
 
-  const { deleteToken } = useToken();
+  const { age, deleteToken } = useToken();
 
 
   useEffect(() => {
@@ -50,6 +50,7 @@ console.log("Token refreshedAt expiresAt", refreshedAt, humanPosixTime(refreshed
 
 },[refreshedAt, expiresAt]);
 
+/*
   useEffect(() => {
     updateAge();
 
@@ -72,7 +73,7 @@ console.log("Token refreshedAt expiresAt", refreshedAt, humanPosixTime(refreshed
 
     setAge(t);
   }
-
+*/
 
   return (
     <>

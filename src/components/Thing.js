@@ -46,7 +46,7 @@ import Associations from "../components/Associations.js";
 
 import { v4 as uuidv4, uuid as uuidLibrary } from "uuid";
 import {
-  getThingReport,
+//  getThingReport,
   setThing,
   txCount,
   rxCount,
@@ -66,31 +66,17 @@ import { getSlug } from "../util/text.js";
 
 import { styled } from "@mui/material/styles";
 
-//import Container from '@mui/material/Container';
-
 import Button from "@mui/material/Button";
 
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 
-//import CardContent from "@mui/material/CardContent";
-//import CardActions from "@mui/material/CardActions";
-//import Collapse from "@mui/material/Collapse";
-//import Avatar from "@mui/material/Avatar";
-
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 //import UpdateIcon from "@mui/icons-material/Update";
 
 import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
-//import FavoriteIcon from "@mui/icons-material/Favorite";
-//import ShareIcon from "@mui/icons-material/Share";
-
-//import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-//import MoreVertIcon from "@mui/icons-material/MoreVert";
-
-//import ExpandMoreIcon from '@mui/icons-material/ExpandMore.js';
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -194,8 +180,8 @@ export default function Thing(props) {
 
   const webPrefix = datagram.webPrefix ? datagram.webPrefix : defaultWebPrefix;
   //  const webPrefix = datagram.webPrefix ? datagram.webPrefix : "https://stackr.ca/";
-
-const u = webPrefix+ getSlug(datagram.subject) + ".json";
+const [url, setUrl] = useState();
+//const u = webPrefix+ getSlug(datagram.subject) + ".json";
 
 //  const { thingReport: data, getThingReport } = useThingReport(
 //    webPrefix + datagram.subject + ".json",
@@ -203,10 +189,14 @@ const u = webPrefix+ getSlug(datagram.subject) + ".json";
 //  );
 const { thing: t, spawnThing, flipThing, forgetThing } = useThing(datagram);
   const { thingReport: data, getThingReport } = useThingReport(
-    u,
+    url,
     10000
   );
 
+useEffect(()=>{
+if (url == null) {return;}
+console.log("Thing url", url);
+},[url]);
 
   const { to, subject } = datagram;
 
@@ -227,6 +217,18 @@ const { thing: t, spawnThing, flipThing, forgetThing } = useThing(datagram);
   const [bar, setBar] = useState(0);
 
   const [PNG, setPNG] = useState();
+
+useEffect(()=>{
+
+if (datagram == null) {return;}
+
+if (datagram && datagram.subject) {
+const u = webPrefix+ getSlug(datagram.subject) + ".json";
+
+  setUrl(u);
+}
+
+}, [datagram]);
 
   var pollInterval =
     datagram && datagram.pollInterval
@@ -732,6 +734,8 @@ return;
           }
         />
         {token && token.message}
+{expanded ? "expanded" : "not expanded"}
+{flipped ? "flipped" : "not flipped"}
 
         {error && <Error error={error} agentInput={data.thingReport} />}
 
@@ -797,10 +801,14 @@ return;
               )}
             </>
           )}
-
           {!flipped && (
             <>
-              <div>{data && data.sms}</div>
+                <Message message={{ subject: data.sms }} />
+                <br />
+
+          {/*    <div>{data && data.sms}</div>*/}
+
+
               {/*
               <div>{data && data.thingReport && data.thingReport.sms}</div>*/}
               {/*             <Typography>TOGOTIME {nextRunAt - currentAt}</Typography> */}
@@ -976,6 +984,7 @@ return;
                 )}
               {subject && subject.toLowerCase().indexOf("history") !== -1 && (
                 <div>
+history test
                   <History
                     user={null}
                     //thing={data.thing}
@@ -989,6 +998,7 @@ return;
                   <Ping
                     user={null}
                     //thing={data.thing}
+                    variables={{ping:{uuid:data.ping}}}
                     datagram={datagram}
                     agent_input={webPrefix}
                   />

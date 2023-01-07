@@ -218,9 +218,9 @@ export default function App({ componentName, ...props }) {
             element={
               <>
                 <ThingCards
-                  onCollectionChange={(c) => {
-                    handleCollectionChange(c);
-                  }}
+     //             onCollectionChange={(c) => {
+     //               handleCollectionChange(c);
+     //             }}
                 />
               </>
             }
@@ -270,6 +270,7 @@ export default function App({ componentName, ...props }) {
                 datagram={{
                   to: "agent",
                   subject: pathname.replace("/history/", ""),
+//                  subject: pathname,
                   webPrefix: webPrefix,
                 }}
               />
@@ -315,6 +316,7 @@ export default function App({ componentName, ...props }) {
           >
             THINGPAGE
           </Route>
+
         </Routes>
       </BrowserRouter>
       <ZuluTime />

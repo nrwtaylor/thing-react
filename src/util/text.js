@@ -59,6 +59,47 @@ return conditionedSlug;
   }
 
 
+export function parsePing(p) {
+
+//    const ps = [];
+    if (!p) {
+      return;
+    }
+
+    console.log("text parsePing", p);
+ //   ping.map((p) => {
+      if (!p) {
+        return;
+      }
+      // Parse ping return.
+      // Identity and read.
+      const pingArray = p.split("=");
+      if (!pingArray[1]) {
+        return;
+      }
+      const pingArray2 = pingArray[1].split("/");
+      const measure =
+        parseFloat(pingArray2[0]) +
+        parseFloat(pingArray2[1]) +
+        parseFloat(pingArray2[2]);
+
+    console.log("text parsePing pingArray", pingArray);
+const parts = pingArray[0].split(" ");
+
+
+
+  const ps = {
+        host: parts[1],
+        amount: parseFloat(pingArray2[0]),
+        amount2: parseFloat(pingArray2[1]),
+        amount3: parseFloat(pingArray2[2]),
+      };
+//    });
+
+return ps;
+
+
+}
 
 
 export function isText(x) {

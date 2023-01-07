@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import { getWebJson, getSnapshot } from "./util/database.js";
+import { getWebJson } from "./util/database.js";
 import { humanTime, zuluTime } from "./util/time.js";
 
 //export default function useToken(inputToken) {
@@ -50,25 +50,22 @@ getThingReport();
 }, [input]);
 
   useEffect(() => {
-    if (thingReport === undefined) {
-      console.log("useSnapshot snapshot undefined");
+    if (thingReport == null) {
+      console.log("useThingReport thingReport undefined");
 
       return;
     }
-    if (thingReportResults === undefined) {
+    if (thingReportResults == null) {
       console.log("useThingReport thingReportResults undefined");
       setThingReportResults([{ ...thingReport, thingReportAt: zuluTime() }]);
 
       return;
     }
 
-    console.log("useSnapshot snapshot", thingReport);
+    console.log("useThingReport thingReport", thingReport);
 
-    //const s = snapshotResults.push(snapshot);
-    //setSnapshotResults({...s, snapshotAt:zuluTime()});
 
     const count = 0;
-    //snapshotResults.reverse().forEach((snapshotResult)=>{
 
     for (const thingReportResult of thingReportResults.reverse()) {
       if (thingReportResult.error) {
@@ -97,14 +94,13 @@ getThingReport();
     if (flag === "red") {
       return;
     }
-    //    console.log("useSnapshot getSnapshot call " + agent);
-    //    console.log("useSnapshot getSnapshot to", to);
 
     const url = to;
-    console.log("useSnapshot url", url);
+if (url == undefined) {return Promise.resolve(true);}
+    console.log("useThingReport url", url);
     return getWebJson(url, "")
       .then((result) => {
-        console.log("useSnapshot getWebJson url result", url, result);
+        console.log("useThingReport  getThingReport url result", url, result);
 
         if (!result) {
           return true;
@@ -115,7 +111,7 @@ getThingReport();
           return false;
         }
 
-        if (result && result.thingReport && result.thingReport.snapshot) {
+        if (result && result.thingReport) {
           setThingReport(result.thingReport);
         } else {
           // Failback situation where thingReport format not found.
@@ -128,7 +124,7 @@ getThingReport();
         return result;
       })
       .catch((error) => {
-        console.error("useSnapshot getWebJson error", error);
+        console.error("useThingReport getThingReport error", error);
         setFlag("yellow");
         return { ...thingReport, error };
         //return;

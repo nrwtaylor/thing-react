@@ -40,13 +40,15 @@ import MotionReference from "../components/MotionReference.js";
 import Ping from "../components/Ping.js";
 import { getSnapshot } from "../util/database.js";
 
-import { humanRuntime } from "../util/time.js";
-import { extractUuid } from "../util/text.js";
+import {
+  zuluTimeDifferenceMilliseconds,
+  zuluTime,
+  humanRuntime,
+} from "../util/time.js";
+import { extractUuid, parsePing } from "../util/text.js";
 
 import useSnapshot from "../useSnapshot";
 import useThingReport from "../useThingReport";
-
-
 
 import { useSwipeable } from "react-swipeable";
 
@@ -64,7 +66,7 @@ function History(props) {
   const { subject } = datagram;
 
   const [windowIndex, setWindowIndex] = useState();
-
+  const [tracePoints, setTracePoints] = useState([]);
   const ref = subject
     .replace("transducers-", "")
     .replace("history-", "")
@@ -106,7 +108,6 @@ function History(props) {
     thingReportGetTime: thingReportGetTime,
   } = useThingReport(snapshotTo, snapshotInterval);
 
-
   const {
     snapshot: history,
     flag: historyFlag,
@@ -114,15 +115,13 @@ function History(props) {
   } = useSnapshot(historyTo, 60000);
 
   useEffect(() => {
-
-    // Extract uuid from datagram. 
+    // Extract uuid from datagram.
     // To provide access to the snapshot.
     // Consider: Can refactor this code into useSnapshot().
     console.log("History datagram", snapshotTo, datagram.subject);
     const uuid = extractUuid(datagram.subject);
     const to = webPrefix + "/snapshot/" + uuid + "/hey.json";
     setSnapshotTo(to);
-
   }, [datagram]);
 
   const [flag, setFlag] = useState();
@@ -173,7 +172,6 @@ function History(props) {
     setOpen(false);
   };
 
-
   useEffect(() => {
     console.log("History data", snapshotTo, data);
   }, [data]);
@@ -211,13 +209,32 @@ function History(props) {
     //    const hist = history.agent_input;
     const p = hist.map((h) => {
       var amount = null;
-
+      //console.log("History h", h);
       if (typeof h.event === "string" || h.event instanceof String) {
         amount = parseFloat(h.event);
       }
 
       if (h.event.amount) {
         amount = parseFloat(h.event.amount);
+      }
+
+      if (h.event.data) {
+        //console.log("History h", h);
+        const pingArray = parsePing(h.event.data);
+        console.log("History h", pingArray);
+
+        const f = {
+          name: pingArray.host,
+          student: 24,
+          fees: 1,
+          value: pingArray.amount,
+          amount: pingArray.amount,
+          amount2: pingArray.amount2,
+          amount3: pingArray.amount3,
+          at: h.eventAt,
+        };
+
+        return f;
       }
 
       // Add item to it
@@ -306,6 +323,51 @@ function History(props) {
     }
   }
 
+  useEffect(() => {
+    // Bin history points in to cycle.
+    const cycleMilliseconds = 1000 * 24 * 60 * 60;
+
+    const cycleStartDate = new Date();
+
+    const cycleRunAt = zuluTime(cycleStartDate);
+
+    const cycleStartMilliseconds = cycleStartDate.getTime();
+
+    const cyclePoints = historyPoints.map((historyPoint) => {
+//      var cyclePoint = historyPoint;
+var cyclePoint = {};
+      const ageMilliseconds = zuluTimeDifferenceMilliseconds(
+        historyPoint.at,
+        cycleRunAt
+      );
+
+      const cycleIndex = Math.floor(ageMilliseconds / cycleMilliseconds);
+
+const key = cycleIndex === 0 ? "amount" : "amount"+cycleIndex;
+console.log("History key", key);
+      cyclePoint[key] = historyPoint.amount;
+
+      const cycleAgeMilliseconds =
+        ageMilliseconds - cycleIndex * cycleMilliseconds;
+
+
+
+      const x = cycleStartMilliseconds + cycleAgeMilliseconds;
+
+console.log("History x", zuluTime(new Date(x)), x);
+
+      const at = zuluTime(new Date(x));
+
+//cyclePoint["amount"] = null;
+      cyclePoint["at"] = at;
+      //historyPoint.at;
+      return cyclePoint;
+    });
+    console.log("History cyclePoints", cyclePoints);
+    //setTracePoints(cyclePoints);
+    setTracePoints(cyclePoints);
+  }, [historyPoints]);
+
   const deleteButton = (
     <Forget uuid={datagram && datagram.uuid} callBack={callBack} />
   );
@@ -313,8 +375,8 @@ function History(props) {
   return (
     <>
       <div>HISTORY</div>
-TEXT {thingReport && thingReport.text}
-<br />
+      TEXT {thingReport && thingReport.text}
+      <br />
       {data && data.thingReport && data.thingReport.text}
       SUBJECT {subject}
       <div onClick={() => navigate("/" + "history/" + subject)}>{subject}</div>
@@ -325,7 +387,10 @@ TEXT {thingReport && thingReport.text}
       <br />
       HISTORYTO {historyTo}
       <br />
+      <Trace data={tracePoints} cycle={1} />
+
       <Trace data={historyPoints} cycle={1} />
+
       <br />
       {data &&
         data.transducers &&

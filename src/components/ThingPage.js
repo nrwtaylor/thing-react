@@ -32,29 +32,17 @@ export default function ThingPage(props) {
 
   const matches = pathname.match(reg);
 
-  const [canSwipe, setCanSwipe] = useState(true);
-
   const { username, token, getToken, setToken, deleteToken } = useToken();
   const { identity, setIdentity, deleteIdentity } = useIdentity();
   const { input, setInput, deleteInput } = useInput();
 
   const {thing, openThing, setThing} = useThing();
 
- // const [ modifiedThings, setModifiedThings ] = useState();
-
   const { things, getThings } = useThings();
-
-  useEffect(() => {
-    console.log("ThingPage things", things);
-  }, [things]);
 
   const createdAt = Date.now();
 
   const [devStack, setDevStack] = useState();
-
-  useEffect(() =>{
-openThing();
-},[]);
 
   useEffect(() => {
     if (!identity) {
@@ -82,39 +70,6 @@ return;
     setUuid(u);
   }
 
-  /*
-  return (
-    <>
-
-<Carousel showThumbs={false} showIndicators={false} showStatus={false}>
-
-    <ThingContainer things={things} onCollectionChange={handleCollectionChange} token={token} />
-
-
-
-</Carousel>
-
-    </>
-  );
-*/
-
-  function handleOpenThing(t) {
-    console.log("ThingCarousel handleOpenThing");
-    setCanSwipe(false);
-  }
-
-  function handleFoldThing(t) {
-    console.log("ThingCarousel handleFoldThing");
-    setCanSwipe(true);
-  }
-
-  if (canSwipe == null) {
-    return null;
-  }
-
- // if (modifiedThings == null) {
- //   return null;
- // }
 useEffect(() =>{
 if (matches == null) {return;}
 console.log("ThingPage matches", matches);
@@ -138,24 +93,16 @@ setThing(d);
 
   return (
     <>
-
+THING PAGE
             <div key={thing.uuid}>
               <Thing
                 key={thing.uuid}
                 flavour={"item"}
-   //             token={token}
-   //             things={things}
                 uuid={thing.uuid}
                 datagram={thing}
                 canOpen={false}
                 canFold={false}
                 open={true}
-                onFold={(t) => {
-                  handleFoldThing(t);
-                }}
-                onOpen={(t) => {
-                  handleOpenThing(t);
-                }}
               />
             </div>
     </>

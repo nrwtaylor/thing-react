@@ -29,10 +29,12 @@ import Forget from "../components/Forget.js";
 import Trace from "../components/Trace.js";
 import Stream from "../components/Stream.js";
 import BubbleLevel from "../components/BubbleLevel.js";
+import History from "../components/History.js";
+
 import useSnapshot from "../useSnapshot.js";
 
-const defaultWebPrefix = process.env.REACT_APP_WEB_PREFIX;
 
+const defaultWebPrefix = process.env.REACT_APP_WEB_PREFIX;
 
 function Ping(props) {
   const user_name = props.user_name; // TODO
@@ -42,18 +44,19 @@ function Ping(props) {
   //const [requestedAt, setRequestedAt] = useState();
   const [reply, setReply] = useState("");
 
-const {datagram} = props;
+  const { datagram, variables } = props;
 
-const webPrefix = datagram && datagram.webPrefix ? datagram.webPrefix : defaultWebPrefix;
+  const webPrefix =
+    datagram && datagram.webPrefix ? datagram.webPrefix : defaultWebPrefix;
 
   const [ping, setPing] = useState();
 
-//  const toSnapshot = "http://192.168.10.10/snapshot-ping.json";
+  //  const toSnapshot = "http://192.168.10.10/snapshot-ping.json";
 
-const u = webPrefix+ "/" + "snapshot.json";
+  const u = webPrefix + "/" + "snapshot.json";
 
-//  const toSnapshot = "http://127.0.0.1/snapshot.json";
-const toSnapshot = u;
+  //  const toSnapshot = "http://127.0.0.1/snapshot.json";
+  const toSnapshot = u;
   const { snapshot, flag, snapshotGetTime } = useSnapshot(toSnapshot);
 
   useEffect(() => {
@@ -75,6 +78,7 @@ const toSnapshot = u;
   const [pings, setPings] = useState([]);
   const [open, setOpen] = useState(false);
 
+  const [pingUuid, setPingUuid] = useState();
   //  const [snapshotGetTime, setSnapshotGetTime] = useState();
 
   function humanTime(timestamp) {
@@ -127,10 +131,48 @@ const toSnapshot = u;
     setPings(ps);
   }, [ping]);
 
+  useEffect(() => {
+    console.log(
+      "Ping variables.ping.uuid",
+      variables &&
+        variables.ping &&
+        variables.ping.uuid &&
+        variables.ping.uuid.uuid
+    );
+    //&& variables.ping.uuid);
+    setPingUuid(
+      variables &&
+        variables.ping &&
+        variables.ping.uuid &&
+        variables.ping.uuid.uuid
+    );
+  }, [variables]);
+
+  useEffect(() => {
+    console.log("Ping pingUuid", pingUuid);
+  }, [pingUuid]);
   return (
     <>
       <div>PING</div>
       <div>
+        {variables && variables.ping && variables.uuid}
+        {pingUuid && (
+          <>
+            HISTORY
+            <History
+              user={null}
+              //thing={data.thing}
+              datagram={{
+                ...datagram,
+                subject: pingUuid + "-snapshot-ping-stackr-ca-1m",
+              }}
+              //                 datagram={{...datagram, subject:pingUuid+"-snapshot-ping-stackr-ca-1m"}}
+              agent_input={webPrefix}
+              showLive={true}
+            />
+            <br />
+          </>
+        )}
         <br />
         GET TIME {snapshotGetTime}ms {Math.round(1000 / snapshotGetTime, 1)}Hz
         <br />

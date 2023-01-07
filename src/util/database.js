@@ -191,27 +191,32 @@ export function getSnapshot(webPrefix, token) {
   //if (!u.endsWith('snapshot.json')) {
   // u = webPrefix + "snapshot.json";
   //}
-  console.log("database getSnapshot u", u);
-  console.log("database getSnapshot webPrefix", webPrefix);
   const slug = getSlug(u);
-
-  //console.log("database getSnapshot slug", slug);
 
   if (stack[slug]) {
     const nowAt = zuluTime();
     const age = zuluTimeDifferenceMilliseconds(stack[slug].refreshedAt, nowAt);
 
+
+    if (age < snapshotCacheTimeMilliseconds) {
     console.log(
-      "database getSnapshot slug cache",
+      "database getSnapshot slug cache valid",
+      u,
       slug,
       age,
       stack[slug].refreshedAt
     );
-
-    if (age < snapshotCacheTimeMilliseconds) {
       return Promise.resolve(stack[slug]);
     }
+
+
   }
+
+    console.log(
+      "database getSnapshot slug cache stale",
+      u,
+      slug,
+    );
 
   return axios
     .get(u, {

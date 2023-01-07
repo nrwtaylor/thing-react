@@ -72,7 +72,7 @@ validToken(token);
     updateAge();
 
     const interval = setInterval(() => {
-      console.log("Token tick");
+//      console.log("Token tick");
       //setCurrentTime(Date.now());
       updateAge(expiresAt);
     }, 500); // 20 Hz was 200.
@@ -118,6 +118,7 @@ validToken(token);
     setToken: saveToken,
     isValidToken,
     token,
+    age,
     username,
   };
 }
