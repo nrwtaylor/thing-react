@@ -327,15 +327,18 @@ function History(props) {
     // Bin history points in to cycle.
     const cycleMilliseconds = 1000 * 24 * 60 * 60;
 
-    const cycleStartDate = new Date();
+    var cycleStartDate = new Date();
+    cycleStartDate.setHours(24, 0, 0, 0);
+
+    // Set to midnight local time.
 
     const cycleRunAt = zuluTime(cycleStartDate);
-
+    console.log("History cycleRunAt", cycleRunAt);
     const cycleStartMilliseconds = cycleStartDate.getTime();
 
     const cyclePoints = historyPoints.map((historyPoint) => {
-//      var cyclePoint = historyPoint;
-var cyclePoint = {};
+      //      var cyclePoint = historyPoint;
+      var cyclePoint = {};
       const ageMilliseconds = zuluTimeDifferenceMilliseconds(
         historyPoint.at,
         cycleRunAt
@@ -343,22 +346,20 @@ var cyclePoint = {};
 
       const cycleIndex = Math.floor(ageMilliseconds / cycleMilliseconds);
 
-const key = cycleIndex === 0 ? "amount" : "amount"+cycleIndex;
-console.log("History key", key);
+      const key = cycleIndex === 0 ? "amount" : "amount" + cycleIndex;
+      console.log("History key", key);
       cyclePoint[key] = historyPoint.amount;
 
       const cycleAgeMilliseconds =
         ageMilliseconds - cycleIndex * cycleMilliseconds;
 
+      const x = cycleStartMilliseconds - cycleAgeMilliseconds;
 
-
-      const x = cycleStartMilliseconds + cycleAgeMilliseconds;
-
-console.log("History x", zuluTime(new Date(x)), x);
+      console.log("History x", zuluTime(new Date(x)), x);
 
       const at = zuluTime(new Date(x));
 
-//cyclePoint["amount"] = null;
+      //cyclePoint["amount"] = null;
       cyclePoint["at"] = at;
       //historyPoint.at;
       return cyclePoint;
@@ -388,9 +389,7 @@ console.log("History x", zuluTime(new Date(x)), x);
       HISTORYTO {historyTo}
       <br />
       <Trace data={tracePoints} cycle={1} />
-
       <Trace data={historyPoints} cycle={1} />
-
       <br />
       {data &&
         data.transducers &&
