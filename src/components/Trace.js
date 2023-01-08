@@ -63,6 +63,7 @@ function Trace(props) {
   const { data } = props;
   //  const [canSwipe, setCanSwipe] = useState();
   const canSwipe = true;
+  const shade = true;
 
   //const now = new Date().getTime();
   const [timeSeriesData, setTimeSeriesData] = useState();
@@ -80,8 +81,8 @@ function Trace(props) {
   // This will get the twilight times.
   const { thing } = useThing({ subject: "day twilight" });
 
-const maxCycles = 100;
-const cycles = Array.from(Array(maxCycles), (_,x) => x);
+  const maxCycles = 100;
+  const cycles = Array.from(Array(maxCycles), (_, x) => x);
 
   useEffect(() => {
     if (data == null) {
@@ -102,12 +103,12 @@ const cycles = Array.from(Array(maxCycles), (_,x) => x);
     setLastAt(data[data.length - 1].at);
 
     const t = data.map((d) => {
-var cycle = 1; // 1 day
-//const milliseconds = new Date(d.at).getTime() -  new Date().getTime();
-//const cycleCount = (milliseconds / (cycle * 60 * 60 * 24 * 1000));
+      var cycle = 1; // 1 day
+      //const milliseconds = new Date(d.at).getTime() -  new Date().getTime();
+      //const cycleCount = (milliseconds / (cycle * 60 * 60 * 24 * 1000));
 
-//
-//d['amount'+cycleCount] = d; 
+      //
+      //d['amount'+cycleCount] = d;
 
       return { ...d, time: new Date(d.at).getTime() };
     });
@@ -229,7 +230,7 @@ var cycle = 1; // 1 day
               ticks={xSeriesData.sort()}
               dataKey="time"
               domain={["dataMin", currentTime]}
-//            domain={["dataMin", "dataMax"]}
+              //            domain={["dataMin", "dataMax"]}
 
               type="number"
               tick={true}
@@ -302,7 +303,6 @@ var cycle = 1; // 1 day
                   dot={false}
                 />
               )}
-
             {Object.keys(data[0]).map((q) => {
               if (q.startsWith("amount")) {
                 const x = q.replace("amount", "");
@@ -313,7 +313,6 @@ var cycle = 1; // 1 day
                 if (!Number.isInteger(parseInt(x))) {
                   return;
                 }
-
 
                 return (
                   <Line
@@ -329,25 +328,18 @@ var cycle = 1; // 1 day
               }
               //return (<>x</>);
             })}
-
-{
-cycles.map((n) =>{
-
-                return (
-                  <Line
-                    isAnimationActive={false}
-                    dataKey={"amount" + n}
-                    stroke="grey"
-                    strokeWidth={4}
-                    dot={false}
-                  />
-                );
-
-
-})
-}
-
-
+            {cycles.reverse().map((n) => {
+              return (
+                <Line
+                  isAnimationActive={false}
+                  dataKey={"amount" + n}
+                  stroke={hexShade(n, 1)}
+                  //        stroke="grey"
+                  strokeWidth={4}
+                  dot={false}
+                />
+              );
+            })}
             <Line
               isAnimationActive={false}
               dataKey="amount"
@@ -370,6 +362,25 @@ cycles.map((n) =>{
       </Box>
     </>
   );
+}
+
+function hexShade(n, maxN) {
+  //const percent = n / maxN;
+  const darkestShade = 60;
+  const lightestShade = 180;
+  const factorShade = 20;
+  var conditionN = n * factorShade + darkestShade;
+
+  if (conditionN > lightestShade) {
+    conditionN = lightestShade;
+  }
+  //conditionN = 0; // balck
+  //conditionN = 125; //grey
+  //conditionN = 255; //clear/white
+  //conditionN = 180;
+
+  const hexString = conditionN.toString(16);
+  return "#" + hexString + hexString + hexString;
 }
 
 export default Trace;
