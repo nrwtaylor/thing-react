@@ -60,6 +60,7 @@ import { humanTime, zuluTime } from "../util/time.js";
 import useMessages from "../useMessages";
 import useThingReport from "../useThingReport";
 import useThing from "../useThing";
+import useThings from "../useThings";
 import useDatagram from "../useDatagram";
 
 import { getSlug } from "../util/text.js";
@@ -207,6 +208,7 @@ export default function Thing(props) {
   //  );
   const { thing: t, spawnThing, flipThing, forgetThing } = useThing(datagram);
   const { thingReport: data, getThingReport } = useThingReport(url, 10000);
+  //const { getThings } = useThings();
 
   useEffect(() => {
     if (url == null) {
@@ -368,6 +370,12 @@ export default function Thing(props) {
       setPNG(base64Icon);
     }
 
+    if (data && data.png) {
+      var base64Icon = "data:image/png;base64," + data.png;
+      setPNG(base64Icon);
+    }
+
+
     setTimedInterval(elapsedTime);
 
     const p = requestedAt + pollInterval;
@@ -507,7 +515,8 @@ export default function Thing(props) {
   function Forget() {}
 
   const handleForgetThing = (e) => {
-    //    forgetThing();
+    forgetThing();
+    //getThings();
     //return;
     if (props.onChange) {
       props.onChange("forget");
@@ -516,6 +525,7 @@ export default function Thing(props) {
     if (props.onForget) {
       props.onForget(e);
     }
+    //getThings();
   };
 
   // Call getResponse on a Timer.
@@ -637,7 +647,7 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
     if (!error) {
       return;
     }
-    handleSpawnThing({ subject: error.message });
+    handleSpawnThing({ subject: "error " + error.message });
   }, [error]);
 
   const handleSpawnThing = (e) => {
@@ -815,6 +825,21 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
           )}
           {!expanded && !flipped && (
             <>
+              {subject && subject.toLowerCase().indexOf("history") !== -1 && (
+                <div>
+                  history test
+                  <History
+                    channel={'image'}
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
+
+
+
               {PNG && (
                 <Box className={classes.cardImageContainer}>
                   <div className={classes.media}>
@@ -919,6 +944,10 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
                 <Token token={token} datagram={datagram} flavour={"card"} />
               </div>
             )}
+
+
+
+
           {expanded && (
             <>
               <Content thingReport={data && data.thingReport} />

@@ -76,8 +76,6 @@ export default function App({ componentName, ...props }) {
 
   const matches = pathname.match(reg);
 
-  //  const [things, setThings] = useState([]);
-
   const { things, getThings, setThings } = useThings();
 
   const { username, token, setToken, deleteToken, isValidToken } = useToken();
@@ -194,7 +192,7 @@ export default function App({ componentName, ...props }) {
 
   return (
     <>
-      THING-REACT 8 January 2023 ef74
+      THING-REACT 9 January 2023 68c3
       <br />
       {identity && <Identity identity={identity} />}
       {token && token.message}

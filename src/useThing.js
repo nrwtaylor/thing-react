@@ -194,10 +194,13 @@ export default function useThing(datagram) {
         })
       );
 
+
+
       // Call delete Thing api
       forgetThingy(thing, token)
         .then((res) => {
           console.log("ThingContainer forgot uuid", thing.uuid);
+          //getThings();
           //          props.onCollectionChange(things);
         })
         .catch((error) => {

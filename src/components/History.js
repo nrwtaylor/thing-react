@@ -379,15 +379,19 @@ function History(props) {
       TEXT {thingReport && thingReport.text}
       <br />
       {data && data.thingReport && data.thingReport.text}
-      SUBJECT {subject}
+      {false && <>SUBJECT {subject}</>}
       <div onClick={() => navigate("/" + "history/" + subject)}>{subject}</div>
       <br />
-      REF {ref}
-      <br />
-      HISTORYREF {historyRef}
-      <br />
-      HISTORYTO {historyTo}
-      <br />
+      {false && (
+        <>
+          REF {ref}
+          <br />
+          HISTORYREF {historyRef}
+          <br />
+          HISTORYTO {historyTo}
+          <br />
+        </>
+      )}
       <Trace data={tracePoints} cycle={1} />
       <Trace data={historyPoints} cycle={1} />
       <br />
@@ -412,11 +416,17 @@ function History(props) {
           //              domain={[-50, 50]}
         />
       )}
-      <br />
-      <div>SUBJECT {subject}</div>
+      {false && (
+        <>
+          <br />
+          <div>SUBJECT {subject}</div>
+          <div>
+            FLAG {flag} COLOUR
+            <br />
+          </div>
+        </>
+      )}
       <div>
-        FLAG {flag} COLOUR
-        <br />
         SNAPSHOT GET TIME {snapshotGetTime}ms{" "}
         {Math.round(1000 / snapshotGetTime, 1)}Hz
         <br />

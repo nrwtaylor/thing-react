@@ -66,7 +66,11 @@ const errorThing = {
 
 export default function useThings() {
   const { token } = useToken();
-const [count, setCount] = useState();
+  const [count, setCount] = useState();
+//  const [things, setThings] = useState(userThings.get().things);
+
+  const [things, setThings] = useState();
+
 
 useEffect(() =>{
 
@@ -82,6 +86,8 @@ getThings();
       return;
     }
 
+    const tempThings = userThings.get().things
+    setThings(tempThings);
 
     getThingies(apiPrefix, token)
       .then((result) => {
@@ -91,7 +97,7 @@ getThings();
         var combinedThings = [];
         if (result && result.things && result.things.length !== 0) {
           combinedThings = mergeObjectsInUnique(
-            [...things, ...result.things],
+            [...tempThings, ...result.things],
             "uuid"
           );
         }
@@ -144,7 +150,6 @@ getThings();
     //    return things;
   };
 
-  const [things, setThings] = useState(userThings.get().things);
 
   useEffect(() => {
 //    getThings();
@@ -152,8 +157,8 @@ getThings();
   }, []);
 
   useEffect(() => {
-if (things == null) {return;}
-//    console.log("useThings things", things);
+//if (things == null) {return;}
+    console.log("useThings things", things);
   }, [things]);
 
 useEffect(() =>{
@@ -166,6 +171,7 @@ useEffect(() =>{
 }, [getThings]);
 
 useEffect(()=>{
+
 getThings();
 },[]);
 

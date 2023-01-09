@@ -28,7 +28,7 @@ export const ThingContainer = memo(function ThingContainer(props) {
   const { identity, setIdentity, deleteIdentity } = useIdentity();
   const {findThing, moveThing, flipThing ,openThing,foldThing,deleteThing, spawnThing} = useThing(null);
 
-const {things} = useThings();
+const {things, getThings, setThings} = useThings();
 
 useEffect(()=>{
 

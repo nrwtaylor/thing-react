@@ -29,7 +29,7 @@ export const ThingContainerDnd = memo(function ThingContainer(props) {
 
   const { token } = props;
   const [things, setThings] = useState(props.things);
-  const {dragAndDrop} = props;
+  const { dragAndDrop } = props;
   const findThing = useCallback(
     (id) => {
       const thing = things.filter((c) => `${c.index}` === id)[0];
@@ -58,7 +58,7 @@ export const ThingContainerDnd = memo(function ThingContainer(props) {
       );
 
       things.map((t, index) => {
-        const newT = { ...t, index:index };
+        const newT = { ...t, index: index };
 
         setThing(t.uuid, newT, token).then((result) => {
           console.log(result);
@@ -259,25 +259,15 @@ setThings(
 
   const [, drop] = useDrop(() => ({ accept: ItemTypes.CARD }));
 
-  if (!token) {return (<>NO TOKEN</>);}
-
-
-
-
-
+  if (!token) {
+    return <>NO TOKEN</>;
+  }
 
   return (
     <div ref={drop} style={style}>
-<ThingContainer things={things} />
+      <ThingContainer things={things} />
     </div>
   );
-
-
-
-
-
-
-
 
   return (
     <div ref={drop} style={style}>
@@ -287,7 +277,7 @@ setThings(
             {things.map((thing) => (
               <>
                 <Card
-                  key={"card_"+thing.uuid}
+                  key={"card_" + thing.uuid}
                   id={`${thing.index}`}
                   card={thing}
                   text={thing && thing.text}
