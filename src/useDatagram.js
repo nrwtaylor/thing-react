@@ -1,6 +1,16 @@
 import { useState, useEffect } from "react";
 
-export default function useDatagram() {
+export default function useDatagram(inputDatagram) {
+
+  // Save datagram locally in memory
+
+  useEffect(()=>{
+
+    // Consider: Merge strategies.
+    saveDatagram(inputDatagram);
+
+  }, [inputDatagram]);
+
   const getDatagram = () => {
     return null;
   };

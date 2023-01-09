@@ -34,7 +34,9 @@ export default function useThingReport(input, inputThingReportPollInterval) {
 
   useEffect(() => {
     console.log("useThingReport thingReportInterval", thingReportInterval);
-    if (thingReportInterval == null) {return;}
+    if (thingReportInterval == null) {
+      return;
+    }
     getThingReport();
 
     const interval = setInterval(() => {
@@ -44,10 +46,15 @@ export default function useThingReport(input, inputThingReportPollInterval) {
     return () => clearInterval(interval);
   }, [thingReportInterval]);
 
-useEffect(() =>{
-console.log("useThingReport input changed", input);
-getThingReport();
-}, [input]);
+  useEffect(() => {
+    console.log("useThingReport input changed", input);
+
+    // Some conditions here where a thing report should not be called.
+    //if (input == null) {return;}
+    //if (input && input.endsWith('\/.json')) {return;}
+
+    getThingReport();
+  }, [input]);
 
   useEffect(() => {
     if (thingReport == null) {
@@ -63,7 +70,6 @@ getThingReport();
     }
 
     console.log("useThingReport thingReport", thingReport);
-
 
     const count = 0;
 
@@ -84,9 +90,8 @@ getThingReport();
   }, [sequentialErrorCount]);
 
   function refreshThingReport() {
-//console.log(input
-//    getThingReport();
-
+    //console.log(input
+    //    getThingReport();
   }
 
   function getThingReport() {
@@ -96,7 +101,14 @@ getThingReport();
     }
 
     const url = to;
-if (url == undefined) {return Promise.resolve(true);}
+
+    if (url == null) {
+      return Promise.resolve(true);
+    }
+    if (url && url.endsWith("/.json")) {
+      return Promise.resolve(true);
+    }
+
     console.log("useThingReport url", url);
     return getWebJson(url, "")
       .then((result) => {

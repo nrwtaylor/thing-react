@@ -19,13 +19,13 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 export default function ThingPage(props) {
-
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
   const apiPrefix = process.env.REACT_APP_API_PREFIX;
 
   const [uuid, setUuid] = useState();
 
-  const pathname = window.location.pathname;
+  const pathname = window.location.pathname.replace(/\//, "");
+
 
   const reg =
     /\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/g;
@@ -36,7 +36,7 @@ export default function ThingPage(props) {
   const { identity, setIdentity, deleteIdentity } = useIdentity();
   const { input, setInput, deleteInput } = useInput();
 
-  const {thing, openThing, setThing} = useThing();
+  const { thing, openThing, setThing } = useThing();
 
   const { things, getThings } = useThings();
 
@@ -58,7 +58,7 @@ export default function ThingPage(props) {
   }, [identity]);
 
   function handleCollectionChange(things) {
-return;
+    return;
     //   setThings(things);
     if (things && things[0] && things[0].uuid) {
       console.log("App setUuid", things[0].uuid);
@@ -70,41 +70,45 @@ return;
     setUuid(u);
   }
 
-useEffect(() =>{
-if (matches == null) {return;}
-console.log("ThingPage matches", matches);
-/*
+  useEffect(() => {
+    if (matches == null) {
+      return;
+    }
+    console.log("ThingPage matches", matches);
+    /*
 {matches.map((match)=>{return (<>{match}</>) })
 }
 */
+  }, [matches]);
 
-},[matches]);
+  useEffect(() => {
+    console.log("ThingPage pathname", pathname);
 
-useEffect(()=>{
-console.log("ThingPage pathname", pathname);
-const d={
-                  to: "agent",
-                  subject: pathname,
-                  webPrefix: webPrefix,
-                };
-//setDatagram(d);
-setThing(d);
-}, [pathname]);
+//const conditionedPathname = pathname.replace(/\//, "");
+
+    const d = {
+      to: "agent",
+      subject: pathname,
+      webPrefix: webPrefix,
+    };
+    //setDatagram(d);
+    setThing(d);
+  }, [pathname]);
 
   return (
     <>
-THING PAGE
-            <div key={thing.uuid}>
-              <Thing
-                key={thing.uuid}
-                flavour={"item"}
-                uuid={thing.uuid}
-                datagram={thing}
-                canOpen={false}
-                canFold={false}
-                open={true}
-              />
-            </div>
+      THING PAGE
+      <div key={thing.uuid}>
+        <Thing
+          key={thing.uuid}
+          flavour={"item"}
+          uuid={thing.uuid}
+          datagram={thing}
+          canOpen={false}
+          canFold={false}
+          open={true}
+        />
+      </div>
     </>
   );
 }

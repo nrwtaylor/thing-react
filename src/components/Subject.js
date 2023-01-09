@@ -25,8 +25,8 @@ export default function Subject({ subject, setSubject, token }) {
   // Then send what you have.
   // This will send token by token. Which is probably okay.
   useEffect(() => {
-    if (s === undefined) {
-      setDefaultSubject("");
+    if (s == null) {
+      //      setDefaultSubject("");
       return;
     }
     if (s === "") {
@@ -51,11 +51,11 @@ export default function Subject({ subject, setSubject, token }) {
   }, [s]);
 
   function subjectChange(e) {
-    console.log("Subejct subjectChange", subject);
+    console.log("Subject subjectChange", subject);
     var d = e.target.value;
     setS(d);
 
-    //    setSubject(d);
+    setSubject(d);
 
     //setThing(thing.uuid, {subject:d}, token);
   }

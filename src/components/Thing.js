@@ -46,7 +46,7 @@ import Associations from "../components/Associations.js";
 
 import { v4 as uuidv4, uuid as uuidLibrary } from "uuid";
 import {
-//  getThingReport,
+  //  getThingReport,
   setThing,
   txCount,
   rxCount,
@@ -60,7 +60,7 @@ import { humanTime, zuluTime } from "../util/time.js";
 import useMessages from "../useMessages";
 import useThingReport from "../useThingReport";
 import useThing from "../useThing";
-
+import useDatagram from "../useDatagram";
 
 import { getSlug } from "../util/text.js";
 
@@ -164,41 +164,58 @@ export default function Thing(props) {
 
   const classes = useStyles();
 
-  const { datagram, token, canOpen, open, canFold } = props;
+  const { datagram: initialDatagram, token, canOpen, open, canFold } = props;
+
+  const { datagram, setDatagram } = useDatagram(initialDatagram);
 
   var { agentInput } = props;
 
-  if (datagram.input) {
+  if (datagram && datagram.input) {
     agentInput = datagram.input;
   }
 
+  const [subject, setSubject] = useState();
+
+  useEffect(() => {
+    if (initialDatagram == null) {
+      return;
+    }
+    console.log("Thing initialDatagram changed", initialDatagram);
+
+    setDatagram(initialDatagram);
+    setSubject(initialDatagram.subject);
+
+    const u = webPrefix + getSlug(initialDatagram.subject) + ".json";
+    console.log("Thing datagram useEffect u", u);
+    setUrl(u);
+  }, [initialDatagram]);
   const { text } = useParams();
 
   const variables = { poll: { interval: 20000, aggressive: "yes" } };
 
   const { messages, addMessage } = useMessages();
 
-  const webPrefix = datagram.webPrefix ? datagram.webPrefix : defaultWebPrefix;
+  const webPrefix =
+    datagram && datagram.webPrefix ? datagram.webPrefix : defaultWebPrefix;
   //  const webPrefix = datagram.webPrefix ? datagram.webPrefix : "https://stackr.ca/";
-const [url, setUrl] = useState();
-//const u = webPrefix+ getSlug(datagram.subject) + ".json";
+  const [url, setUrl] = useState();
+  //const u = webPrefix+ getSlug(datagram.subject) + ".json";
 
-//  const { thingReport: data, getThingReport } = useThingReport(
-//    webPrefix + datagram.subject + ".json",
-//    10000
-//  );
-const { thing: t, spawnThing, flipThing, forgetThing } = useThing(datagram);
-  const { thingReport: data, getThingReport } = useThingReport(
-    url,
-    10000
-  );
+  //  const { thingReport: data, getThingReport } = useThingReport(
+  //    webPrefix + datagram.subject + ".json",
+  //    10000
+  //  );
+  const { thing: t, spawnThing, flipThing, forgetThing } = useThing(datagram);
+  const { thingReport: data, getThingReport } = useThingReport(url, 10000);
 
-useEffect(()=>{
-if (url == null) {return;}
-console.log("Thing url", url);
-},[url]);
+  useEffect(() => {
+    if (url == null) {
+      return;
+    }
+    console.log("Thing url", url);
+  }, [url]);
 
-  const { to, subject } = datagram;
+  // const { to, subject } = datagram;
 
   const startAt = props.createdAt;
 
@@ -218,17 +235,17 @@ console.log("Thing url", url);
 
   const [PNG, setPNG] = useState();
 
-useEffect(()=>{
-
-if (datagram == null) {return;}
-
-if (datagram && datagram.subject) {
-const u = webPrefix+ getSlug(datagram.subject) + ".json";
-
-  setUrl(u);
-}
-
-}, [datagram]);
+  useEffect(() => {
+    if (datagram == null) {
+      return;
+    }
+    console.log("Thing datagram useEffect called datagram", datagram);
+    if (datagram && datagram.subject) {
+      const u = webPrefix + getSlug(datagram.subject) + ".json";
+      console.log("Thing datagram useEffect u", u);
+      setUrl(u);
+    }
+  }, [datagram]);
 
   var pollInterval =
     datagram && datagram.pollInterval
@@ -240,14 +257,14 @@ const u = webPrefix+ getSlug(datagram.subject) + ".json";
     datagram.pollInterval = d;
     setDatagram({ ...datagram });
   }
-
+  /*
   function setSubject(d) {
     datagram.subject = d;
     setDatagram({ ...datagram });
     //refreshThingReport();
   }
-
-  function setDatagram(d) {
+*/
+  function deprecateSetDatagram(d) {
     if (!d) return;
 
     console.log("Thing setDatagram d", d);
@@ -330,7 +347,8 @@ const u = webPrefix+ getSlug(datagram.subject) + ".json";
     console.log(
       "Thing thingReport data",
       data && data.datagram && data.datagram.text,
-      data
+      data,
+      url
     );
     //setData(thingReport);
     if (
@@ -375,11 +393,11 @@ const u = webPrefix+ getSlug(datagram.subject) + ".json";
   const [nuuid, setNuuid] = useState();
 
   useEffect(() => {
-    console.log("Thing start uuid", datagram.uuid);
+    console.log("Thing start");
   }, []);
 
   useEffect(() => {
-    console.log("Thing expanded uuid", expanded, datagram.uuid);
+    console.log("Thing expanded uuid", expanded, datagram && datagram.uuid);
   }, [expanded]);
 
   useEffect(() => {
@@ -420,6 +438,9 @@ const u = webPrefix+ getSlug(datagram.subject) + ".json";
   }, [uuid]);
 
   useEffect(() => {
+    if (subject == null) {
+      return;
+    }
     console.log("Thing subject changed", subject);
     //setFlag('green');
     //   getResponse(webPrefix, true);
@@ -486,8 +507,8 @@ const u = webPrefix+ getSlug(datagram.subject) + ".json";
   function Forget() {}
 
   const handleForgetThing = (e) => {
-//    forgetThing();
-//return;
+    //    forgetThing();
+    //return;
     if (props.onChange) {
       props.onChange("forget");
     }
@@ -601,8 +622,8 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
 
   const handleFlipThing = (e) => {
     setFlipped(!flipped);
-flipThing();
-return;
+    flipThing();
+    return;
     if (props.onChange) {
       props.onChange("flip");
     }
@@ -621,7 +642,7 @@ return;
 
   const handleSpawnThing = (e) => {
     spawnThing();
-return;
+    return;
     if (props.onChange) {
       props.onChange("spawn");
       return;
@@ -734,8 +755,8 @@ return;
           }
         />
         {token && token.message}
-{expanded ? "expanded" : "not expanded"}
-{flipped ? "flipped" : "not flipped"}
+        {expanded ? "expanded" : "not expanded"}
+        {flipped ? "flipped" : "not flipped"}
 
         {error && <Error error={error} agentInput={data.thingReport} />}
 
@@ -749,7 +770,9 @@ return;
         )}
 
         {canFold && expanded && <Button onClick={handleFoldThing}>FOLD</Button>}
-        {canOpen && !expanded && <Button onClick={handleOpenThing}>OPEN</Button>}
+        {canOpen && !expanded && (
+          <Button onClick={handleOpenThing}>OPEN</Button>
+        )}
 
         {/*<div onClick={handleExpandClick} >*/}
         <div>
@@ -803,11 +826,10 @@ return;
           )}
           {!flipped && (
             <>
-                <Message message={{ subject: data.sms }} />
-                <br />
+              <Message message={{ subject: data.sms }} />
+              <br />
 
-          {/*    <div>{data && data.sms}</div>*/}
-
+              {/*    <div>{data && data.sms}</div>*/}
 
               {/*
               <div>{data && data.thingReport && data.thingReport.sms}</div>*/}
@@ -897,7 +919,6 @@ return;
                 <Token token={token} datagram={datagram} flavour={"card"} />
               </div>
             )}
-
           {expanded && (
             <>
               <Content thingReport={data && data.thingReport} />
@@ -984,7 +1005,7 @@ return;
                 )}
               {subject && subject.toLowerCase().indexOf("history") !== -1 && (
                 <div>
-history test
+                  history test
                   <History
                     user={null}
                     //thing={data.thing}
@@ -998,7 +1019,7 @@ history test
                   <Ping
                     user={null}
                     //thing={data.thing}
-                    variables={{ping:{uuid:data.ping}}}
+                    variables={{ ping: { uuid: data.ping } }}
                     datagram={datagram}
                     agent_input={webPrefix}
                   />
@@ -1098,7 +1119,6 @@ history test
                   agent_input={webPrefix}
                 />
                 {data && data.thingReport && data.thingReport.agent}
-
               </div>
               <div>
                 {/* Note */}
