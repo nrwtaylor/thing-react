@@ -49,8 +49,7 @@ function Collection(props) {
 
   return (
     <>
-COLLECTION
-{datagram && datagram.subject}
+Similar Things
       <DndProvider backend={HTML5Backend}>
         <ThingContainer datagram={datagram}
 //          things={things}

@@ -1,4 +1,15 @@
 import React, { lazy, useState, useEffect } from "react";
+
+import {
+//  Get as getThingy,
+//  forgetThing as forgetThingy,
+//  setThing as setThingy,
+  createThing as createThingy,
+//  makeObservable,
+} from "../util/database.js";
+import update from "immutability-helper";
+
+
 import { useParams } from "react-router";
 import Agent from "../components/Agent.js";
 import Snapshot from "../components/Snapshot.js";
@@ -53,8 +64,10 @@ import {
   setThing,
   txCount,
   rxCount,
+  rxBytes,
   txData,
   rxData,
+  txBytes,
   rxErrorCount,
   txErrorCount,
 } from "../util/database.js";
@@ -65,6 +78,9 @@ import useThingReport from "../useThingReport";
 import useThing from "../useThing";
 import useThings from "../useThings";
 import useDatagram from "../useDatagram";
+import useToken from "../useToken";
+
+
 
 import { getSlug } from "../util/text.js";
 
@@ -168,9 +184,9 @@ export default function Thing(props) {
 
   const classes = useStyles();
 
-  const { datagram: initialDatagram, token, canOpen, open, canFold } = props;
+  const { datagram: initialDatagram, canOpen, open, canFold } = props;
 
-  const { datagram, setDatagram } = useDatagram(initialDatagram);
+  const { datagram, setDatagram } = useDatagram();
 
   var { agentInput } = props;
 
@@ -178,22 +194,29 @@ export default function Thing(props) {
     agentInput = datagram.input;
   }
 
+
   const [subject, setSubject] = useState();
 
   useEffect(() => {
     if (initialDatagram == null) {
       return;
     }
-    console.log("Thing initialDatagram changed", initialDatagram);
 
+    // Don't let the datagram be reset.
+
+    console.log("Thing initialDatagram changed", initialDatagram);
+    if (datagram !== null) {return;}
+
+    console.log("Thing initialDatagram prior datagram", datagram);
     setDatagram(initialDatagram);
 if (initialDatagram.subject) {
     setSubject(initialDatagram.subject);
     const u = webPrefix + getSlug(initialDatagram.subject) + ".json";
-    console.log("Thing datagram useEffect u", u);
+    console.log("Thing datagram initialDatagram u", u);
     setUrl(u);
 }
   }, [initialDatagram]);
+
   const { text } = useParams();
 
   const variables = { poll: { interval: 20000, aggressive: "yes" } };
@@ -212,8 +235,8 @@ if (initialDatagram.subject) {
   //  );
   const { thing: t, spawnThing, flipThing, forgetThing } = useThing(datagram);
   const { thingReport: data, getThingReport } = useThingReport(url, 10000);
-  //const { getThings } = useThings();
-
+  const { things, setThings } = useThings();
+  const { token } = useToken();
   useEffect(() => {
     if (url == null) {
       return;
@@ -654,7 +677,9 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
   }, [error]);
 
   const handleSpawnThing = (e) => {
+
     spawnThing();
+
     return;
     if (props.onChange) {
       props.onChange("spawn");
@@ -667,6 +692,36 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
 
     //spawnThing(webPrefix, thing, token);
   };
+
+const handleAddThing = (e) =>{
+
+console.log("Thing handleAddThing", datagram);
+//return;
+const doNotWait = createThingy(webPrefix, datagram, token)
+        .then((result) => {
+          console.log("Thing handleAdd createThing result", result);
+const newThing = datagram;
+          newThing.associations = {
+            ...newThing.associations,
+            uuid: result.uuid,
+          };
+
+/*
+          setThings(
+            update(things, {
+              $splice: [[0, 0, newThing]],
+            })
+          );
+*/
+//getThings();
+          //          props.onCollectionChange(things);
+        })
+        .catch((error) => {
+          console.log("Thing handleAdd spawnThing createThing error", error);
+        });
+
+
+}
 
   const handleOpenThing = (e) => {
     //setExpanded(true);
@@ -725,6 +780,11 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
             <br />
             TXERRORCOUNT {txErrorCount}
             <br />
+            RXBYTES {rxBytes} estimated
+            <br />
+            TXBYTES {txBytes} estimated
+            <br />
+
           </>
         )}
 
@@ -776,19 +836,22 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
 */}
         {error && <Error error={error} agentInput={data.thingReport} />}
 
-        {expanded && <Button onClick={handleSpawnThing}>SPAWN</Button>}
+        {/*expanded && <Button onClick={handleSpawnThing}>SPAWN</Button>*/}
         <Button onClick={handleForgetThing}>FORGET</Button>
 
-        {expanded && (
+        {/*expanded && (
           <Button onClick={handleFlipThing}>
             {flipped ? "MESSAGE" : "SOURCE"}
           </Button>
-        )}
+        )*/}
 
        {!expanded &&
           (<ThingButton thing={{subject:("thing/"+uuid), agentInput:"Open"}} />)
        }
 
+       {expanded &&
+<Button onClick={handleAddThing}>ADD</Button>
+       }
 
         {canFold && expanded && <Button onClick={handleFoldThing}>FOLD</Button>}
         {canOpen && !expanded && (
@@ -824,8 +887,8 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
               <br />
               CURRENT AT {humanTime(currentAt)}
               <br />
-              TOTAL CHARACTERS RECEIVED DATA {totalBytesReceivedData}
-              <br />
+              {/*{TOTAL CHARACTERS RECEIVED DATA {totalBytesReceivedData}
+              <br />*/}
               <Associations datagram={datagram} />
               {error && error.message}
               <br />
@@ -838,7 +901,6 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
             <>
               {subject && subject.toLowerCase().indexOf("history") !== -1 && (
                 <div>
-                  history test
                   <History
                     channel={"image"}
                     user={null}
@@ -1010,7 +1072,6 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
 
               {subject && subject.toLowerCase().indexOf("history") !== -1 && (
                 <div>
-                  history test
                   <History
                     user={null}
                     //thing={data.thing}

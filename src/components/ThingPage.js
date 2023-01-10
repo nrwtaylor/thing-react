@@ -39,8 +39,8 @@ export default function ThingPage(props) {
   const { identity, setIdentity, deleteIdentity } = useIdentity();
   const { input, setInput, deleteInput } = useInput();
 
-  const { thing, openThing, getThing, setThing } = useThing();
-
+//  const { thing, openThing, getThing, setThing } = useThing();
+const [thing, setThing] = useState();
   const { things, getThings } = useThings();
 
   const createdAt = Date.now();
@@ -97,31 +97,33 @@ export default function ThingPage(props) {
     const uuidPathname = extractUuid(pathname);
     console.log("ThingPage uuidPathname", uuidPathname);
 
-    var match = null;
+    var uuidMatch = null;
     things.forEach((t) => {
       if (t.uuid === uuidPathname) {
-        match = t;
+        uuidMatch = t;
       }
     });
 
-    if (match !== null) {
-      setThing(match);
+    if (uuidMatch !== null) {
+      console.log("ThingPage matched uuid", uuidMatch);
+      setThing(uuidMatch);
       setPlay(false);
       return;
     }
+
 
     const nuuidPathname = extractNuuid(pathname);
     console.log("ThingPage nuuidPathname", nuuidPathname);
 
     var nuuidMatch = null;
     things.forEach((t) => {
-      console.log("ThingPage merp", t.uuid.slice(0, 4));
       if (t.uuid.slice(0, 4) === nuuidPathname) {
         nuuidMatch = t;
       }
     });
 
     if (nuuidMatch !== null) {
+      console.log("ThingPage matched nuuid", nuuidMatch);
       setThing(nuuidMatch);
       setPlay(false);
       return;
@@ -138,17 +140,19 @@ export default function ThingPage(props) {
     });
 
     if (subjectMatch !== null) {
+      console.log("ThingPage matched subject", subjectMatch);
       setThing(subjectMatch);
       setPlay(false);
       return;
     }
 
+    console.log("ThingPage using provided url");
     const d = {
       to: "agent",
       subject: pathname,
       webPrefix: webPrefix,
     };
-    getThing(d);
+//    getThing(d);
 
     //setDatagram(d);
     setThing(d);
@@ -171,6 +175,7 @@ export default function ThingPage(props) {
           agentInput: play ? "Play" : "Stop",
         }}
       />
+{thing && (
       <div key={thing.uuid}>
         <Thing
           key={thing.uuid}
@@ -184,6 +189,7 @@ export default function ThingPage(props) {
           play={play}
         />
       </div>
-    </>
+)}  
+  </>
   );
 }

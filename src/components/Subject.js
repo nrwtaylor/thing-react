@@ -55,7 +55,8 @@ export default function Subject({ subject, setSubject, token }) {
     var d = e.target.value;
     setS(d);
 
-    setSubject(d);
+    // Allow two seconds for subject to settle.
+    //    setSubject(d);
 
     //setThing(thing.uuid, {subject:d}, token);
   }
@@ -74,6 +75,14 @@ export default function Subject({ subject, setSubject, token }) {
         //        value={s}
         onChange={subjectChange}
         inputRef={textInput}
+        onKeyDown={(ev) => {
+          console.log(`Subject onKeyDown ${ev.key}`);
+          if (ev.key === "Enter") {
+            setSubject(ev.target.value);
+            // Do code here
+            ev.preventDefault();
+          }
+        }}
       />
     </>
   );

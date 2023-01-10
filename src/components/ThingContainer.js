@@ -141,11 +141,8 @@ return 6;
     <>
       <div ref={drop} style={style}>
         <Button
-          thing={{ subject: "manage-thing", agentInput: "Add/Manage Thing" }}
+          thing={{ subject: "add-thing", agentInput: "Add Thing" }}
         />
-        SUBJECT {subject && subject}
-        {"-"}
-        {datagram && datagram.subject}
         <Grid container spacing={3} direction="row">
           {scoredThings && (
             <>

@@ -19,6 +19,9 @@ export var txCount = 0;
 export var rxCount = 0;
 export var txErrorCount = 0;
 
+export var txBytes = 0;
+export var rxBytes = 0;
+
 // Create a local non-persistent session cache.
 // To track requests and responses.
 const stack = {};
@@ -32,6 +35,7 @@ axios.interceptors.request.use(
     //txData += dataSize + headerSize;
 
     txCount += 1;
+    txBytes += getSizeInBytes(config.data + config.headers);
 
     // Do something before request is sent
     return config;
@@ -59,7 +63,7 @@ axios.interceptors.response.use(
     //}
 
     rxCount += 1;
-
+    rxBytes += getSizeInBytes(response.data + response.headers);
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
     return response;
@@ -73,6 +77,20 @@ axios.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+const getSizeInBytes = obj => {
+  let str = null;
+  if (typeof obj === 'string') {
+    // If obj is a string, then use it
+    str = obj;
+  } else {
+    // Else, make obj into a string
+    str = JSON.stringify(obj);
+  }
+  // Get the length of the Uint8Array
+  const bytes = new TextEncoder().encode(str).length;
+  return bytes;
+};
 
 export function Get(thing) {
 
@@ -109,6 +127,7 @@ export function createThing(webPrefix, datagram, token) {
   if (datagram == null) {return Promise.resolve({error:"No datagram provided."});}
   if (datagram.subject == null) {return Promise.resolve({error:"No subject provided."});}
 
+  console.log("database createThing datagram", datagram);
 
   // Set createThing browndog endpoint
   const u = apiPrefix + "/thing/";
