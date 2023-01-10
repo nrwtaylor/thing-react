@@ -15,7 +15,7 @@ import useInput from "../useInput";
 import useThings from "../useThings";
 import useThing from "../useThing";
 
-import {extractUuid, extractNuuid} from "../util/text.js";
+import { extractUuid, extractNuuid, getSlug } from "../util/text.js";
 
 import axios from "axios";
 
@@ -89,39 +89,59 @@ export default function ThingPage(props) {
   useEffect(() => {
     console.log("ThingPage pathname", pathname);
 
-
-if (things == null) {return;}
+    if (things == null) {
+      return;
+    }
     //const conditionedPathname = pathname.replace(/\//, "");
     //if (pathname == null) {return;}
-const uuidPathname = extractUuid(pathname);
-console.log("ThingPage uuidPathname", uuidPathname);
+    const uuidPathname = extractUuid(pathname);
+    console.log("ThingPage uuidPathname", uuidPathname);
 
-var match = null;
-things.forEach((t)=>{
+    var match = null;
+    things.forEach((t) => {
+      if (t.uuid === uuidPathname) {
+        match = t;
+      }
+    });
 
-if (t.uuid === uuidPathname) {match = t;}
+    if (match !== null) {
+      setThing(match);
+      setPlay(false);
+      return;
+    }
 
-});
+    const nuuidPathname = extractNuuid(pathname);
+    console.log("ThingPage nuuidPathname", nuuidPathname);
 
-if (match !== null) {setThing(match); setPlay(false); return;}
+    var nuuidMatch = null;
+    things.forEach((t) => {
+      console.log("ThingPage merp", t.uuid.slice(0, 4));
+      if (t.uuid.slice(0, 4) === nuuidPathname) {
+        nuuidMatch = t;
+      }
+    });
 
+    if (nuuidMatch !== null) {
+      setThing(nuuidMatch);
+      setPlay(false);
+      return;
+    }
 
-const nuuidPathname = extractNuuid(pathname);
-console.log("ThingPage nuuidPathname", nuuidPathname);
+    const subjectPathname = pathname;
+    console.log("ThingPage nuuidPathname", nuuidPathname);
 
-var nuuidMatch = null;
-things.forEach((t)=>{
-console.log("ThingPage merp", t.uuid.slice(0,4));
-if (t.uuid.slice(0,4) === nuuidPathname) {nuuidMatch = t;}
+    var subjectMatch = null;
+    things.forEach((t) => {
+      if (getSlug(t.subject) === getSlug(pathname)) {
+        subjectMatch = t;
+      }
+    });
 
-});
-
-
-
-if (nuuidMatch !== null) {setThing(nuuidMatch); setPlay(false); return;}
-
-
-
+    if (subjectMatch !== null) {
+      setThing(subjectMatch);
+      setPlay(false);
+      return;
+    }
 
     const d = {
       to: "agent",
@@ -130,17 +150,10 @@ if (nuuidMatch !== null) {setThing(nuuidMatch); setPlay(false); return;}
     };
     getThing(d);
 
-
-
     //setDatagram(d);
     setThing(d);
     setPlay(false);
   }, [pathname, things]);
-
-
-
-
-
 
   useEffect(() => {
     console.log("ThingPage thing", thing);
@@ -164,7 +177,7 @@ if (nuuidMatch !== null) {setThing(nuuidMatch); setPlay(false); return;}
           flavour={"item"}
           uuid={thing.uuid}
           datagram={thing}
-//        datagram={{...thing, pollInterval:20000}}
+          //        datagram={{...thing, pollInterval:20000}}
           canOpen={false}
           canFold={false}
           open={true}
