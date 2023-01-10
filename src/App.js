@@ -114,11 +114,15 @@ export default function App({ componentName, ...props }) {
     const newThing = {};
     const uuid = uuidv4();
     newThing.uuid = uuid;
-    newThing.subject = newThing.pathname;
+    newThing.subject = pathname;
     newThing.createdAt = createdAt;
 
     //console.log("ThingContainer spawnThing thing", thing);
     console.log("App pathname createThing token", token);
+
+
+// Do not spawn a thing. Test.
+return;
 
     // Spawn thing on designated stack.
 
@@ -246,6 +250,18 @@ export default function App({ componentName, ...props }) {
 
           <Route
             exact
+            path="/thing/:text"
+            element={
+              <ThingPage
+              />
+            }
+          >
+            SNAPSHOT
+          </Route>
+
+
+          <Route
+            exact
             path="/snapshot/:text"
             element={
               <Snapshot
@@ -259,7 +275,7 @@ export default function App({ componentName, ...props }) {
           >
             SNAPSHOT
           </Route>
-
+{/*
           <Route
             exact
             path="/history/:text"
@@ -276,6 +292,20 @@ export default function App({ componentName, ...props }) {
           >
             HISTORY
           </Route>
+*/}
+
+          <Route
+            exact
+            path="/history/:text"
+            element={
+              <>
+                <ThingPage />
+              </>
+            }
+          >
+            THINGPAGE
+          </Route>
+
 
           <Route
             exact

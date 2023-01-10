@@ -6,13 +6,15 @@ import jwt_decode from "jwt-decode";
 import useToken from "../useToken.js";
 import useIdentity from "../useIdentity.js";
 
-
-import { humanPosixTime,humanTime, humanAge, humanRuntime } from "./../util/time.js";
+import {
+  humanPosixTime,
+  humanTime,
+  humanAge,
+  humanRuntime,
+} from "./../util/time.js";
 import Reauthorize from "../components/Reauthorize.js";
 import Login from "../components/Login.js";
 import Logout from "../components/Logout.js";
-
-
 
 export default function Token({ token, setToken, setIdentity }) {
   const [refreshedAt, setRefreshedAt] = useState();
@@ -23,7 +25,6 @@ export default function Token({ token, setToken, setIdentity }) {
   // Display token.
 
   const { age, deleteToken } = useToken();
-
 
   useEffect(() => {
     if (!token) {
@@ -38,42 +39,21 @@ export default function Token({ token, setToken, setIdentity }) {
 
     const t = jwt_decode(token);
 
-//    console.log("Token setExpiresAt", t.exp);
+    //    console.log("Token setExpiresAt", t.exp);
     setRefreshedAt(t.iat);
 
     setExpiresAt(t.exp);
   }, [token]);
 
-useEffect(()=>{
-
-console.log("Token refreshedAt expiresAt", refreshedAt, humanPosixTime(refreshedAt), expiresAt, humanPosixTime(expiresAt));
-
-},[refreshedAt, expiresAt]);
-
-/*
   useEffect(() => {
-    updateAge();
-
-    const interval = setInterval(() => {
-      console.log("Token tick");
-      setCurrentTime(Date.now());
-      updateAge(expiresAt);
-    }, 500); // 20 Hz was 200.
-
-    return () => clearInterval(interval);
-  }, [expiresAt]);
-
-  function updateAge() {
-//    console.log("Token updateAge", age, expiresAt);
-
-    //if (!expiresAt) {return;}
-    //setAge(Date.now() - expiresAt*1000);
-
-    const t = parseFloat(expiresAt) * 1000 - Date.now();
-
-    setAge(t);
-  }
-*/
+    console.log(
+      "Token refreshedAt expiresAt",
+      refreshedAt,
+      humanPosixTime(refreshedAt),
+      expiresAt,
+      humanPosixTime(expiresAt)
+    );
+  }, [refreshedAt, expiresAt]);
 
   return (
     <>
@@ -86,27 +66,23 @@ console.log("Token refreshedAt expiresAt", refreshedAt, humanPosixTime(refreshed
       {token && token.isString && <>{"STRING" + token}</>}
       {/*token && token*/}
       <br />
-      {age < 0 && "EXPIRED"} {age >=0 && "EXPIRES"} AT{" "}
-      {expiresAt && (
-        <>
-          {humanPosixTime(expiresAt)}
-        </>
-      )}
+      {age < 0 && "EXPIRED"} {age >= 0 && "EXPIRES"} AT{" "}
+      {expiresAt && <>{humanPosixTime(expiresAt)}</>}
       <br />
-      REFRESHED AT{" "}
-      {refreshedAt && (
+      REFRESHED AT {refreshedAt && <>{humanPosixTime(refreshedAt)}</>}
+      <br />
+      {age < 0 && (
         <>
-          {humanPosixTime(refreshedAt)}
+          TOKEN EXPIRED {humanRuntime(age, "text", "ago")}{" "}
+          <Login setToken={setToken} setIdentity={setIdentity} />
         </>
       )}
-<br />
-
-{(age<0) && (<>TOKEN EXPIRED {humanRuntime(age, 'text', 'ago')} <Login setToken={setToken} setIdentity={setIdentity} />
-</>)}
-{(age>=0) && (<>TOKEN CURRENT {humanRuntime(age, 'text', 'remaining')} <Reauthorize />
-            <Logout deleteToken={deleteToken} /> 
-
-</>)} 
+      {age >= 0 && (
+        <>
+          TOKEN CURRENT {humanRuntime(age, "text", "remaining")} <Reauthorize />
+          <Logout deleteToken={deleteToken} />
+        </>
+      )}
       <br />
     </>
   );

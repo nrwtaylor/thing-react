@@ -75,6 +75,9 @@ axios.interceptors.response.use(
 );
 
 export function Get(thing) {
+
+  if (thing == null) {return Promise.resolve({error:{message:'No Thing provided.'}})}
+  if (thing.subject == null) {return Promise.resolve({error:{message:'No subject provided.'}})}
   console.log("Axios call " + thing.subject);
 
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
@@ -102,6 +105,12 @@ export function Get(thing) {
 */
 
 export function createThing(webPrefix, datagram, token) {
+
+  if (datagram == null) {return Promise.resolve({error:"No datagram provided."});}
+  if (datagram.subject == null) {return Promise.resolve({error:"No subject provided."});}
+
+
+  // Set createThing browndog endpoint
   const u = apiPrefix + "/thing/";
   console.log("database createThing u", u);
   return axios
@@ -126,6 +135,11 @@ export function createThing(webPrefix, datagram, token) {
 }
 
 export function setThing(uuid, datagram, token) {
+
+  if (datagram == null) {return Promise.resolve({error:{message:"No datagram provided."}});}
+  if (uuid == null) {return Promise.resolve({error:{message:"No uuid provided."}});}
+
+
   console.log("database setThing datagram", datagram);
   console.log("database setThing token", token);
 

@@ -39,7 +39,7 @@ export default function useThing(datagram) {
     console.log("useThing things", things);
   }, [things]);
 
-  const getThing = (token) => {
+  const getThing = () => {
     if (token === undefined) {
       return;
     }
@@ -68,6 +68,7 @@ export default function useThing(datagram) {
         console.log("App loadThing error", error);
       });
   };
+
 
   const [thing, setThing] = useState(userThing.get().thing);
 
@@ -184,9 +185,12 @@ export default function useThing(datagram) {
         return;
       }
 
-      //console.log("deleteCard id", id);
-      //console.log("deleteCard atIndex", atIndex);
+      console.log("useThing deleteCard id", id);
+      console.log("useThing deleteCard atIndex", atIndex);
       const { thing, index } = findThing(id);
+
+      console.log("useThing deleteCard thing index", thing, index);
+
 
       setThings(
         update(things, {

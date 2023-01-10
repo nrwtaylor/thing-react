@@ -201,7 +201,6 @@ function Trace(props) {
   // https://stackoverflow.com/questions/50078787/recharts-set-y-axis-range
   // <YAxis type="number" domain={[dataMin => (0 - Math.abs(dataMin)), dataMax => (dataMax * 2)]} />
 
-  //return (<>HEY</>);
   // https://github.com/recharts/recharts/issues/956
   function formatXAxis(tickItem) {
     const ts = new Date(tickItem);
@@ -223,7 +222,10 @@ function Trace(props) {
       <br />
 
       <Box>
-        <ResponsiveContainer width="100%" aspect={3}>
+<div style={{width:'100%'}} >
+{/*        <ResponsiveContainer width="100%" aspect={3}> */}
+        <ResponsiveContainer aspect={3}>
+
           <LineChart data={timeSeriesData}>
             <XAxis
               interval={0}
@@ -316,6 +318,7 @@ function Trace(props) {
 
                 return (
                   <Line
+                    key={'trace_'+x}
                     isAnimationActive={false}
                     dataKey={"amount" + x}
                     stroke="grey"
@@ -331,6 +334,7 @@ function Trace(props) {
             {cycles.reverse().map((n) => {
               return (
                 <Line
+                  key={'trace'+'_'+'cycle'+'_'+n}
                   isAnimationActive={false}
                   dataKey={"amount" + n}
                   stroke={hexShade(n, 1)}
@@ -349,6 +353,7 @@ function Trace(props) {
             />
           </LineChart>
         </ResponsiveContainer>
+</div>
         {/*
       <ResponsiveContainer width="100%" height="100%">
         <LineChart width={300} height={100} data={data}>
@@ -359,6 +364,7 @@ function Trace(props) {
         {humanRuntime(spread)}
         <br />
         <p />
+
       </Box>
     </>
   );

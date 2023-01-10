@@ -18,6 +18,7 @@ export default function ThingCards(props) {
 
   return (
     <Container maxWidth="sm">
+
       <Collection
 //        token={token}
 //        things={things}

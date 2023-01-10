@@ -17,7 +17,11 @@ export default function useToken() {
       return;
     }
 
+    if (token === false) {
+      return;
+    }
 
+console.log("useToken token", token);
 
     const t = jwt_decode(token);
     //    console.log("useToken readToken t", t);

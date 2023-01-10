@@ -33,7 +33,7 @@ const img = {
 
 function Collection(props) {
 //  const { things, token } = props;
-
+  const {datagram} = props;
   const dndFlag = true;
   /*
   useEffect(() => {
@@ -49,8 +49,10 @@ function Collection(props) {
 
   return (
     <>
+COLLECTION
+{datagram && datagram.subject}
       <DndProvider backend={HTML5Backend}>
-        <ThingContainer
+        <ThingContainer datagram={datagram}
 //          things={things}
           onCollectionChange={handleCollectionChange}
 //          token={token}

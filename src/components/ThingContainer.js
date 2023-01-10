@@ -12,6 +12,9 @@ import useThing from "../useThing.js";
 
 import useToken from "../useToken.js";
 import useIdentity from "../useIdentity.js";
+import { scoreThings } from "../util/text.js";
+
+import Button from "./Button.js";
 
 const style = {
   //minHeight: 200,
@@ -24,19 +27,38 @@ const style = {
 export const ThingContainer = memo(function ThingContainer(props) {
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 
+  const { datagram } = props;
   const { username, token, getToken, setToken, deleteToken } = useToken();
   const { identity, setIdentity, deleteIdentity } = useIdentity();
-  const {findThing, moveThing, flipThing ,openThing,foldThing,deleteThing, spawnThing} = useThing(null);
+  const {
+    findThing,
+    moveThing,
+    flipThing,
+    openThing,
+    foldThing,
+    deleteThing,
+    spawnThing,
+  } = useThing(null);
 
-const {things, getThings, setThings} = useThings();
+  const [subject, setSubject] = useState();
+  const [scoredThings, setScoredThings] = useState();
 
-useEffect(()=>{
+  const { things, getThings, setThings } = useThings();
 
-console.log("ThingContainer things", things);
+  useEffect(() => {
+    console.log("ThingContainer things", things);
+  }, [things]);
 
-}, [things]);
+  useEffect(() => {
+    if (datagram == null) {
+      return;
+    }
+    if (datagram.subject) {
+      setSubject(datagram.subject);
+    }
+  }, [datagram]);
 
-/*
+  /*
   useEffect(() => {
     console.log("ThingContainer things", things);
     const reindexedThings = things.map((image, i) => {
@@ -46,11 +68,70 @@ console.log("ThingContainer things", things);
   }, [things, setThings]);
 */
 
-useEffect(() =>{
+  useEffect(() => {
+    console.log("ThingContainer things setThings change");
+  }, [things]);
+  const deleteThing3 = (e) => {
+    console.log("ThingContainer e", e);
+    deleteThing(e);
+  };
 
-console.log("ThingContainer things setThings change");
+  const deleteThing2 = useCallback(
+    (id, atIndex) => {
+      if (things.length <= 1) {
+        return;
+      }
 
-}, [things]);
+      //console.log("deleteCard id", id);
+      //console.log("deleteCard atIndex", atIndex);
+      const { thing, index } = findThing(id);
+
+      setThings(
+        update(things, {
+          $splice: [[index, 1]],
+        })
+      );
+
+      deleteThing(id);
+    },
+    [things]
+  );
+
+  /*
+function scoreThing() {
+console.log("ThingContainer props datagram", props.datagram);
+if (props.datagram.subject) {
+
+console.log("ThingContainer props subject", props.datagram.subject);
+
+
+}
+return 6;
+}
+*/
+
+  useEffect(() => {
+    if (things == null) {
+      return;
+    }
+    //setScoredThings(things);
+
+    //return;
+
+    console.log("ThingContainer useEffect", things && things.length, subject);
+
+    //if (props.datagram == null) {return;}
+    //if (props.datagram.subject == null) {return;}
+
+    const scoredThings = scoreThings(things, subject);
+
+    //console.log("ThingContainer scoredThings", scoredThings);
+    setScoredThings(scoredThings);
+  }, [things, subject]);
+
+  useEffect(() => {
+    console.log("ThingContainer scoredThings", scoredThings);
+  }, [scoredThings]);
 
   const [, drop] = useDrop(() => ({ accept: ItemTypes.CARD }));
 
@@ -59,25 +140,41 @@ console.log("ThingContainer things setThings change");
   return (
     <>
       <div ref={drop} style={style}>
+        <Button
+          thing={{ subject: "manage-thing", agentInput: "Add/Manage Thing" }}
+        />
+        SUBJECT {subject && subject}
+        {"-"}
+        {datagram && datagram.subject}
         <Grid container spacing={3} direction="row">
-          {things && (
+          {scoredThings && (
             <>
-              {things.map((thing) => (
-                <Card
-                  key={"card_" + thing.uuid}
-                  id={`${thing.index}`}
-                  card={thing}
-                  text={thing && thing.text}
-                  flipCard={flipThing}
-                  openCard={openThing}
-                  foldCard={foldThing}
-                  moveCard={moveThing}
-                  deleteCard={deleteThing}
-                  spawnCard={spawnThing}
-                  findCard={findThing}
-                  token={token}
-                />
-              ))}
+              {scoredThings
+                .filter((t) => {
+                  //return true;
+                  if (subject == null) {
+                    return true;
+                  }
+
+                  return t.score > 0;
+                  return t.score > 5;
+                })
+                .map((thing) => (
+                  <Card
+                    key={"card_" + thing.uuid}
+                    id={`${thing.index}`}
+                    card={thing}
+                    text={thing && thing.text}
+                    flipCard={flipThing}
+                    openCard={openThing}
+                    foldCard={foldThing}
+                    moveCard={moveThing}
+                    deleteCard={deleteThing2}
+                    spawnCard={spawnThing}
+                    findCard={findThing}
+                    token={token}
+                  />
+                ))}
             </>
           )}
         </Grid>

@@ -11,9 +11,9 @@ import {
 } from "@material-ui/core";
 
 import {
-  Button,
+//  Button,
   TextField,
-  IconButton,
+//  IconButton,
   ListItem,
   ListItemText,
   Dialog,
@@ -38,6 +38,8 @@ import Magnetometer from "../components/Magnetometer.js";
 import MotionReference from "../components/MotionReference.js";
 
 import Ping from "../components/Ping.js";
+import Button from "../components/Button.js";
+
 import { getSnapshot } from "../util/database.js";
 
 import {
@@ -45,7 +47,7 @@ import {
   zuluTime,
   humanRuntime,
 } from "../util/time.js";
-import { extractUuid, parsePing } from "../util/text.js";
+import { extractUuid, parsePing, prefixText } from "../util/text.js";
 
 import useSnapshot from "../useSnapshot";
 import useThingReport from "../useThingReport";
@@ -67,6 +69,11 @@ function History(props) {
 
   const [windowIndex, setWindowIndex] = useState();
   const [tracePoints, setTracePoints] = useState([]);
+
+
+const [ref, setRef] = useState();
+const [historyRef, setHistoryRef] = useState();
+/*
   const ref = subject
     .replace("transducers-", "")
     .replace("history-", "")
@@ -79,6 +86,28 @@ function History(props) {
     .replace("history/", "")
     .replace("history-", "")
     .replace("history ", "");
+*/
+useEffect(() =>{
+if (subject == null) {return;}
+console.log("History subject", subject);
+  const r = subject
+    .replace("transducers-", "")
+    .replace("history-", "")
+    .replace("history ", "")
+    .replace("-10m", "")
+    .replace("-1h", "")
+    .replace("-2m", "");
+
+setRef(r);
+
+  const hr = subject
+    .replace("history/", "")
+    .replace("history-", "")
+    .replace("history ", "");
+
+setHistoryRef(hr);
+
+},[subject]);
 
   const user_name = props.user_name; // TODO
   const agent_input = props.agent_input;
@@ -376,11 +405,16 @@ function History(props) {
   return (
     <>
       <div>HISTORY</div>
+
       TEXT {thingReport && thingReport.text}
       <br />
       {data && data.thingReport && data.thingReport.text}
       {false && <>SUBJECT {subject}</>}
-      <div onClick={() => navigate("/" + "history/" + subject)}>{subject}</div>
+
+<Button thing={
+{subject:(prefixText(subject, "")), agentInput:"Go To History"}
+} >{subject}</Button>
+
       <br />
       {false && (
         <>

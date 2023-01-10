@@ -20,6 +20,9 @@ import History from "../components/History.js";
 import Power from "../components/Power.js";
 import Nuuid from "../components/Nuuid.js";
 import Messages from "../components/Messages.js";
+import Collection from "../components/Collection.js";
+// refactor to move mui button into Button
+import ThingButton from "../components/Button.js";
 
 import Weather from "../components/Weather.js";
 
@@ -184,11 +187,12 @@ export default function Thing(props) {
     console.log("Thing initialDatagram changed", initialDatagram);
 
     setDatagram(initialDatagram);
+if (initialDatagram.subject) {
     setSubject(initialDatagram.subject);
-
     const u = webPrefix + getSlug(initialDatagram.subject) + ".json";
     console.log("Thing datagram useEffect u", u);
     setUrl(u);
+}
   }, [initialDatagram]);
   const { text } = useParams();
 
@@ -375,7 +379,6 @@ export default function Thing(props) {
       setPNG(base64Icon);
     }
 
-
     setTimedInterval(elapsedTime);
 
     const p = requestedAt + pollInterval;
@@ -515,7 +518,7 @@ export default function Thing(props) {
   function Forget() {}
 
   const handleForgetThing = (e) => {
-    forgetThing();
+    //forgetThing(e);
     //getThings();
     //return;
     if (props.onChange) {
@@ -764,20 +767,28 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
             </>
           }
         />
+
+        {datagram && datagram.score}
         {token && token.message}
+        {/*
         {expanded ? "expanded" : "not expanded"}
         {flipped ? "flipped" : "not flipped"}
-
+*/}
         {error && <Error error={error} agentInput={data.thingReport} />}
 
-        <Button onClick={handleSpawnThing}>SPAWN</Button>
-
+        {expanded && <Button onClick={handleSpawnThing}>SPAWN</Button>}
         <Button onClick={handleForgetThing}>FORGET</Button>
-        {!expanded && (
+
+        {expanded && (
           <Button onClick={handleFlipThing}>
             {flipped ? "MESSAGE" : "SOURCE"}
           </Button>
         )}
+
+       {!expanded &&
+          (<ThingButton thing={{subject:("thing/"+uuid), agentInput:"Open"}} />)
+       }
+
 
         {canFold && expanded && <Button onClick={handleFoldThing}>FOLD</Button>}
         {canOpen && !expanded && (
@@ -829,7 +840,7 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
                 <div>
                   history test
                   <History
-                    channel={'image'}
+                    channel={"image"}
                     user={null}
                     //thing={data.thing}
                     datagram={datagram}
@@ -837,8 +848,6 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
                   />
                 </div>
               )}
-
-
 
               {PNG && (
                 <Box className={classes.cardImageContainer}>
@@ -945,9 +954,6 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
               </div>
             )}
 
-
-
-
           {expanded && (
             <>
               <Content thingReport={data && data.thingReport} />
@@ -1001,6 +1007,19 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
                   />
                 </div>
               )}
+
+              {subject && subject.toLowerCase().indexOf("history") !== -1 && (
+                <div>
+                  history test
+                  <History
+                    user={null}
+                    //thing={data.thing}
+                    datagram={props.datagram}
+                    agent_input={webPrefix}
+                  />
+                </div>
+              )}
+
               {subject && subject.toLowerCase().indexOf("snapshot") !== -1 && (
                 <div>
                   <Snapshot
@@ -1032,17 +1051,6 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
                     />
                   </div>
                 )}
-              {subject && subject.toLowerCase().indexOf("history") !== -1 && (
-                <div>
-                  history test
-                  <History
-                    user={null}
-                    //thing={data.thing}
-                    datagram={datagram}
-                    agent_input={webPrefix}
-                  />
-                </div>
-              )}
               {subject && subject.toLowerCase().indexOf("ping") !== -1 && (
                 <div>
                   <Ping
@@ -1162,6 +1170,10 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
           )}
           {/*https://www.designcise.com/web/tutorial/how-to-hide-a-broken-image-in-react*/}
         </div>
+
+{expanded && datagram &&
+<Collection datagram={{subject:subject}}/>}
+
         <DataReport />
       </Card>
     </>
