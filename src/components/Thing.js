@@ -57,7 +57,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { isText } from "../util/text.js";
 
 import Associations from "../components/Associations.js";
-
+import DynamicComponent from "../components/DynamicComponent.js";
 import { v4 as uuidv4, uuid as uuidLibrary } from "uuid";
 import {
   //  getThingReport,
@@ -188,19 +188,30 @@ export default function Thing(props) {
 
   const { datagram, setDatagram } = useDatagram();
 
+
+
   var { agentInput } = props;
 
   if (datagram && datagram.input) {
     agentInput = datagram.input;
   }
 
+  const webPrefix =
+    datagram && datagram.webPrefix ? datagram.webPrefix : defaultWebPrefix;
 
   const [subject, setSubject] = useState();
+
+//useEffect(() =>{
+
+//console.log("Thing defaultWebPrefix", defaultWebPrefix);
+
+//},[defaultWebPrefix]);
 
   useEffect(() => {
     if (initialDatagram == null) {
       return;
     }
+
 
     // Don't let the datagram be reset.
 
@@ -223,8 +234,6 @@ if (initialDatagram.subject) {
 
   const { messages, addMessage } = useMessages();
 
-  const webPrefix =
-    datagram && datagram.webPrefix ? datagram.webPrefix : defaultWebPrefix;
   //  const webPrefix = datagram.webPrefix ? datagram.webPrefix : "https://stackr.ca/";
   const [url, setUrl] = useState();
   //const u = webPrefix+ getSlug(datagram.subject) + ".json";
@@ -901,7 +910,8 @@ const newThing = datagram;
             <>
               {subject && subject.toLowerCase().indexOf("history") !== -1 && (
                 <div>
-                  <History
+              {/*    <History */}
+<Agent
                     channel={"image"}
                     user={null}
                     //thing={data.thing}
@@ -946,8 +956,9 @@ const newThing = datagram;
             </>
           )}
 
-          {!expanded && !flipped && (
+          {!flipped && (
             <>
+
               <ToGoTime
                 toGoTime={nextRunAt - currentAt}
                 onRefresh={handleRefresh}
@@ -1020,98 +1031,19 @@ const newThing = datagram;
             <>
               <Content thingReport={data && data.thingReport} />
               <br />
-              TOTAL CHARACTERS RECEIVED DATA {totalBytesReceivedData}
-              <br />
               {error && error.message}
               <br />
               <Typography>RUNTIME {runTime}</Typography>
               {!data && <>NOT DATA</>}
-              {subject && subject.toLowerCase().indexOf("error") !== -1 && (
-                <div>
-                  <Error
-                    user={null}
-                    //thing={data.thing}
-                    datagram={datagram}
-                    agent_input={webPrefix}
-                  />
-                </div>
-              )}
-              {subject &&
-                subject.toLowerCase().indexOf("text-snapshot") !== -1 && (
-                  <div>
-                    <TextSnapshot
-                      user={null}
-                      //thing={data.thing}
-                      datagram={datagram}
-                      agent_input={webPrefix}
-                    />
-                  </div>
-                )}
-              {subject &&
-                subject.toLowerCase().indexOf("global-positioning-system") !==
-                  -1 && (
-                  <div>
-                    <GlobalPositioningSystem
-                      user={null}
-                      //thing={data.thing}
-                      datagram={datagram}
-                      agent_input={webPrefix}
-                    />
-                  </div>
-                )}
-              {subject && subject.toLowerCase().indexOf("barometer") !== -1 && (
-                <div>
-                  <Barometer
-                    user={null}
-                    //thing={data.thing}
-                    datagram={datagram}
-                    agent_input={webPrefix}
-                  />
-                </div>
-              )}
 
-              {subject && subject.toLowerCase().indexOf("history") !== -1 && (
-                <div>
-                  <History
+<Agent
+                    channel={"image"}
                     user={null}
                     //thing={data.thing}
                     datagram={props.datagram}
                     agent_input={webPrefix}
                   />
-                </div>
-              )}
 
-              {subject && subject.toLowerCase().indexOf("snapshot") !== -1 && (
-                <div>
-                  <Snapshot
-                    user={null}
-                    //thing={data.thing}
-                    datagram={datagram}
-                    agent_input={webPrefix}
-                  />
-                </div>
-              )}
-              {subject && subject.toLowerCase().indexOf("weather") !== -1 && (
-                <div>
-                  <Weather
-                    user={null}
-                    //thing={data.thing}
-                    datagram={datagram}
-                    agent_input={webPrefix}
-                  />
-                </div>
-              )}
-              {subject &&
-                subject.toLowerCase().indexOf("motion-reference") !== -1 && (
-                  <div>
-                    <MotionReference
-                      user={null}
-                      //thing={data.thing}
-                      datagram={datagram}
-                      agent_input={webPrefix}
-                    />
-                  </div>
-                )}
               {subject && subject.toLowerCase().indexOf("ping") !== -1 && (
                 <div>
                   <Ping
@@ -1123,61 +1055,7 @@ const newThing = datagram;
                   />
                 </div>
               )}
-              {subject &&
-                subject.toLowerCase().indexOf("inertial-reference") !== -1 && (
-                  <div>
-                    <InertialReference
-                      user={null}
-                      //thing={data.thing}
-                      datagram={datagram}
-                      agent_input={webPrefix}
-                    />
-                  </div>
-                )}
-              {subject && subject.toLowerCase().indexOf("power") !== -1 && (
-                <div>
-                  <Power
-                    user={null}
-                    //thing={data.thing}
-                    datagram={datagram}
-                    agent_input={webPrefix}
-                  />
-                </div>
-              )}
-              {subject && subject.toLowerCase().indexOf("messages") !== -1 && (
-                <div>
-                  <Messages
-                    user={null}
-                    //thing={data.thing}
-                    datagram={datagram}
-                    agent_input={webPrefix}
-                  />
-                </div>
-              )}
-              {subject &&
-                subject.toLowerCase().indexOf("temperature-humidity") !==
-                  -1 && (
-                  <div>
-                    <TemperatureHumidity
-                      user={null}
-                      //thing={data.thing}
-                      datagram={datagram}
-                      agent_input={webPrefix}
-                    />
-                  </div>
-                )}
-              {subject &&
-                subject.toLowerCase().indexOf("humidity-temperature") !==
-                  -1 && (
-                  <div>
-                    <TemperatureHumidity
-                      user={null}
-                      //thing={data.thing}
-                      datagram={datagram}
-                      agent_input={webPrefix}
-                    />
-                  </div>
-                )}
+
               {subject && subject.toLowerCase().indexOf("text") !== -1 && (
                 <div>
                   <Text
@@ -1211,11 +1089,13 @@ const newThing = datagram;
               <div>
                 <br />
                 {/*      <Agent user={null} thing={data.thing} agent_input="http://localhost" />*/}
-                <Agent
+
+{/*                <Agent
                   user={null}
                   thing={data && data.thing}
                   agent_input={webPrefix}
                 />
+*/}
                 {data && data.thingReport && data.thingReport.agent}
               </div>
               <div>
@@ -1232,8 +1112,10 @@ const newThing = datagram;
           {/*https://www.designcise.com/web/tutorial/how-to-hide-a-broken-image-in-react*/}
         </div>
 
+
 {expanded && datagram &&
-<Collection datagram={{subject:subject}}/>}
+
+<Collection datagram={{...datagram}}/>}
 
         <DataReport />
       </Card>

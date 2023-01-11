@@ -107,11 +107,6 @@ function History(props) {
       .replace("history ", "");
 
     setHistoryRef(hr);
-
-if (hr == null) {return;}
-  setHistoryTo(webPrefix + "history/" + hr + ".json");
-
-
   }, [subject]);
 
   const user_name = props.user_name; // TODO
@@ -119,14 +114,21 @@ if (hr == null) {return;}
   const webPrefix =
     agent_input === undefined ? process.env.REACT_APP_WEB_PREFIX : agent_input;
 
-  //  const webPrefix =
-  //    process.env.REACT_APP_WEB_PREFIX;
+//  const webPrefix =
+//    process.env.REACT_APP_WEB_PREFIX;
+
+useEffect(() =>{
+
+
+console.log("webPrefix", webPrefix, process.env.REACT_APP_WEB_PREFIX);
+},[webPrefix]);
+
 
   const [snapshotTo, setSnapshotTo] = useState();
-  const [historyTo, setHistoryTo] = useState();
+
   //const to = webPrefix + "/snapshot/" + history.uuid + "/hey.json";
 
-  //const historyTo = webPrefix + "history/" + historyRef + ".json";
+  const historyTo = webPrefix + "history/" + historyRef + ".json";
 
   var snapshotInterval = 1000;
   if (showLive === false) {
@@ -149,17 +151,13 @@ if (hr == null) {return;}
     snapshot: history,
     flag: historyFlag,
     snapshotGetTime: historyGetTime,
-  } = useSnapshot(historyTo, 5000);
-
-  useEffect(() => {
-    console.log("History thingReport", thingReport);
-  }, [thingReport]);
+  } = useSnapshot(historyTo, 60000);
 
 useEffect(() =>{
 
-console.log("History snapshotTo historyTo", snapshotTo, historyTo);
+console.log("History thingReport", thingReport);
 
-}, [snapshotTo, historyTo]);
+}, [thingReport]);
 
   useEffect(() => {
     // Extract uuid from datagram.
@@ -224,10 +222,10 @@ console.log("History snapshotTo historyTo", snapshotTo, historyTo);
   }, [data]);
 
   useEffect(() => {
-    if (history == null) {
+    if (!history) {
       return;
     }
-    console.log("History history", history && history.thingReport && history.thingReport.history);
+    console.log("History history", history);
 
     //setSnapshotTo(webPrefix + "/snapshot/" + history.uuid + "/hey.json");
 
@@ -269,8 +267,9 @@ console.log("History snapshotTo historyTo", snapshotTo, historyTo);
       }
 
       if (h.event.data) {
+
         const pingArray = parsePing(h.event.data);
-        //console.log("History h", pingArray);
+        console.log("History h", pingArray);
 
         const f = {
           name: pingArray.host,
@@ -438,7 +437,7 @@ console.log("History snapshotTo historyTo", snapshotTo, historyTo);
         {subject}
       </Button>
       <br />
-      {false && (
+      {true && (
         <>
           REF {ref}
           <br />
@@ -451,13 +450,14 @@ console.log("History snapshotTo historyTo", snapshotTo, historyTo);
       SNAPSHOT INTERVAL {snapshotInterval}
       <Trace data={tracePoints} cycle={1} />
       <Trace data={historyPoints} cycle={1} />
-
       <br />
       {data &&
         data.transducers &&
         data.transducers[ref] &&
-        data.transducers[ref].amount && showLive &&
-       (
+        data.transducers[ref].amount}
+
+
+      {showLive && (
         <Stream
           hide={true}
           period={1000}

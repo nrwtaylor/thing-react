@@ -74,7 +74,7 @@ export default function Token({ token, setToken, setIdentity }) {
       {age < 0 && (
         <>
           TOKEN EXPIRED {humanRuntime(age, "text", "ago")}{" "}
-          <Login setToken={setToken} setIdentity={setIdentity} />
+          <Login datagram={true} setToken={setToken} setIdentity={setIdentity} />
         </>
       )}
       {age >= 0 && (

@@ -26,11 +26,42 @@ import {
 } from "@material-ui/icons";
 
 import Forget from "../components/Forget.js";
+import DynamicComponent from "../components/DynamicComponent.js";
+
+const recognizedSlugs = [
+'history', 'snapshot', 'ping','error',
+'text-snapshot', 
+'global-positioning-system',
+'barometer',
+'weather',
+'motion-reference',
+'inertial-reference',
+'power',
+'messages',
+'temperature-humidity',
+'humidity-temperature'
+];
+
+function slugAgent(slug) {
+
+const parts = slug.split('-');
+
+const capitalizedParts = parts.map((part)=>{
+
+const capitalized =
+  part.charAt(0).toUpperCase()
+  + part.slice(1)
+return capitalized;
+})
+
+return capitalizedParts.join("");
+}
 
 function Agent(props) {
+const {datagram} = props;
   const user_name = props.user_name; // TODO
   const agent_input = props.agent_input;
-
+const [agent, setAgent] = useState();
   const address = props.address;
 
   const [flag, setFlag] = useState();
@@ -43,6 +74,7 @@ function Agent(props) {
     thing: { uuid: "X" },
     thing_report: { sms: "No response. Yet." },
   });
+
 
   /*
   useEffect(() => {
@@ -73,6 +105,34 @@ function Agent(props) {
 
     return thing.from;
   }
+
+useEffect(()=>{
+
+if (datagram == null) {return;}
+
+if (datagram.subject) {
+recognizedSlugs.every((recognizedSlug)=>{
+console.log("Agent key value", recognizedSlug);
+     if (datagram.subject.toLowerCase().indexOf(recognizedSlug) !== -1) {
+
+setAgent(slugAgent(recognizedSlug));
+return false;
+     }
+
+return true;
+
+});
+{/*
+     if (datagram.subject.toLowerCase().indexOf("history") !== -1) {
+
+setAgent(recognizedAgents['history']);
+
+     }
+*/}
+
+}
+
+}, [datagram]);
 
   const editAgent = () => {
     const datagram = {
@@ -138,7 +198,18 @@ function Agent(props) {
     <>
       <div>AGENT</div>
 {thing && thing.nomFrom}
-{thing && thing.from}
+{thing && thing.from
+}
+
+{datagram && agent && (<DynamicComponent is={agent} 
+                    channel={"image"}
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={datagram.webPrefix}
+                  />)}
+
+
       <TextField
         multiline
 //        autoFocus
@@ -156,6 +227,16 @@ function Agent(props) {
   return (
     <>
       <div>AGENT</div>
+
+<DynamicComponent is={agent_input} 
+                    channel={"image"}
+                    user={null}
+                    //thing={data.thing}
+                    datagram={datagram}
+                    agent_input={datagram.webPrefix}
+                  />
+
+
 {thing && thing.nomFrom}
 {thing && thing.from}
       {/* flag */}

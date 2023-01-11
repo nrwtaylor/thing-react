@@ -34,9 +34,12 @@ export default function useSnapshot(input, inputSnapshotPollInterval) {
 
   useEffect(() => {
     console.log("useSnapshot snapshotInterval", snapshotInterval);
+console.log("History history useSnapshot snapshot interval", snapshotInterval);
     getSnapshot();
 
     const interval = setInterval(() => {
+console.log("useSnapshot snapshotInterval call interval");
+console.log("History history getSnapshot interval");
       getSnapshot();
     }, snapshotInterval); // 20 Hz was 200.
 
@@ -93,7 +96,7 @@ export default function useSnapshot(input, inputSnapshotPollInterval) {
     return getWebJson(url, "")
       .then((result) => {
         console.log("useSnapshot getWebJson url result", url, result);
-
+        console.log("History history getSnapshot", url, result);
         if (!result) {
           return true;
         }
@@ -116,6 +119,7 @@ export default function useSnapshot(input, inputSnapshotPollInterval) {
         return result;
       })
       .catch((error) => {
+console.log("History history getSnapshot error", error);
         console.error("useSnapshot getWebJson error", error);
         setFlag("yellow");
         return { ...snapshot, error };

@@ -9,6 +9,9 @@ import React from "react";
  * }
  */
 const DynamicComponent = ({ is, useDefaultPath = true, ...rest }) => {
+
+if (is == null) {return null;}
+
   return React.createElement(
     useDefaultPath ? require(`./${is}.js`).default : is,
     {

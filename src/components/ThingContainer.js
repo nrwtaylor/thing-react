@@ -16,6 +16,8 @@ import { scoreThings } from "../util/text.js";
 
 import Button from "./Button.js";
 
+import LazyLoad from 'react-lazyload';
+
 const style = {
   //minHeight: 200,
   // maxWidth: 800,
@@ -40,6 +42,7 @@ export const ThingContainer = memo(function ThingContainer(props) {
     spawnThing,
   } = useThing(null);
 
+  const [uuid, setUuid] = useState();
   const [subject, setSubject] = useState();
   const [scoredThings, setScoredThings] = useState();
 
@@ -55,6 +58,9 @@ export const ThingContainer = memo(function ThingContainer(props) {
     }
     if (datagram.subject) {
       setSubject(datagram.subject);
+    }
+    if (datagram.uuid) {
+      setUuid(datagram.uuid);
     }
   }, [datagram]);
 
@@ -141,6 +147,7 @@ return 6;
     <>
       <div ref={drop} style={style}>
         <Button
+//          thing={{ subject: ("thing/"+ (uuid ==null ? "" : uuid)), agentInput: "Add Thing" }}
           thing={{ subject: "add-thing", agentInput: "Add Thing" }}
         />
         <Grid container spacing={3} direction="row">

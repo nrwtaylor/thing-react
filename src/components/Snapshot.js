@@ -210,7 +210,8 @@ console.log("Snapshot handleChangeStream c",c);
 
 
             <>
-FLERP
+SNAPSHOT TRANSDUCER
+<br />
               {Object.keys(data).map((transducer) => {
                 console.log("Snapshot transducer", transducer);
 if (!(['temperature','humidity']).includes(transducer)) {return;} 

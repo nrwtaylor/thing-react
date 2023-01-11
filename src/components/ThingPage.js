@@ -99,6 +99,7 @@ const [thing, setThing] = useState();
 
     var uuidMatch = null;
     things.forEach((t) => {
+      if (t.uuid == null) {return;}
       if (t.uuid === uuidPathname) {
         uuidMatch = t;
       }
@@ -117,6 +118,7 @@ const [thing, setThing] = useState();
 
     var nuuidMatch = null;
     things.forEach((t) => {
+      if (t.uuid == null) {return;}
       if (t.uuid.slice(0, 4) === nuuidPathname) {
         nuuidMatch = t;
       }
@@ -134,6 +136,7 @@ const [thing, setThing] = useState();
 
     var subjectMatch = null;
     things.forEach((t) => {
+      if (t.subject == null) {return;}
       if (getSlug(t.subject) === getSlug(pathname)) {
         subjectMatch = t;
       }

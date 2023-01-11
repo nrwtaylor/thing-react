@@ -47,6 +47,8 @@ function Collection(props) {
     props.onCollectionChange(reOrderedThings);
   }
 
+console.log("Collection datagram", datagram);
+
   return (
     <>
 Similar Things

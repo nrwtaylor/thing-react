@@ -164,7 +164,7 @@ function Ping(props) {
               //thing={data.thing}
               datagram={{
                 ...datagram,
-                subject: pingUuid + "-snapshot-ping-stackr-ca-1m",
+                subject: pingUuid + "-snapshot-ping-stackr-ca-5m",
               }}
               //                 datagram={{...datagram, subject:pingUuid+"-snapshot-ping-stackr-ca-1m"}}
               agent_input={webPrefix}
