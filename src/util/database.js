@@ -22,6 +22,8 @@ export var txErrorCount = 0;
 export var txBytes = 0;
 export var rxBytes = 0;
 
+export var databaseStatistics = {};
+
 // Create a local non-persistent session cache.
 // To track requests and responses.
 const stack = {};
@@ -33,10 +35,20 @@ axios.interceptors.request.use(
     //const headerSize = JSON.stringify(config.headers).length;
 
     //txData += dataSize + headerSize;
-
+//console.log("database config data", config.data.uuid);
     txCount += 1;
-    txBytes += getSizeInBytes(config.data + config.headers);
+const bytes = getSizeInBytes(config.data + config.headers);
+    txBytes += bytes;
 
+if (config && config.data && config.data.uuid) {
+console.log("database config.data.uuid", config.data.uuid);
+if (databaseStatistics[config.data.uuid] == null) {databaseStatistics[config.data.uuid] = {txCount:0, txBytes:0, rxCount:0, rxBytes:0, rxErrorCount:0, txErrorCount:0};} 
+
+
+databaseStatistics[config.data.uuid].txCount = databaseStatistics[config.data.uuid].txCount + 1;
+databaseStatistics[config.data.uuid].txBytes = databaseStatistics[config.data.uuid].txBytes + bytes;
+console.log("database databaseStatistics", databaseStatistics);
+}
     // Do something before request is sent
     return config;
   },
@@ -44,6 +56,14 @@ axios.interceptors.request.use(
     console.log("database request error", error);
 
     txErrorCount += 1;
+
+//if (error && error.data.uuid) {
+//if (databaseStatistics[response.data.uuid] == null) {databaseStatistics[response.data.uuid] = {txCount:0, txBytes:0, rxCount:0, rxBytes, rxErrorCount:0, txErrorCount:0};}
+//databaseStatistics[response.data.uuid].txErrorCount = databaseStatistics[response.data.uuid].txErrorCount + 1;
+
+//}
+
+
     // Do something with request error
     return Promise.reject(error);
   }
@@ -52,7 +72,9 @@ axios.interceptors.request.use(
 // Add a response interceptor
 axios.interceptors.response.use(
   function (response) {
-    console.log("database response", response);
+//    console.log("database response", response);
+//    console.log("database response.data.uuid", response.data.uuid);
+
     //rxData += response.data.length + response.headers.length;
 
     //if (response && response.data && response.headers) {
@@ -63,14 +85,32 @@ axios.interceptors.response.use(
     //}
 
     rxCount += 1;
-    rxBytes += getSizeInBytes(response.data + response.headers);
+const bytes = getSizeInBytes(response.data + response.headers);
+    rxBytes += bytes;
+
+if (response && response.data && response.data.uuid) {
+if (databaseStatistics[response.data.uuid] == null) {databaseStatistics[response.data.uuid] = {txCount:0, txBytes:0, rxCount:0, rxBytes, rxErrorCount:0, txErrorCount:0};} 
+databaseStatistics[response.data.uuid].rxCount = databaseStatistics[response.data.uuid].rxCount + 1;
+databaseStatistics[response.data.uuid].rxBytes = databaseStatistics[response.data.uuid].rxBytes + bytes;
+
+}
+
+
+
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
     return response;
   },
   function (error) {
     rxErrorCount += 1;
-    console.log("database response error", rxErrorCount, error);
+    console.log("database response error", error);
+
+//if (response && response.data && response.data.uuid) {
+//if (databaseStatistics[response.data.uuid] == null) {databaseStatistics[response.data.uuid] = {txCount:0, txBytes:0, rxCount:0, rxBytes, rxErrorCount:0, txErrorCount:0};}
+//databaseStatistics[response.data.uuid].rxErrorCount = databaseStatistics[response.data.uuid].rxErrorCount + 1;
+
+//}
+
 
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
@@ -184,6 +224,40 @@ export function setThing(uuid, datagram, token) {
       return { thingReport: { error: error } };
     });
 }
+
+// Not tested.
+export function getThing(datagram, token) {
+
+  if (datagram == null) {return Promise.resolve({error:{message:"No datagram provided."}});}
+  if (datagram.uuid == null) {return Promise.resolve({error:{message:"No uuid provided."}});}
+
+
+  console.log("database getThing datagram", datagram);
+  console.log("database getThing token", token);
+
+  const u = apiPrefix + "/thing/" + datagram.uuid;
+
+  console.log("database getThing u", u);
+
+  return axios
+    .get(u, {
+      headers: {
+        Authorization: "my secret token",
+        "x-access-token": token,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((res) => {
+      //let thingy = data;
+      console.log("database getThing", u, res);
+      return res;
+    })
+    .catch((error) => {
+      console.log("database getThing u error", u, error);
+      return { thingReport: { error: error } };
+    });
+}
+
 
 export function forgetThing(datagram, token) {
   if (datagram == null) {

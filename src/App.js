@@ -196,7 +196,7 @@ return;
 
   return (
     <>
-      THING-REACT 11 January 2023 82e2
+      THING-REACT 11 January 2023 d2bf
       <br />
       {identity && <Identity identity={identity} />}
       {token && token.message}
@@ -219,7 +219,7 @@ return;
             path="/things"
             element={
               <>
-                <ThingCards
+                <ThingPage
      //             onCollectionChange={(c) => {
      //               handleCollectionChange(c);
      //             }}

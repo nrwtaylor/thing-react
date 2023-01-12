@@ -19,7 +19,7 @@ const style = {
   // height:'100%'
 };
 
-export const Card = memo(function Card({
+export const Card =  memo(function Card({
   id,
   card,
   token,
@@ -139,6 +139,7 @@ export const Card = memo(function Card({
             //          to={card.to}
             //          subject={card.subject}
             //          createdAt={card.createdAt}
+            //priorUuid={datagram.uuid}
             uuid={card.uuid}
             //          input={card.input}
             token={token}

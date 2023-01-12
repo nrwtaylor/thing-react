@@ -72,6 +72,8 @@ function History(props) {
 
   const [ref, setRef] = useState();
   const [historyRef, setHistoryRef] = useState();
+const [text, setText] = useState();
+const [resolution, setResolution] = useState();
   /*
   const ref = subject
     .replace("transducers-", "")
@@ -110,6 +112,13 @@ function History(props) {
 
 if (hr == null) {return;}
   setHistoryTo(webPrefix + "history/" + hr + ".json");
+console.log("History subject", subject);
+const subjectTokens = subject.split("-");
+console.log("History parts", subjectTokens[subjectTokens.length - 1]);
+
+setResolution(subjectTokens[subjectTokens.length - 1]);
+setText(subjectTokens[subjectTokens.length -2]);
+
 
 
   }, [subject]);
@@ -425,7 +434,8 @@ console.log("History snapshotTo historyTo", snapshotTo, historyTo);
   return (
     <>
       <div>HISTORY</div>
-      TEXT {thingReport && thingReport.text}
+      TEXT {thingReport && thingReport.text}<br />
+{text}{' '}{resolution}
       <br />
       {data && data.thingReport && data.thingReport.text}
       {false && <>SUBJECT {subject}</>}

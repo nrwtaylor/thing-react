@@ -46,12 +46,23 @@ function Collection(props) {
   function handleCollectionChange(reOrderedThings) {
     props.onCollectionChange(reOrderedThings);
   }
-
+useEffect(() =>{
 console.log("Collection datagram", datagram);
-
+}, [datagram]);
   return (
     <>
 Similar Things
+DATAGRAM ASSOCIATIONS
+{datagram && datagram.uuid}<br />
+{datagram && datagram.associations && Array.isArray(datagram.associations) &&
+(
+datagram.associations.map((d)=>{
+return (<>{d.slice(0,4)}{' '}</>);
+})
+)
+
+}
+<br />
       <DndProvider backend={HTML5Backend}>
         <ThingContainer datagram={datagram}
 //          things={things}

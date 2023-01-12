@@ -1,14 +1,13 @@
-import React, { lazy, useState, useEffect } from "react";
+import React, { memo, lazy, useState, useEffect } from "react";
 
 import {
-//  Get as getThingy,
-//  forgetThing as forgetThingy,
-//  setThing as setThingy,
+  //  Get as getThingy,
+  //  forgetThing as forgetThingy,
+  //  setThing as setThingy,
   createThing as createThingy,
-//  makeObservable,
+  //  makeObservable,
 } from "../util/database.js";
 import update from "immutability-helper";
-
 
 import { useParams } from "react-router";
 import Agent from "../components/Agent.js";
@@ -16,10 +15,10 @@ import Snapshot from "../components/Snapshot.js";
 import TextSnapshot from "../components/TextSnapshot.js";
 
 import Datagram from "../components/Datagram.js";
-import Barometer from "../components/Barometer.js";
-import MotionReference from "../components/MotionReference.js";
+//import Barometer from "../components/Barometer.js";
+//import MotionReference from "../components/MotionReference.js";
 
-import GlobalPositioningSystem from "../components/GlobalPositioningSystem.js";
+//import GlobalPositioningSystem from "../components/GlobalPositioningSystem.js";
 
 import ToGoTime from "../components/ToGoTime.js";
 import Poll from "../components/Poll.js";
@@ -28,18 +27,18 @@ import Content from "../components/Content.js";
 import Message from "../components/Message.js";
 import Text from "../components/Text.js";
 import History from "../components/History.js";
-import Power from "../components/Power.js";
+//import Power from "../components/Power.js";
 import Nuuid from "../components/Nuuid.js";
 import Messages from "../components/Messages.js";
 import Collection from "../components/Collection.js";
 // refactor to move mui button into Button
 import ThingButton from "../components/Button.js";
 
-import Weather from "../components/Weather.js";
+//import Weather from "../components/Weather.js";
 
-import TemperatureHumidity from "../components/TemperatureHumidity.js";
+//import TemperatureHumidity from "../components/TemperatureHumidity.js";
 
-import InertialReference from "../components/InertialReference.js";
+//import InertialReference from "../components/InertialReference.js";
 
 import Error from "../components/Error.js";
 
@@ -61,6 +60,7 @@ import DynamicComponent from "../components/DynamicComponent.js";
 import { v4 as uuidv4, uuid as uuidLibrary } from "uuid";
 import {
   //  getThingReport,
+  databaseStatistics,
   setThing,
   txCount,
   rxCount,
@@ -79,8 +79,6 @@ import useThing from "../useThing";
 import useThings from "../useThings";
 import useDatagram from "../useDatagram";
 import useToken from "../useToken";
-
-
 
 import { getSlug } from "../util/text.js";
 
@@ -179,7 +177,7 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   }),
 }));
 
-export default function Thing(props) {
+function Thing(props) {
   //  const text = props.match.params.text;
 
   const classes = useStyles();
@@ -187,8 +185,6 @@ export default function Thing(props) {
   const { datagram: initialDatagram, canOpen, open, canFold } = props;
 
   const { datagram, setDatagram } = useDatagram();
-
-
 
   var { agentInput } = props;
 
@@ -201,31 +197,32 @@ export default function Thing(props) {
 
   const [subject, setSubject] = useState();
 
-//useEffect(() =>{
+  //useEffect(() =>{
 
-//console.log("Thing defaultWebPrefix", defaultWebPrefix);
+  //console.log("Thing defaultWebPrefix", defaultWebPrefix);
 
-//},[defaultWebPrefix]);
+  //},[defaultWebPrefix]);
 
   useEffect(() => {
     if (initialDatagram == null) {
       return;
     }
 
-
     // Don't let the datagram be reset.
 
     console.log("Thing initialDatagram changed", initialDatagram);
-    if (datagram !== null) {return;}
+    if (datagram !== null) {
+      return;
+    }
 
     console.log("Thing initialDatagram prior datagram", datagram);
     setDatagram(initialDatagram);
-if (initialDatagram.subject) {
-    setSubject(initialDatagram.subject);
-    const u = webPrefix + getSlug(initialDatagram.subject) + ".json";
-    console.log("Thing datagram initialDatagram u", u);
-    setUrl(u);
-}
+    if (initialDatagram.subject) {
+      setSubject(initialDatagram.subject);
+      const u = webPrefix + getSlug(initialDatagram.subject) + ".json";
+      console.log("Thing datagram initialDatagram u", u);
+      setUrl(u);
+    }
   }, [initialDatagram]);
 
   const { text } = useParams();
@@ -253,6 +250,7 @@ if (initialDatagram.subject) {
     console.log("Thing url", url);
   }, [url]);
 
+
   // const { to, subject } = datagram;
 
   const startAt = props.createdAt;
@@ -277,10 +275,10 @@ if (initialDatagram.subject) {
     if (datagram == null) {
       return;
     }
-    console.log("Thing datagram useEffect called datagram", datagram);
+    console.log("Thing datagram ", datagram);
     if (datagram && datagram.subject) {
       const u = webPrefix + getSlug(datagram.subject) + ".json";
-      console.log("Thing datagram useEffect u", u);
+      console.log("Thing datagram u", u);
       setUrl(u);
     }
   }, [datagram]);
@@ -378,6 +376,12 @@ if (initialDatagram.subject) {
 
   const [flipped, setFlipped] = React.useState();
 
+
+//useEffect(()=>{
+
+//console.log("Thing thing", thing);
+
+//}, [thing]);
   useEffect(() => {
     const requestedAt = Date.now();
     setAgentRequestedAt(requestedAt);
@@ -478,6 +482,13 @@ if (initialDatagram.subject) {
       return;
     }
     console.info("Thing uuid", uuid);
+/*
+var ass = datagram.associations;
+if (ass == null) {ass = [];};
+ass.push(uuid);
+console.log("Thing uuid ass", uuid, ass);
+    setDatagram({ ...datagram, associations:ass});
+*/
   }, [uuid]);
 
   useEffect(() => {
@@ -487,8 +498,11 @@ if (initialDatagram.subject) {
     console.log("Thing subject changed", subject);
     //setFlag('green');
     //   getResponse(webPrefix, true);
+
     setDatagram({ ...datagram, subject: subject });
   }, [subject]);
+
+
 
   // refactor out
   function getUuid() {
@@ -686,7 +700,6 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
   }, [error]);
 
   const handleSpawnThing = (e) => {
-
     spawnThing();
 
     return;
@@ -702,35 +715,32 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
     //spawnThing(webPrefix, thing, token);
   };
 
-const handleAddThing = (e) =>{
+  const handleAddThing = (e) => {
+    console.log("Thing handleAddThing", datagram);
+    //return;
+    const doNotWait = createThingy(webPrefix, datagram, token)
+      .then((result) => {
+        console.log("Thing handleAdd createThing result", result);
+        const newThing = datagram;
+        newThing.associations = {
+          ...newThing.associations,
+          uuid: result.uuid,
+        };
 
-console.log("Thing handleAddThing", datagram);
-//return;
-const doNotWait = createThingy(webPrefix, datagram, token)
-        .then((result) => {
-          console.log("Thing handleAdd createThing result", result);
-const newThing = datagram;
-          newThing.associations = {
-            ...newThing.associations,
-            uuid: result.uuid,
-          };
-
-/*
+        /*
           setThings(
             update(things, {
               $splice: [[0, 0, newThing]],
             })
           );
 */
-//getThings();
-          //          props.onCollectionChange(things);
-        })
-        .catch((error) => {
-          console.log("Thing handleAdd spawnThing createThing error", error);
-        });
-
-
-}
+        //getThings();
+        //          props.onCollectionChange(things);
+      })
+      .catch((error) => {
+        console.log("Thing handleAdd spawnThing createThing error", error);
+      });
+  };
 
   const handleOpenThing = (e) => {
     //setExpanded(true);
@@ -757,6 +767,12 @@ const newThing = datagram;
     }
   };
 
+
+useEffect(()=>{
+
+console.log("Thing databaseStatistics", databaseStatistics);
+
+}, [databaseStatistics]);
   // Reference
   //  {PNG && <img src={PNG} onError={(event) => event.target.style.display = 'none'}
   useEffect(() => {
@@ -773,6 +789,12 @@ const newThing = datagram;
 
   const DataReport = () => {
     //const expanded =true;
+if (!databaseStatistics[uuid]) {return null;}
+const txCountThing = databaseStatistics[uuid].txCount;
+//const rxCountThing = databaseStatistics[uuid].rxCount + databaseStatistics[uuid].rxErrorCount;
+const rxCountThing = databaseStatistics[uuid].rxCount;
+
+
     return (
       <>
         {expanded && (
@@ -793,15 +815,19 @@ const newThing = datagram;
             <br />
             TXBYTES {txBytes} estimated
             <br />
-
           </>
         )}
 
         {!expanded && (
           <>
-            PACKETS {txCount}
+{/*
+PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
+{"/"}
+{databaseStatistics[uuid] && databaseStatistics[uuid].rxCount + databaseStatistics[uuid] && databaseStatistics[uuid].rxErrorCount}
+<br />*/}
+            PACKETS {txCountThing}
             {"/"}
-            {rxCount + rxErrorCount}
+            {rxCountThing}
             <br />
           </>
         )}
@@ -836,6 +862,10 @@ const newThing = datagram;
             </>
           }
         />
+ASSOCIATIONS<br />
+{datagram && datagram.associations && Array.isArray(datagram.associations) && datagram.associations.includes(uuid) &&(<>ASSOCIATED</>)}
+<br />
+
 
         {datagram && datagram.score}
         {token && token.message}
@@ -854,13 +884,23 @@ const newThing = datagram;
           </Button>
         )*/}
 
-       {!expanded &&
-          (<ThingButton thing={{subject:("thing/"+uuid), agentInput:"Open"}} />)
-       }
+        {!expanded && (
+          <ThingButton
+            thing={{ subject: "thing/" + uuid, agentInput: "Open" }}
+          />
+        )}
 
-       {expanded &&
-<Button onClick={handleAddThing}>ADD</Button>
-       }
+        {expanded && <Button onClick={handleAddThing}>ADD</Button>}
+
+        {data && data.thing && data.thing.associations && data.thing.associations.includes(uuid) && (
+          <ThingButton
+            thing={{
+              ...datagram,
+              subject: "thing/" + uuid + "/associate",
+              agentInput: "Associate uuid",
+            }}
+          />
+        )}
 
         {canFold && expanded && <Button onClick={handleFoldThing}>FOLD</Button>}
         {canOpen && !expanded && (
@@ -910,8 +950,8 @@ const newThing = datagram;
             <>
               {subject && subject.toLowerCase().indexOf("history") !== -1 && (
                 <div>
-              {/*    <History */}
-<Agent
+                  {/*    <History */}
+                  <Agent
                     channel={"image"}
                     user={null}
                     //thing={data.thing}
@@ -958,7 +998,6 @@ const newThing = datagram;
 
           {!flipped && (
             <>
-
               <ToGoTime
                 toGoTime={nextRunAt - currentAt}
                 onRefresh={handleRefresh}
@@ -1035,15 +1074,13 @@ const newThing = datagram;
               <br />
               <Typography>RUNTIME {runTime}</Typography>
               {!data && <>NOT DATA</>}
-
-<Agent
-                    channel={"image"}
-                    user={null}
-                    //thing={data.thing}
-                    datagram={props.datagram}
-                    agent_input={webPrefix}
-                  />
-
+              <Agent
+                channel={"image"}
+                user={null}
+                //thing={data.thing}
+                datagram={props.datagram}
+                agent_input={webPrefix}
+              />
               {subject && subject.toLowerCase().indexOf("ping") !== -1 && (
                 <div>
                   <Ping
@@ -1055,7 +1092,6 @@ const newThing = datagram;
                   />
                 </div>
               )}
-
               {subject && subject.toLowerCase().indexOf("text") !== -1 && (
                 <div>
                   <Text
@@ -1090,7 +1126,7 @@ const newThing = datagram;
                 <br />
                 {/*      <Agent user={null} thing={data.thing} agent_input="http://localhost" />*/}
 
-{/*                <Agent
+                {/*                <Agent
                   user={null}
                   thing={data && data.thing}
                   agent_input={webPrefix}
@@ -1112,13 +1148,12 @@ const newThing = datagram;
           {/*https://www.designcise.com/web/tutorial/how-to-hide-a-broken-image-in-react*/}
         </div>
 
-
-{expanded && datagram &&
-
-<Collection datagram={{...datagram}}/>}
+        {true && expanded && datagram && 
+<Collection datagram={{ ...datagram }} />}
 
         <DataReport />
       </Card>
     </>
   );
 }
+export default memo(Thing);

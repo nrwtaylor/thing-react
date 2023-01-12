@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import {
-  Get as getThingy,
+  getThing as getThingy,
   forgetThing as forgetThingy,
   setThing as setThingy,
   createThing as createThingy,
@@ -40,9 +40,16 @@ export default function useThing(datagram) {
   }, [things]);
 
   const getThing = () => {
-    if (token === undefined) {
+    if (token == null) {
       return;
     }
+
+    if (datagram == null) {return;}
+
+console.log("useThing getThing token datagram", token, datagram);
+
+if (datagram.uuid) {
+
     getThingy(datagram, token)
       .then((result) => {
         console.log("App loadThing result", result);
@@ -67,10 +74,44 @@ export default function useThing(datagram) {
 
         console.log("App loadThing error", error);
       });
+return;
+ }
+return;
+// No uuid provided. SO create thing.
+      const doNotWait = createThingy(webPrefix, datagram, token)
+        .then((result) => {
+          console.log("getThing createThing result", result);
+/*
+          newThing.associations = {
+            ...newThing.associations,
+            uuid: result.uuid,
+          };
+
+          setThings(
+            update(things, {
+              $splice: [[index, 0, newThing]],
+            })
+          );
+*/
+//getThings();
+          //          props.onCollectionChange(things);
+        })
+        .catch((error) => {
+          console.log("spawnThing createThing error", error);
+        });
+
+
   };
 
 
+
   const [thing, setThing] = useState(userThing.get().thing);
+
+useEffect(()=>{
+
+getThing();
+
+},[datagram]);
 
   const findThing = useCallback(
     (id) => {

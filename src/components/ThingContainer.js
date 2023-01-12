@@ -45,7 +45,7 @@ export const ThingContainer = memo(function ThingContainer(props) {
   const [uuid, setUuid] = useState();
   const [subject, setSubject] = useState();
   const [scoredThings, setScoredThings] = useState();
-
+const [associations, setAssociations] = useState([]);
   const { things, getThings, setThings } = useThings();
 
   useEffect(() => {
@@ -62,6 +62,11 @@ export const ThingContainer = memo(function ThingContainer(props) {
     if (datagram.uuid) {
       setUuid(datagram.uuid);
     }
+
+    if (datagram.associations) {
+      setAssociations(datagram.associations);
+    }
+
   }, [datagram]);
 
   /*
@@ -146,6 +151,7 @@ return 6;
   return (
     <>
       <div ref={drop} style={style}>
+{/* {datagram && datagram.associations && Array.isArray(datagram.associations) && datagram.associations.join(' ')} */}
         <Button
 //          thing={{ subject: ("thing/"+ (uuid ==null ? "" : uuid)), agentInput: "Add Thing" }}
           thing={{ subject: "add-thing", agentInput: "Add Thing" }}
@@ -160,6 +166,10 @@ return 6;
                     return true;
                   }
 
+                  if (subject === 'things') {
+                    return true;
+                  }
+
                   return t.score > 0;
                   return t.score > 5;
                 })
@@ -167,7 +177,8 @@ return 6;
                   <Card
                     key={"card_" + thing.uuid}
                     id={`${thing.index}`}
-                    card={thing}
+                    datagram={datagram}
+                    card={{...thing, associations:associations}}
                     text={thing && thing.text}
                     flipCard={flipThing}
                     openCard={openThing}
