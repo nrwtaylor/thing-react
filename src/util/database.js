@@ -188,7 +188,10 @@ export function createThing(webPrefix, datagram, token) {
     .catch((error) => {
       //return {error:true, message:error.data.message};
       console.log("database createThing u error", u, error);
-      const apiErrorMessage = error.response.data.message;
+var apiErrorMessage = "Problem creating Thing.";
+if (error && error.response && error.response.data && error.response.data.message) {
+      apiErrorMessage = error.response.data.message;
+}
       return { error: { message: apiErrorMessage } };
     });
 }

@@ -19,7 +19,7 @@ const apiPrefix = process.env.REACT_APP_API_PREFIX;
 
 const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 
-const defaultThing = [
+const defaultThing = 
   {
     index: 20,
     to: "localhost",
@@ -27,8 +27,7 @@ const defaultThing = [
     createdAt: Date.now(),
     uuid: uuidv4(),
     input: "Login",
-  },
-];
+  };
 
 export default function useThing(datagram) {
   const { token } = useToken();
@@ -218,6 +217,8 @@ getThing();
   const saveThing = (t) => {
     console.log("useThing saveThing userThing", t);
     setThing(t);
+
+setThingy(t.uuid, t, token);
   };
 
   const deleteThing = useCallback(
@@ -358,6 +359,7 @@ getThing();
     //    deleteIdentity: deleteIdentity,
 //    state: thing,
 //    saveThing: setThing,
+//    saveThing:saveThing,
     setThing: saveThing,
     getThing: getThing,
     findThing: findThing,

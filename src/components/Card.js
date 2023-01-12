@@ -1,11 +1,13 @@
-import React, { memo, useEffect } from "react";
+import React, { memo, useState,useEffect } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "./ItemTypes";
 //import { Thing } from "./../components/Thing.js";
 import Thing from "./../../src/components/Thing.js";
 
+
 //import FirebaseStorageImage from "./../components/FirebaseStorageImage";
 import { Grid, Box } from "@material-ui/core/";
+import VisibilitySensor from 'react-visibility-sensor';
 //import arrow from "./../images/arrow.svg";
 
 const style = {
@@ -32,6 +34,9 @@ export const Card =  memo(function Card({
   deleteCard,
   findCard,
 }) {
+
+  const [cardVisible, setCardVisible] = useState();
+
   const originalIndex = findCard(id).index; //index
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -153,6 +158,9 @@ export const Card =  memo(function Card({
   }
 
   return (
+<VisibilitySensor onChange={
+(isVisible) =>{setCardVisible(isVisible)}
+} >
     <Grid
       item
       xs={12}
@@ -170,18 +178,21 @@ export const Card =  memo(function Card({
           cursor: "move",
         }}
       >
-        <Thing
+<Thing
           //          to={card.to}
           //          subject={card.subject}
           //          createdAt={card.createdAt}
           uuid={card.uuid}
           //          input={card.input}
           token={token}
-          datagram={card}
+          datagram={{...card, pollInterval:(card && card.pollInterval && cardVisible ? card.pollInterval : false)}}
           webPrefix={card.webPrefix}
           onChange={(e) => handleChange(e)}
         />
+
+
       </Box>
     </Grid>
+</VisibilitySensor>
   );
 });

@@ -29,6 +29,7 @@ import Text from "../components/Text.js";
 import History from "../components/History.js";
 //import Power from "../components/Power.js";
 import Nuuid from "../components/Nuuid.js";
+import Item from "../components/Item.js";
 import Messages from "../components/Messages.js";
 import Collection from "../components/Collection.js";
 // refactor to move mui button into Button
@@ -240,7 +241,7 @@ function Thing(props) {
   //    10000
   //  );
   const { thing: t, spawnThing, flipThing, forgetThing } = useThing(datagram);
-  const { thingReport: data, getThingReport } = useThingReport(url, 10000);
+  const { thingReport: data, getThingReport } = useThingReport(url, pollInterval);
   const { things, setThings } = useThings();
   const { token } = useToken();
   useEffect(() => {
@@ -865,7 +866,7 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
 ASSOCIATIONS<br />
 {datagram && datagram.associations && Array.isArray(datagram.associations) && datagram.associations.includes(uuid) &&(<>ASSOCIATED</>)}
 <br />
-
+<Item thing={{...datagram, uuid:uuid}} />
 
         {datagram && datagram.score}
         {token && token.message}

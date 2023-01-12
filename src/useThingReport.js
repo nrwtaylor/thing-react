@@ -37,6 +37,9 @@ export default function useThingReport(input, inputThingReportPollInterval) {
     if (thingReportInterval == null) {
       return;
     }
+
+    if (thingReportInterval === false) {return}
+
     getThingReport();
 
     const interval = setInterval(() => {
