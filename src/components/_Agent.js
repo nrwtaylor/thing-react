@@ -57,20 +57,18 @@ return capitalized;
 return capitalizedParts.join("");
 }
 
-function Agent({thing, agentInput}) {
-
-//const {datagram} = props;
-
-//  const user_name = props.user_name; // TODO
-  const agent_input = agentInput; // remove
-
+function Agent(props) {
+const {datagram} = props;
+  const user_name = props.user_name; // TODO
+  const agent_input = props.agent_input;
 const [agent, setAgent] = useState();
+  const address = props.address;
 
   const [flag, setFlag] = useState();
   //const [requestedAt, setRequestedAt] = useState();
   const [reply, setReply] = useState("");
 
-//  const thing = props.thing;
+  const thing = props.thing;
 
   const [data, setData] = useState({
     thing: { uuid: "X" },
@@ -110,13 +108,13 @@ const [agent, setAgent] = useState();
 
 useEffect(()=>{
 
-if (thing == null) {return;}
-console.log("Agent thing", thing);
-if (thing.subject) {
+if (datagram == null) {return;}
+
+if (datagram.subject) {
 recognizedSlugs.every((recognizedSlug)=>{
 console.log("Agent key value", recognizedSlug);
-console.log("xxx", thing.subject, recognizedSlug);
-     if (thing.subject.toLowerCase().indexOf(recognizedSlug) !== -1) {
+console.log("xxx", datagram.subject, recognizedSlug);
+     if (datagram.subject.toLowerCase().indexOf(recognizedSlug) !== -1) {
 
 setAgent(slugAgent(recognizedSlug));
 return false;
@@ -135,15 +133,13 @@ setAgent(recognizedAgents['history']);
 
 }
 
-}, [thing]);
+}, [datagram]);
 
-// Used??
   const editAgent = () => {
     const datagram = {
       comment: reply,
       to: "merp",
-      from:thing.from,
-      //from: user_name,
+      from: user_name,
       association: thing.uuid,
     };
     console.log("Datagram");
@@ -209,12 +205,12 @@ setAgent(recognizedAgents['history']);
 }
 
 
-{thing && agent && (<DynamicComponent is={agent} 
+{datagram && agent && (<DynamicComponent is={agent} 
                     channel={"image"}
                     user={null}
                     //thing={data.thing}
-                    datagram={thing}
-                    agent_input={agentInput}
+                    datagram={datagram}
+                    agent_input={datagram.webPrefix}
                   />)}
 
 
@@ -240,8 +236,8 @@ setAgent(recognizedAgents['history']);
                     channel={"image"}
                     user={null}
                     //thing={data.thing}
-                    datagram={thing}
-                    agent_input={agentInput}
+                    datagram={datagram}
+                    agent_input={datagram.webPrefix}
                   />
 
 

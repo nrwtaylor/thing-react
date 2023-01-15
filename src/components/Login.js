@@ -101,6 +101,7 @@ export default function Login({ datagram }) {
         {
           index: 20,
           to: "localhost",
+          from: "stack",
           subject: "Log Out",
           createdAt: Date.now(),
           uuid: uuidv4(),
@@ -109,6 +110,7 @@ export default function Login({ datagram }) {
         {
           index: 21,
           to: "localhost",
+          from: "stack",
           subject: "Here is your token",
           createdAt: Date.now(),
           uuid: uuidv4(),

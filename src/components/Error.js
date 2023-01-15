@@ -58,8 +58,6 @@ if (props.agent_input == null) {
   const [pings, setPings] = useState([]);
   const [open, setOpen] = useState(false);
 
-  const [snapshotGetTime, setSnapshotGetTime] = useState();
-
   function humanTime(timestamp) {
     const ts = new Date();
     return ts.toISOString();
@@ -122,8 +120,6 @@ if (error == null) {return null;}
 
 {agentInput && agentInput.error && agentInput.error.config && agentInput.error.config.url}
       <div>
-        <br />
-        GET TIME {snapshotGetTime}ms {Math.round(1000 / snapshotGetTime, 1)}Hz
         <br />
         {data && data.ping && (
           <>

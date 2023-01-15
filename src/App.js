@@ -10,7 +10,7 @@ import Logout from "../src/components/Logout.js";
 import Signup from "../src/components/Signup.js";
 import ThingCards from "../src/components/ThingCards.js";
 
-import { getThings, createThing } from "../src/util/database.js";
+//import { getThings } from "../src/util/database.js";
 
 import ZuluTime from "../src/components/ZuluTime.js";
 
@@ -92,88 +92,6 @@ export default function App({ componentName, ...props }) {
     setSlug(pathname);
   }, [pathname]);
 
-  useEffect(() => {
-    if (things == null) {
-      return;
-    }
-
-    // Do not create things.
-    // Consider: condition for when to create a thing.
-    console.log("App pathname", pathname);
-    if (pathname == null) {
-      return;
-    }
-    if (pathname === "/things") {
-      return;
-    }
-    if (pathname === "/") {
-      return;
-    }
-
-    //const { thing, index } = findThing(id);
-    const newThing = {};
-    const uuid = uuidv4();
-    newThing.uuid = uuid;
-    newThing.subject = pathname;
-    newThing.createdAt = createdAt;
-
-    //console.log("ThingContainer spawnThing thing", thing);
-    console.log("App pathname createThing token", token);
-
-
-// Do not spawn a thing. Test.
-return;
-
-    // Spawn thing on designated stack.
-
-    const doNotWait = createThing(webPrefix, newThing, token)
-      .then((result) => {
-        if (result == null) {
-          return;
-        }
-
-        console.log("App pathname createThing result", result);
-
-        newThing.associations = {
-          ...newThing.associations,
-          uuid: result.uuid,
-        };
-
-        //          setThings(
-        //            update(things, {
-        //              $splice: [[index, 0, newThing]],
-        //            })
-        //          );
-
-        //          props.onCollectionChange(things);
-      })
-      .catch((error) => {
-        console.log("spawnThing createThing error", error);
-      });
-  }, [slug, things, token]);
-
-  useEffect(() => {
-    if (!identity) {
-      //      defaultThings();
-      return;
-    }
-    if (identity === null) {
-      //      defaultThings();
-      return;
-    }
-
-    //    loadThings();
-  }, [identity]);
-
-  //  useEffect(() => {
-  //    console.log("App [] start");
-  //    loadThings();
-  //    getThings(token);
-  //  }, []);
-
-  useEffect(() => {
-    console.log("App things", things);
-  }, [things]);
 
   function handleCollectionChange(things) {
     //   setThings(things);
@@ -196,7 +114,7 @@ return;
 
   return (
     <>
-      THING-REACT 11 January 2023 d2bf
+      THING-REACT 15 January 2023 d510
       <br />
       {identity && <Identity identity={identity} />}
       {token && token.message}

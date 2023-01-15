@@ -40,7 +40,7 @@ import MotionReference from "../components/MotionReference.js";
 import Ping from "../components/Ping.js";
 import Button from "../components/Button.js";
 
-import { getSnapshot } from "../util/database.js";
+//import { getSnapshot } from "../util/database.js";
 
 import {
   zuluTimeDifferenceMilliseconds,
@@ -72,8 +72,8 @@ function History(props) {
 
   const [ref, setRef] = useState();
   const [historyRef, setHistoryRef] = useState();
-const [text, setText] = useState();
-const [resolution, setResolution] = useState();
+  const [text, setText] = useState();
+  const [resolution, setResolution] = useState();
   /*
   const ref = subject
     .replace("transducers-", "")
@@ -88,11 +88,17 @@ const [resolution, setResolution] = useState();
     .replace("history-", "")
     .replace("history ", "");
 */
+useEffect(() =>{
+
+console.log("History datagram", datagram);
+
+}, [datagram]);
+
   useEffect(() => {
     if (subject == null) {
       return;
     }
-    console.log("History subject", subject);
+    console.debug("History subject", subject);
     const r = subject
       .replace("transducers-", "")
       .replace("history-", "")
@@ -110,17 +116,16 @@ const [resolution, setResolution] = useState();
 
     setHistoryRef(hr);
 
-if (hr == null) {return;}
-  setHistoryTo(webPrefix + "history/" + hr + ".json");
-console.log("History subject", subject);
-const subjectTokens = subject.split("-");
-console.log("History parts", subjectTokens[subjectTokens.length - 1]);
+    if (hr == null) {
+      return;
+    }
+    setHistoryTo(webPrefix + "history/" + hr + ".json");
+    console.debug("History subject", subject);
+    const subjectTokens = subject.split("-");
+    console.debug("History parts", subjectTokens[subjectTokens.length - 1]);
 
-setResolution(subjectTokens[subjectTokens.length - 1]);
-setText(subjectTokens[subjectTokens.length -2]);
-
-
-
+    setResolution(subjectTokens[subjectTokens.length - 1]);
+    setText(subjectTokens[subjectTokens.length - 2]);
   }, [subject]);
 
   const user_name = props.user_name; // TODO
@@ -145,36 +150,35 @@ setText(subjectTokens[subjectTokens.length -2]);
   const {
     snapshot: data,
     flag: snapshotFlag,
-    snapshotGetTime: snapshotGetTime,
+    snapshotRunTime: snapshotRunTime,
+    snapshotRunAt
   } = useSnapshot(snapshotTo, snapshotInterval);
 
   const {
     thingReport,
     flag: thingReportFlag,
-    thingReportGetTime: thingReportGetTime,
+//    thingReportGetTime: thingReportGetTime,
   } = useThingReport(snapshotTo, snapshotInterval);
 
   const {
     snapshot: history,
     flag: historyFlag,
-    snapshotGetTime: historyGetTime,
-  } = useSnapshot(historyTo, 5000);
+    snapshotRunTime: historyRunTime,
+  } = useSnapshot(historyTo, 60000);
 
   useEffect(() => {
-    console.log("History thingReport", thingReport);
+    console.debug("History thingReport", thingReport);
   }, [thingReport]);
 
-useEffect(() =>{
-
-console.log("History snapshotTo historyTo", snapshotTo, historyTo);
-
-}, [snapshotTo, historyTo]);
+  useEffect(() => {
+    console.debug("History snapshotTo historyTo", snapshotTo, historyTo);
+  }, [snapshotTo, historyTo]);
 
   useEffect(() => {
     // Extract uuid from datagram.
     // To provide access to the snapshot.
     // Consider: Can refactor this code into useSnapshot().
-    console.log("History datagram", snapshotTo, datagram.subject);
+    console.debug("History datagram", snapshotTo, datagram.subject);
     const uuid = extractUuid(datagram.subject);
     const to = webPrefix + "/snapshot/" + uuid + "/hey.json";
     setSnapshotTo(to);
@@ -182,10 +186,6 @@ console.log("History snapshotTo historyTo", snapshotTo, historyTo);
 
   const [flag, setFlag] = useState();
   const [historyPoints, setHistoryPoints] = useState([]);
-
-  //const [requestedAt, setRequestedAt] = useState();
-  //const [spread, setSpread] = useState();
-  //const [data,setData] = useState();
 
   const config = {
     delta: 10, // min distance(px) before a swipe starts. *See Notes*
@@ -199,10 +199,10 @@ console.log("History snapshotTo historyTo", snapshotTo, historyTo);
 
   const handlers = useSwipeable({
     onSwiped: (eventData) => {
-      console.log("User Swiped test");
+      console.debug("User Swiped test");
       handleSwipe(eventData);
 
-      console.log("User Swiped!", eventData);
+      console.debug("User Swiped!", eventData);
     },
     ...config,
   });
@@ -229,14 +229,17 @@ console.log("History snapshotTo historyTo", snapshotTo, historyTo);
   };
 
   useEffect(() => {
-    console.log("History data", snapshotTo, data);
+    console.debug("History data", snapshotTo, data);
   }, [data]);
 
   useEffect(() => {
     if (history == null) {
       return;
     }
-    console.log("History history", history && history.thingReport && history.thingReport.history);
+    console.debug(
+      "History history",
+      history && history.thingReport && history.thingReport.history
+    );
 
     //setSnapshotTo(webPrefix + "/snapshot/" + history.uuid + "/hey.json");
 
@@ -244,19 +247,13 @@ console.log("History snapshotTo historyTo", snapshotTo, historyTo);
 
     if (history.agent_input) {
       if (Array.isArray(history.agent_input)) {
-        console.log("History set history from history.agent_input");
+        console.debug("History set history from history.agent_input");
         hist = history.agent_input;
       }
     }
-    //    console.log("History agent_input", history.agent_input);
-
-    //    if (!Array.isArray(history.agent_input)) {
-    //      return;
-    //    }
-    //    const hist = history.agent_input;
 
     if (history.thingReport && history.thingReport.history) {
-      console.log("History set history from history.thingReport.history");
+      console.debug("History set history from history.thingReport.history");
       hist = history.thingReport.history;
     }
 
@@ -264,7 +261,7 @@ console.log("History snapshotTo historyTo", snapshotTo, historyTo);
       return;
     }
 
-    console.log("History hist", hist);
+    console.debug("History hist", hist);
     //    const hist = history.agent_input;
     const p = hist.map((h) => {
       var amount = null;
@@ -279,7 +276,6 @@ console.log("History snapshotTo historyTo", snapshotTo, historyTo);
 
       if (h.event.data) {
         const pingArray = parsePing(h.event.data);
-        //console.log("History h", pingArray);
 
         const f = {
           name: pingArray.host,
@@ -311,15 +307,6 @@ console.log("History snapshotTo historyTo", snapshotTo, historyTo);
     });
     setHistoryPoints(p);
 
-    // Find earliest and newest points
-    //if (hist !== undefined && Array.isArray(hist)) {
-    //const firstEvent= new Date(p[0].at);
-    //const lastEvent = new Date(p[p.length - 1].at);
-    //const spreadEvent = lastEvent - firstEvent;
-    //console.log("History spreadEvent", p[0].at, p[p.length-1].at, spreadEvent);
-    //setSpread(spreadEvent);
-
-    //}
   }, [history]);
 
   function humanTime(timestamp) {
@@ -351,24 +338,24 @@ console.log("History snapshotTo historyTo", snapshotTo, historyTo);
   const [tracePeriod, setTracePeriod] = useState();
 
   function callBack() {
-    console.log("Agent callBack called.");
+    console.debug("Agent callBack called.");
   }
 
   function handleSwipe(e) {
-    console.log("User Swiped e.dir", e.dir);
+    console.debug("User Swiped e.dir", e.dir);
 
     if (e.dir === "Left") {
       const w = windowIndex + 1;
       setWindowIndex(w);
 
-      console.log("User Swiped Left");
+      console.debug("User Swiped Left");
       if (props.onChangeStream) {
         props.onChangeStream(w);
       }
     }
 
     if (e.dir === "Right") {
-      console.log("User Swiped  Right");
+      console.debug("User Swiped  Right");
 
       const w = windowIndex - 1;
       if (w >= 0) {
@@ -391,11 +378,10 @@ console.log("History snapshotTo historyTo", snapshotTo, historyTo);
     // Set to midnight local time.
 
     const cycleRunAt = zuluTime(cycleStartDate);
-    console.log("History cycleRunAt", cycleRunAt);
+    console.debug("History cycleRunAt", cycleRunAt);
     const cycleStartMilliseconds = cycleStartDate.getTime();
 
     const cyclePoints = historyPoints.map((historyPoint) => {
-      //      var cyclePoint = historyPoint;
       var cyclePoint = {};
       const ageMilliseconds = zuluTimeDifferenceMilliseconds(
         historyPoint.at,
@@ -405,7 +391,6 @@ console.log("History snapshotTo historyTo", snapshotTo, historyTo);
       const cycleIndex = Math.floor(ageMilliseconds / cycleMilliseconds);
 
       const key = cycleIndex === 0 ? "amount" : "amount" + cycleIndex;
-      console.log("History key", key);
       cyclePoint[key] = historyPoint.amount;
 
       const cycleAgeMilliseconds =
@@ -413,17 +398,12 @@ console.log("History snapshotTo historyTo", snapshotTo, historyTo);
 
       const x = cycleStartMilliseconds - cycleAgeMilliseconds;
 
-      console.log("History x", zuluTime(new Date(x)), x);
-
       const at = zuluTime(new Date(x));
 
-      //cyclePoint["amount"] = null;
       cyclePoint["at"] = at;
-      //historyPoint.at;
       return cyclePoint;
     });
-    console.log("History cyclePoints", cyclePoints);
-    //setTracePoints(cyclePoints);
+
     setTracePoints(cyclePoints);
   }, [historyPoints]);
 
@@ -434,8 +414,17 @@ console.log("History snapshotTo historyTo", snapshotTo, historyTo);
   return (
     <>
       <div>HISTORY</div>
-      TEXT {thingReport && thingReport.text}<br />
-{text}{' '}{resolution}
+{snapshotRunAt}
+<br/>
+      {historyFlag}
+      <br />
+      {snapshotFlag}
+      <br />
+      {thingReportFlag}
+      <br />
+      TEXT {thingReport && thingReport.text}
+      <br />
+      {text} {resolution}
       <br />
       {data && data.thingReport && data.thingReport.text}
       {false && <>SUBJECT {subject}</>}
@@ -461,29 +450,28 @@ console.log("History snapshotTo historyTo", snapshotTo, historyTo);
       SNAPSHOT INTERVAL {snapshotInterval}
       <Trace data={tracePoints} cycle={1} />
       <Trace data={historyPoints} cycle={1} />
-
       <br />
       {data &&
         data.transducers &&
         data.transducers[ref] &&
-        data.transducers[ref].amount && showLive &&
-       (
-        <Stream
-          hide={true}
-          period={1000}
-          quantity={{
-            units: "A",
-            amount:
-              data &&
-              data.transducers &&
-              data.transducers[ref] &&
-              data.transducers[ref].amount,
-          }}
-          //             transducer={data && data.transducers && data.transducers[ref]}
-          //              period={100}
-          //              domain={[-50, 50]}
-        />
-      )}
+        data.transducers[ref].amount &&
+        showLive && (
+          <Stream
+            hide={true}
+            period={1000}
+            quantity={{
+              units: "A",
+              amount:
+                data &&
+                data.transducers &&
+                data.transducers[ref] &&
+                data.transducers[ref].amount,
+            }}
+            //             transducer={data && data.transducers && data.transducers[ref]}
+            //              period={100}
+            //              domain={[-50, 50]}
+          />
+        )}
       {false && (
         <>
           <br />
@@ -495,11 +483,11 @@ console.log("History snapshotTo historyTo", snapshotTo, historyTo);
         </>
       )}
       <div>
-        SNAPSHOT GET TIME {snapshotGetTime}ms{" "}
-        {Math.round(1000 / snapshotGetTime, 1)}Hz
+        SNAPSHOT GET TIME {snapshotRunTime}ms{" "}
+        {Math.round(1000 / snapshotRunTime, 1)}Hz
         <br />
-        HISTORY GET TIME {historyGetTime}ms{" "}
-        {Math.round(1000 / historyGetTime, 1)}Hz
+        HISTORY GET TIME {historyRunTime}ms{" "}
+        {Math.round(1000 / historyRunTime, 1)}Hz
       </div>
     </>
   );

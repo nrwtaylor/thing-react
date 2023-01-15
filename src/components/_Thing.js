@@ -1,5 +1,11 @@
 import React, { memo, lazy, useState, useEffect } from "react";
 
+import {
+  //  Get as getThingy,
+  //  forgetThing as forgetThingy,
+  createThing as createThingy,
+  //  makeObservable,
+} from "../util/database.js";
 import update from "immutability-helper";
 
 import { useParams } from "react-router";
@@ -65,7 +71,7 @@ import {
   rxErrorCount,
   txErrorCount,
 } from "../util/database.js";
-import { humanTime, zuluTime, humanAge } from "../util/time.js";
+import { humanTime, zuluTime } from "../util/time.js";
 
 import useMessages from "../useMessages";
 import useThingReport from "../useThingReport";
@@ -89,8 +95,6 @@ import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 
 import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
-
-import LazyLoad from "react-lazyload";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -182,6 +186,7 @@ function Thing(props) {
   const classes = useStyles();
 
   const { datagram: initialDatagram, canOpen, open, canFold } = props;
+
   const { datagram, setDatagram } = useDatagram(initialDatagram);
 
   var { agentInput } = props;
@@ -200,13 +205,6 @@ function Thing(props) {
   //console.log("Thing defaultWebPrefix", defaultWebPrefix);
 
   //},[defaultWebPrefix]);
-
-useEffect(()=>{
-
-console.log("Thing thing", thing);
-
-}, [thing]);
-
 
   useEffect(() => {
     if (initialDatagram == null) {
@@ -528,7 +526,6 @@ console.log("Thing uuid ass", uuid, ass);
 */
   }, [uuid]);
 
-
   useEffect(() => {
     if (subject == null) {
       return;
@@ -756,8 +753,34 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
   const handleAddThing = (e) => {
     console.log("Thing handleAddThing", datagram);
 
+
 // Passing getThing with null, will create an empty thing.
 getThing(null);
+return;
+
+    //return;
+    const doNotWait = createThingy(webPrefix, datagram, token)
+      .then((result) => {
+        console.log("Thing handleAdd createThing result", result);
+        const newThing = datagram;
+        newThing.associations = {
+          ...newThing.associations,
+          uuid: result.uuid,
+        };
+
+        /*
+          setThings(
+            update(things, {
+              $splice: [[0, 0, newThing]],
+            })
+          );
+*/
+        //getThings();
+        //          props.onCollectionChange(things);
+      })
+      .catch((error) => {
+        console.log("Thing handleAdd spawnThing createThing error", error);
+      });
   };
 
   const handleOpenThing = (e) => {
@@ -889,8 +912,7 @@ flagThingReport{' '}{flagThingReport && (<>{flagThingReport}</>)}
 ASSOCIATIONS<br />
 {datagram && datagram.associations && Array.isArray(datagram.associations) && datagram.associations.includes(uuid) &&(<>ASSOCIATED</>)}
 <br />
-{/*<Item thing={{...datagram, uuid:uuid}} />*/}
-<Item thing={thing} agentInput={null} />
+<Item thing={{...datagram, uuid:uuid}} />
 
         {datagram && datagram.score}
         {token && token.message}
@@ -970,24 +992,22 @@ ASSOCIATIONS<br />
             </>
           )}
           {!flipped && (
-            <Subject thing={thing} setSubject={setSubject} />
+            <Subject thing={datagram} />
           )}
-{thing && thing.createdAt && (<>{humanAge(thing.createdAt)}</>)}
           {!expanded && !flipped && (
             <>
-<LazyLoad>
+              {subject && subject.toLowerCase().indexOf("history") !== -1 && (
                 <div>
-
+                  {/*    <History */}
                   <Agent
                     channel={"image"}
                     user={null}
                     //thing={data.thing}
-                    thing={props.datagram}
-                    agentInput={webPrefix}
+                    datagram={datagram}
+                    agent_input={webPrefix}
                   />
-
                 </div>
-</LazyLoad>
+              )}
 
               {PNG && (
                 <Box className={classes.cardImageContainer}>
@@ -1102,17 +1122,13 @@ ASSOCIATIONS<br />
               <br />
               <Typography>RUNTIME {runTime}</Typography>
               {!data && <>NOT DATA</>}
-
-
               <Agent
                 channel={"image"}
                 user={null}
                 //thing={data.thing}
-                thing={props.datagram}
-                agentInput={webPrefix}
+                datagram={props.datagram}
+                agent_input={webPrefix}
               />
-
-
               {subject && subject.toLowerCase().indexOf("ping") !== -1 && (
                 <div>
                   <Ping
@@ -1179,16 +1195,11 @@ ASSOCIATIONS<br />
           )}
           {/*https://www.designcise.com/web/tutorial/how-to-hide-a-broken-image-in-react*/}
         </div>
-<div>
         {true && expanded && thing && (<Collection thing={{ ...thing }} />)}
-</div>
-<div>
+
         <DataReport />
-</div>
       </Card>
     </>
   );
 }
-
 export default memo(Thing);
-//export default Thing;

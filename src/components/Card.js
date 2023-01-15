@@ -1,14 +1,16 @@
-import React, { memo, useState,useEffect } from "react";
+import React, { memo, useState, useEffect } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "./ItemTypes";
 //import { Thing } from "./../components/Thing.js";
 import Thing from "./../../src/components/Thing.js";
 
-
 //import FirebaseStorageImage from "./../components/FirebaseStorageImage";
 import { Grid, Box } from "@material-ui/core/";
-import VisibilitySensor from 'react-visibility-sensor';
+import VisibilitySensor from "react-visibility-sensor";
 //import arrow from "./../images/arrow.svg";
+
+import LazyLoad from "react-lazyload";
+
 
 const style = {
   // boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
@@ -21,7 +23,7 @@ const style = {
   // height:'100%'
 };
 
-export const Card =  memo(function Card({
+export const Card = memo(function Card({
   id,
   card,
   token,
@@ -34,7 +36,6 @@ export const Card =  memo(function Card({
   deleteCard,
   findCard,
 }) {
-
   const [cardVisible, setCardVisible] = useState();
 
   const originalIndex = findCard(id).index; //index
@@ -95,7 +96,6 @@ export const Card =  memo(function Card({
     if (e === "fold") {
       foldCard(id);
     }
-
   }
   function handleOpenCard(e) {
     //    props.onCardChange(e);
@@ -111,15 +111,10 @@ export const Card =  memo(function Card({
     foldCard(id);
   }
 
-
   function handleDelete() {
     //console.log("Saw delete index", id)
     deleteCard(id);
   }
-
-  useEffect(() => {
-    console.log("Card card", card);
-  }, [card]);
 
   if (card && card.open && card.open === "open") {
     return (
@@ -141,12 +136,7 @@ export const Card =  memo(function Card({
           }}
         >
           <Thing
-            //          to={card.to}
-            //          subject={card.subject}
-            //          createdAt={card.createdAt}
-            //priorUuid={datagram.uuid}
             uuid={card.uuid}
-            //          input={card.input}
             token={token}
             datagram={card}
             webPrefix={card.webPrefix}
@@ -158,41 +148,49 @@ export const Card =  memo(function Card({
   }
 
   return (
-<VisibilitySensor onChange={
-(isVisible) =>{setCardVisible(isVisible)}
-} >
-    <Grid
-      item
-      xs={12}
-      sm={3}
-      ref={(node) => drag(drop(node))}
-      style={{ ...style, opacity }}
+    <VisibilitySensor
+      onChange={(isVisible) => {
+        setCardVisible(isVisible);
+      }}
     >
-      <Box
-        style={{
-          border: "1px solid #1d7d1d",
-          borderRadius: "8px",
-          padding: "4px",
-          height: "100%",
-          display: "flex",
-          cursor: "move",
-        }}
+      <Grid
+        item
+        xs={12}
+        sm={3}
+        ref={(node) => drag(drop(node))}
+        style={{ ...style, opacity }}
       >
-<Thing
-          //          to={card.to}
-          //          subject={card.subject}
-          //          createdAt={card.createdAt}
-          uuid={card.uuid}
-          //          input={card.input}
-          token={token}
-          datagram={{...card, pollInterval:(card && card.pollInterval && cardVisible ? card.pollInterval : false)}}
-          webPrefix={card.webPrefix}
-          onChange={(e) => handleChange(e)}
-        />
-
-
-      </Box>
-    </Grid>
-</VisibilitySensor>
+        <Box
+          style={{
+            border: "1px solid #1d7d1d",
+            borderRadius: "8px",
+            padding: "4px",
+            height: "100%",
+            display: "flex",
+            cursor: "move",
+          }}
+        >
+{/*<LazyLoad style={{display:"flex"}} >*/}
+          <Thing
+            //          to={card.to}
+            //          subject={card.subject}
+            //          createdAt={card.createdAt}
+            uuid={card.uuid}
+            //          input={card.input}
+            token={token}
+            datagram={{
+              ...card,
+              pollInterval:
+                card && card.pollInterval && cardVisible
+                  ? card.pollInterval
+                  : false,
+            }}
+            webPrefix={card.webPrefix}
+            onChange={(e) => handleChange(e)}
+          />
+{/*</LazyLoad>*/}
+        </Box>
+      </Grid>
+    </VisibilitySensor>
   );
 });

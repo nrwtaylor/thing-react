@@ -43,6 +43,7 @@ export default function useThingReport(input, inputThingReportPollInterval) {
     getThingReport();
 
     const interval = setInterval(() => {
+      console.log("useThingReport setInterval called input", input, thingReportInterval);
       getThingReport();
     }, thingReportInterval); // 20 Hz was 200.
 
@@ -115,7 +116,7 @@ export default function useThingReport(input, inputThingReportPollInterval) {
     console.log("useThingReport url", url);
     return getWebJson(url, "")
       .then((result) => {
-        console.log("useThingReport  getThingReport url result", url, result);
+        console.log("useThingReport getThingReport url result", url, result);
 
         if (!result) {
           return true;

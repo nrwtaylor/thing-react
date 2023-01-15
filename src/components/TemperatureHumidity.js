@@ -62,7 +62,7 @@ function TemperatureHumidity(props) {
   const toSnapshot = "http://192.168.10.10/snapshot.json";
 
 
-  const { snapshot, flag, snapshotGetTime, snapshotInterval } = useSnapshot(
+  const { snapshot, flag, snapshotRunTime, snapshotInterval } = useSnapshot(
     toSnapshot,
     500
   );
@@ -74,7 +74,6 @@ function TemperatureHumidity(props) {
 
   const [open, setOpen] = useState(false);
 
-  //  const [snapshotGetTime, setSnapshotGetTime] = useState();
   const replyAgentDialog = (thing) => {
     setOpen(true);
   };
@@ -163,7 +162,7 @@ thclb0ax2":{"talker_identifier":"TH","type":"A","amount":"1142011.6","units":"X"
       <div>
         FLAG {flag} COLOUR
         <br />
-        GET TIME {snapshotGetTime}ms {Math.round(1000 / snapshotGetTime, 1)}Hz
+        GET TIME {snapshotRunTime}ms {Math.round(1000 / snapshotRunTime, 1)}Hz
         REQUEST INTERVAL {snapshotInterval}ms{" "}
         {Math.round(1000 / snapshotInterval, 1)}Hz
         <br />

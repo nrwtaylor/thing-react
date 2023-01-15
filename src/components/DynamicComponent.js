@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 /**
  * @desc the dynamic component is used to render various component dynamically
@@ -20,5 +20,6 @@ if (is == null) {return null;}
   );
 };
 
-export default DynamicComponent;
+// https://hygraph.com/blog/react-memo
+export default memo(DynamicComponent);
 

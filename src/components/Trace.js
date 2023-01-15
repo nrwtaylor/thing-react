@@ -79,7 +79,7 @@ function Trace(props) {
   const availableWindows = ["", "1m", "2m", "10m", "15m", "30m", "1h"];
 
   // This will get the twilight times.
-  const { thing } = useThing({ subject: "day twilight" });
+  //const { thing } = useThing({ subject: "day twilight" });
 
   const maxCycles = 100;
   const cycles = Array.from(Array(maxCycles), (_, x) => x);

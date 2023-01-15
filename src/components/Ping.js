@@ -57,7 +57,7 @@ function Ping(props) {
 
   //  const toSnapshot = "http://127.0.0.1/snapshot.json";
   const toSnapshot = u;
-  const { snapshot, flag, snapshotGetTime } = useSnapshot(toSnapshot);
+  const { snapshot, flag, snapshotRunTime } = useSnapshot(toSnapshot);
 
   useEffect(() => {
     if (props.ping) {
@@ -79,7 +79,6 @@ function Ping(props) {
   const [open, setOpen] = useState(false);
 
   const [pingUuid, setPingUuid] = useState();
-  //  const [snapshotGetTime, setSnapshotGetTime] = useState();
 
   function humanTime(timestamp) {
     const ts = new Date();
@@ -174,7 +173,7 @@ function Ping(props) {
           </>
         )}
         <br />
-        GET TIME {snapshotGetTime}ms {Math.round(1000 / snapshotGetTime, 1)}Hz
+        GET TIME {snapshotRunTime}ms {Math.round(1000 / snapshotRunTime, 1)} Hz
         <br />
         {data && data.ping && (
           <>

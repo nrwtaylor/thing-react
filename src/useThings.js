@@ -24,6 +24,7 @@ const defaultThings = [
   {
     index: 20,
     to: "localhost",
+    from: "stack",
     subject: "Please Log In",
     createdAt: Date.now(),
     uuid: uuidv4(),
@@ -32,6 +33,7 @@ const defaultThings = [
   {
     index: 21,
     to: "localhost",
+    from: "stack",
     subject: "Please Sign Up",
     createdAt: Date.now(),
     uuid: uuidv4(),
@@ -40,6 +42,7 @@ const defaultThings = [
   {
     index: 21,
     to: "localhost",
+    from: "stack",
     subject: "Privacy",
     createdAt: Date.now(),
     uuid: uuidv4(),
@@ -48,6 +51,7 @@ const defaultThings = [
   {
     index: 21,
     to: "localhost",
+    from: "stack",
     subject: "Terms of Use",
     createdAt: Date.now(),
     uuid: uuidv4(),
@@ -58,6 +62,7 @@ const defaultThings = [
 const errorThing = {
   index: 20,
   to: "localhost",
+  from: "stack",
   subject: "Error",
   createdAt: Date.now(),
   uuid: uuidv4(),

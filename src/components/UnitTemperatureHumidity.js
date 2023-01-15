@@ -63,7 +63,7 @@ function TemperatureHumidity(props) {
 
 const toSnapshot = "https://stackr.ca/snapshot/56f2dbb4-fde9-4f5c-89cf-35fb19494b8e/coop.json";
 
-  const { snapshot, flag, snapshotGetTime, snapshotInterval } = useSnapshot(
+  const { snapshot, flag, snapshotRunTime, snapshotInterval } = useSnapshot(
     toSnapshot,
     500
   );
@@ -75,7 +75,6 @@ const toSnapshot = "https://stackr.ca/snapshot/56f2dbb4-fde9-4f5c-89cf-35fb19494
 
   const [open, setOpen] = useState(false);
 
-  //  const [snapshotGetTime, setSnapshotGetTime] = useState();
   const replyAgentDialog = (thing) => {
     setOpen(true);
   };
@@ -164,7 +163,7 @@ thclb0ax2":{"talker_identifier":"TH","type":"A","amount":"1142011.6","units":"X"
       <div>
         FLAG {flag} COLOUR
         <br />
-        GET TIME {snapshotGetTime}ms {Math.round(1000 / snapshotGetTime, 1)}Hz
+        GET TIME {snapshotRunTime}ms {Math.round(1000 / snapshotRunTime, 1)}Hz
         REQUEST INTERVAL {snapshotInterval}ms{" "}
         {Math.round(1000 / snapshotInterval, 1)}Hz
         <br />

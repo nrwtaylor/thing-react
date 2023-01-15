@@ -38,23 +38,11 @@ export default function ThingCarousel(props) {
   const { identity, setIdentity, deleteIdentity } = useIdentity();
   const { input, setInput, deleteInput } = useInput();
 
- // const [ modifiedThings, setModifiedThings ] = useState();
-
   const { things, getThings } = useThings();
 
   useEffect(() => {
     console.log("ThingCarousel inputToken token things", token, things);
   }, [things]);
-
-//  useEffect(() => {
-//    console.log("ThingCarousel token", token);
-    //getToken();
-//    getThings(token);
-//  }, [token]);
-
-  //useEffect(()=>{
-  //getThings(token);
-  //}, []);
 
   const createdAt = Date.now();
 

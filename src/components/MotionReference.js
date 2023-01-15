@@ -20,7 +20,7 @@ const [data, setData] = useState();
 const [displacement, setDisplacement] = useState();
 
   const toSnapshot = "http://192.168.10.10/snapshot.json";
-  const { snapshot, flag, snapshotGetTime } = useSnapshot(toSnapshot);
+  const { snapshot, flag } = useSnapshot(toSnapshot);
 
 useEffect(() =>{
 

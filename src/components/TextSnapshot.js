@@ -58,7 +58,7 @@ function TextSnapshot(props) {
   const [snapshotInterval, setSnapshotInterval] = useState(50);
 
   const toSnapshot = "http://192.168.10.10/snapshot.json";
-  const { snapshot, flag, snapshotGetTime } = useSnapshot(toSnapshot);
+  const { snapshot, flag, snapshotRunTime } = useSnapshot(toSnapshot);
 
   const [data, setData] = useState({
     thing: { uuid: "X" },
@@ -67,7 +67,6 @@ function TextSnapshot(props) {
 
   const [open, setOpen] = useState(false);
 
-  //  const [snapshotGetTime, setSnapshotGetTime] = useState();
   const replyAgentDialog = (thing) => {
     setOpen(true);
   };
@@ -138,7 +137,7 @@ function TextSnapshot(props) {
         <div>
           FLAG {flag} COLOUR
           <br />
-          GET TIME {snapshotGetTime}ms {Math.round(1000 / snapshotGetTime, 1)}Hz
+          GET TIME {snapshotRunTime}ms {Math.round(1000 / snapshotRunTime, 1)}Hz
           <br />
           {data && data.transducers && (
             <>

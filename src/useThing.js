@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import {
   getThing as getThingy,
   forgetThing as forgetThingy,
@@ -6,6 +6,8 @@ import {
   createThing as createThingy,
   makeObservable,
 } from "./util/database.js";
+
+import {getSlug} from "./util/text.js";
 
 import { v4 as uuidv4 } from "uuid";
 import useToken from "./useToken.js";
@@ -19,98 +21,285 @@ const apiPrefix = process.env.REACT_APP_API_PREFIX;
 
 const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 
-const defaultThing = 
-  {
-    index: 20,
-    to: "localhost",
-    subject: "Please Log In",
-    createdAt: Date.now(),
-    uuid: uuidv4(),
-    input: "Login",
-  };
+const defaultThing = {
+  index: 20,
+  to: "localhost",
+  subject: "Please Log In",
+  createdAt: Date.now(),
+  uuid: uuidv4(),
+  input: "Login",
+};
 
 export default function useThing(datagram) {
   const { token } = useToken();
+  const priorDatagram = usePrior(datagram);
 
   const { things, getThings, setThings } = useThings();
+
+  const [flag, setFlag] = useState();
 
   useEffect(() => {
     console.log("useThing things", things);
   }, [things]);
 
+//  useEffect(() =>{
+//console.log("useThing datagram", datagram);
+//getThing();
+
+//  }, [datagram]);
+
   const getThing = () => {
+
     if (token == null) {
       return;
     }
 
-    if (datagram == null) {return;}
+    if (flag === "red") {
+      return;
+    }
 
-console.log("useThing getThing token datagram", token, datagram);
+    if (datagram == null) {
+      return;
+    }
 
-if (datagram.uuid) {
+    console.log("useThing getThing token datagram", token, datagram);
 
-    getThingy(datagram, token)
-      .then((result) => {
-        console.log("App loadThing result", result);
+    // If there is a uuid then get that Thing, returning false if not found.
+    if (datagram.uuid) {
+      setFlag("red");
 
-        var combinedThing = defaultThing;
-        if (result && result.thing) {
-          combinedThing = mergeObjectsInUnique(
-            [...thing, ...result.thing],
-            "uuid"
-          );
-        }
-
-        const uuids = combinedThing.uuid;
-        const conditionedThing = combinedThing;
-        console.log("App loadThing conditionedThing", conditionedThing);
-
-        setThing(conditionedThing);
-      })
-      .catch((error) => {
-        // Add an error card in. Up front and center?
-        setThing(defaultThing);
-
-        console.log("App loadThing error", error);
-      });
-return;
- }
-return;
-// No uuid provided. SO create thing.
-      const doNotWait = createThingy(webPrefix, datagram, token)
+      getThingy(datagram, token)
         .then((result) => {
-          console.log("getThing createThing result", result);
-/*
+          console.log("useThing getThing result", datagram.uuid, result);
+
+          var combinedThing = defaultThing;
+
+          if (result && result.thing) {
+            combinedThing = mergeObjectsInUnique(
+              [...thing, ...result.thing],
+              "uuid"
+            );
+          }
+
+          const uuids = combinedThing.uuid;
+          const conditionedThing = combinedThing;
+          console.log("useThing getThing conditionedThing", conditionedThing);
+          setFlag("green");
+          setThing(conditionedThing);
+        })
+        .catch((error) => {
+          setFlag("yellow");
+          // Add an error card in. Up front and center?
+          setThing(false);
+
+          console.log("useThing getThing error", datagram.uuid, error);
+        });
+      return;
+    }
+
+    console.log("useThing createThing event");
+
+// Don't create duplicates
+
+const x = getSlug(datagram.subject);
+const subjects = things.map((t)=>{return getSlug(t.subject);});
+if (subjects.includes(x)) {return;}
+
+//    return;
+    // No uuid provided. SO create thing.
+setFlag("red");
+    const doNotWait = createThingy(webPrefix, datagram, token)
+      .then((result) => {
+
+setFlag("green");
+        console.log("useThing createThingy result", result);
+
+          const newThing = datagram;
           newThing.associations = {
             ...newThing.associations,
             uuid: result.uuid,
           };
 
+setThing(newThing);
+
           setThings(
             update(things, {
-              $splice: [[index, 0, newThing]],
+              $splice: [[0, 0, newThing]],
             })
           );
-*/
-//getThings();
-          //          props.onCollectionChange(things);
-        })
-        .catch((error) => {
-          console.log("spawnThing createThing error", error);
-        });
 
+        //getThings();
+        //          props.onCollectionChange(things);
 
+      })
+      .catch((error) => {
+setFlag("yellow");
+        console.log("spawnThing createThing error", error);
+      });
   };
 
+  var deepDiffMapper = (function () {
+    return {
+      VALUE_CREATED: "created",
+      VALUE_UPDATED: "updated",
+      VALUE_DELETED: "deleted",
+      VALUE_UNCHANGED: "unchanged",
+      map: function (obj1, obj2) {
+        if (this.isFunction(obj1) || this.isFunction(obj2)) {
+          throw "Invalid argument. Function given, object expected.";
+        }
+        if (this.isValue(obj1) || this.isValue(obj2)) {
+          return {
+            type: this.compareValues(obj1, obj2),
+            data: obj1 === undefined ? obj2 : obj1,
+          };
+        }
 
+        var diff = {};
+        for (var key in obj1) {
+          if (this.isFunction(obj1[key])) {
+            continue;
+          }
+
+          var value2 = undefined;
+          if (obj2[key] !== undefined) {
+            value2 = obj2[key];
+          }
+
+          diff[key] = this.map(obj1[key], value2);
+        }
+        for (var key in obj2) {
+          if (this.isFunction(obj2[key]) || diff[key] !== undefined) {
+            continue;
+          }
+
+          diff[key] = this.map(undefined, obj2[key]);
+        }
+
+        return diff;
+      },
+      compareValues: function (value1, value2) {
+        if (value1 === value2) {
+          return this.VALUE_UNCHANGED;
+        }
+        if (
+          this.isDate(value1) &&
+          this.isDate(value2) &&
+          value1.getTime() === value2.getTime()
+        ) {
+          return this.VALUE_UNCHANGED;
+        }
+        if (value1 === undefined) {
+          return this.VALUE_CREATED;
+        }
+        if (value2 === undefined) {
+          return this.VALUE_DELETED;
+        }
+        return this.VALUE_UPDATED;
+      },
+      isFunction: function (x) {
+        return Object.prototype.toString.call(x) === "[object Function]";
+      },
+      isArray: function (x) {
+        return Object.prototype.toString.call(x) === "[object Array]";
+      },
+      isDate: function (x) {
+        return Object.prototype.toString.call(x) === "[object Date]";
+      },
+      isObject: function (x) {
+        return Object.prototype.toString.call(x) === "[object Object]";
+      },
+      isValue: function (x) {
+        return !this.isObject(x) && !this.isArray(x);
+      },
+    };
+  })();
+
+  /*
+var result = deepDiffMapper.map({
+  a: 'i am unchanged',
+  b: 'i am deleted',
+  e: {
+    a: 1,
+    b: false,
+    c: null
+  },
+  f: [1, {
+    a: 'same',
+    b: [{
+      a: 'same'
+    }, {
+      d: 'delete'
+    }]
+  }],
+  g: new Date('2017.11.25')
+}, {
+  a: 'i am unchanged',
+  c: 'i am created',
+  e: {
+    a: '1',
+    b: '',
+    d: 'created'
+  },
+  f: [{
+    a: 'same',
+    b: [{
+      a: 'same'
+    }, {
+      c: 'create'
+    }]
+  }, 1],
+  g: new Date('2017.11.25')
+});
+*/
+  function usePrior(value) {
+    const ref = useRef();
+    useEffect(() => {
+      ref.current = value;
+    });
+    return ref.current;
+  }
 
   const [thing, setThing] = useState(userThing.get().thing);
 
-useEffect(()=>{
+  useEffect(() => {
+    //console.log("useThing getThing datagram changed", priorDatagram, datagram, deepDiffMapper.map([priorDatagram, datagram]) );
 
-getThing();
+    if (priorDatagram == null) {
+      return;
+    }
+    if (datagram == null) {
+      return;
+    }
 
-},[datagram]);
+    var hasDatagramChanged = false;
+    if (priorDatagram.subject !== datagram.subject) {
+      hasDatagramChanged = true;
+    }
+
+    if (priorDatagram.to !== datagram.to) {
+      hasDatagramChanged = true;
+    }
+
+    if (priorDatagram.from !== datagram.from) {
+      hasDatagramChanged = true;
+    }
+
+    if (priorDatagram.agentInput !== datagram.agentInput) {
+      hasDatagramChanged = true;
+    }
+
+if (hasDatagramChanged === false) {return;}
+
+    console.log(
+      "useThing getThing datagram changed",
+      priorDatagram,
+      datagram,
+      deepDiffMapper.map([priorDatagram, datagram])
+    );
+
+    getThing();
+  }, [datagram, priorDatagram]);
 
   const findThing = useCallback(
     (id) => {
@@ -214,11 +403,34 @@ getThing();
     };
   }, [thing]);
 
-  const saveThing = (t) => {
+  // Expect part of a thing.
+  const updateThing = (t) => {
+
+//  const updateThing = useCallback(
+//    (id, atIndex) => {
+      //console.log("deleteCard id", id);
+      //console.log("deleteCard atIndex", atIndex);
+//      const { thing, index } = findThing(id);
+
+    console.log("useThing updateThing t", t);
+    console.log("useThing updatething thing", thing);
+    const newThing = { ...thing, ...t };
+console.log("useThing updateThing request saveThing", newThing);
+    saveThing(newThing);
+
+    return Promise.resolve(true);
+  };
+
+const saveThing = (t) => {
     console.log("useThing saveThing userThing", t);
     setThing(t);
-
-setThingy(t.uuid, t, token);
+    setThingy(t.uuid, t, token)
+      .then((result) => {
+        console.log("useThing saveThing result", result);
+      })
+      .catch((error) => {
+        console.log("useThing saveThing error", error);
+      });
   };
 
   const deleteThing = useCallback(
@@ -233,14 +445,11 @@ setThingy(t.uuid, t, token);
 
       console.log("useThing deleteCard thing index", thing, index);
 
-
       setThings(
         update(things, {
           $splice: [[index, 1]],
         })
       );
-
-
 
       // Call delete Thing api
       forgetThingy(thing, token)
@@ -297,6 +506,12 @@ setThingy(t.uuid, t, token);
     [things]
   );
 
+function testThing() {
+
+console.log("useThing testThing");
+
+}
+
   const spawnThing = useCallback(
     (id, atIndex) => {
       //console.log("deleteCard id", id);
@@ -324,7 +539,7 @@ setThingy(t.uuid, t, token);
               $splice: [[index, 0, newThing]],
             })
           );
-//getThings();
+          //getThings();
           //          props.onCollectionChange(things);
         })
         .catch((error) => {
@@ -333,6 +548,8 @@ setThingy(t.uuid, t, token);
     },
     [things]
   );
+
+  // We need a function in the client to merge things client side.
 
   function mergeObjectsInUnique<T>(array: T[], property: any): T[] {
     const newArray = new Map();
@@ -357,10 +574,13 @@ setThingy(t.uuid, t, token);
 
   return {
     //    deleteIdentity: deleteIdentity,
-//    state: thing,
-//    saveThing: setThing,
-//    saveThing:saveThing,
+    //    state: thing,
+    //    saveThing: setThing,
+    //    saveThing:saveThing,
+    updateThing: updateThing,
     setThing: saveThing,
+testThing:testThing,
+    setThing: setThing,
     getThing: getThing,
     findThing: findThing,
     flipThing: flipThing,
@@ -370,6 +590,7 @@ setThingy(t.uuid, t, token);
     openThing: openThing,
     foldThing: foldThing,
     moveThing: moveThing,
+    flag: flag,
     thing,
   };
 }

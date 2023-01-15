@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { getWebJson, getSnapshot } from "./util/database.js";
 import { humanTime, zuluTime } from "./util/time.js";
 
-//export default function useToken(inputToken) {
 export default function useSnapshot(input, inputSnapshotPollInterval) {
   const to = input;
 
@@ -16,7 +15,8 @@ export default function useSnapshot(input, inputSnapshotPollInterval) {
     thing_report: { sms: "No response. Yet." },
   });
 
-  const [snapshotGetTime, setSnapshotGetTime] = useState();
+  const [snapshotRunTime, setSnapshotRunTime] = useState();
+  const [snapshotRunAt, setSnapshotRunAt] = useState();
   const [snapshotResults, setSnapshotResults] = useState([]);
   const [sequentialErrorCount, setSequentialErrorCount] = useState();
   useEffect(() => {
@@ -34,12 +34,10 @@ export default function useSnapshot(input, inputSnapshotPollInterval) {
 
   useEffect(() => {
     console.log("useSnapshot snapshotInterval", snapshotInterval);
-console.log("History history useSnapshot snapshot interval", snapshotInterval);
     getSnapshot();
 
     const interval = setInterval(() => {
-console.log("useSnapshot snapshotInterval call interval");
-console.log("History history getSnapshot interval");
+      console.log("useSnapshot getSnapshot() call requested");
       getSnapshot();
     }, snapshotInterval); // 20 Hz was 200.
 
@@ -47,12 +45,11 @@ console.log("History history getSnapshot interval");
   }, [snapshotInterval]);
 
   useEffect(() => {
-    if (snapshot === undefined) {
-      console.log("useSnapshot snapshot undefined");
-
+    if (snapshot == undefined) {
       return;
     }
-    if (snapshotResults === undefined) {
+
+    if (snapshotResults == null) {
       console.log("useSnapshot snapshotResults undefined");
       setSnapshotResults([{ ...snapshot, snapshotAt: zuluTime() }]);
 
@@ -61,11 +58,7 @@ console.log("History history getSnapshot interval");
 
     console.log("useSnapshot snapshot", snapshot);
 
-    //const s = snapshotResults.push(snapshot);
-    //setSnapshotResults({...s, snapshotAt:zuluTime()});
-
     const count = 0;
-    //snapshotResults.reverse().forEach((snapshotResult)=>{
 
     for (const snapshotResult of snapshotResults.reverse()) {
       if (snapshotResult.error) {
@@ -88,8 +81,6 @@ console.log("History history getSnapshot interval");
     if (flag === "red") {
       return;
     }
-    //    console.log("useSnapshot getSnapshot call " + agent);
-    //    console.log("useSnapshot getSnapshot to", to);
 
     const url = to;
     console.log("useSnapshot url", url);
@@ -115,11 +106,12 @@ console.log("History history getSnapshot interval");
         // dev flag available not available
         setFlag("green");
         const endTime = new Date();
-        setSnapshotGetTime(endTime - startTime);
+        setSnapshotRunTime(endTime - startTime);
+        setSnapshotRunAt(zuluTime(endTime));
         return result;
       })
       .catch((error) => {
-console.log("History history getSnapshot error", error);
+        console.log("History history getSnapshot error", error);
         console.error("useSnapshot getWebJson error", error);
         setFlag("yellow");
         return { ...snapshot, error };
@@ -142,7 +134,8 @@ console.log("History history getSnapshot error", error);
     setSnapshot: saveSnapshot,
     snapshot,
     flag,
-    snapshotGetTime,
+    snapshotRunTime,
+    snapshotRunAt,
     snapshotInterval,
   };
 }

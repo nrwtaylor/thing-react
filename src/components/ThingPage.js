@@ -33,14 +33,14 @@ export default function ThingPage(props) {
   const reg =
     /\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/g;
 
-  const matches = pathname.match(reg);
+  const uuids = pathname.match(reg);
 
   const { username, token, getToken, setToken, deleteToken } = useToken();
   const { identity, setIdentity, deleteIdentity } = useIdentity();
   const { input, setInput, deleteInput } = useInput();
 
-//  const { thing, openThing, getThing, setThing } = useThing();
-const [thing, setThing] = useState();
+  //  const { thing, openThing, getThing, setThing } = useThing();
+  const [thing, setThing] = useState();
   const { things, getThings } = useThings();
 
   const createdAt = Date.now();
@@ -66,7 +66,7 @@ const [thing, setThing] = useState();
     return;
     //   setThings(things);
     if (things && things[0] && things[0].uuid) {
-      console.log("App setUuid", things[0].uuid);
+      console.debug("App setUuid", things[0].uuid);
       setUuid(things[0].uuid);
       return;
     }
@@ -76,18 +76,14 @@ const [thing, setThing] = useState();
   }
 
   useEffect(() => {
-    if (matches == null) {
+    if (uuids == null) {
       return;
     }
-    console.log("ThingPage matches", matches);
-    /*
-{matches.map((match)=>{return (<>{match}</>) })
-}
-*/
-  }, [matches]);
+    console.debug("ThingPage uuids", uuids);
+  }, [uuids]);
 
   useEffect(() => {
-    console.log("ThingPage pathname", pathname);
+    console.debug("ThingPage pathname", pathname);
 
     if (things == null) {
       return;
@@ -95,67 +91,72 @@ const [thing, setThing] = useState();
     //const conditionedPathname = pathname.replace(/\//, "");
     //if (pathname == null) {return;}
     const uuidPathname = extractUuid(pathname);
-    console.log("ThingPage uuidPathname", uuidPathname);
+    console.debug("ThingPage uuidPathname", uuidPathname);
 
     var uuidMatch = null;
     things.forEach((t) => {
-      if (t.uuid == null) {return;}
+      if (t.uuid == null) {
+        return;
+      }
       if (t.uuid === uuidPathname) {
         uuidMatch = t;
       }
     });
 
     if (uuidMatch !== null) {
-      console.log("ThingPage matched uuid", uuidMatch);
+      console.debug("ThingPage matched uuid", uuidMatch);
       setThing(uuidMatch);
       setPlay(false);
       return;
     }
 
-
     const nuuidPathname = extractNuuid(pathname);
-    console.log("ThingPage nuuidPathname", nuuidPathname);
+    console.debug("ThingPage nuuidPathname", nuuidPathname);
 
     var nuuidMatch = null;
     things.forEach((t) => {
-      if (t.uuid == null) {return;}
+      if (t.uuid == null) {
+        return;
+      }
       if (t.uuid.slice(0, 4) === nuuidPathname) {
         nuuidMatch = t;
       }
     });
 
     if (nuuidMatch !== null) {
-      console.log("ThingPage matched nuuid", nuuidMatch);
+      console.debug("ThingPage matched nuuid", nuuidMatch);
       setThing(nuuidMatch);
       setPlay(false);
       return;
     }
 
     const subjectPathname = pathname;
-    console.log("ThingPage nuuidPathname", nuuidPathname);
+    console.debug("ThingPage nuuidPathname", nuuidPathname);
 
     var subjectMatch = null;
     things.forEach((t) => {
-      if (t.subject == null) {return;}
+      if (t.subject == null) {
+        return;
+      }
       if (getSlug(t.subject) === getSlug(pathname)) {
         subjectMatch = t;
       }
     });
 
     if (subjectMatch !== null) {
-      console.log("ThingPage matched subject", subjectMatch);
+      console.debug("ThingPage matched subject", subjectMatch);
       setThing(subjectMatch);
       setPlay(false);
       return;
     }
 
-    console.log("ThingPage using provided url");
+    console.debug("ThingPage using provided url");
     const d = {
       to: "agent",
       subject: pathname,
       webPrefix: webPrefix,
     };
-//    getThing(d);
+    //    getThing(d);
 
     //setDatagram(d);
     setThing(d);
@@ -163,7 +164,7 @@ const [thing, setThing] = useState();
   }, [pathname, things]);
 
   useEffect(() => {
-    console.log("ThingPage thing", thing);
+    console.debug("ThingPage thing", thing);
   }, [thing]);
 
   if (pathname == null) {
@@ -178,22 +179,24 @@ const [thing, setThing] = useState();
           agentInput: play ? "Play" : "Stop",
         }}
       />
-{thing && (
-      <div key={thing.uuid}>
-        <Thing
-          key={thing.uuid}
-          flavour={"item"}
-          uuid={thing.uuid}
-          datagram={thing}
-          //        datagram={{...thing, pollInterval:20000}}
-          canOpen={false}
-          canFold={false}
-          open={true}
-          play={play}
-        />
-      </div>
-)}  
-<br />
-  </>
+      {thing && (
+        <div key={thing.uuid}>
+          <Thing
+            key={thing.uuid}
+            flavour={"item"}
+//            uuid={thing.uuid}
+            datagram={thing}
+            //        datagram={{...thing, pollInterval:20000}}
+            canOpen={false}
+            canFold={false}
+            open={true}
+            play={play}
+            variables={{open:{isOpen:true,canOpen:false},fold:{canFold:false},play:play}}
+
+          />
+        </div>
+      )}
+      <br />
+    </>
   );
 }

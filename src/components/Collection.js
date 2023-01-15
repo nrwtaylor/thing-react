@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 
-//import FirebaseStorageImage from "./../components/FirebaseStorageImage";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+
 import ThingContainer from "./../components/ThingContainer";
 import ThingContainerDnd from "./../components/ThingContainerDnd";
 
@@ -32,42 +32,32 @@ const img = {
 };
 
 function Collection(props) {
-//  const { things, token } = props;
-  const {datagram} = props;
+
+  const { thing } = props;
   const dndFlag = true;
-  /*
-  useEffect(() => {
-    console.log("images");
-    console.log(images);
-  }, [images]);
-*/
+
   // This passes the reordered images back up to
   // the controlling component.
   function handleCollectionChange(reOrderedThings) {
     props.onCollectionChange(reOrderedThings);
   }
-useEffect(() =>{
-console.log("Collection datagram", datagram);
-}, [datagram]);
+
   return (
     <>
-Similar Things
-DATAGRAM ASSOCIATIONS
-{datagram && datagram.uuid}<br />
-{datagram && datagram.associations && Array.isArray(datagram.associations) &&
-(
-datagram.associations.map((d)=>{
-return (<>{d.slice(0,4)}{' '}</>);
-})
-)
-
-}
-<br />
+      Similar Things THING ASSOCIATIONS
+      {thing && thing.uuid}
+      <br />
+      {thing &&
+        thing.associations &&
+        Array.isArray(thing.associations) &&
+        thing.associations.map((d) => {
+          return <>{d.slice(0, 4)} </>;
+        })}
+      <br />
       <DndProvider backend={HTML5Backend}>
-        <ThingContainer datagram={datagram}
-//          things={things}
+        <ThingContainer
+          thing={thing}
           onCollectionChange={handleCollectionChange}
-//          token={token}
         />
       </DndProvider>
     </>

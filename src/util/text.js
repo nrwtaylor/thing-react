@@ -104,6 +104,18 @@ export function isMixed(token) {
     });
   }
 
+// Sort high to low score
+export function sortThingsByScore(things) {
+  //if (items === undefined) {return [];}
+  //if (items.length === 0) {return [];}
+  const sortedThings = things.sort(function (a, b) {
+    return b.score - a.score;
+  });
+
+  return sortedThings;
+}
+
+
   export function scoreThings(things, slugTitle) {
 
     if (!Array.isArray(things)) {
@@ -122,22 +134,22 @@ console.log("text scoreThings", things, slugTitle)
 
   export function scoreThing(thing, inputClusterTokens) {
 
-const text = thing.subject;
+const text = thing.subject + " " +thing.uuid;
 
 if (text == null) {return true;}
+
     const defaultKeywords = "";
 
 //    const conditionedClusterTokens = getSlug(inputClusterTokens).replace("-"," ");
 
     const conditionedClusterTokens = getSlug(inputClusterTokens);
-
-
     const clusterTokens = conditionedClusterTokens
-      ? conditionedClusterTokens.toLowerCase().split(" ")
+      ? conditionedClusterTokens.toLowerCase().split("-")
       : defaultKeywords.toLowerCase().split(" ");
 console.log("text scoreThing", text, inputClusterTokens, conditionedClusterTokens, clusterTokens);
 
-    const titleTokens = text.toLowerCase().split(" ");
+    const conditionedText = getSlug(text);
+    const titleTokens = conditionedText.toLowerCase().split("-");
 
     let score = titleTokens.length;
     let count = 0;

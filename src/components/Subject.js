@@ -3,21 +3,49 @@ import PropTypes from "prop-types";
 
 import TextField from "@mui/material/TextField";
 
-export default function Subject({ subject, setSubject, token }) {
+import useThing from "../useThing.js";
+
+export default function Subject({ thing, setSubject }) {
   //  const [subject, setSubject] = useState(datagram.subject);
   //const subject = thing.subject;
   // Display token.
+
+  const { setThing, testThing, updateThing } = useThing(thing);
 
   const textInput = React.useRef(null);
 
   const timeoutPeriod = 500;
 
+//  const [subject, setSubject2] =useState();
+const subject = thing.subject;
+
   const [s, setS] = useState(subject);
   const [defaultSubject, setDefaultSubject] = useState(subject);
 
-  useEffect(() => {
-    setS(subject);
+/*
+useEffect(()=>{
+if (thing == null) {return;}
+//if (thing.subject === subject) {return;}
 
+//setSubject(thing.subject);
+console.log("Subject thing", thing.subject, thing);
+
+//setDefaultSubject(thing.subject);
+setSubject(thing.subject);
+},[thing]);
+*/
+
+//useEffect(() =>{
+
+//updateThing(thing);
+//setSubject(thing.subject);
+//setS(thing.subject);
+//},[]);
+
+  useEffect(() => {
+console.log("Subject subject", subject);
+    setS(subject);
+//testThing();
     textInput.current.value = subject;
   }, [subject]);
 
@@ -37,7 +65,9 @@ export default function Subject({ subject, setSubject, token }) {
     setDefaultSubject("");
 
     if (s.endsWith(" ")) {
-      setSubject(s);
+//      setSubject(s);
+updateThing({...thing, subject:s});
+
     }
   }, [s]);
 
@@ -45,14 +75,16 @@ export default function Subject({ subject, setSubject, token }) {
   // After this time the request is sent.
   useEffect(() => {
     const timer = setTimeout(() => {
-      setSubject(s);
+//      setSubject(s);
+updateThing({...thing, subject:s});
+
     }, 2000);
     return () => clearTimeout(timer);
   }, [s]);
 
   function subjectChange(e) {
-    console.log("Subject subjectChange", subject);
     var d = e.target.value;
+    console.log("Subject subjectChange", d);
     setS(d);
 
     // Allow two seconds for subject to settle.
@@ -63,6 +95,7 @@ export default function Subject({ subject, setSubject, token }) {
 
   return (
     <>
+{thing.subject}
       <TextField
         //              error = {validation.validator(variableType,subject)}
         variant="filled"

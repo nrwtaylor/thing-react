@@ -1,44 +1,44 @@
 import React, { useState, useEffect } from "react";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { setThing } from "../util/database.js";
-
 
 //import SwitchUnstyled from '@mui/base/SwitchUnstyled';
 
 import {
   Button as MaterialUiButton,
   TextField,
-//  IconButton,
-//  ListItem,
-//  ListItemText,
+  //  IconButton,
+  //  ListItem,
+  //  ListItemText,
   Dialog,
   DialogContent,
   DialogActions,
 } from "@material-ui/core";
 
-import { replaceUuids} from "../util/text.js";
+import { replaceUuids } from "../util/text.js";
 import useThing from "../useThing.js";
 import useMessages from "../useMessages.js";
 import useToken from "../useToken.js";
 
 import { useNavigate } from "react-router-dom";
 
-import { styled } from '@mui/system';
-import SwitchUnstyled, { switchUnstyledClasses } from '@mui/base/SwitchUnstyled';
+import { styled } from "@mui/system";
+import SwitchUnstyled, {
+  switchUnstyledClasses,
+} from "@mui/base/SwitchUnstyled";
 
 const blue = {
-  500: '#007FFF',
+  500: "#007FFF",
 };
 
 const grey = {
-  400: '#8c959f',
-  500: '#6e7781',
-  600: '#57606a',
+  400: "#8c959f",
+  500: "#6e7781",
+  600: "#57606a",
 };
 
-
-const Root = styled('span')(
+const Root = styled("span")(
   ({ theme }) => `
   font-size: 0;
   position: relative;
@@ -54,7 +54,7 @@ const Root = styled('span')(
   }
 
   & .${switchUnstyledClasses.track} {
-    background: ${theme.palette.mode === 'dark' ? grey[600] : grey[400]};
+    background: ${theme.palette.mode === "dark" ? grey[600] : grey[400]};
     border-radius: 16px;
     display: block;
     height: 100%;
@@ -105,60 +105,69 @@ const Root = styled('span')(
     z-index: 1;
     margin: 0;
   }
-  `,
+  `
 );
 
+export default function Item({ thing, agentInput }) {
+  const { updateThing } = useThing(thing);
+  const { token } = useToken();
 
-export default function Item({thing:inputThing}) {
+  const navigate = useNavigate();
 
-const {thing} = useThing(inputThing);
-const {token} = useToken();
+  const pathname = window.location.pathname.replace(/\//, "");
+  // "/" + "history/" + subject
 
-const navigate = useNavigate();
+  const [text, setText] = useState();
+  const [subject, setSubject] = useState();
+  // > useLink
 
-const pathname = window.location.pathname.replace(/\//, "");
-// "/" + "history/" + subject
+  // A thing can have variables. A datagram cannot.
 
-const [text, setText] = useState();
-const [subject, setSubject] = useState();
-// > useLink
+  const [link, setLink] = useState();
 
-// A thing can have variables. A datagram cannot.
+  const [disabled, setDisabled] = useState();
 
-const [link, setLink] = useState();
+  const { messages, addMessage } = useMessages();
 
-const [disabled, setDisabled] = useState();
+  useEffect(() => {
+    if (thing) {
+      console.log("Item Thing", thing);
 
-const { messages, addMessage } = useMessages();
+      if (thing.subject) {
+        // pre-recognition
+        setSubject(thing.subject);
+        setLink(thing.subject);
 
-useEffect(()=>{
+        setText(replaceUuids(thing.agentInput));
+        //setText("Hello");
 
-if (thing) {
-console.log("Item Thing", thing);
+        //setText(props.thing.subject);
+      }
+    }
+  }, [thing]);
 
-if (thing.subject) {
+  function handleToggleItem(e) {
+    console.log("Item handleToggleItem", e.target.checked);
+    console.log("Item handleToggleItem thing", thing);
 
-// pre-recognition 
-setSubject(thing.subject);
-setLink(thing.subject);
+    // Review this
+    // May not need to use the useThing hook.
 
-setText(replaceUuids(thing.agentInput));
-//setText("Hello");
+    return updateThing({
+      variables: { ...thing.variables, item: e.target.checked },
+    })
+      .then((result) => {
+        addMessage("Item handleToggleItem update thing " + thing.subject);
 
-//setText(props.thing.subject);
-}
+        console.log("Item handleToggleItem updateThing result", result);
+      })
+      .catch((error) => {
+        //setError(error.message);
+        console.log("Item handleToggleItem updateThing error", error);
+      });
 
-
-}
-
-}, [thing]);
-
-
-function handleToggleItem(e) {
-console.log("Item handleToggleItem", e.target.checked);
-
-//    return setThing(thing.uuid, {...thing, variables:{...thing.variables, item:e.target.checked}}, token)
-/*
+    //    return setThing(thing.uuid, {...thing, variables:{...thing.variables, item:e.target.checked}}, token)
+    /*
     return setThing(thing.uuid, thing, token)
       .then((result) => {
         addMessage("Item handleToggleItem set thing " + thing.subject);
@@ -170,24 +179,26 @@ console.log("Item handleToggleItem", e.target.checked);
         console.log("Item handleToggleItem setThing error", error);
       });
 */
-}
+  }
 
-useEffect(()=>{
-console.log("Button pathname", pathname, link);
-if (pathname == null) {return;}
+  useEffect(() => {
+    console.log("Button pathname", pathname, link);
+    if (pathname == null) {
+      return;
+    }
 
-if (pathname === link) {setDisabled(true);}
+    if (pathname === link) {
+      setDisabled(true);
+    }
+  }, [pathname, link]);
 
-}, [pathname,link]);
+  if (thing == null) {
+    return null;
+  }
 
-
-if (thing == null) {return null;}
-
-
-
-return (
-<>
-{/*
+  return (
+    <>
+      {/*
       <div onClick={() => 
 {
 if (disabled) {return;}
@@ -195,24 +206,32 @@ navigate("/"+subject)
 }
 }>
 */}
-{/* Provide the hint of a link in browser. */}
-{/* <a href={subject} disabled="disabled" > */}
+      {/* Provide the hint of a link in browser. */}
+      {/* <a href={subject} disabled="disabled" > */}
 
-
-        <div>
-ITEM TOGGLE <SwitchUnstyled component={Root} onChange={(e)=>handleToggleItem(e)}/>
-ITEM VARIABLE {thing && thing.variables && thing.variables.item && ("ITEM TRUE")}
+      <div>
+        ITEM TOGGLE{" "}
+        <SwitchUnstyled
+          component={Root}
+          onChange={(e) => handleToggleItem(e)}
+        />
 <br />
-
-          <MaterialUiButton component={Link} to={"/"+subject} disabled={disabled}>
-
-     {/*     <MaterialUiButton disabled={disabled} type="submit"> */}
-            {text}
-          </MaterialUiButton>
-        </div>
-{/*</a>*/}
-{/*</div>*/}
-</>
-)
-
+        ITEM VARIABLE
+        {thing && thing.variables && thing.variables.item === true
+          ? "ITEM TRUE"
+          : "ITEM False"}
+        <br />
+        <MaterialUiButton
+          component={Link}
+          to={"/" + subject}
+          disabled={disabled}
+        >
+          {/*     <MaterialUiButton disabled={disabled} type="submit"> */}
+          {text}
+        </MaterialUiButton>
+      </div>
+      {/*</a>*/}
+      {/*</div>*/}
+    </>
+  );
 }

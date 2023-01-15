@@ -12,11 +12,13 @@ import useThing from "../useThing.js";
 
 import useToken from "../useToken.js";
 import useIdentity from "../useIdentity.js";
-import { scoreThings } from "../util/text.js";
+import { scoreThings, sortThingsByScore } from "../util/text.js";
 
 import Button from "./Button.js";
 
-import LazyLoad from 'react-lazyload';
+import LazyLoad from "react-lazyload";
+
+const maximumStackThings = 7;
 
 const style = {
   //minHeight: 200,
@@ -29,9 +31,10 @@ const style = {
 export const ThingContainer = memo(function ThingContainer(props) {
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 
-  const { datagram } = props;
+  const { thing } = props;
   const { username, token, getToken, setToken, deleteToken } = useToken();
   const { identity, setIdentity, deleteIdentity } = useIdentity();
+
   const {
     findThing,
     moveThing,
@@ -40,48 +43,45 @@ export const ThingContainer = memo(function ThingContainer(props) {
     foldThing,
     deleteThing,
     spawnThing,
-  } = useThing(null);
+  } = useThing(thing);
 
-  const [uuid, setUuid] = useState();
-  const [subject, setSubject] = useState();
   const [scoredThings, setScoredThings] = useState();
-const [associations, setAssociations] = useState([]);
+
+  const [filteredScoredThings, setFilteredScoredThings] = useState();
+
+
+// Association things with the current thing.
+  const [associations, setAssociations] = useState();
   const { things, getThings, setThings } = useThings();
 
   useEffect(() => {
     console.log("ThingContainer things", things);
   }, [things]);
 
+
   useEffect(() => {
-    if (datagram == null) {
+    if (thing == null) {
       return;
     }
-    if (datagram.subject) {
-      setSubject(datagram.subject);
+//    if (thing.subject) {
+//      setSubject(thing.subject);
+//    }
+//    if (thing.uuid) {
+//      setUuid(thing.uuid);
+//    }
+
+console.log("ThingContainer thing x", thing);
+
+    if (thing.associations) {
+
+if (Array.isArray(thing.associations) && !thing.associations.includes(thing.uuid)) {
+      const newAssociations = thing.associations.push(thing.uuid);
+      setAssociations(newAssociations);
+}
     }
-    if (datagram.uuid) {
-      setUuid(datagram.uuid);
-    }
+  }, [thing]);
 
-    if (datagram.associations) {
-      setAssociations(datagram.associations);
-    }
 
-  }, [datagram]);
-
-  /*
-  useEffect(() => {
-    console.log("ThingContainer things", things);
-    const reindexedThings = things.map((image, i) => {
-      return { ...image, index: i };
-    });
-    props.onCollectionChange(reindexedThings);
-  }, [things, setThings]);
-*/
-
-  useEffect(() => {
-    console.log("ThingContainer things setThings change");
-  }, [things]);
   const deleteThing3 = (e) => {
     console.log("ThingContainer e", e);
     deleteThing(e);
@@ -125,71 +125,100 @@ return 6;
     if (things == null) {
       return;
     }
-    //setScoredThings(things);
 
-    //return;
+    if (Array.isArray(things) && things.length === 0) {return;}
 
-    console.log("ThingContainer useEffect", things && things.length, subject);
+console.log("ThingContainer scoredThings prescore", thing, thing.subject);
 
-    //if (props.datagram == null) {return;}
-    //if (props.datagram.subject == null) {return;}
+    const scoredThings = scoreThings(things, thing.subject);
 
-    const scoredThings = scoreThings(things, subject);
 
-    //console.log("ThingContainer scoredThings", scoredThings);
+
     setScoredThings(scoredThings);
-  }, [things, subject]);
+
+  }, [things, thing]);
 
   useEffect(() => {
-    console.log("ThingContainer scoredThings", scoredThings);
+//    console.log("ThingContainer subject", subject);
+
+console.log("ThingContainer scoredThings", scoredThings);
+    if (scoredThings == null) {
+      return;
+    }
+
+//    console.log("ThingContainer subject", subject);
+    const f = scoredThings
+      .filter((t) => {
+console.log("ThingContainer t", t);
+if (t.from === 'stack') {return true;}
+
+        if (thing.subject == null) {
+          return true;
+        }
+
+        if (thing.subject === "things") {
+          return true;
+        }
+
+        return t.score > 0;
+        //return t.score > 5;
+      })
+      .slice(0, maximumStackThings);
+
+    const s = sortThingsByScore(f);
+
+// Make sure all associated items are always shown in collection
+var a = s;
+if (Array.isArray(s) && Array.isArray(associations)) {
+    a = [...s, ...associations];
+}
+    setFilteredScoredThings(a);
+//setFilteredScoredThings(scoredThings);
   }, [scoredThings]);
 
-  const [, drop] = useDrop(() => ({ accept: ItemTypes.CARD }));
 
-  //if (!token) {return (<>NO TOKEN</>);}
+useEffect(() =>{
+
+console.log("ThingContainer filteredScoredThings", filteredScoredThings);
+
+}, [filteredScoredThings])
+
+  const [, drop] = useDrop(() => ({ accept: ItemTypes.CARD }));
 
   return (
     <>
       <div ref={drop} style={style}>
-{/* {datagram && datagram.associations && Array.isArray(datagram.associations) && datagram.associations.join(' ')} */}
-        <Button
-//          thing={{ subject: ("thing/"+ (uuid ==null ? "" : uuid)), agentInput: "Add Thing" }}
-          thing={{ subject: "add-thing", agentInput: "Add Thing" }}
-        />
+        {/* {datagram && datagram.associations && Array.isArray(datagram.associations) && datagram.associations.join(' ')} */}
+
+{thing && (        <Button
+          //          thing={{ subject: ("thing/"+ (uuid ==null ? "" : uuid)), agentInput: "Add Thing" }}
+//          thing={{ subject: "add-thing", agentInput: "Add Thing" }}
+          thing={{...thing, subject: thing.uuid, agentInput: "Add Thing" }}
+
+        />)}
         <Grid container spacing={3} direction="row">
-          {scoredThings && (
+          {filteredScoredThings && (
+            <>Showing {filteredScoredThings.length} of {things.length} known Things.<br/></>
+          )}
+          {filteredScoredThings && (
             <>
-              {scoredThings
-                .filter((t) => {
-                  //return true;
-                  if (subject == null) {
-                    return true;
-                  }
-
-                  if (subject === 'things') {
-                    return true;
-                  }
-
-                  return t.score > 0;
-                  return t.score > 5;
-                })
-                .map((thing) => (
-                  <Card
-                    key={"card_" + thing.uuid}
-                    id={`${thing.index}`}
-                    datagram={datagram}
-                    card={{...thing, associations:associations}}
-                    text={thing && thing.text}
-                    flipCard={flipThing}
-                    openCard={openThing}
-                    foldCard={foldThing}
-                    moveCard={moveThing}
-                    deleteCard={deleteThing2}
-                    spawnCard={spawnThing}
-                    findCard={findThing}
-                    token={token}
-                  />
-                ))}
+              {filteredScoredThings.map((t) => (
+                <Card
+                  key={"card_" + t.uuid}
+                  id={`${t.index}`}
+                  //datagram={datagram}
+                  card={{ ...t, associations: associations }}
+                  text={t && thing.text}
+                  flipCard={flipThing}
+                  openCard={openThing}
+                  foldCard={foldThing}
+                  moveCard={moveThing}
+                  deleteCard={deleteThing2}
+                  spawnCard={spawnThing}
+                  findCard={findThing}
+                  token={token}
+                />
+              ))}
             </>
           )}
         </Grid>

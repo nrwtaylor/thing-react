@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-
 import "../index.css";
 import {
   Typography,
@@ -46,6 +45,9 @@ import useSnapshot from "../useSnapshot";
 const { REACT_APP_SNAPSHOT } = process.env;
 
 
+// refactor as 
+// Snapshot(thing, agentInput)
+
 function Snapshot(props) {
   const { datagram } = props;
   const { to } = datagram;
@@ -61,8 +63,8 @@ function Snapshot(props) {
   const defaultToSnapshot = REACT_APP_SNAPSHOT;
   const [toSnapshot, setToSnapshot] = useState(defaultToSnapshot);
 
-//  const toSnapshot = "http://192.168.10.10/snapshot.json";
-  const { snapshot, flag, snapshotGetTime } = useSnapshot(toSnapshot);
+  //  const toSnapshot = "http://192.168.10.10/snapshot.json";
+  const { snapshot, flag, snapshotRunTime } = useSnapshot(toSnapshot);
 
   const [data, setData] = useState({
     thing: { uuid: "X" },
@@ -71,11 +73,10 @@ function Snapshot(props) {
 
   const [open, setOpen] = useState(false);
 
-  //  const [snapshotGetTime, setSnapshotGetTime] = useState();
   const replyAgentDialog = (thing) => {
     setOpen(true);
   };
-/*
+  /*
   const config = {
     delta: 10, // min distance(px) before a swipe starts. *See Notes*
     preventScrollOnSwipe: false, // prevents scroll during swipe (*See Details*)
@@ -105,9 +106,9 @@ function Snapshot(props) {
     return ts.toISOString();
   }
 
-useEffect(()=>{
-console.log("Snapshot data", data);
-},[data]);
+  useEffect(() => {
+    console.log("Snapshot data", data);
+  }, [data]);
 
   function fromName() {
     if (datagram === undefined) {
@@ -133,7 +134,7 @@ console.log("Snapshot data", data);
   const [tracePeriod, setTracePeriod] = useState();
 
   function handleChangeStream(c) {
-console.log("Snapshot handleChangeStream c",c);
+    console.log("Snapshot handleChangeStream c", c);
   }
 
   function callBack() {
@@ -144,7 +145,7 @@ console.log("Snapshot handleChangeStream c",c);
     <Forget uuid={datagram && datagram.uuid} callBack={callBack} />
   );
 
-//if (true) {
+  //if (true) {
   if (false) {
     return (
       <>
@@ -153,7 +154,7 @@ console.log("Snapshot handleChangeStream c",c);
         <div>
           FLAG {flag} COLOUR
           <br />
-          GET TIME {snapshotGetTime}ms {Math.round(1000 / snapshotGetTime, 1)}Hz
+          GET TIME {snapshotRunTime}ms {Math.round(1000 / snapshotRunTime, 1)}Hz
           <br />
           {data && data.ping && (
             <>
@@ -161,9 +162,7 @@ console.log("Snapshot handleChangeStream c",c);
               <br />
             </>
           )}
-
           {data && data.ping && <Ping ping={data.ping} />}
-
           {data && data.transducers && (
             <>
               {Object.keys(data.transducers).map((transducer) => {
@@ -181,7 +180,9 @@ console.log("Snapshot handleChangeStream c",c);
                         data.transducers[transducer].amount,
                     }}
                     transducer={data.transducers[transducer]}
-                    onChangeStream={ (c)=>{handleChangeStream(c)}}
+                    onChangeStream={(c) => {
+                      handleChangeStream(c);
+                    }}
                   />
                 );
               })}
@@ -199,48 +200,33 @@ console.log("Snapshot handleChangeStream c",c);
       <div>
         FLAG {flag} COLOUR
         <br />
-        GET TIME {snapshotGetTime}ms {Math.round(1000 / snapshotGetTime, 1)}Hz
+        GET TIME {snapshotRunTime}ms {Math.round(1000 / snapshotRunTime, 1)}Hz
         <br />
+        {data && data.ping && <Ping ping={data.ping} />}
+        {data && (
+          <>
+            SNAPSHOT TRANSDUCER
+            <br />
+            {Object.keys(data).map((transducer) => {
+              console.log("Snapshot transducer", transducer);
+              if (!["temperature", "humidity"].includes(transducer)) {
+                return;
+              }
 
-          {data && data.ping && <Ping ping={data.ping} />}
-
-
-
-{data && (
-
-
-            <>
-SNAPSHOT TRANSDUCER
-<br />
-              {Object.keys(data).map((transducer) => {
-                console.log("Snapshot transducer", transducer);
-if (!(['temperature','humidity']).includes(transducer)) {return;} 
-
-                return (
-                  <Stream
-                    key={transducer}
-                    hide={true}
-                    quantity={{
-                      units: "A",
-                      amount:
-                        data &&
-                        data[transducer]
-                    }}
-                    transducer={data[transducer]}
-                  />
-                );
-
-             })}
-         </>
-
-
-
-)}
-
-
-
-
-
+              return (
+                <Stream
+                  key={transducer}
+                  hide={true}
+                  quantity={{
+                    units: "A",
+                    amount: data && data[transducer],
+                  }}
+                  transducer={data[transducer]}
+                />
+              );
+            })}
+          </>
+        )}
         {data && data.transducers && (
           <>
             {Object.keys(data.transducers).map((transducer) => {
