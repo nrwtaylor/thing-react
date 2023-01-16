@@ -1,4 +1,7 @@
+import {zuluTimeDifferenceMilliseconds} from "./time.js";
+
 var slugify = require("slugify");
+
 
 export function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -110,6 +113,20 @@ export function sortThingsByScore(things) {
   //if (items.length === 0) {return [];}
   const sortedThings = things.sort(function (a, b) {
     return b.score - a.score;
+  });
+
+  return sortedThings;
+}
+
+
+// Sort high to low score
+export function sortThingsByAge(things, order) {
+  //if (items === undefined) {return [];}
+  //if (items.length === 0) {return [];}
+  const sortedThings = things.sort(function (a, b) {
+console.log("text xkcd", a);
+if (order === 'ascending') {return zuluTimeDifferenceMilliseconds(a.createdAt , b.createdAt);}
+    return zuluTimeDifferenceMilliseconds(b.createdAt, a.createdAt);
   });
 
   return sortedThings;

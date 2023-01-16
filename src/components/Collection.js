@@ -44,8 +44,12 @@ function Collection(props) {
 
   return (
     <>
-      Similar Things THING ASSOCIATIONS
+      Similar Things
+      <br />
+      THING UUID{' '}
       {thing && thing.uuid}
+      <br />
+      THING ASSOCIATIONS{' '}
       <br />
       {thing &&
         thing.associations &&

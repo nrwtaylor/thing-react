@@ -108,20 +108,12 @@ const Root = styled("span")(
   `
 );
 
-export default function Item({ thing, agentInput }) {
-  const { updateThing } = useThing(thing);
+export default function Item({ thing, agentInput, updateThing }) {
+//  const { updateThing } = useThing(thing);
   const { token } = useToken();
-
-  const navigate = useNavigate();
-
-  const pathname = window.location.pathname.replace(/\//, "");
-  // "/" + "history/" + subject
 
   const [text, setText] = useState();
   const [subject, setSubject] = useState();
-  // > useLink
-
-  // A thing can have variables. A datagram cannot.
 
   const [link, setLink] = useState();
 
@@ -136,12 +128,8 @@ export default function Item({ thing, agentInput }) {
       if (thing.subject) {
         // pre-recognition
         setSubject(thing.subject);
-        setLink(thing.subject);
 
         setText(replaceUuids(thing.agentInput));
-        //setText("Hello");
-
-        //setText(props.thing.subject);
       }
     }
   }, [thing]);
@@ -154,7 +142,7 @@ export default function Item({ thing, agentInput }) {
     // May not need to use the useThing hook.
 
     return updateThing({
-      variables: { ...thing.variables, item: e.target.checked },
+      variables: {item: e.target.checked },
     })
       .then((result) => {
         addMessage("Item handleToggleItem update thing " + thing.subject);
@@ -180,17 +168,6 @@ export default function Item({ thing, agentInput }) {
       });
 */
   }
-
-  useEffect(() => {
-    console.log("Button pathname", pathname, link);
-    if (pathname == null) {
-      return;
-    }
-
-    if (pathname === link) {
-      setDisabled(true);
-    }
-  }, [pathname, link]);
 
   if (thing == null) {
     return null;

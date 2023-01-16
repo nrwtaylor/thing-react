@@ -105,6 +105,9 @@ const x = getSlug(datagram.subject);
 const subjects = things.map((t)=>{return getSlug(t.subject);});
 if (subjects.includes(x)) {return;}
 
+if (datagram.to === 'stack') {return;}
+
+
 //    return;
     // No uuid provided. SO create thing.
 setFlag("red");
@@ -311,6 +314,8 @@ if (hasDatagramChanged === false) {return;}
     },
     [things]
   );
+
+
 
   const moveThing = useCallback(
     (id, atIndex) => {

@@ -39,8 +39,8 @@ export default function ThingPage(props) {
   const { identity, setIdentity, deleteIdentity } = useIdentity();
   const { input, setInput, deleteInput } = useInput();
 
-  //  const { thing, openThing, getThing, setThing } = useThing();
-  const [thing, setThing] = useState();
+    const { thing, setThing } = useThing();
+  //const [thing, setThing] = useState();
   const { things, getThings } = useThings();
 
   const createdAt = Date.now();

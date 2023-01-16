@@ -248,7 +248,7 @@ console.log("Thing thing", thing);
   // This hook will get or create a Thing, given as minimum a datagram.
   // When provided with uuid, this hook will look for that Thing, returning false if not found.
 
-  const { thing, spawnThing, flag:flagThing, flipThing, forgetThing, getThing, setThing } = useThing(datagram);
+  const { thing, spawnThing, flag:flagThing, flipThing, forgetThing, getThing, setThing, updateThing } = useThing(datagram);
 
   // This needs to be considered as to thingReport, datagram and data.
 
@@ -738,6 +738,7 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
   }, [error]);
 
   const handleSpawnThing = (e) => {
+    console.log("Thing handleSpawnThing e", e);
     spawnThing();
 
     return;
@@ -890,7 +891,7 @@ ASSOCIATIONS<br />
 {datagram && datagram.associations && Array.isArray(datagram.associations) && datagram.associations.includes(uuid) &&(<>ASSOCIATED</>)}
 <br />
 {/*<Item thing={{...datagram, uuid:uuid}} />*/}
-<Item thing={thing} agentInput={null} />
+<Item thing={thing} agentInput={null} updateThing={updateThing} />
 
         {datagram && datagram.score}
         {token && token.message}
