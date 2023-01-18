@@ -26,6 +26,7 @@ import {
 } from "@material-ui/icons";
 
 import Forget from "../components/Forget.js";
+import Agent from "../components/Agent.js";
 import DynamicComponent from "../components/DynamicComponent.js";
 
 const recognizedSlugs = [
@@ -46,10 +47,6 @@ const recognizedSlugs = [
 ];
 
 function slugAgent(slug) {
-
-if (slug == null) {return false;}
-
-
   const parts = slug.split("-");
 
   const capitalizedParts = parts.map((part) => {
@@ -60,15 +57,13 @@ if (slug == null) {return false;}
   return capitalizedParts.join("");
 }
 
-function Agent({ thing, agentInput }) {
+function Agents({ thing, agentInput }) {
   //const {datagram} = props;
 
   //  const user_name = props.user_name; // TODO
   const agent_input = agentInput; // remove
 
-  //const [agent, setAgent] = useState();
-
-  const agent = slugAgent(agentInput.agent);
+  const [agents, setAgents] = useState();
 
   const [flag, setFlag] = useState();
   //const [requestedAt, setRequestedAt] = useState();
@@ -89,11 +84,6 @@ function Agent({ thing, agentInput }) {
   }, [getAgent]); // eslint-disable-line react-hooks/exhaustive-deps
 */
   //  const [open, setOpen] = useState(false);
-useEffect(()=>{
-
-console.log("Agent agent", agent);
-
-}, [agent]);
 
   const replyAgentDialog = (thing) => {
     //    setOpen(true);
@@ -115,35 +105,58 @@ console.log("Agent agent", agent);
 
     return thing.from;
   }
-/*
+
   useEffect(() => {
     if (thing == null) {
       return;
     }
-
-    console.log("Agent thing", thing);
+    console.log("Agents thing", thing);
+console.log("Agents test", agentInput, recognizedSlugs);
     if (thing.subject) {
-      recognizedSlugs.every((recognizedSlug) => {
-        console.log("Agent key value", recognizedSlug);
-        console.log("xxx", thing.subject, recognizedSlug);
-        if (thing.subject.toLowerCase().indexOf(recognizedSlug) !== -1) {
-          setAgent(slugAgent(recognizedSlug));
-          return false;
-        }
+      const matchedSlugs = recognizedSlugs.filter((recognizedSlug) => {
+console.log("merp", recognizedSlug, agentInput[recognizedSlug], agentInput);
 
-        return true;
+if (recognizedSlug in agentInput && agentInput[recognizedSlug] === false) {
+console.log("merp");
+return false;
+}
+
+
+        if (thing.subject.toLowerCase().indexOf(recognizedSlug) !== -1) {
+          return true;
+        }
+        return false;
       });
 
+      console.log("Agents thing matchedSlugs", matchedSlugs);
+
+      setAgents(matchedSlugs);
+
+      {
+        /*
+     if (datagram.subject.toLowerCase().indexOf("history") !== -1) {
+
+setAgent(recognizedAgents['history']);
+
+     }
+*/
+      }
     }
   }, [thing]);
-*/
+/*
+useEffect(()=>{
 
+
+console.log("Agents agentInput xkcd", agentInput);
+
+},[agentInput]);
+*/
   useEffect(() => {
-    console.log("Agent agent", agent);
-  }, [agent]);
+    console.log("Agents agents", agents);
+  }, [agents]);
 
   // Used??
-  const editAgent = () => {
+  const editAgents = () => {
     const datagram = {
       comment: reply,
       to: "merp",
@@ -206,24 +219,37 @@ console.log("Agent agent", agent);
 
   return (
     <>
-      <div>AGENT</div>
+      <div>AGENTS</div>
       {thing && thing.nomFrom}
       {thing && thing.from}
 
-      {thing && agent && (
-        <DynamicComponent
-          is={agent}
-          channel={"image"}
-          user={null}
-          //thing={data.thing}
+      {thing &&
+        agents &&
+        agents.map((agent) => {
+          return (
+            <>
+              AGENT {agent}
+              <Agent
+                thing={thing}
+                agentInput={{ ...agentInput, agent: agent }}
+              />
+              <br />
 
-thing={thing}
-agentInput={agentInput}
-
-          datagram={thing}
-          agent_input={agentInput}
-        />
-      )}
+{/*
+              DYNAMIC COMPONENT xx
+              <br />
+              <DynamicComponent
+                is={agent}
+                channel={"image"}
+                user={null}
+                //thing={data.thing}
+                datagram={thing}
+                agent_input={agentInput}
+              />
+*/}
+            </>
+          );
+        })}
 
       <TextField
         multiline
@@ -241,7 +267,7 @@ agentInput={agentInput}
 
   return (
     <>
-      <div>AGENT</div>
+      <div>AGENTS</div>
 
       <DynamicComponent
         is={agent_input}
@@ -295,11 +321,11 @@ agentInput={agentInput}
         value={reply}
         onChange={(event) => setReply(event.target.value)}
       />
-      <Button onClick={editAgent} color="primary">
+      <Button onClick={editAgents} color="primary">
         Save
       </Button>
     </>
   );
 }
 
-export default Agent;
+export default Agents;

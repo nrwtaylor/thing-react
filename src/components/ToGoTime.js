@@ -10,13 +10,14 @@ import { humanTime, humanAge, humanRuntime } from "./../util/time.js";
 export default function ToGoTime({ toGoTime, onRefresh }) {
 
   useEffect(() => {
-    if (!toGoTime) {
+    if (toGoTime == null) {
       return;
     }
 
-    if (toGoTime === null) {
-      return;
-    }
+console.log("ToGoTime toGoTime", toGoTime);
+
+if (toGoTime < 0) {onRefresh();}
+
   }, [toGoTime]);
 
   return (

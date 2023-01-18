@@ -24,7 +24,7 @@ export default function Token({ token, setToken, setIdentity }) {
   const updateInterval = 1000;
   // Display token.
 
-  const { age, deleteToken } = useToken();
+  const { age, isValidToken, deleteToken } = useToken();
 
   useEffect(() => {
     if (!token) {

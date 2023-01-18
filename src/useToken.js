@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import jwt_decode from "jwt-decode";
 
 export default function useToken() {
-
   const [token, setToken] = useState();
   const [username, setUsername] = useState();
 
@@ -21,7 +20,7 @@ export default function useToken() {
       return;
     }
 
-console.log("useToken token", token);
+    console.log("useToken token", token);
 
     const t = jwt_decode(token);
     //    console.log("useToken readToken t", t);
@@ -55,8 +54,8 @@ console.log("useToken token", token);
       console.log("useToken Error Problem with localStorage token", e);
       return null;
     }
-//console.log("useToken getToken userToken", tokenString, userToken);
-//    validToken(userToken.accessToken);
+    //console.log("useToken getToken userToken", tokenString, userToken);
+    //    validToken(userToken.accessToken);
 
     if (userToken && userToken.accessToken) {
       setToken(userToken.accessToken);
@@ -68,7 +67,7 @@ console.log("useToken token", token);
   };
   useEffect(() => {
     console.log("useToken token", token);
-validToken(token);
+    validToken(token);
     //    if (props.token) {props.token = token;}
   }, [token]);
 
@@ -76,7 +75,7 @@ validToken(token);
     updateAge();
 
     const interval = setInterval(() => {
-//      console.log("Token tick");
+      //      console.log("Token tick");
       //setCurrentTime(Date.now());
       updateAge(expiresAt);
     }, 500); // 20 Hz was 200.

@@ -47,9 +47,21 @@ export default function Login({ datagram }) {
 
   const [message, setMessage] = useState();
 
-  const { token, setToken } = useToken();
+  const { token, isValidToken, setToken } = useToken();
   const { identity, setIdentity, deleteIdentity } = useIdentity();
   //const [ error, setError ] = useState();
+
+// FRAMING Needs to be minimal, 
+
+const [login, setLogin] = useState();
+
+useEffect(()=>{
+if (isValidToken == null) {return;}
+if (isValidToken) {setLogin(false); return;}
+if (isValidToken === false) {setLogin(true);return;}
+
+}, [isValidToken]);
+
 
   useEffect(() => {
     console.log("Login things", things);
@@ -90,6 +102,8 @@ export default function Login({ datagram }) {
 
       setMessage("Got token message. " + t.message);
     } else {
+
+setLogin("yes");
       // Change window location here... route.
       console.log("Login change window location");
       //window.location.href = "http://localhost:3000/" + "thing";
@@ -103,6 +117,7 @@ export default function Login({ datagram }) {
           to: "localhost",
           from: "stack",
           subject: "Log Out",
+          priority: 'welfare',
           createdAt: Date.now(),
           uuid: uuidv4(),
           input: "Logout",
@@ -112,6 +127,7 @@ export default function Login({ datagram }) {
           to: "localhost",
           from: "stack",
           subject: "Here is your token",
+          priority: 'urgent',
           createdAt: Date.now(),
           uuid: uuidv4(),
           input: "Token",
@@ -176,7 +192,7 @@ export default function Login({ datagram }) {
 
   return (
     <div className="login-wrapper">
-      <h1>Please Log In</h1>
+      <h1>{login ? "Please Log In" : "Logged In"}</h1>
       <form onSubmit={handleSubmit}>
         <label>
           <p>Username</p>

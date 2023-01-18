@@ -63,9 +63,11 @@ export default function useThingReport(input, inputThingReportPollInterval) {
   useEffect(() => {
     if (thingReport == null) {
       console.log("useThingReport thingReport undefined");
-
       return;
     }
+
+console.log("useThingReport thingReport", thingReport);
+
     if (thingReportResults == null) {
       console.log("useThingReport thingReportResults undefined");
       setThingReportResults([{ ...thingReport, thingReportAt: zuluTime() }]);
@@ -93,12 +95,8 @@ export default function useThingReport(input, inputThingReportPollInterval) {
     console.log("sequentialErrorCount", sequentialErrorCount);
   }, [sequentialErrorCount]);
 
-  function refreshThingReport() {
-    //console.log(input
-    //    getThingReport();
-  }
-
   function getThingReport() {
+    console.log("useThingReport getThingReport");
     const startTime = new Date();
     if (flag === "red") {
       return;
@@ -161,12 +159,12 @@ export default function useThingReport(input, inputThingReportPollInterval) {
   };
 
   return {
-    deleteThingReport: deleteThingReport,
-    setThingReport: saveThingReport,
+//    deleteThingReport: deleteThingReport,
+//    setThingReport: saveThingReport,
+    getThingReport,
     thingReport,
     flag,
     thingReportGetTime,
     thingReportInterval,
-    refreshThingReport,
   };
 }

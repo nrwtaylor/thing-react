@@ -7,7 +7,7 @@ import {
   makeObservable,
 } from "./util/database.js";
 
-import {getSlug} from "./util/text.js";
+import { getSlug } from "./util/text.js";
 
 import { v4 as uuidv4 } from "uuid";
 import useToken from "./useToken.js";
@@ -39,17 +39,17 @@ export default function useThing(datagram) {
   const [flag, setFlag] = useState();
 
   useEffect(() => {
+    if (things == null) {return;}
     console.log("useThing things", things);
   }, [things]);
 
-//  useEffect(() =>{
-//console.log("useThing datagram", datagram);
-//getThing();
+  //  useEffect(() =>{
+  //console.log("useThing datagram", datagram);
+  //getThing();
 
-//  }, [datagram]);
+  //  }, [datagram]);
 
   const getThing = () => {
-
     if (token == null) {
       return;
     }
@@ -99,44 +99,50 @@ export default function useThing(datagram) {
 
     console.log("useThing createThing event");
 
-// Don't create duplicates
+    // Don't create duplicates
 
-const x = getSlug(datagram.subject);
-const subjects = things.map((t)=>{return getSlug(t.subject);});
-if (subjects.includes(x)) {return;}
+    const x = getSlug(datagram.subject);
+    const subjects = things.map((t) => {
+      return getSlug(t.subject);
+    });
 
-if (datagram.to === 'stack') {return;}
+    console.log("useThing createThing subjects", subjects);
 
+    if (subjects.includes(x)) {
+      return;
+    }
 
-//    return;
+    if (datagram.to === "stack") {
+      return;
+    }
+
+    //    return;
     // No uuid provided. SO create thing.
-setFlag("red");
+    setFlag("red");
     const doNotWait = createThingy(webPrefix, datagram, token)
       .then((result) => {
+        setFlag("green");
+        console.log("useThing createThingy datagram result", datagram, result);
 
-setFlag("green");
-        console.log("useThing createThingy result", result);
+        const newThing = datagram;
+        newThing.associations = {
+          ...newThing.associations,
+          uuid: result.uuid,
+        };
 
-          const newThing = datagram;
-          newThing.associations = {
-            ...newThing.associations,
-            uuid: result.uuid,
-          };
-
-setThing(newThing);
-
-          setThings(
-            update(things, {
-              $splice: [[0, 0, newThing]],
-            })
-          );
-
+        setThing(newThing);
+        console.log("useThing createThingy setThing newThing");
+        setThings(
+          update(things, {
+            $splice: [[0, 0, newThing]],
+          })
+        );
+        console.log("useThing createThingy setThings");
         //getThings();
         //          props.onCollectionChange(things);
-
       })
       .catch((error) => {
-setFlag("yellow");
+        setFlag("yellow");
         console.log("spawnThing createThing error", error);
       });
   };
@@ -292,7 +298,9 @@ var result = deepDiffMapper.map({
       hasDatagramChanged = true;
     }
 
-if (hasDatagramChanged === false) {return;}
+    if (hasDatagramChanged === false) {
+      return;
+    }
 
     console.log(
       "useThing getThing datagram changed",
@@ -314,8 +322,6 @@ if (hasDatagramChanged === false) {return;}
     },
     [things]
   );
-
-
 
   const moveThing = useCallback(
     (id, atIndex) => {
@@ -399,6 +405,7 @@ if (hasDatagramChanged === false) {return;}
   );
 
   useEffect(() => {
+    getThings();
     return userThing.subscribe(setThing);
   }, []);
 
@@ -410,23 +417,22 @@ if (hasDatagramChanged === false) {return;}
 
   // Expect part of a thing.
   const updateThing = (t) => {
-
-//  const updateThing = useCallback(
-//    (id, atIndex) => {
-      //console.log("deleteCard id", id);
-      //console.log("deleteCard atIndex", atIndex);
-//      const { thing, index } = findThing(id);
+    //  const updateThing = useCallback(
+    //    (id, atIndex) => {
+    //console.log("deleteCard id", id);
+    //console.log("deleteCard atIndex", atIndex);
+    //      const { thing, index } = findThing(id);
 
     console.log("useThing updateThing t", t);
     console.log("useThing updatething thing", thing);
     const newThing = { ...thing, ...t };
-console.log("useThing updateThing request saveThing", newThing);
+    console.log("useThing updateThing request saveThing", newThing);
     saveThing(newThing);
 
     return Promise.resolve(true);
   };
 
-const saveThing = (t) => {
+  const saveThing = (t) => {
     console.log("useThing saveThing userThing", t);
     setThing(t);
     setThingy(t.uuid, t, token)
@@ -511,17 +517,15 @@ const saveThing = (t) => {
     [things]
   );
 
-function testThing() {
-
-console.log("useThing testThing");
-
-}
+  function testThing() {
+    console.log("useThing testThing");
+  }
 
   const spawnThing = useCallback(
     (id, atIndex) => {
       //console.log("deleteCard id", id);
       //console.log("deleteCard atIndex", atIndex);
-      const { thing, index } = findThing(id);
+      //const { thing, index } = findThing(id);
       const newThing = { ...thing };
       const uuid = uuidv4();
       newThing.uuid = uuid;
@@ -541,7 +545,7 @@ console.log("useThing testThing");
 
           setThings(
             update(things, {
-              $splice: [[index, 0, newThing]],
+              $splice: [[0, 0, newThing]],
             })
           );
           //getThings();
@@ -584,7 +588,7 @@ console.log("useThing testThing");
     //    saveThing:saveThing,
     updateThing: updateThing,
     setThing: saveThing,
-testThing:testThing,
+    testThing: testThing,
     setThing: setThing,
     getThing: getThing,
     findThing: findThing,

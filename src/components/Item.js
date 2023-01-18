@@ -154,19 +154,6 @@ export default function Item({ thing, agentInput, updateThing }) {
         console.log("Item handleToggleItem updateThing error", error);
       });
 
-    //    return setThing(thing.uuid, {...thing, variables:{...thing.variables, item:e.target.checked}}, token)
-    /*
-    return setThing(thing.uuid, thing, token)
-      .then((result) => {
-        addMessage("Item handleToggleItem set thing " + thing.subject);
-
-        console.log("Item handleToggleItem setThing result", result);
-      })
-      .catch((error) => {
-        //setError(error.message);
-        console.log("Item handleToggleItem setThing error", error);
-      });
-*/
   }
 
   if (thing == null) {
@@ -187,16 +174,14 @@ navigate("/"+subject)
       {/* <a href={subject} disabled="disabled" > */}
 
       <div>
-        ITEM TOGGLE{" "}
         <SwitchUnstyled
           component={Root}
           onChange={(e) => handleToggleItem(e)}
         />
 <br />
-        ITEM VARIABLE
         {thing && thing.variables && thing.variables.item === true
           ? "ITEM TRUE"
-          : "ITEM False"}
+          : "NOT ITEM"}
         <br />
         <MaterialUiButton
           component={Link}

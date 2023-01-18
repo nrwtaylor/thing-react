@@ -61,6 +61,8 @@ import { useSwipeable } from "react-swipeable";
 function History(props) {
   const navigate = useNavigate();
 
+  const {agentInput} = props;
+
   const { datagram } = props;
 
   const { showLive } = props;
@@ -130,9 +132,39 @@ console.log("History datagram", datagram);
 
   const user_name = props.user_name; // TODO
   const agent_input = props.agent_input;
-  const webPrefix =
-    agent_input === undefined ? process.env.REACT_APP_WEB_PREFIX : agent_input;
+//  const webPrefix =
+//    agentInput.web && agentInput.web.webPrefix == null ? process.env.REACT_APP_WEB_PREFIX : agentInput.web.webPrefix;
 
+
+const webPrefix = process.env.REACT_APP_WEB_PREFIX;
+
+//const [webPrefix, setWebPrefix] = useState();
+
+
+/*
+  useEffect(() =>{
+if (agentInput == null) {return;}
+
+setWebPrefix(process.env.REACT_APP_WEB_PREFIX);
+return;
+
+    if (agentInput.web == null || agentInput.web.webPrefix == null) {
+setWebPrefix(process.env.REACT_APP_WEB_PREFIX);
+return;
+    }
+
+setWebPrefix(agentInput.web.webPrefix);
+
+
+  }, [agentInput]);
+
+
+useEffect(()=>{
+
+console.log("History webPrefix", webPrefix);
+
+}, [webPrefix]);
+*/
   //  const webPrefix =
   //    process.env.REACT_APP_WEB_PREFIX;
 
@@ -437,13 +469,15 @@ console.log("History datagram", datagram);
         {subject}
       </Button>
       <br />
-      {false && (
+      {true && (
         <>
           REF {ref}
           <br />
           HISTORYREF {historyRef}
           <br />
           HISTORYTO {historyTo}
+          <br />
+          SNAPSHOTTO {snapshotTo}
           <br />
         </>
       )}

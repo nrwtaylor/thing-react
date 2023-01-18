@@ -8,10 +8,6 @@ import Snapshot from "../components/Snapshot.js";
 import TextSnapshot from "../components/TextSnapshot.js";
 
 import Datagram from "../components/Datagram.js";
-//import Barometer from "../components/Barometer.js";
-//import MotionReference from "../components/MotionReference.js";
-
-//import GlobalPositioningSystem from "../components/GlobalPositioningSystem.js";
 
 import ToGoTime from "../components/ToGoTime.js";
 import Poll from "../components/Poll.js";
@@ -20,19 +16,15 @@ import Content from "../components/Content.js";
 import Message from "../components/Message.js";
 import Text from "../components/Text.js";
 import History from "../components/History.js";
-//import Power from "../components/Power.js";
+
 import Nuuid from "../components/Nuuid.js";
 import Item from "../components/Item.js";
 import Messages from "../components/Messages.js";
 import Collection from "../components/Collection.js";
+
 // refactor to move mui button into Button
 import ThingButton from "../components/Button.js";
 
-//import Weather from "../components/Weather.js";
-
-//import TemperatureHumidity from "../components/TemperatureHumidity.js";
-
-//import InertialReference from "../components/InertialReference.js";
 
 import Error from "../components/Error.js";
 
@@ -51,6 +43,9 @@ import { isText } from "../util/text.js";
 
 import Associations from "../components/Associations.js";
 import DynamicComponent from "../components/DynamicComponent.js";
+
+import Agents from "../components/Agents.js";
+
 import { v4 as uuidv4, uuid as uuidLibrary } from "uuid";
 import {
   //  getThingReport,
@@ -89,6 +84,7 @@ import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 
 import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
+
 
 import LazyLoad from "react-lazyload";
 
@@ -202,8 +198,14 @@ function Thing(props) {
   //},[defaultWebPrefix]);
 
 useEffect(()=>{
-
+if (thing == null) {return;}
 console.log("Thing thing", thing);
+
+if (thing.uuid) {
+
+console.log("Thing thing uuid", thing.uuid);
+
+}
 
 }, [thing]);
 
@@ -238,12 +240,6 @@ console.log("Thing thing", thing);
 
   //  const webPrefix = datagram.webPrefix ? datagram.webPrefix : "https://stackr.ca/";
   const [url, setUrl] = useState();
-  //const u = webPrefix+ getSlug(datagram.subject) + ".json";
-
-  //  const { thingReport: data, getThingReport } = useThingReport(
-  //    webPrefix + datagram.subject + ".json",
-  //    10000
-  //  );
 
   // This hook will get or create a Thing, given as minimum a datagram.
   // When provided with uuid, this hook will look for that Thing, returning false if not found.
@@ -282,7 +278,7 @@ console.log("Thing thing", thing);
   const currentAt = Date.now();
 
   const defaultPollInterval =
-    datagram && datagram.pollInterval ? datagram.pollInterval : 2 * 60 * 1000; //ms
+    datagram && datagram.pollInterval ? datagram.pollInterval : 0.5 * 60 * 1000; //ms
   const defaultTickInterval = 25; //ms
   //  const minimumPollInterval = 2 * 60 * 1000; //ms
 
@@ -320,21 +316,6 @@ console.log("Thing datagram pollInterval", datagram.pollInterval);
     datagram.pollInterval = d;
     setDatagram({ ...datagram });
   }
-  /*
-  function setSubject(d) {
-    datagram.subject = d;
-    setDatagram({ ...datagram });
-    //refreshThingReport();
-  }
-*/
-  function deprecateSetDatagram(d) {
-    if (!d) return;
-
-    console.log("Thing setDatagram d", d);
-    if (!d.pollInterval) return;
-
-    //setPollInterval(d.pollInterval);
-  }
 
   useEffect(() => {
     console.log(
@@ -345,14 +326,12 @@ console.log("Thing datagram pollInterval", datagram.pollInterval);
     if (!datagram) return;
     setTimedInterval(datagram.pollInterval);
 
-    //refreshThingReport();
-
     console.log("Thing datagram uuid", uuid);
 
 //    setThing(datagram.uuid, datagram, token)
 
+    setThing(datagram)
 
-setThing(datagram)
 /*
       .then((result) => {
         if (result.thingReport && result.thingReport.error) {
@@ -420,6 +399,8 @@ setThing(datagram)
 //}, [thing]);
 
   useEffect(() => {
+    if (data == null) {return;}
+
     const requestedAt = Date.now();
     setAgentRequestedAt(requestedAt);
 
@@ -548,8 +529,12 @@ console.log("Thing uuid ass", uuid, ass);
   }
 
   function handleRefresh() {
+    if (flag === 'red') {return;}
+    setFlag("red");
+    console.log("Thing handleRefresh");
     //    getResponse(webPrefix, true);
     getThingReport();
+    //getThing();
   }
 
   function handlePollIntervalButton() {
@@ -660,6 +645,7 @@ console.log("Thing uuid ass", uuid, ass);
 https://www.reddit.com/r/reactjs/comments/p7ky46/is_react_synchronous_with_respect_to_function/
 https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_JavaScript
 */
+
   }, [tick]);
 
   const incrementTick = () => {
@@ -883,18 +869,18 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
         />
 pollInterval{' '}{pollInterval}
 <br />
+flag{' '}{flag && (<>{flag}</>)}
+<br />
 flagThing{' '}{flagThing && (<>{flagThing}</>)}
 <br />
 flagThingReport{' '}{flagThingReport && (<>{flagThingReport}</>)}
-<br />
-ASSOCIATIONS<br />
-{datagram && datagram.associations && Array.isArray(datagram.associations) && datagram.associations.includes(uuid) &&(<>ASSOCIATED</>)}
 <br />
 {/*<Item thing={{...datagram, uuid:uuid}} />*/}
 <Item thing={thing} agentInput={null} updateThing={updateThing} />
 
         {datagram && datagram.score}
         {token && token.message}
+
         {/*
         {expanded ? "expanded" : "not expanded"}
         {flipped ? "flipped" : "not flipped"}
@@ -903,8 +889,9 @@ ASSOCIATIONS<br />
         {error && <Error error={error} agentInput={data.thingReport} />}
         {/*expanded && <Button onClick={handleSpawnThing}>SPAWN</Button>*/}
 
+{!expanded &&
         <Button onClick={handleForgetThing}>FORGET</Button>
-
+}
         {/*expanded && (
           <Button onClick={handleFlipThing}>
             {flipped ? "MESSAGE" : "SOURCE"}
@@ -978,13 +965,12 @@ ASSOCIATIONS<br />
             <>
 <LazyLoad>
                 <div>
-
-                  <Agent
+                 <Agents
                     channel={"image"}
                     user={null}
                     //thing={data.thing}
                     thing={props.datagram}
-                    agentInput={webPrefix}
+                    agentInput={{stack:{url:webPrefix},snapshot:false, agents:{maximum:1}}}
                   />
 
                 </div>
@@ -1105,12 +1091,12 @@ ASSOCIATIONS<br />
               {!data && <>NOT DATA</>}
 
 
-              <Agent
+              <Agents
                 channel={"image"}
                 user={null}
                 //thing={data.thing}
                 thing={props.datagram}
-                agentInput={webPrefix}
+                agentInput={{stack:{url:webPrefix}, snapshot:false}}
               />
 
 
@@ -1180,6 +1166,7 @@ ASSOCIATIONS<br />
           )}
           {/*https://www.designcise.com/web/tutorial/how-to-hide-a-broken-image-in-react*/}
         </div>
+ASSOCIATIONS
 <div>
         {true && expanded && thing && (<Collection thing={{ ...thing }} />)}
 </div>
