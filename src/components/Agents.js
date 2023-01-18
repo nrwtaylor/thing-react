@@ -58,9 +58,7 @@ function slugAgent(slug) {
 }
 
 function Agents({ thing, agentInput }) {
-  //const {datagram} = props;
 
-  //  const user_name = props.user_name; // TODO
   const agent_input = agentInput; // remove
 
   const [agents, setAgents] = useState();
@@ -220,37 +218,23 @@ console.log("Agents agentInput xkcd", agentInput);
   return (
     <>
       <div>AGENTS</div>
-      {thing && thing.nomFrom}
-      {thing && thing.from}
-
       {thing &&
         agents &&
         agents.map((agent) => {
           return (
             <>
               AGENT {agent}
+              <br />
               <Agent
                 thing={thing}
                 agentInput={{ ...agentInput, agent: agent }}
               />
               <br />
 
-{/*
-              DYNAMIC COMPONENT xx
-              <br />
-              <DynamicComponent
-                is={agent}
-                channel={"image"}
-                user={null}
-                //thing={data.thing}
-                datagram={thing}
-                agent_input={agentInput}
-              />
-*/}
             </>
           );
         })}
-
+{/*
       <TextField
         multiline
         //        autoFocus
@@ -262,70 +246,10 @@ console.log("Agents agentInput xkcd", agentInput);
         value={reply}
         onChange={(event) => setReply(event.target.value)}
       />
+*/}
     </>
   );
 
-  return (
-    <>
-      <div>AGENTS</div>
-
-      <DynamicComponent
-        is={agent_input}
-        channel={"image"}
-        user={null}
-        //thing={data.thing}
-        datagram={thing}
-        agent_input={agentInput}
-      />
-
-      {thing && thing.nomFrom}
-      {thing && thing.from}
-      {/* flag */}
-
-      <ListItem key={thing && thing.uuid} alignItems="flex-start">
-        <ListItemText
-          primary={
-            {
-              /*           <Typography variant="body2">
-              timestamp {timeStamp()}
-              <br />
-              humanTime {humanTime(timeStamp())}
-              <br />
-              from {fromName()}
-              <br />
-            </Typography>
-*/
-            }
-          }
-          secondary={
-            <>
-              <Typography component="span" variant="body1" color="textPrimary">
-                {thing && thing.subject}
-                {data.etime}
-                To {thing && thing.to}
-              </Typography>
-              <Box className="delete-button">{deleteButton}</Box>
-            </>
-          }
-        />
-      </ListItem>
-
-      <TextField
-        multiline
-        //        autoFocus
-        margin="normal"
-        label="Type your reply here... (TODO)"
-        type="text"
-        fullWidth
-        name="updateReply"
-        value={reply}
-        onChange={(event) => setReply(event.target.value)}
-      />
-      <Button onClick={editAgents} color="primary">
-        Save
-      </Button>
-    </>
-  );
 }
 
 export default Agents;

@@ -156,6 +156,7 @@ export default function ThingPage(props) {
   if (pathname == null) {
     return null;
   }
+
   return (
     <>
       THING PAGE
@@ -177,7 +178,7 @@ export default function ThingPage(props) {
             canFold={false}
             open={true}
             play={play}
-            variables={{open:{isOpen:true,canOpen:false},fold:{canFold:false},play:play}}
+            variables={{agent:"channel-token", variable:"hello",open:{isOpen:true,canOpen:false},fold:{canFold:false},play:play}}
 
           />
         </div>

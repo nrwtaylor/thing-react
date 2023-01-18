@@ -220,11 +220,13 @@ function Thing(props) {
     setDatagram(initialDatagram);
 
     if (initialDatagram.subject) {
+
       setSubject(initialDatagram.subject);
       console.log("Thing initialDatagram setSubject", initialDatagram.subject);
       const u = webPrefix + getSlug(initialDatagram.subject) + ".json";
       console.log("Thing initialDatagram setUrl", u);
       setUrl(u);
+
     }
   }, [initialDatagram]);
 
@@ -288,6 +290,7 @@ function Thing(props) {
   const defaultPollInterval =
     datagram && datagram.pollInterval ? datagram.pollInterval : 0.5 * 60 * 1000; //ms
   const defaultTickInterval = 25; //ms
+  const defaultTimerInterval = 25;
   //  const minimumPollInterval = 2 * 60 * 1000; //ms
 
   const [minimumPollInterval, setMinimumPollInterval] = useState(100);
@@ -299,20 +302,6 @@ function Thing(props) {
 
   const [PNG, setPNG] = useState();
 
-  useEffect(() => {
-    if (datagram == null) {
-      return;
-    }
-
-    console.log("Thing datagram pollInterval", datagram.pollInterval);
-
-    console.log("Thing datagram ", datagram);
-    if (datagram && datagram.subject) {
-      const u = webPrefix + getSlug(datagram.subject) + ".json";
-      console.log("Thing datagram setUrl u", u);
-      setUrl(u);
-    }
-  }, [datagram]);
 
   var pollInterval =
     datagram && datagram.pollInterval
@@ -326,12 +315,8 @@ function Thing(props) {
   }
 
   useEffect(() => {
-    console.log(
-      "Thing datagram changed",
-      datagram && datagram.subject,
-      datagram
-    );
-    if (!datagram) return;
+    if (datagram == null) {return;}
+
     setTimedInterval(datagram.pollInterval);
 
     console.log("Thing datagram uuid", uuid);
@@ -389,8 +374,13 @@ function Thing(props) {
 
   const [flag, setFlag] = useState();
 
+const [runTime, setRunTime] = useState();
+
+function updateTimer() {
   const runTime = Date.now() - startAt;
 
+setRunTime(runTime);
+}
   //const { open: initialExpanded } = props.datagram;
 
   //  const [expanded, setExpanded] = React.useState(initialExpanded === "open");
@@ -525,6 +515,15 @@ console.log("Thing uuid ass", uuid, ass);
     console.log("Thing subject changed", subject);
     //setFlag('green');
     //   getResponse(webPrefix, true);
+
+    //console.log("Thing datagram ", datagram);
+    if (subject) {
+      const u = webPrefix + getSlug(subject) + ".json";
+      console.log("Thing datagram setUrl u", u);
+      setUrl(u);
+    }
+
+
 
     setDatagram({ ...datagram, subject: subject });
   }, [subject]);
@@ -696,6 +695,23 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
 
     return () => clearInterval(tickInterval);
   }, []);
+
+  useEffect(() => {
+    // If still processing the last one,
+    // Skip a beat, do not request aother.
+    if (flag === "red") {
+      return;
+    }
+
+    const timerInterval = setInterval(() => {
+//      incrementTick();
+updateTimer();
+    }, defaultTimerInterval);
+
+    return () => clearInterval(timerInterval);
+  }, []);
+
+
 
   useEffect(() => {
     if (tick === 0) {
@@ -1090,7 +1106,7 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
                 user={null}
                 //thing={data.thing}
                 thing={props.datagram}
-                agentInput={{ stack: { url: webPrefix } }}
+                agentInput={{ ...agentInput, stack: { url: webPrefix } }}
               />
               {subject && subject.toLowerCase().indexOf("ping") !== -1 && (
                 <div>
@@ -1160,7 +1176,7 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
         </div>
         ASSOCIATIONS
         <div>
-          {true && expanded && thing && <Collection thing={{ ...thing }} />}
+          {true && expanded && thing && <Collection thing={{ ...thing }} agentInput={{...agentInput, collection:true}} />}
         </div>
         <div>
           <DataReport />

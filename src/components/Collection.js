@@ -30,16 +30,16 @@ const img = {
   height: "100%",
 };
 
-function Collection(props) {
+function Collection({thing, agentInput}) {
 
-  const { thing } = props;
+  //const { thing } = props;
   const dndFlag = true;
 
   // This passes the reordered images back up to
   // the controlling component.
-  function handleCollectionChange(reOrderedThings) {
-    props.onCollectionChange(reOrderedThings);
-  }
+  //function handleCollectionChange(reOrderedThings) {
+  //  props.onCollectionChange(reOrderedThings);
+  //}
 
   return (
     <>
@@ -60,7 +60,8 @@ function Collection(props) {
       <DndProvider backend={HTML5Backend}>
         <ThingContainer
           thing={thing}
-          onCollectionChange={handleCollectionChange}
+          agentInput={{...agentInput,thingContainer:true}}
+//          onCollectionChange={handleCollectionChange}
         />
       </DndProvider>
     </>
