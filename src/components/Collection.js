@@ -4,7 +4,6 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
 import ThingContainer from "./../components/ThingContainer";
-import ThingContainerDnd from "./../components/ThingContainerDnd";
 
 import { Box, Grid } from "@material-ui/core";
 

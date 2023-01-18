@@ -28,6 +28,8 @@ import Input from "../src/components/Input.js";
 import Container from "@mui/material/Container";
 import ThingsContainer from "../src/components/ThingContainer.js";
 
+import TemperatureHumidity from "../src/components/TemperatureHumidity.js";
+
 import Collection from "../src/components/Collection.js";
 import Host from "../src/components/Host.js";
 
@@ -36,9 +38,30 @@ import ThingCarousel from "../src/components/ThingCarousel.js";
 
 import { v4 as uuidv4 } from "uuid";
 
+import useThings from "./useThings";
 import useToken from "./useToken";
+import useIdentity from "./useIdentity";
+import useInput from "./useInput";
 
+import axios from "axios";
+
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+
+//export default function App() {
+/*
+const config = {
+  delta: 10, // min distance(px) before a swipe starts. *See Notes*
+  preventScrollOnSwipe: false, // prevents scroll during swipe (*See Details*)
+  trackTouch: true, // track touch input
+  trackMouse: false, // track mouse input
+  rotationAngle: 0, // set a rotation angle
+  swipeDuration: Infinity, // allowable duration of a swipe (ms). *See Notes*
+  touchEventOptions: { passive: true }, // options for touch listeners (*See Details*)
+};
+*/
 export default function App({ componentName, ...props }) {
+  const DynamicComponent = lazy(() => import(`./components/${componentName}`));
 
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
   const apiPrefix = process.env.REACT_APP_API_PREFIX;
@@ -53,14 +76,48 @@ export default function App({ componentName, ...props }) {
 
   const matches = pathname.match(reg);
 
+  const { things, getThings, setThings } = useThings();
+
   const { username, token, setToken, deleteToken, isValidToken } = useToken();
+  const { identity, setIdentity, deleteIdentity } = useIdentity();
+  const { input, setInput, deleteInput } = useInput();
+
+  const createdAt = Date.now();
+
+  const [devStack, setDevStack] = useState();
+  const [slug, setSlug] = useState();
+
+  useEffect(() => {
+    console.log("App pathname", pathname);
+    setSlug(pathname);
+  }, [pathname]);
+
+
+  function handleCollectionChange(things) {
+    //   setThings(things);
+    if (things && things[0] && things[0].uuid) {
+      console.log("App setUuid", things[0].uuid);
+      setUuid(things[0].uuid);
+      return;
+    }
+
+    if (things.length === 0) {
+      return;
+    }
+
+    const u = uuidv4();
+    setUuid(u);
+    setThings(things);
+    getThings(token);
+    //    loadThings();
+  }
 
   return (
     <>
-      THING-REACT 18 January 2023 4d27
+      THING-REACT 15 January 2023 d510
       <br />
-      {/*identity && <Identity identity={identity} />*/}
-      {/*token && token.message*/}
+      {identity && <Identity identity={identity} />}
+      {token && token.message}
       <BrowserRouter>
         <Routes>
           <Route
@@ -81,6 +138,9 @@ export default function App({ componentName, ...props }) {
             element={
               <>
                 <ThingPage
+     //             onCollectionChange={(c) => {
+     //               handleCollectionChange(c);
+     //             }}
                 />
               </>
             }
@@ -133,6 +193,24 @@ export default function App({ componentName, ...props }) {
           >
             SNAPSHOT
           </Route>
+{/*
+          <Route
+            exact
+            path="/history/:text"
+            element={
+              <History
+                datagram={{
+                  to: "agent",
+                  subject: pathname.replace("/history/", ""),
+//                  subject: pathname,
+                  webPrefix: webPrefix,
+                }}
+              />
+            }
+          >
+            HISTORY
+          </Route>
+*/}
 
           <Route
             exact
@@ -190,6 +268,10 @@ export default function App({ componentName, ...props }) {
       <ZuluTime />
       <Host />
       <MetaStack />
+      {devStack} ms
+      <br />
+      {/*token*/}
+      <br />
       {isValidToken ? "VALID TOKEN" : "NOT VALID TOKEN"}
       <br />
       End.

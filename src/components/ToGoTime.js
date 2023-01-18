@@ -3,29 +3,27 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import Button from "@mui/material/Button";
-import UpdateIcon from '@mui/icons-material/Update';
+import UpdateIcon from "@mui/icons-material/Update";
 
 import { humanTime, humanAge, humanRuntime } from "./../util/time.js";
 
 export default function ToGoTime({ toGoTime, onRefresh }) {
-
   useEffect(() => {
     if (toGoTime == null) {
       return;
     }
 
-console.log("ToGoTime toGoTime", toGoTime);
+    console.debug("ToGoTime toGoTime", toGoTime);
 
-if (toGoTime < 0) {onRefresh();}
-
+    if (toGoTime < 0) {
+      onRefresh();
+    }
   }, [toGoTime]);
 
   return (
     <>
-<UpdateIcon onClick={onRefresh}>REFRESH</UpdateIcon>
-      TOGOTIME{' '}
- {humanRuntime(toGoTime)}
-
+      <UpdateIcon onClick={onRefresh}>REFRESH</UpdateIcon>
+      TOGOTIME {humanRuntime(toGoTime)}
       <br />
     </>
   );

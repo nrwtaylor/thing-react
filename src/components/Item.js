@@ -109,7 +109,7 @@ const Root = styled("span")(
 );
 
 export default function Item({ thing, agentInput, updateThing }) {
-//  const { updateThing } = useThing(thing);
+  //  const { updateThing } = useThing(thing);
   const { token } = useToken();
 
   const [text, setText] = useState();
@@ -123,7 +123,7 @@ export default function Item({ thing, agentInput, updateThing }) {
 
   useEffect(() => {
     if (thing) {
-      console.log("Item Thing", thing);
+      console.debug("Item Thing", thing);
 
       if (thing.subject) {
         // pre-recognition
@@ -136,24 +136,23 @@ export default function Item({ thing, agentInput, updateThing }) {
 
   function handleToggleItem(e) {
     console.log("Item handleToggleItem", e.target.checked);
-    console.log("Item handleToggleItem thing", thing);
+    console.debug("Item handleToggleItem thing", thing);
 
     // Review this
     // May not need to use the useThing hook.
 
     return updateThing({
-      variables: {item: e.target.checked },
+      variables: { item: e.target.checked },
     })
       .then((result) => {
         addMessage("Item handleToggleItem update thing " + thing.subject);
 
-        console.log("Item handleToggleItem updateThing result", result);
+        console.debug("Item handleToggleItem updateThing result", result);
       })
       .catch((error) => {
         //setError(error.message);
-        console.log("Item handleToggleItem updateThing error", error);
+        console.warn("Item handleToggleItem updateThing error", error);
       });
-
   }
 
   if (thing == null) {
@@ -178,7 +177,7 @@ navigate("/"+subject)
           component={Root}
           onChange={(e) => handleToggleItem(e)}
         />
-<br />
+        <br />
         {thing && thing.variables && thing.variables.item === true
           ? "ITEM TRUE"
           : "NOT ITEM"}

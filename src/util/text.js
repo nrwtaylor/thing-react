@@ -1,7 +1,6 @@
-import {zuluTimeDifferenceMilliseconds} from "./time.js";
+import { zuluTimeDifferenceMilliseconds } from "./time.js";
 
 var slugify = require("slugify");
-
 
 export function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -45,8 +44,7 @@ export const extractMixedTokens = (text, options) => {
   return parts.filter((part) => {
     return isMixed(part);
   });
-}
-
+};
 
 export function isAlpha(str) {
   var code, i, len;
@@ -63,8 +61,6 @@ export function isAlpha(str) {
   }
   return true;
 }
-
-
 
 export function isAlphaNumeric(str) {
   var code, i, len;
@@ -83,7 +79,6 @@ export function isAlphaNumeric(str) {
   return true;
 }
 
-
 export function isNumeric(token) {
   if (typeof token != "string") return false; // we only process strings!
   return (
@@ -98,14 +93,13 @@ export function isMixed(token) {
   return false;
 }
 
+export function extractAlphaTokens(text) {
+  var parts = text.split(" ");
 
-  export function extractAlphaTokens(text) {
-    var parts = text.split(" ");
-
-    return parts.filter((part) => {
-      return isAlpha(part);
-    });
-  }
+  return parts.filter((part) => {
+    return isAlpha(part);
+  });
+}
 
 // Sort high to low score
 export function sortThingsByScore(things) {
@@ -118,182 +112,176 @@ export function sortThingsByScore(things) {
   return sortedThings;
 }
 
-
 // Sort high to low score
 export function sortThingsByAge(things, order) {
-  //if (items === undefined) {return [];}
-  //if (items.length === 0) {return [];}
   const sortedThings = things.sort(function (a, b) {
-console.log("text xkcd", a);
-if (order === 'ascending') {return zuluTimeDifferenceMilliseconds(a.createdAt , b.createdAt);}
+    if (order === "ascending") {
+      return zuluTimeDifferenceMilliseconds(a.createdAt, b.createdAt);
+    }
     return zuluTimeDifferenceMilliseconds(b.createdAt, a.createdAt);
   });
 
   return sortedThings;
 }
 
-
-  export function scoreThings(things, slugTitle) {
-
-    if (!Array.isArray(things)) {
-      return true;
-    }
-console.log("text scoreThings", things, slugTitle)
-    const scoredThings = things.map((thing) => {
-      return {
-        ...thing,
-        score: scoreThing(thing, slugTitle),
-      };
-    });
-
-    return scoredThings;
+export function scoreThings(things, slugTitle) {
+  if (!Array.isArray(things)) {
+    return true;
   }
+  const scoredThings = things.map((thing) => {
+    return {
+      ...thing,
+      score: scoreThing(thing, slugTitle),
+    };
+  });
 
-  export function scoreThing(thing, inputClusterTokens) {
-
-const text = thing.subject + " " +thing.uuid;
-
-if (text == null) {return true;}
-
-    const defaultKeywords = "";
-
-//    const conditionedClusterTokens = getSlug(inputClusterTokens).replace("-"," ");
-
-    const conditionedClusterTokens = getSlug(inputClusterTokens);
-    const clusterTokens = conditionedClusterTokens
-      ? conditionedClusterTokens.toLowerCase().split("-")
-      : defaultKeywords.toLowerCase().split(" ");
-console.log("text scoreThing", text, inputClusterTokens, conditionedClusterTokens, clusterTokens);
-
-    const conditionedText = getSlug(text);
-    const titleTokens = conditionedText.toLowerCase().split("-");
-
-    let score = titleTokens.length;
-    let count = 0;
-
-    const clusterUuidTokens = extractUuids(clusterTokens.join(" "));
-    const titleUuidTokens = extractUuids(titleTokens.join(" "));
-
-console.log("text scoreThing uuid", clusterUuidTokens, titleUuidTokens);
-
-if (clusterUuidTokens !== null) {
-clusterUuidTokens.forEach((clusterUuidToken)=>{
-if (titleUuidTokens == null) {return;}
-titleUuidTokens.forEach((titleUuidToken)=>{
-
-if (titleUuidToken === clusterUuidToken) {count += count +10;}
-
-
-
-});
-
-});
+  return scoredThings;
 }
 
-if (clusterUuidTokens && clusterUuidTokens.includes(thing.uuid)) {count += count +100;}
+export function scoreThing(thing, inputClusterTokens) {
+  const text = thing.subject + " " + thing.uuid;
 
-
-
-
-    const clusterNumberTokens = extractNumberTokens(clusterTokens.join(" "));
-    const titleNumberTokens = extractNumberTokens(titleTokens.join(" "));
-
-    //extractMixedTokens
-
-    const clusterMixedTokens = extractMixedTokens(clusterTokens.join(" "));
-    const titleMixedTokens = extractMixedTokens(titleTokens.join(" "));
-
-    if (clusterNumberTokens !== null && titleNumberTokens !== null) {
-      clusterNumberTokens.map((word) => {
-        if (titleNumberTokens.includes(word.toLowerCase())) {
-          count += 1;
-        }
-        return true;
-      });
-
-      titleNumberTokens.map((word) => {
-        if (clusterNumberTokens.includes(word.toLowerCase())) {
-          count += 1;
-        }
-        return true;
-      });
-    }
-
-    if (clusterMixedTokens !== null && titleMixedTokens !== null) {
-      clusterMixedTokens.map((word) => {
-        if (titleMixedTokens.includes(word.toLowerCase())) {
-          count += 5;
-        }
-        return true;
-      });
-
-      titleMixedTokens.map((word) => {
-        if (clusterMixedTokens.includes(word.toLowerCase())) {
-          count += 5;
-        }
-        return true;
-      });
-    }
-
-    if (clusterTokens.length === 1) {
-      if (titleTokens.includes(clusterTokens[0].toLowerCase())) {
-        count += 1;
-      }
-    }
-
-    clusterTokens.map((word) => {
-      if (titleTokens.includes(word.toLowerCase())) {
-        count += 1;
-      }
-      return true;
-    });
-
-    titleTokens.map((word) => {
-      if (clusterTokens.includes(word.toLowerCase())) {
-        count += 1;
-      }
-      return true;
-    });
-
-    // Weight matches in first three tokens of title
-    clusterTokens.map((word) => {
-      if (titleTokens.length === 0) {
-        return true;
-      }
-
-      if (word.toLowerCase() === titleTokens[0].toLowerCase()) {
-        count += 1;
-      }
-
-      if (titleTokens.length === 1) {
-        return true;
-      }
-
-      if (word.toLowerCase() === titleTokens[1].toLowerCase()) {
-        count += 1;
-      }
-
-      if (titleTokens.length === 2) {
-        return true;
-      }
-
-      if (word.toLowerCase() === titleTokens[2].toLowerCase()) {
-        count += 1;
-      }
-      return true;
-    });
-
-    score = count;
-
-    // NEXT STEP EXTRACT MIXEDs.
-
-    //const score = LevenshteinDistance(keywords, text);
-    //console.log(text, keywords, score);
-
-    return score;
+  if (text == null) {
+    return true;
   }
 
-  /*
+  const defaultKeywords = "";
+
+  //    const conditionedClusterTokens = getSlug(inputClusterTokens).replace("-"," ");
+
+  const conditionedClusterTokens = getSlug(inputClusterTokens);
+  const clusterTokens = conditionedClusterTokens
+    ? conditionedClusterTokens.toLowerCase().split("-")
+    : defaultKeywords.toLowerCase().split(" ");
+  //console.log("text scoreThing", text, inputClusterTokens, conditionedClusterTokens, clusterTokens);
+
+  const conditionedText = getSlug(text);
+  const titleTokens = conditionedText.toLowerCase().split("-");
+
+  let score = titleTokens.length;
+  let count = 0;
+
+  const clusterUuidTokens = extractUuids(clusterTokens.join(" "));
+  const titleUuidTokens = extractUuids(titleTokens.join(" "));
+
+  //console.log("text scoreThing uuid", clusterUuidTokens, titleUuidTokens);
+
+  if (clusterUuidTokens !== null) {
+    clusterUuidTokens.forEach((clusterUuidToken) => {
+      if (titleUuidTokens == null) {
+        return;
+      }
+      titleUuidTokens.forEach((titleUuidToken) => {
+        if (titleUuidToken === clusterUuidToken) {
+          count += count + 10;
+        }
+      });
+    });
+  }
+
+  if (clusterUuidTokens && clusterUuidTokens.includes(thing.uuid)) {
+    count += count + 100;
+  }
+
+  const clusterNumberTokens = extractNumberTokens(clusterTokens.join(" "));
+  const titleNumberTokens = extractNumberTokens(titleTokens.join(" "));
+
+  //extractMixedTokens
+
+  const clusterMixedTokens = extractMixedTokens(clusterTokens.join(" "));
+  const titleMixedTokens = extractMixedTokens(titleTokens.join(" "));
+
+  if (clusterNumberTokens !== null && titleNumberTokens !== null) {
+    clusterNumberTokens.map((word) => {
+      if (titleNumberTokens.includes(word.toLowerCase())) {
+        count += 1;
+      }
+      return true;
+    });
+
+    titleNumberTokens.map((word) => {
+      if (clusterNumberTokens.includes(word.toLowerCase())) {
+        count += 1;
+      }
+      return true;
+    });
+  }
+
+  if (clusterMixedTokens !== null && titleMixedTokens !== null) {
+    clusterMixedTokens.map((word) => {
+      if (titleMixedTokens.includes(word.toLowerCase())) {
+        count += 5;
+      }
+      return true;
+    });
+
+    titleMixedTokens.map((word) => {
+      if (clusterMixedTokens.includes(word.toLowerCase())) {
+        count += 5;
+      }
+      return true;
+    });
+  }
+
+  if (clusterTokens.length === 1) {
+    if (titleTokens.includes(clusterTokens[0].toLowerCase())) {
+      count += 1;
+    }
+  }
+
+  clusterTokens.map((word) => {
+    if (titleTokens.includes(word.toLowerCase())) {
+      count += 1;
+    }
+    return true;
+  });
+
+  titleTokens.map((word) => {
+    if (clusterTokens.includes(word.toLowerCase())) {
+      count += 1;
+    }
+    return true;
+  });
+
+  // Weight matches in first three tokens of title
+  clusterTokens.map((word) => {
+    if (titleTokens.length === 0) {
+      return true;
+    }
+
+    if (word.toLowerCase() === titleTokens[0].toLowerCase()) {
+      count += 1;
+    }
+
+    if (titleTokens.length === 1) {
+      return true;
+    }
+
+    if (word.toLowerCase() === titleTokens[1].toLowerCase()) {
+      count += 1;
+    }
+
+    if (titleTokens.length === 2) {
+      return true;
+    }
+
+    if (word.toLowerCase() === titleTokens[2].toLowerCase()) {
+      count += 1;
+    }
+    return true;
+  });
+
+  score = count;
+
+  // NEXT STEP EXTRACT MIXEDs.
+
+  //const score = LevenshteinDistance(keywords, text);
+  //console.log(text, keywords, score);
+
+  return score;
+}
+
+/*
   let mixeds;
   if (!text || typeof text !== 'string') {
     return [];
@@ -317,7 +305,6 @@ export function extractNuuids(input) {
   return input.match(pattern);
 }
 
-
 export function extractNuuid(input) {
   if (input == null) {
     return true;
@@ -334,9 +321,10 @@ export function extractNuuid(input) {
   return false;
 }
 
-
 export function replaceUuids(input) {
-  if (input == null) {return true;}
+  if (input == null) {
+    return true;
+  }
   const pattern = /[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}/g;
 
   var result = input.replace(pattern, function (match, token) {
@@ -369,7 +357,7 @@ export function getSlug(text) {
   if (first === "-") {
     conditionedSlug = conditionedSlug.slice(1);
   }
-//console.log("conditionedSlug", conditionedSlug);
+  //console.log("conditionedSlug", conditionedSlug);
   return conditionedSlug;
 }
 
@@ -379,7 +367,7 @@ export function parsePing(p) {
     return;
   }
 
-  console.log("text parsePing", p);
+  //console.log("text parsePing", p);
   //   ping.map((p) => {
   if (!p) {
     return;
@@ -396,7 +384,7 @@ export function parsePing(p) {
     parseFloat(pingArray2[1]) +
     parseFloat(pingArray2[2]);
 
-  console.log("text parsePing pingArray", pingArray);
+  //console.log("text parsePing pingArray", pingArray);
   const parts = pingArray[0].split(" ");
 
   const ps = {

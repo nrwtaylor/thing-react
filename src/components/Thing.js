@@ -25,7 +25,6 @@ import Collection from "../components/Collection.js";
 // refactor to move mui button into Button
 import ThingButton from "../components/Button.js";
 
-
 import Error from "../components/Error.js";
 
 import ThingThumbnail from "../components/ThingThumbnail.js";
@@ -50,7 +49,7 @@ import { v4 as uuidv4, uuid as uuidLibrary } from "uuid";
 import {
   //  getThingReport,
   databaseStatistics,
-//  setThing,
+  //  setThing,
   txCount,
   rxCount,
   rxBytes,
@@ -84,7 +83,6 @@ import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 
 import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
-
 
 import LazyLoad from "react-lazyload";
 
@@ -169,7 +167,6 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   }),
 }));
 
-
 // Either a datagram, or a uuid.
 // datagram - to, from, subject, agentInput
 function Thing(props) {
@@ -197,18 +194,16 @@ function Thing(props) {
 
   //},[defaultWebPrefix]);
 
-useEffect(()=>{
-if (thing == null) {return;}
-console.log("Thing thing", thing);
+  useEffect(() => {
+    if (thing == null) {
+      return;
+    }
+    console.debug("Thing thing", thing);
 
-if (thing.uuid) {
-
-console.log("Thing thing uuid", thing.uuid);
-
-}
-
-}, [thing]);
-
+    if (thing.uuid) {
+      console.log("Thing thing uuid", thing.uuid);
+    }
+  }, [thing]);
 
   useEffect(() => {
     if (initialDatagram == null) {
@@ -220,14 +215,15 @@ console.log("Thing thing uuid", thing.uuid);
       return;
     }
 
-    console.log("Thing initialDatagram changed", initialDatagram);
-    console.log("Thing initialDatagram prior datagram", datagram);
+    console.debug("Thing initialDatagram changed", initialDatagram);
+    console.debug("Thing initialDatagram prior datagram", datagram);
     setDatagram(initialDatagram);
 
     if (initialDatagram.subject) {
       setSubject(initialDatagram.subject);
+      console.log("Thing initialDatagram setSubject", initialDatagram.subject);
       const u = webPrefix + getSlug(initialDatagram.subject) + ".json";
-      console.log("Thing datagram initialDatagram u", u);
+      console.log("Thing initialDatagram setUrl", u);
       setUrl(u);
     }
   }, [initialDatagram]);
@@ -244,7 +240,16 @@ console.log("Thing thing uuid", thing.uuid);
   // This hook will get or create a Thing, given as minimum a datagram.
   // When provided with uuid, this hook will look for that Thing, returning false if not found.
 
-  const { thing, spawnThing, flag:flagThing, flipThing, forgetThing, getThing, setThing, updateThing } = useThing(datagram);
+  const {
+    thing,
+    spawnThing,
+    flag: flagThing,
+    flipThing,
+    forgetThing,
+    getThing,
+    setThing,
+    updateThing,
+  } = useThing(datagram);
 
   // This needs to be considered as to thingReport, datagram and data.
 
@@ -258,8 +263,12 @@ console.log("Thing thing uuid", thing.uuid);
   // In the case below this becomes useThingReport(thing, agentInput);
   // url > setSubject(url);
   // pollIntervale > setAgentInput({poll:{requestedInterval:pollInterval}});
- 
-  const { thingReport: data, flag:flagThingReport, getThingReport } = useThingReport(url, pollInterval);
+
+  const {
+    thingReport: data,
+    flag: flagThingReport,
+    getThingReport,
+  } = useThingReport(url, pollInterval);
 
   const { things, setThings } = useThings();
   const { token } = useToken();
@@ -269,7 +278,6 @@ console.log("Thing thing uuid", thing.uuid);
     }
     console.log("Thing url", url);
   }, [url]);
-
 
   // const { to, subject } = datagram;
 
@@ -296,12 +304,12 @@ console.log("Thing thing uuid", thing.uuid);
       return;
     }
 
-console.log("Thing datagram pollInterval", datagram.pollInterval);
+    console.log("Thing datagram pollInterval", datagram.pollInterval);
 
     console.log("Thing datagram ", datagram);
     if (datagram && datagram.subject) {
       const u = webPrefix + getSlug(datagram.subject) + ".json";
-      console.log("Thing datagram u", u);
+      console.log("Thing datagram setUrl u", u);
       setUrl(u);
     }
   }, [datagram]);
@@ -328,11 +336,11 @@ console.log("Thing datagram pollInterval", datagram.pollInterval);
 
     console.log("Thing datagram uuid", uuid);
 
-//    setThing(datagram.uuid, datagram, token)
+    //    setThing(datagram.uuid, datagram, token)
 
-    setThing(datagram)
+    setThing(datagram);
 
-/*
+    /*
       .then((result) => {
         if (result.thingReport && result.thingReport.error) {
             return Promise.resolve({error:result.thingReport.error});
@@ -391,15 +399,16 @@ console.log("Thing datagram pollInterval", datagram.pollInterval);
 
   const [flipped, setFlipped] = React.useState();
 
+  //useEffect(()=>{
 
-//useEffect(()=>{
+  //console.log("Thing thing", thing);
 
-//console.log("Thing thing", thing);
-
-//}, [thing]);
+  //}, [thing]);
 
   useEffect(() => {
-    if (data == null) {return;}
+    if (data == null) {
+      return;
+    }
 
     const requestedAt = Date.now();
     setAgentRequestedAt(requestedAt);
@@ -500,7 +509,7 @@ console.log("Thing datagram pollInterval", datagram.pollInterval);
       return;
     }
     console.info("Thing uuid", uuid);
-/*
+    /*
 var ass = datagram.associations;
 if (ass == null) {ass = [];};
 ass.push(uuid);
@@ -508,7 +517,6 @@ console.log("Thing uuid ass", uuid, ass);
     setDatagram({ ...datagram, associations:ass});
 */
   }, [uuid]);
-
 
   useEffect(() => {
     if (subject == null) {
@@ -521,15 +529,15 @@ console.log("Thing uuid ass", uuid, ass);
     setDatagram({ ...datagram, subject: subject });
   }, [subject]);
 
-
-
   // refactor out
   function getUuid() {
     return uuid;
   }
 
   function handleRefresh() {
-    if (flag === 'red') {return;}
+    if (flag === "red") {
+      return;
+    }
     setFlag("red");
     console.log("Thing handleRefresh");
     //    getResponse(webPrefix, true);
@@ -645,7 +653,6 @@ console.log("Thing uuid ass", uuid, ass);
 https://www.reddit.com/r/reactjs/comments/p7ky46/is_react_synchronous_with_respect_to_function/
 https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_JavaScript
 */
-
   }, [tick]);
 
   const incrementTick = () => {
@@ -736,15 +743,13 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
     if (props.onSpawn) {
       props.onSpawn(e);
     }
-
-    //spawnThing(webPrefix, thing, token);
   };
 
   const handleAddThing = (e) => {
     console.log("Thing handleAddThing", datagram);
 
-// Passing getThing with null, will create an empty thing.
-getThing(null);
+    // Passing getThing with null, will create an empty thing.
+    getThing(null);
   };
 
   const handleOpenThing = (e) => {
@@ -772,12 +777,9 @@ getThing(null);
     }
   };
 
-
-useEffect(()=>{
-
-console.log("Thing databaseStatistics", databaseStatistics);
-
-}, [databaseStatistics]);
+  useEffect(() => {
+    console.log("Thing databaseStatistics", databaseStatistics);
+  }, [databaseStatistics]);
   // Reference
   //  {PNG && <img src={PNG} onError={(event) => event.target.style.display = 'none'}
   useEffect(() => {
@@ -794,11 +796,12 @@ console.log("Thing databaseStatistics", databaseStatistics);
 
   const DataReport = () => {
     //const expanded =true;
-if (!databaseStatistics[uuid]) {return null;}
-const txCountThing = databaseStatistics[uuid].txCount;
-//const rxCountThing = databaseStatistics[uuid].rxCount + databaseStatistics[uuid].rxErrorCount;
-const rxCountThing = databaseStatistics[uuid].rxCount;
-
+    if (!databaseStatistics[uuid]) {
+      return null;
+    }
+    const txCountThing = databaseStatistics[uuid].txCount;
+    //const rxCountThing = databaseStatistics[uuid].rxCount + databaseStatistics[uuid].rxErrorCount;
+    const rxCountThing = databaseStatistics[uuid].rxCount;
 
     return (
       <>
@@ -825,7 +828,7 @@ const rxCountThing = databaseStatistics[uuid].rxCount;
 
         {!expanded && (
           <>
-{/*
+            {/*
 PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
 {"/"}
 {databaseStatistics[uuid] && databaseStatistics[uuid].rxCount + databaseStatistics[uuid] && databaseStatistics[uuid].rxErrorCount}
@@ -867,60 +870,52 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
             </>
           }
         />
-pollInterval{' '}{pollInterval}
-<br />
-flag{' '}{flag && (<>{flag}</>)}
-<br />
-flagThing{' '}{flagThing && (<>{flagThing}</>)}
-<br />
-flagThingReport{' '}{flagThingReport && (<>{flagThingReport}</>)}
-<br />
-{/*<Item thing={{...datagram, uuid:uuid}} />*/}
-<Item thing={thing} agentInput={null} updateThing={updateThing} />
-
+        pollInterval {pollInterval}
+        <br />
+        flag {flag && <>{flag}</>}
+        <br />
+        flagThing {flagThing && <>{flagThing}</>}
+        <br />
+        flagThingReport {flagThingReport && <>{flagThingReport}</>}
+        <br />
+        {/*<Item thing={{...datagram, uuid:uuid}} />*/}
+        <Item thing={thing} agentInput={null} updateThing={updateThing} />
         {datagram && datagram.score}
         {token && token.message}
-
         {/*
         {expanded ? "expanded" : "not expanded"}
         {flipped ? "flipped" : "not flipped"}
         */}
-
         {error && <Error error={error} agentInput={data.thingReport} />}
         {/*expanded && <Button onClick={handleSpawnThing}>SPAWN</Button>*/}
-
-{!expanded &&
-        <Button onClick={handleForgetThing}>FORGET</Button>
-}
+        {!expanded && <Button onClick={handleForgetThing}>FORGET</Button>}
         {/*expanded && (
           <Button onClick={handleFlipThing}>
             {flipped ? "MESSAGE" : "SOURCE"}
           </Button>
         )*/}
-
         {!expanded && (
           <ThingButton
             thing={{ subject: "thing/" + uuid, agentInput: "Open" }}
           />
         )}
-
         {expanded && <Button onClick={handleAddThing}>ADD</Button>}
-
-        {data && data.thing && data.thing.associations && data.thing.associations.includes(uuid) && (
-          <ThingButton
-            thing={{
-              ...datagram,
-              subject: "thing/" + uuid + "/associate",
-              agentInput: "Associate uuid",
-            }}
-          />
-        )}
-
+        {data &&
+          data.thing &&
+          data.thing.associations &&
+          data.thing.associations.includes(uuid) && (
+            <ThingButton
+              thing={{
+                ...datagram,
+                subject: "thing/" + uuid + "/associate",
+                agentInput: "Associate uuid",
+              }}
+            />
+          )}
         {canFold && expanded && <Button onClick={handleFoldThing}>FOLD</Button>}
         {canOpen && !expanded && (
           <Button onClick={handleOpenThing}>OPEN</Button>
         )}
-
         {/*<div onClick={handleExpandClick} >*/}
         <div>
           {!expanded && flipped && (
@@ -957,24 +952,25 @@ flagThingReport{' '}{flagThingReport && (<>{flagThingReport}</>)}
               <br />
             </>
           )}
-          {!flipped && (
-            <Subject thing={thing} setSubject={setSubject} />
-          )}
-{thing && thing.createdAt && (<>{humanAge(thing.createdAt)}</>)}
+          {!flipped && <Subject thing={thing} setSubject={setSubject} />}
+          {thing && thing.createdAt && <>{humanAge(thing.createdAt)}</>}
           {!expanded && !flipped && (
             <>
-<LazyLoad>
+              <LazyLoad>
                 <div>
-                 <Agents
+                  <Agents
                     channel={"image"}
                     user={null}
                     //thing={data.thing}
                     thing={props.datagram}
-                    agentInput={{stack:{url:webPrefix},snapshot:false, agents:{maximum:1}}}
+                    agentInput={{
+                      stack: { url: webPrefix },
+                      snapshot: false,
+                      agents: { maximum: 1 },
+                    }}
                   />
-
                 </div>
-</LazyLoad>
+              </LazyLoad>
 
               {PNG && (
                 <Box className={classes.cardImageContainer}>
@@ -1089,17 +1085,13 @@ flagThingReport{' '}{flagThingReport && (<>{flagThingReport}</>)}
               <br />
               <Typography>RUNTIME {runTime}</Typography>
               {!data && <>NOT DATA</>}
-
-
               <Agents
                 channel={"image"}
                 user={null}
                 //thing={data.thing}
                 thing={props.datagram}
-                agentInput={{stack:{url:webPrefix}, snapshot:false}}
+                agentInput={{ stack: { url: webPrefix } }}
               />
-
-
               {subject && subject.toLowerCase().indexOf("ping") !== -1 && (
                 <div>
                   <Ping
@@ -1166,13 +1158,13 @@ flagThingReport{' '}{flagThingReport && (<>{flagThingReport}</>)}
           )}
           {/*https://www.designcise.com/web/tutorial/how-to-hide-a-broken-image-in-react*/}
         </div>
-ASSOCIATIONS
-<div>
-        {true && expanded && thing && (<Collection thing={{ ...thing }} />)}
-</div>
-<div>
-        <DataReport />
-</div>
+        ASSOCIATIONS
+        <div>
+          {true && expanded && thing && <Collection thing={{ ...thing }} />}
+        </div>
+        <div>
+          <DataReport />
+        </div>
       </Card>
     </>
   );

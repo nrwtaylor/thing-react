@@ -39,8 +39,7 @@ export default function ThingPage(props) {
   const { identity, setIdentity, deleteIdentity } = useIdentity();
   const { input, setInput, deleteInput } = useInput();
 
-    const { thing, setThing } = useThing();
-  //const [thing, setThing] = useState();
+  const { thing, setThing } = useThing();
   const { things, getThings } = useThings();
 
   const createdAt = Date.now();
@@ -48,19 +47,6 @@ export default function ThingPage(props) {
   const [devStack, setDevStack] = useState();
 
   const [play, setPlay] = useState();
-
-  useEffect(() => {
-    if (!identity) {
-      //      defaultThings();
-      return;
-    }
-    if (identity === null) {
-      //      defaultThings();
-      return;
-    }
-
-    //    loadThings();
-  }, [identity]);
 
   function handleCollectionChange(things) {
     return;
