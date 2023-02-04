@@ -12,8 +12,9 @@ export default function useThingReport(input, inputThingReportPollInterval) {
   const [flag, setFlag] = useState();
 
   const [thingReport, setThingReport] = useState({
-    thing: { uuid: "X" },
-    thing_report: { sms: "No response. Yet." },
+    uuid:null,
+    thing: { uuid: "X", subject: to },
+    thingReport: { sms: "No response. Yet." },
   });
 
   const [thingReportGetTime, setThingReportGetTime] = useState();
@@ -34,16 +35,29 @@ export default function useThingReport(input, inputThingReportPollInterval) {
 
   useEffect(() => {
     console.log("useThingReport thingReportInterval", thingReportInterval);
+
+    //    if (thingReportInterval == null) {
+    //      return;
+    //    }
+
+    //
+
+    getThingReport();
+
     if (thingReportInterval == null) {
       return;
     }
 
-    if (thingReportInterval === false) {return}
-
-    getThingReport();
+    if (thingReportInterval === false) {
+      return;
+    }
 
     const interval = setInterval(() => {
-      console.log("useThingReport setInterval called input", input, thingReportInterval);
+      console.log(
+        "useThingReport setInterval called input",
+        input,
+        thingReportInterval
+      );
       getThingReport();
     }, thingReportInterval); // 20 Hz was 200.
 
@@ -66,7 +80,7 @@ export default function useThingReport(input, inputThingReportPollInterval) {
       return;
     }
 
-console.log("useThingReport thingReport", thingReport);
+    console.log("useThingReport thingReport", thingReport);
 
     if (thingReportResults == null) {
       console.log("useThingReport thingReportResults undefined");
@@ -99,8 +113,11 @@ console.log("useThingReport thingReport", thingReport);
     console.log("useThingReport getThingReport");
     const startTime = new Date();
     if (flag === "red") {
+      console.log("useThingReport getThingReport flag", flag);
       return;
     }
+
+    console.log("useThingReport getThingReport to", to);
 
     const url = to;
 
@@ -159,8 +176,8 @@ console.log("useThingReport thingReport", thingReport);
   };
 
   return {
-//    deleteThingReport: deleteThingReport,
-//    setThingReport: saveThingReport,
+    //    deleteThingReport: deleteThingReport,
+    //    setThingReport: saveThingReport,
     getThingReport,
     thingReport,
     flag,

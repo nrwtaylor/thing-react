@@ -33,7 +33,9 @@ const style = {
   // spacing:'1'
 };
 
-export const ThingContainer = memo(function ThingContainer(props) {
+//export const ThingContainer = memo(function ThingContainer(props) {
+export const ThingContainer = (props) => {
+
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 
   const { thing } = props;
@@ -128,7 +130,9 @@ export const ThingContainer = memo(function ThingContainer(props) {
 
   /*
 function scoreThing() {
-console.log("ThingContainer props datagram", props.datagram);
+console.log("ThingContainer w
+w
+props datagram", props.datagram);
 if (props.datagram.subject) {
 
 console.log("ThingContainer props subject", props.datagram.subject);
@@ -250,6 +254,7 @@ return 6;
   return (
     <>
       <div ref={drop} style={style}>
+THING CONTAINER
         {/* {datagram && datagram.associations && Array.isArray(datagram.associations) && datagram.associations.join(' ')} */}
         {thing && (
           <Button
@@ -262,7 +267,7 @@ return 6;
             }}
           />
         )}
-        {contexts.map((context) => {
+        {contexts.map((context, lens) => {
           return (
             <>
               <div>
@@ -270,20 +275,25 @@ return 6;
                   thing={thing}
                   agentInput={{
                     channel: "button",
+                    //flag:{flag:context},
+                    flag: lens,
                     text: context,
                     texts: [context],
                   }}
                   updateThing={(t) => handleThing(t)}
-                >
-                  {context}
-                </Flag>
+                />
               </div>
             </>
           );
         })}
-        <br />
+
+<p/>
+
+<div>
         LENS {lens}
-        <br />
+</div>
+
+<p/>
         <Grid container spacing={3} direction="row">
           {filteredScoredThings && (
             <>
@@ -310,6 +320,7 @@ return 6;
                   findCard={findThing}
                   token={token}
                 />
+
               ))}
             </>
           )}
@@ -317,6 +328,7 @@ return 6;
       </div>
     </>
   );
-});
+//});
+}
 
 export default ThingContainer;

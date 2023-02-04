@@ -18,9 +18,10 @@ export default function Nuuid(props) {
 
 const {thing} = useThing({subject:props.subject});
 
+
   return (
     <>
-{props.subject}
+{thing.uuid.slice(0,4)}
     </>
   );
 }

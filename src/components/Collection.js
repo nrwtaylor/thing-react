@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { memo, useState, useEffect } from "react";
 
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -54,18 +54,21 @@ function Collection({thing, agentInput}) {
         thing.associations &&
         Array.isArray(thing.associations) &&
         thing.associations.map((d) => {
-          return <>{d.slice(0, 4)} </>;
+          return <div key={d}> {d.slice(0, 4)} </div>
         })}
       <br />
+
       <DndProvider backend={HTML5Backend}>
         <ThingContainer
           thing={thing}
           agentInput={{...agentInput,thingContainer:true}}
 //          onCollectionChange={handleCollectionChange}
         />
+
       </DndProvider>
     </>
   );
 }
 
-export default Collection;
+export default memo(Collection);
+//export default Collection;

@@ -57,6 +57,13 @@ function slugAgent(slug) {
   return capitalizedParts.join("");
 }
 
+// Refactor to pass this in thing as variables.
+const engineState = process.env.REACT_APP_ENGINE_STATE;
+var debugFlag = false;
+var devFlag = false;
+if (engineState === 'dev') {debugFlag = true; devFlag = true;}
+
+
 function Agents({ thing, agentInput }) {
 
   const agent_input = agentInput; // remove
@@ -71,7 +78,7 @@ function Agents({ thing, agentInput }) {
 
   const [data, setData] = useState({
     thing: { uuid: "X" },
-    thing_report: { sms: "No response. Yet." },
+    thingReport: { sms: "No response. Yet." },
   });
 
   /*
@@ -215,16 +222,27 @@ console.log("Agents agentInput xkcd", agentInput);
     <Forget uuid={thing && thing.uuid} callBack={callBack} />
   );
 
+useEffect(() =>{
+
+console.log("Agents thing", thing);
+
+}, [thing]);
+
   return (
     <>
-      <div>AGENTS</div>
+{debugFlag && (     <div>AGENTS</div>)}
+
+{devFlag && (<>
+DEV FLAG{thing && thing.variables && thing.variables.flag && thing.variables.flag.dev}
+</>)}
+
       {thing &&
         agents &&
         agents.map((agent) => {
           return (
             <>
-              AGENT {agent}
-              <br />
+{debugFlag && (<>              AGENT {agent} 
+              <br /></>)}
               <Agent
                 thing={thing}
                 agentInput={{ ...agentInput, agent: agent }}

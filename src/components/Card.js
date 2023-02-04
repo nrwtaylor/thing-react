@@ -24,6 +24,7 @@ const style = {
 };
 
 export const Card = memo(function Card({
+//export const Card = (function Card({
   id,
   card,
   token,
@@ -135,6 +136,8 @@ export const Card = memo(function Card({
             cursor: "move",
           }}
         >
+{'xxx'}{card && card.open}{'yyy'}
+
           <Thing
             uuid={card.uuid}
             token={token}
@@ -170,6 +173,7 @@ export const Card = memo(function Card({
             cursor: "move",
           }}
         >
+
 {/*<LazyLoad style={{display:"flex"}} >*/}
           <Thing
             //          to={card.to}
@@ -180,6 +184,7 @@ export const Card = memo(function Card({
             token={token}
             datagram={{
               ...card,
+              card:{visible:cardVisible},
               pollInterval:
                 card && card.pollInterval && cardVisible
                   ? card.pollInterval

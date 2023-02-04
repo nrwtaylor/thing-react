@@ -167,6 +167,11 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   }),
 }));
 
+const engineState = process.env.REACT_APP_ENGINE_STATE;
+var debugFlag = false;
+var devFlag = false;
+if (engineState === 'dev') {debugFlag = true; devFlag = true;}
+
 // Either a datagram, or a uuid.
 // datagram - to, from, subject, agentInput
 function Thing(props) {
@@ -175,6 +180,7 @@ function Thing(props) {
   const classes = useStyles();
 
   const { datagram: initialDatagram, canOpen, open, canFold } = props;
+
   const { datagram, setDatagram } = useDatagram(initialDatagram);
 
   var { agentInput } = props;
@@ -209,7 +215,7 @@ function Thing(props) {
     if (initialDatagram == null) {
       return;
     }
-
+console.log("initialDatagram", initialDatagram);
     // Don't let the datagram be reset.
     if (datagram !== null) {
       return;
@@ -218,8 +224,8 @@ function Thing(props) {
     console.debug("Thing initialDatagram changed", initialDatagram);
     console.debug("Thing initialDatagram prior datagram", datagram);
     setDatagram(initialDatagram);
-
-    if (initialDatagram.subject) {
+/*
+    if (typeof initialDatagram.subject !== "undefined") {
 
       setSubject(initialDatagram.subject);
       console.log("Thing initialDatagram setSubject", initialDatagram.subject);
@@ -228,6 +234,7 @@ function Thing(props) {
       setUrl(u);
 
     }
+*/
   }, [initialDatagram]);
 
   const { text } = useParams();
@@ -270,7 +277,7 @@ function Thing(props) {
     thingReport: data,
     flag: flagThingReport,
     getThingReport,
-  } = useThingReport(url, pollInterval);
+  } = useThingReport(url, open ? pollInterval : 60000);
 
   const { things, setThings } = useThings();
   const { token } = useToken();
@@ -288,7 +295,7 @@ function Thing(props) {
   const currentAt = Date.now();
 
   const defaultPollInterval =
-    datagram && datagram.pollInterval ? datagram.pollInterval : 0.5 * 60 * 1000; //ms
+    datagram && datagram.pollInterval ? datagram.pollInterval : 0.5 * 60 *1000; //ms
   const defaultTickInterval = 25; //ms
   const defaultTimerInterval = 25;
   //  const minimumPollInterval = 2 * 60 * 1000; //ms
@@ -315,15 +322,42 @@ function Thing(props) {
   }
 
   useEffect(() => {
+//console.log("Thing datagram", datagram);
     if (datagram == null) {return;}
 
-    setTimedInterval(datagram.pollInterval);
 
-    console.log("Thing datagram uuid", uuid);
+console.log("Thing datagram", datagram);
+
+
+//    setTimedInterval(datagram.pollInterval);
+
+    console.log("Thing datagram uuid", uuid, datagram.subject);
 
     //    setThing(datagram.uuid, datagram, token)
 
     setThing(datagram);
+
+
+
+    if (typeof datagram.subject !== "undefined") {
+
+      setSubject(initialDatagram.subject);
+      console.log("Thing initialDatagram setSubject", initialDatagram.subject);
+      const u = webPrefix + getSlug(initialDatagram.subject) + ".json";
+      console.log("Thing initialDatagram setUrl", u);
+      setUrl(u);
+
+    }
+
+    if (typeof datagram.pollInterval !== "undefined") {
+
+    setTimedInterval(datagram.pollInterval);
+
+
+    }
+
+
+
 
     /*
       .then((result) => {
@@ -341,6 +375,49 @@ function Thing(props) {
       });
 */
   }, [datagram]);
+
+
+  useEffect(() => {
+    if (props.datagram == null) {return;}
+
+if (props.datagram.pollInterval) {
+    setTimedInterval(props.datagram.pollInterval);
+}
+
+    console.log("Thing datagram uuid", uuid);
+
+    //    setThing(datagram.uuid, datagram, token)
+
+    setThing(props.datagram);
+
+  }, [props.datagram]);
+
+
+
+  useEffect(() =>{
+
+processFlag("dev", devFlag);
+
+  }, [devFlag]);
+
+  useEffect(() =>{
+
+processFlag("debug", debugFlag);
+
+  }, [debugFlag]);
+
+  function processFlag(flagName, flagState) {
+if (thing == null) {return true;}
+
+    //const d = thing;
+    const d ={};
+    if (d.variables == null) {d['variables'] = {}};
+    if (d.variables.flag == null) {d.variables['flag'] = {};}
+
+    d.variables.flag[flagName] = flagState;
+console.log("Thing processFlag", flagName, flagState, d, datagram, thing);
+    updateThing(d);
+  }
 
   const [aggressivePoll, setAggressivePoll] = useState();
 
@@ -389,11 +466,11 @@ setRunTime(runTime);
 
   const [flipped, setFlipped] = React.useState();
 
-  //useEffect(()=>{
+  useEffect(()=>{
 
-  //console.log("Thing thing", thing);
+  console.log("Thing thing", thing);
 
-  //}, [thing]);
+  }, [thing]);
 
   useEffect(() => {
     if (data == null) {
@@ -409,6 +486,13 @@ setRunTime(runTime);
       data,
       url
     );
+
+if (data) {
+
+console.log("Thing thingReport data", data);
+
+}
+
     //setData(thingReport);
     if (
       data.thingReport &&
@@ -440,6 +524,18 @@ setRunTime(runTime);
 
     setFlag("green");
   }, [data]);
+
+useEffect(()=>{
+
+console.log("foobar data", data);
+
+}, [data]);
+
+useEffect(() =>{
+
+console.log("foobar url", url);
+
+}, [url]);
 
   const handleExpandClick = () => {
     console.log("Thing handleExpandClick expanded");
@@ -476,17 +572,10 @@ setRunTime(runTime);
     const n = u.substring(0, 4);
 
     setUuid(u);
-    setNuuid(n);
+    setNuuid(n.toUpperCase());
   }, [props.uuid, text]);
 
   const [error, setError] = useState();
-
-  /*
-  const [data, setData] = useState({
-    thing: { uuid: "X" },
-    thing_report: { sms: "No response. Yet." },
-  });
-*/
 
   useEffect(() => {
     console.info("Thing started");
@@ -607,38 +696,6 @@ console.log("Thing uuid ass", uuid, ass);
     //getThings();
   };
 
-  // Call getResponse on a Timer.
-  // Check if the flag has changed.
-
-  /*
-  useEffect(() => {
-    // If still processing the last one,
-    // Skip a beat, do not request another.
-    //    if (flag === "red") {
-    //      return;
-    //    }
-    setFlag("green");
-    // First time flag is green.
-
-    console.log("Thing nextRunAt pollInterval", pollInterval);
-    //const t = currentAt + pollInterval;
-
-    //setNextRunAt(t);
-    getResponse(webPrefix);
-
-    const interval = setInterval(() => {
-
-      getResponse(webPrefix);
-      console.log("This will run every: " + pollInterval);
-
-    }, pollInterval);
-    console.log("interval", interval);
-
-    return () => clearInterval(interval);
-    //  }, [flag]);
-  }, [datagram]);
-*/
-
   useEffect(() => {
     // If still processing the last one,
     // Skip a beat, do not request aother.
@@ -675,12 +732,12 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
   };
 
   // Test dynamic loading
-  async function load() {
-    let say = await import("./Snapshot.js");
+//  async function load() {
+//    let say = await import("./Snapshot.js");
     //    say.hi(); // Hello!
     //    say.bye(); // Bye!
     //    say.default(); // Module loaded (export default)!
-  }
+//  }
 
   useEffect(() => {
     // If still processing the last one,
@@ -886,17 +943,18 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
             </>
           }
         />
-        pollInterval {pollInterval}
-        <br />
-        flag {flag && <>{flag}</>}
-        <br />
-        flagThing {flagThing && <>{flagThing}</>}
-        <br />
-        flagThingReport {flagThingReport && <>{flagThingReport}</>}
-        <br />
+        {expanded ? "EXPANDED" : "NOT EXPANDED"}
+
+        {debugFlag && (<>pollInterval {pollInterval}<br/></>)}
+        {debugFlag && (<>flag {flag && <>{flag}</>}<br /></>)}
+        {debugFlag && (<>flagThing {flagThing && <>{flagThing}</>}<br /></>)}
+        {debugFlag && (<>flagThingReport {flagThingReport && <>{flagThingReport}</>}<br /></>)}
+
+
+
         {/*<Item thing={{...datagram, uuid:uuid}} />*/}
         <Item thing={thing} agentInput={null} updateThing={updateThing} />
-        {datagram && datagram.score}
+        {datagram && datagram.score} 
         {token && token.message}
         {/*
         {expanded ? "expanded" : "not expanded"}
@@ -972,13 +1030,14 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
           {thing && thing.createdAt && <>{humanAge(thing.createdAt)}</>}
           {!expanded && !flipped && (
             <>
-              <LazyLoad>
+              <LazyLoad height={400} offset={200} once>
                 <div>
                   <Agents
                     channel={"image"}
                     user={null}
                     //thing={data.thing}
-                    thing={props.datagram}
+thing={thing}
+             //       thing={props.datagram}
                     agentInput={{
                       stack: { url: webPrefix },
                       snapshot: false,
@@ -1099,13 +1158,17 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
               <br />
               {error && error.message}
               <br />
-              <Typography>RUNTIME {runTime}</Typography>
+{debugFlag && (
+              <Typography>RUNTIME {runTime}</Typography>)}
+
+
               {!data && <>NOT DATA</>}
               <Agents
                 channel={"image"}
                 user={null}
                 //thing={data.thing}
-                thing={props.datagram}
+             //   thing={props.datagram}
+thing={thing}
                 agentInput={{ ...agentInput, stack: { url: webPrefix } }}
               />
               {subject && subject.toLowerCase().indexOf("ping") !== -1 && (
@@ -1176,8 +1239,10 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
         </div>
         ASSOCIATIONS
         <div>
+
           {true && expanded && thing && <Collection thing={{ ...thing }} agentInput={{...agentInput, collection:true}} />}
-        </div>
+
+</div>
         <div>
           <DataReport />
         </div>
@@ -1186,5 +1251,6 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
   );
 }
 
-export default memo(Thing);
 //export default Thing;
+export default memo(Thing);
+

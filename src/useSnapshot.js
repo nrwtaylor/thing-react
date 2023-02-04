@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 
-import { getWebJson, getSnapshot } from "./util/database.js";
+import { getWebJson } from "./util/database.js";
 import { humanTime, zuluTime } from "./util/time.js";
 
 export default function useSnapshot(input, inputSnapshotPollInterval) {
-  const to = input;
+  //const to = input;
 
   const [snapshotInterval, setSnapshotInterval] = useState(50);
 
@@ -12,13 +12,22 @@ export default function useSnapshot(input, inputSnapshotPollInterval) {
 
   const [snapshot, setSnapshot] = useState({
     thing: { uuid: "X" },
-    thing_report: { sms: "No response. Yet." },
+    thingReport: { sms: "No response. Yet." },
   });
 
   const [snapshotRunTime, setSnapshotRunTime] = useState();
   const [snapshotRunAt, setSnapshotRunAt] = useState();
   const [snapshotResults, setSnapshotResults] = useState([]);
   const [sequentialErrorCount, setSequentialErrorCount] = useState();
+
+  useEffect(() => {
+    if (input == null) {
+      return;
+    }
+    console.log("useSnapshot input", input);
+    getSnapshot();
+  }, [input]);
+
   useEffect(() => {
     if (!inputSnapshotPollInterval) {
       return;
@@ -29,7 +38,8 @@ export default function useSnapshot(input, inputSnapshotPollInterval) {
       inputSnapshotPollInterval
     );
 
-    setSnapshotInterval(inputSnapshotPollInterval);
+    // Test taking this out to maximumize useSnapshot calls
+    //    setSnapshotInterval(inputSnapshotPollInterval);
   }, [inputSnapshotPollInterval]);
 
   useEffect(() => {
@@ -37,7 +47,11 @@ export default function useSnapshot(input, inputSnapshotPollInterval) {
     getSnapshot();
 
     const interval = setInterval(() => {
-      console.log("useSnapshot getSnapshot() call requested");
+      console.log(
+        "useSnapshot getSnapshot() call requested",
+        snapshotInterval,
+        input
+      );
       getSnapshot();
     }, snapshotInterval); // 20 Hz was 200.
 
@@ -45,7 +59,7 @@ export default function useSnapshot(input, inputSnapshotPollInterval) {
   }, [snapshotInterval]);
 
   useEffect(() => {
-    if (snapshot == undefined) {
+    if (snapshot == null) {
       return;
     }
 
@@ -79,15 +93,22 @@ export default function useSnapshot(input, inputSnapshotPollInterval) {
   function getSnapshot() {
     const startTime = new Date();
     if (flag === "red") {
+      console.log("useSnapshot getSnapshot flag", flag);
       return;
     }
 
-    const url = to;
+    if (input == null) {
+      console.log("useSnapshot getSnapshot input", input);
+
+      return;
+    }
+
+    const url = input;
+
     console.log("useSnapshot url", url);
     return getWebJson(url, "")
       .then((result) => {
-        console.log("useSnapshot getWebJson url result", url, result);
-        console.log("History history getSnapshot", url, result);
+        console.log("useSnapshot getSnapshot result", url, result);
         if (!result) {
           return true;
         }
@@ -111,8 +132,8 @@ export default function useSnapshot(input, inputSnapshotPollInterval) {
         return result;
       })
       .catch((error) => {
-        console.log("History history getSnapshot error", error);
-        console.error("useSnapshot getWebJson error", error);
+        //console.log("History history getSnapshot error", error);
+        console.error("useSnapshot getSnapshot error", error);
         setFlag("yellow");
         return { ...snapshot, error };
         //return;

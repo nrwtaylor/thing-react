@@ -21,5 +21,5 @@ if (is == null) {return null;}
 };
 
 // https://hygraph.com/blog/react-memo
-export default memo(DynamicComponent);
-
+//export default memo(DynamicComponent);
+export default DynamicComponent;

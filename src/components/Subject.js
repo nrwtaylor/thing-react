@@ -5,6 +5,12 @@ import TextField from "@mui/material/TextField";
 
 import useThing from "../useThing.js";
 
+const engineState = process.env.REACT_APP_ENGINE_STATE;
+var debugFlag = false;
+var devFlag = false;
+if (engineState === 'dev') {debugFlag = true; devFlag = true;}
+
+
 export default function Subject({ thing, setSubject }) {
   //  const [subject, setSubject] = useState(datagram.subject);
   //const subject = thing.subject;
@@ -95,7 +101,7 @@ updateThing({...thing, subject:s});
 
   return (
     <>
-{thing.subject}
+{debugFlag && (<>{thing.subject}</>)}
       <TextField
         //              error = {validation.validator(variableType,subject)}
         variant="filled"

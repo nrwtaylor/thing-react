@@ -125,7 +125,6 @@ function Trace(props) {
     //for (let i = 0; i < numberOfTicks; i++) {
     var d2 = 0;
     var i = 0;
-
     while (d2 < last.getTime()) {
       if (d2 > last.getTime()) {
         //        console.log("while break");
@@ -138,11 +137,7 @@ function Trace(props) {
       x.push(d2);
     }
     //return;
-//if (x.length > 1) {
     setXSeriesData(x);
-//} else {
-//setXSeriesData([]);
-//}
     console.log("xSeriesData x", x);
 
     setTimeSeriesData(t);

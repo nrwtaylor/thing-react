@@ -36,9 +36,11 @@ import Magnetometer from "../components/Magnetometer.js";
 import MotionReference from "../components/MotionReference.js";
 
 import Ping from "../components/Ping.js";
-import { getSnapshot } from "../util/database.js";
+//import { getSnapshot } from "../util/database.js";
 
 import useSnapshot from "../useSnapshot";
+
+import { extractUuid, extractNuuid, getSlug } from "../util/text.js";
 
 //import { useSwipeable } from "react-swipeable";
 
@@ -48,13 +50,20 @@ const { REACT_APP_SNAPSHOT } = process.env;
 // refactor as 
 // Snapshot(thing, agentInput)
 
-function Snapshot(props) {
-  const { datagram } = props;
-  const { to } = datagram;
+const engineState = process.env.REACT_APP_ENGINE_STATE;
+var debugFlag = false;
+var devFlag = false;
+if (engineState === 'dev') {debugFlag = true; devFlag = true;}
 
-  const user_name = props.user_name; // TODO
-  const agent_input = props.agent_input;
-  const webPrefix = agent_input;
+
+
+function Snapshot({thing, agentInput}) {
+
+  const datagram = thing;
+  //const { to } = datagram;
+
+  const agent_input = agentInput;
+  const webPrefix = agentInput;
   //const [flag, setFlag] = useState();
   //const [requestedAt, setRequestedAt] = useState();
   const [reply, setReply] = useState("");
@@ -66,10 +75,33 @@ function Snapshot(props) {
   //  const toSnapshot = "http://192.168.10.10/snapshot.json";
   const { snapshot, flag, snapshotRunTime } = useSnapshot(toSnapshot);
 
-  const [data, setData] = useState({
-    thing: { uuid: "X" },
-    thing_report: { sms: "No response. Yet." },
-  });
+useEffect(() =>{
+if (thing == null) {return;}
+if (thing.subject == null) {return;}
+
+const uuidPathname = extractUuid(thing.subject);
+
+if (uuidPathname === true) {return;}
+if (uuidPathname === false) {return;}
+
+setToSnapshot("https://stackr.ca/snapshot/" + uuidPathname + "/hey.json");
+
+
+}, [thing]);
+
+useEffect(() =>{
+//const i = "861cd510-65bc-457e-b10f-e58182ff7a3d";
+//setToSnapshot("https://stackr.ca/snapshot/" + i + "/hey.json");
+
+console.log("Snapshot toSnapshot", toSnapshot);
+
+},[toSnapshot]);
+
+  //const [data, setData] = useState({
+  //  thing: { uuid: "X" },
+  //  thingReport: { sms: "No response. Yet." },
+  //});
+  const [data, setData] = useState();
 
   const [open, setOpen] = useState(false);
 
@@ -97,8 +129,23 @@ function Snapshot(props) {
   };
 
   useEffect(() => {
-    console.log("Snapshot snapshot", snapshot);
+    console.log("Snapshot thing snapshot", thing, snapshot);
+
+if (snapshot && snapshot.thingReport) {
+if (snapshot.thingReport.snapshot) {
+console.log("Snapshot setData snapshot.thingReport.snapshot", snapshot.thingReport.snapshot);
+setData(snapshot.thingReport.snapshot);
+return;
+}
+}
+
+if (snapshot.thingReport == null) {
+console.log("Snapshot setData snapshot", snapshot);
     setData(snapshot);
+return;
+}
+// Or perhaps don't refresh snapshot.Snapshot thing snapshot
+setData(true);
   }, [snapshot]);
 
   function humanTime(timestamp) {
@@ -107,8 +154,16 @@ function Snapshot(props) {
   }
 
   useEffect(() => {
-    console.log("Snapshot data", data);
+if (thing == null) {return;}
+    console.log("Snapshot data", toSnapshot, data);
   }, [data]);
+
+useEffect(()=>{
+if (thing == null) {return;}
+
+console.log("Snapshot thing", toSnapshot, thing.uuid, thing);
+
+},[thing]);
 
   function fromName() {
     if (datagram === undefined) {
@@ -136,6 +191,12 @@ function Snapshot(props) {
   function handleChangeStream(c) {
     console.log("Snapshot handleChangeStream c", c);
   }
+
+useEffect(() =>{
+
+console.log("Snapshot data", data);
+
+}, [data]);
 
   function callBack() {
     console.log("Agent callBack called.");
@@ -195,25 +256,37 @@ function Snapshot(props) {
 
   return (
     <>
+
+{debugFlag && (<>
       <div>SNAPSHOT</div>
+</>)}
+{debugFlag && (<>
       <div>URL {toSnapshot}</div>
+</>)}
       <div>
+{debugFlag && (<>
         FLAG {flag} COLOUR
-        <br />
+        <br /></>)}
+{debugFlag && (<>
         GET TIME {snapshotRunTime}ms {Math.round(1000 / snapshotRunTime, 1)}Hz
-        <br />
+        <br /></>)}
+
         {data && data.ping && <Ping ping={data.ping} />}
+
         {data && (
           <>
-            SNAPSHOT TRANSDUCER
-            <br />
+{debugFlag && (<>            SNAPSHOT TRANSDUCER
+            <br /></>)}
             {Object.keys(data).map((transducer) => {
               console.log("Snapshot transducer", transducer);
               if (!["temperature", "humidity"].includes(transducer)) {
-                return;
+return (<>{transducer} not used<br /></>);
+            //    return;
               }
 
               return (
+<>
+{transducer} used<br />
                 <Stream
                   key={transducer}
                   hide={true}
@@ -223,6 +296,7 @@ function Snapshot(props) {
                   }}
                   transducer={data[transducer]}
                 />
+</>
               );
             })}
           </>
@@ -245,6 +319,7 @@ function Snapshot(props) {
                   }}
                   period={snapshotInterval}
                   transducer={data.transducers[transducer]}
+                  agentInput={{snapshot:{interval:snapshotInterval,period:false}}}
                 />
               );
             })}
@@ -395,12 +470,19 @@ ACCZ: {data && data.transducers && data.transducers.thacczax2 && data.transducer
 ACCZ: {data && data.transducers && data.transducers.thacczax2 && data.transducers.thacczax2.amount} m<br />
 ACCZ: {data && data.transducers && data.transducers.thacczax2 && data.transducers.thacczax2.amount} m<br />
 */}
+{data && data.current_latitude && (<>
         LATITUDE: {data && data.current_latitude}
-        <br />
+        <br /></>)}
+
+{data && data.current_longitude && (<>
         LONGITUDE: {data && data.current_longitude}
-        <br />
+        <br /></>)}
+
+{data && data.speed_in_knots && (<>
         SPEED IN KNOTS: {data && data.speed_in_knots} knots
-        <br />
+        <br /></>)}
+
+{data && data.speed_in_knots && (<>
         <Stream
           hide={true}
           quantity={{
@@ -409,21 +491,36 @@ ACCZ: {data && data.transducers && data.transducers.thacczax2 && data.transducer
           }}
           period={50}
         />
-        <br />
+        <br /></>)}
+
+{data && data.true_course && (<>
         TRUE COURSE: {data && data.true_course}
-        <br />
+        <br /></>)}
+
+{data && data.number_of_satellites && (<>
         NUMBER OF SATELLITES: {data && data.number_of_satellites}
-        <br />
+        <br /></>)}
+
+{data && data.horizontal_dilution_of_precision && (<>
         HDOP: {data && data.horizontal_dilution_of_precision}
-        <br />
+        <br /></>)}
+
+{data && data.altitude_above_mean_sea_level && (<>
         ALTITUDE: {data && data.altitude_above_mean_sea_level}m (MSL)
-        <br />
+        <br /></>)}
+
+{data && data.fix_time && (<>
         FIX TIME: {data && data.fix_time}
-        <br />
+        <br /></>)}
+
+{data && data.time_stamp && (<>
         TIMESTAMP: {data && data.time_stamp}
-        <br />
+        <br /></>)}
+
+{data && data.parsedAt && (<>
         PARSED AT: {data && data.parsedAt}
-        <br />
+        <br /></>)}
+
       </div>
     </>
   );

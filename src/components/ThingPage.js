@@ -17,8 +17,6 @@ import useThing from "../useThing";
 
 import { extractUuid, extractNuuid, getSlug } from "../util/text.js";
 
-import axios from "axios";
-
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
@@ -60,6 +58,13 @@ export default function ThingPage(props) {
     const u = uuidv4();
     setUuid(u);
   }
+
+//useEffect(() =>{
+
+//const variables={{agent:"channel-token", variable:"hello",open:{isOpen:true,canOpen:false},fold:{canFold:false},play:play}}
+
+
+//}, []);
 
   useEffect(() => {
     if (uuids == null) {
@@ -160,12 +165,16 @@ export default function ThingPage(props) {
   return (
     <>
       THING PAGE
+{/*
       <Button
         thing={{
           subject: play ? "play" : "stop",
           agentInput: play ? "Play" : "Stop",
         }}
       />
+*/}
+{/*{thing && thing.subject*/}
+
       {thing && (
         <div key={thing.uuid}>
           <Thing

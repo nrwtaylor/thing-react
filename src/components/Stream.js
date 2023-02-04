@@ -42,11 +42,11 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { useSwipeable } from "react-swipeable";
 
 function Stream(props) {
-  const cycleDays = 1;
+  //const cycleDays = 1;
 
   const navigate = useNavigate();
 
-  const { at, quantities, quantity, period: inputPeriod, hide } = props;
+  const { at, quantities, quantity, period: inputPeriod, hide, agentInput } = props;
   const canSwipe = true;
 
   const config = {
@@ -76,6 +76,20 @@ function Stream(props) {
   if (transducer && transducer.amount) {
     amount = transducer.amount;
   }
+
+useEffect(() =>{
+
+if (agentInput == null) {return;}
+
+if (typeof agentInput.period !== 'undefined') {
+
+if (agentInput.period === false) {
+setPeriod(50)
+}
+
+}
+
+},[agentInput]);
 
   if (transducer && transducer.units && transducer.units !== "X") {
     units = transducer.units;

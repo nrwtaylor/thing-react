@@ -9,10 +9,10 @@ import * as serviceWorker from './serviceWorker.js';
 // This feels like good practice.
 
  if ((process.env.REACT_APP_ENGINE_STATE === 'production') || (process.env.REACT_APP_ENGINE_STATE === 'pre_launch')) {
-//   console.log = () => {}
-//   console.error = () => {}
- //  console.debug = () => {}
- //  console.info = () => {}
+   console.log = () => {}
+   console.error = () => {}
+   console.debug = () => {}
+   console.info = () => {}
  }
 
 

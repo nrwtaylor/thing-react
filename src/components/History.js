@@ -54,20 +54,26 @@ import useThingReport from "../useThingReport";
 
 import { useSwipeable } from "react-swipeable";
 
-//import { useSwipeable } from "react-swipeable";
+// Refactor to pass this in thing as variables.
+const engineState = process.env.REACT_APP_ENGINE_STATE;
+var debugFlag = false;
+var devFlag = false;
+if (engineState === 'dev') {debugFlag = true; devFlag = true;}
 
-//const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 
-function History(props) {
+
+function History({thing, agentInput}) {
   const navigate = useNavigate();
 
-  const {agentInput} = props;
+  //const {agentInput} = props;
 
-  const { datagram } = props;
+  //const { datagram } = props;
+const datagram = thing;
+//  const { showLive } = props;
+const showLive = true;
 
-  const { showLive } = props;
+const [subject, setSubject] = useState();
 
-  const { subject } = datagram;
 
   const [windowIndex, setWindowIndex] = useState();
   const [tracePoints, setTracePoints] = useState([]);
@@ -91,8 +97,11 @@ function History(props) {
     .replace("history ", "");
 */
 useEffect(() =>{
+if (datagram == null) {return;}
 
-console.log("History datagram", datagram);
+if (datagram.subject) {setSubject(datagram.subject);}
+
+   console.log("History datagram", datagram);
 
 }, [datagram]);
 
@@ -100,6 +109,8 @@ console.log("History datagram", datagram);
     if (subject == null) {
       return;
     }
+
+
     console.debug("History subject", subject);
     const r = subject
       .replace("transducers-", "")
@@ -122,6 +133,8 @@ console.log("History datagram", datagram);
       return;
     }
     setHistoryTo(webPrefix + "history/" + hr + ".json");
+
+
     console.debug("History subject", subject);
     const subjectTokens = subject.split("-");
     console.debug("History parts", subjectTokens[subjectTokens.length - 1]);
@@ -130,8 +143,8 @@ console.log("History datagram", datagram);
     setText(subjectTokens[subjectTokens.length - 2]);
   }, [subject]);
 
-  const user_name = props.user_name; // TODO
-  const agent_input = props.agent_input;
+  //const user_name = props.user_name; // TODO
+  //const agent_input = props.agent_input;
 //  const webPrefix =
 //    agentInput.web && agentInput.web.webPrefix == null ? process.env.REACT_APP_WEB_PREFIX : agentInput.web.webPrefix;
 
@@ -207,12 +220,20 @@ console.log("History webPrefix", webPrefix);
   }, [snapshotTo, historyTo]);
 
   useEffect(() => {
+if (datagram == null) {return;}
     // Extract uuid from datagram.
     // To provide access to the snapshot.
     // Consider: Can refactor this code into useSnapshot().
     console.debug("History datagram", snapshotTo, datagram.subject);
     const uuid = extractUuid(datagram.subject);
-    const to = webPrefix + "/snapshot/" + uuid + "/hey.json";
+
+    var to = webPrefix + "/snapshot/" + uuid + "/hey.json";
+if (uuid === false) {
+to = webPrefix + "/snapshot.json";
+}
+
+
+
     setSnapshotTo(to);
   }, [datagram]);
 
@@ -381,8 +402,8 @@ console.log("History webPrefix", webPrefix);
       setWindowIndex(w);
 
       console.debug("User Swiped Left");
-      if (props.onChangeStream) {
-        props.onChangeStream(w);
+      if (thingReport) {
+        thingReport(w);
       }
     }
 
@@ -393,8 +414,8 @@ console.log("History webPrefix", webPrefix);
       if (w >= 0) {
         setWindowIndex(w);
 
-        if (props.onChangeStream) {
-          props.onChangeStream(w);
+        if (thingReport) {
+          thingReport(w);
         }
       }
     }
@@ -445,15 +466,23 @@ console.log("History webPrefix", webPrefix);
 
   return (
     <>
-      <div>HISTORY</div>
+{debugFlag && (<>
+DEV
+{thing && thing.variables && thing.variables.flag && thing.variables.flag.dev}
+</>)}
+{debugFlag && (
+      <div>HISTORY</div>)}
 {snapshotRunAt}
 <br/>
+{debugFlag && (<>
       {historyFlag}
       <br />
       {snapshotFlag}
       <br />
       {thingReportFlag}
       <br />
+</>)}
+
       TEXT {thingReport && thingReport.text}
       <br />
       {text} {resolution}
@@ -469,7 +498,7 @@ console.log("History webPrefix", webPrefix);
         {subject}
       </Button>
       <br />
-      {true && (
+      {debugFlag && (
         <>
           REF {ref}
           <br />
@@ -481,7 +510,8 @@ console.log("History webPrefix", webPrefix);
           <br />
         </>
       )}
-      SNAPSHOT INTERVAL {snapshotInterval}
+{debugFlag && (<>
+      SNAPSHOT INTERVAL {snapshotInterval}</>)}
       <Trace data={tracePoints} cycle={1} />
       <Trace data={historyPoints} cycle={1} />
       <br />

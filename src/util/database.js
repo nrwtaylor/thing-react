@@ -3,7 +3,7 @@ import { zuluTime, zuluTimeDifferenceMilliseconds } from "./time.js";
 import { getSlug, extractUuid } from "./text.js";
 const apiPrefix = process.env.REACT_APP_API_PREFIX;
 
-const snapshotCacheTimeMilliseconds = 60000;
+const snapshotCacheTimeMilliseconds = 1;
 
 axios.defaults.headers = {
   "Cache-Control": "no-cache",
@@ -332,6 +332,7 @@ if (txBytes + rxBytes > quotaBytes) {return Promise.resolve({error:{message:'Quo
 }
 
 export function getWebJson(webPrefix, token) {
+console.debug("database getWebJson", webPrefix, token);
 if (txBytes + rxBytes > quotaBytes) {return Promise.resolve({error:{message:'Quota exceeded.'}})}
 
   return getSnapshot(webPrefix, token);
@@ -362,7 +363,8 @@ if (txBytes + rxBytes > quotaBytes) {return Promise.resolve({error:{message:'Quo
       u,
       slug,
       age + "ms",
-      stack[slug].refreshedAt
+      stack[slug].refreshedAt,
+      stack[slug]
     );
       return Promise.resolve(stack[slug]);
     }

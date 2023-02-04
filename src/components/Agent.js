@@ -45,6 +45,12 @@ const recognizedSlugs = [
   "humidity-temperature",
 ];
 
+const engineState = process.env.REACT_APP_ENGINE_STATE;
+var debugFlag = false;
+var devFlag = false;
+if (engineState === 'dev') {debugFlag = true; devFlag = true;}
+
+
 function slugAgent(slug) {
 
 if (slug == null) {return false;}
@@ -78,7 +84,7 @@ function Agent({ thing, agentInput }) {
 
   const [data, setData] = useState({
     thing: { uuid: "X" },
-    thing_report: { sms: "No response. Yet." },
+    thingReport: { sms: "No response. Yet." },
   });
 
   /*
@@ -204,11 +210,24 @@ console.log("Agent agent", agent);
     <Forget uuid={thing && thing.uuid} callBack={callBack} />
   );
 
+function handleThingReport(event) {
+
+console.log("Agent handleThingReport event", event);
+
+}
+
   return (
     <>
-      <div>AGENT</div>
+{debugFlag && (      <div>AGENT</div>)}
+{debugFlag && (<>
+DEV
+{thing && thing.variables && thing.variables.flag && thing.variables.flag.dev}
+</>)}
+
+{debugFlag && (<>
       {thing && thing.nomFrom}
       {thing && thing.from}
+</>)}
 
       {thing && agent && (
         <DynamicComponent
@@ -219,12 +238,15 @@ console.log("Agent agent", agent);
 
 thing={thing}
 agentInput={agentInput}
+thingReport={()=>handleThingReport()}
+
 
           datagram={thing}
           agent_input={agentInput}
         />
       )}
 
+{devFlag && (
       <TextField
         multiline
         //        autoFocus
@@ -236,6 +258,7 @@ agentInput={agentInput}
         value={reply}
         onChange={(event) => setReply(event.target.value)}
       />
+)}
     </>
   );
 
@@ -251,11 +274,11 @@ agentInput={agentInput}
         datagram={thing}
         agent_input={agentInput}
       />
-
+{devFlag && (<>
       {thing && thing.nomFrom}
       {thing && thing.from}
       {/* flag */}
-
+</>)}
       <ListItem key={thing && thing.uuid} alignItems="flex-start">
         <ListItemText
           primary={

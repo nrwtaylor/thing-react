@@ -45,15 +45,20 @@ export function zuluTextSpread(zuluA,zuluB) {
 if (zuluA === undefined) {return;}
 if (zuluB === undefined) {return;}
 
-const partsA = zuluA.split("T");
-const partsB = zuluB.split("T");
+// Remove .000 milliseconds
+
+const conditionedZuluA = zuluA.replace(".000","");
+const conditionedZuluB = zuluB.replace(".000","");
+
+const partsA = conditionedZuluA.split("T");
+const partsB = conditionedZuluB.split("T");
 
 if (partsA[0] === partsB[0]) {
 
-return zuluA + " to " +partsB[1];
+return conditionedZuluA + " to " +partsB[1];
 }
 
-return zuluA + " to " + zuluB;
+return conditionedZuluA + " to " + conditionedZuluB;
 //      {lastAt}
 //      {" to "}
 //      {firstAt}
