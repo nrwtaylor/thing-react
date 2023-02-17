@@ -424,23 +424,33 @@ var result = deepDiffMapper.map({
     //      const { thing, index } = findThing(id);
 
     console.log("useThing updateThing t", t);
+console.log("useThing updateThing token", token);
     console.log("useThing updatething thing", thing);
     const newThing = { ...thing, ...t };
     console.log("useThing updateThing request saveThing", newThing);
-    saveThing(newThing);
+return    saveThing(newThing).then((result)=>{
+console.log("useThing updateThing result", result);
+return result;
 
-    return Promise.resolve(true);
+}).catch((error)=>{
+console.error("useThing updateThing error", error);
+return Promise.reject("Could not update thing");
+});
+
+//    return Promise.resolve(true);
   };
 
   const saveThing = (t) => {
-    console.log("useThing saveThing userThing", t);
+    console.log("useThing saveThing userThing t token", t, token);
     setThing(t);
-    setThingy(t.uuid, t, token)
+    return setThingy(t.uuid, t, token)
       .then((result) => {
         console.log("useThing saveThing result", result);
+return result;
       })
       .catch((error) => {
         console.log("useThing saveThing error", error);
+return Promise.reject("Could not save thing.");
       });
   };
 

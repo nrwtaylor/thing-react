@@ -14,8 +14,7 @@ const { REACT_APP_CLIENT_SECRET } = process.env;
 const { REACT_APP_API_PREFIX } = process.env;
 
 async function loginUser(credentials) {
-  // const { REACT_APP_CLIENT_SECRET } = process.env;
-  // const { REACT_APP_API_PREFIX } = process.env;
+
   const url = REACT_APP_API_PREFIX + "auth/signin";
   console.log("Login loginUser url credentials", url, credentials);
 
@@ -188,8 +187,6 @@ setLogin("yes");
   function handleSubmitButton() {
   }
 
-  //if (!token) {
-
   return (
     <div className="login-wrapper">
       <h1>{login ? "Please Log In" : "Logged In"}</h1>
@@ -223,9 +220,6 @@ setLogin("yes");
     </div>
   );
 
-  //setToken={setToken} setIdentity={setIdentity}}
-
-  //return (<>Login Token {message}</>);
 }
 
 Login.propTypes = {

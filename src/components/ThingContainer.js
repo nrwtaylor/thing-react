@@ -34,10 +34,10 @@ const style = {
 };
 
 //export const ThingContainer = memo(function ThingContainer(props) {
-export const ThingContainer = (props) => {
+export const ThingContainer = ({thing}) => {
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 
-  const { thing } = props;
+//  const { thing } = props;
   const { username, token, getToken, setToken, deleteToken } = useToken();
   const { identity, setIdentity, deleteIdentity } = useIdentity();
 
@@ -87,14 +87,13 @@ export const ThingContainer = (props) => {
       return;
     }
 
-    if (thing.associations) {
+    if (typeof thing.associations !== undefined) {
       var newAssociations = thing.associations;
       if (
         Array.isArray(thing.associations) &&
         !thing.associations.includes(thing.uuid)
       ) {
         newAssociations = thing.associations.push(thing.uuid);
-        //setAssociations(newAssociations);
       }
 
       setAssociations(newAssociations);
@@ -112,8 +111,6 @@ export const ThingContainer = (props) => {
         return;
       }
 
-      //console.log("deleteCard id", id);
-      //console.log("deleteCard atIndex", atIndex);
       const { thing, index } = findThing(id);
 
       setThings(
@@ -132,6 +129,8 @@ export const ThingContainer = (props) => {
       return;
     }
 
+    if (thing == null) {return;}
+
     if (Array.isArray(things) && things.length === 0) {
       return;
     }
@@ -141,7 +140,7 @@ export const ThingContainer = (props) => {
     const scoredThings = scoreThings(things, thing.subject);
 
     setScoredThings(scoredThings);
-  }, [things, thing]);
+  }, [things, thing && thing.subject]);
 
   useEffect(() => {
     console.debug("ThingContainer chooseThings");
@@ -149,12 +148,12 @@ export const ThingContainer = (props) => {
   }, [scoredThings, lens]);
 
   function chooseThings() {
-    //    console.log("ThingContainer subject", subject);
 
-    console.log("ThingContainer scoredThings", scoredThings);
     if (scoredThings == null) {
       return;
     }
+
+    console.log("ThingContainer scoredThings", scoredThings);
 
     const f = scoredThings
       .filter((t) => {
@@ -216,10 +215,6 @@ export const ThingContainer = (props) => {
     setFilteredScoredThings(a);
     //setFilteredScoredThings(scoredThings);
   }
-
-  useEffect(() => {
-    console.log("ThingContainer filteredScoredThings", filteredScoredThings);
-  }, [filteredScoredThings]);
 
   const [, drop] = useDrop(() => ({ accept: ItemTypes.CARD }));
 

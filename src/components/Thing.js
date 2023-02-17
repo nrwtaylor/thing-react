@@ -1077,6 +1077,13 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
             />
           )}
 
+          {expanded && data && data.thingReport && data.thingReport.log && (
+            <div
+              dangerouslySetInnerHTML={{ __html: data && data.thingReport.log }}
+            />
+          )}
+
+
           {/*          <div>
             <ExpandMore
               expand={expanded}

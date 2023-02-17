@@ -37,9 +37,9 @@ export default function Flag({ thing, agentInput, updateThing }) {
     }
 
     // Only set on incoming once.
-    if (thing !== undefined) {
-      return;
-    }
+//    if (thing !== undefined) {
+//      return;
+//    }
 
     if (thing.variables && thing.variables !== false) {
       if (thing.variables.flag) {
@@ -52,7 +52,7 @@ export default function Flag({ thing, agentInput, updateThing }) {
 
       setFlag(null);
     }
-  }, [thing]);
+  }, [thing && thing.variables]);
 
   useEffect(() => {
     console.debug("Flag flag", thing.uuid, flag);
@@ -72,7 +72,7 @@ export default function Flag({ thing, agentInput, updateThing }) {
 
     if (typeof agentInput.flag !== "undefined") {
       console.debug("Flag agentInput", agentInput);
-     // setFlag(agentInput.flag);
+      // setFlag(agentInput.flag);
     }
 
     if (typeof agentInput.text !== "undefined") {
@@ -81,15 +81,9 @@ export default function Flag({ thing, agentInput, updateThing }) {
     }
 
     if (typeof agentInput.flag !== "undefined") {
-
-    //setFlag(agentInput.flag);
-    //updateThing({ variables: { flag: agentInput.flag } });
-
-
+      //setFlag(agentInput.flag);
+      //updateThing({ variables: { flag: agentInput.flag } });
     }
-
-
-
   }, [agentInput]);
 
   function handleClick(event) {
@@ -99,7 +93,11 @@ export default function Flag({ thing, agentInput, updateThing }) {
     //return;
     const currentIndex = flags.indexOf(flag);
     const nextIndex = (currentIndex + 1) % flags.length;
-console.log("Flag handleClick nextIndex flags[nextIndex]", nextIndex, flags[nextIndex]);
+    console.log(
+      "Flag handleClick nextIndex flags[nextIndex]",
+      nextIndex,
+      flags[nextIndex]
+    );
     const f = flags[nextIndex];
     setFlag(f);
     /*
@@ -117,8 +115,8 @@ if (flag ==='red') {setFlag('green');}
   return (
     <div>
       <MaterialUiButton disabled={disabled} onClick={(e) => handleClick(e)}>
-{/*        {flag} */}
-{text}
+        {/*        {flag} */}
+        {text}
         {/*     <MaterialUiButton disabled={disabled} type="submit"> */}
       </MaterialUiButton>
     </div>

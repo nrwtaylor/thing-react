@@ -57,7 +57,7 @@ export default function App({ componentName, ...props }) {
 
   return (
     <>
-      THING-REACT 3 February 2023 5b1f
+      THING-REACT 17 February 2023 378c
       <br />
       {/*identity && <Identity identity={identity} />*/}
       {/*token && token.message*/}
@@ -137,6 +137,18 @@ export default function App({ componentName, ...props }) {
           <Route
             exact
             path="/history/:text"
+            element={
+              <>
+                <ThingPage />
+              </>
+            }
+          >
+            THINGPAGE
+          </Route>
+
+          <Route
+            exact
+            path="/history-:text"
             element={
               <>
                 <ThingPage />

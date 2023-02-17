@@ -246,6 +246,7 @@ if (txBytes + rxBytes > quotaBytes) {return Promise.resolve({error:{message:'Cli
 
 
 const tokenResponse = readToken(token);
+console.log("database token tokenResponse" ,token, tokenResponse);
 if (tokenResponse.isValidToken === false) {return Promise.resolve({error:{message:"Token not valid."}})}
 
 
