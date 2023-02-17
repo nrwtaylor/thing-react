@@ -32,7 +32,6 @@ const img = {
 
 function Collection({thing, agentInput}) {
 
-  //const { thing } = props;
   const dndFlag = true;
 
   // This passes the reordered images back up to
@@ -40,6 +39,8 @@ function Collection({thing, agentInput}) {
   //function handleCollectionChange(reOrderedThings) {
   //  props.onCollectionChange(reOrderedThings);
   //}
+
+//return null;
 
   return (
     <>
@@ -54,7 +55,7 @@ function Collection({thing, agentInput}) {
         thing.associations &&
         Array.isArray(thing.associations) &&
         thing.associations.map((d) => {
-          return <div key={d}> {d.slice(0, 4)} </div>
+          return <div key={"association_"+thing.uuid+"_"+d}> {d.slice(0, 4)} </div>
         })}
       <br />
 
@@ -66,6 +67,7 @@ function Collection({thing, agentInput}) {
         />
 
       </DndProvider>
+
     </>
   );
 }

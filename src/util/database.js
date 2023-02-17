@@ -1,6 +1,9 @@
 import axios from "axios";
 import { zuluTime, zuluTimeDifferenceMilliseconds } from "./time.js";
 import { getSlug, extractUuid } from "./text.js";
+
+import {readToken} from "./../useToken.js";
+
 const apiPrefix = process.env.REACT_APP_API_PREFIX;
 
 const snapshotCacheTimeMilliseconds = 1;
@@ -242,6 +245,12 @@ export function setThing(uuid, datagram, token) {
 if (txBytes + rxBytes > quotaBytes) {return Promise.resolve({error:{message:'Client default quota exceeded.'}})}
 
 
+const tokenResponse = readToken(token);
+if (tokenResponse.isValidToken === false) {return Promise.resolve({error:{message:"Token not valid."}})}
+
+
+
+
   console.debug("database setThing datagram", datagram);
   console.debug("database setThing token", token);
 
@@ -274,6 +283,9 @@ export function getThing(datagram, token) {
   if (datagram == null) {return Promise.resolve({error:{message:"No datagram provided."}});}
   if (datagram.uuid == null) {return Promise.resolve({error:{message:"No uuid provided."}});}
 if (txBytes + rxBytes > quotaBytes) {return Promise.resolve({error:{message:'Quota exceeded.'}})}
+
+const tokenResponse = readToken(token);
+if (tokenResponse.isValidToken === false) {return Promise.resolve({error:{message:"Token not valid."}})}
 
 
   console.debug("database getThing datagram", datagram);
@@ -444,6 +456,10 @@ if (txBytes + rxBytes > quotaBytes) {return Promise.resolve({error:{message:'Quo
 
 export function getThings(prefix = null, token = null) {
 if (txBytes + rxBytes > quotaBytes) {return Promise.resolve({error:{message:'Quota exceeded.'}})}
+
+const tokenResponse = readToken(token);
+if (tokenResponse.isValidToken === false) {return Promise.resolve({error:{message:"Token not valid."}})}
+
 
   console.debug("database getThings prefix token", prefix, token);
   var u = apiPrefix + "things/";

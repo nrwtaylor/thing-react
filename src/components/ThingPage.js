@@ -176,7 +176,6 @@ export default function ThingPage(props) {
 {/*{thing && thing.subject*/}
 
       {thing && (
-        <div key={thing.uuid}>
           <Thing
             key={thing.uuid}
             flavour={"item"}
@@ -190,7 +189,6 @@ export default function ThingPage(props) {
             variables={{agent:"channel-token", variable:"hello",open:{isOpen:true,canOpen:false},fold:{canFold:false},play:play}}
 
           />
-        </div>
       )}
       <br />
     </>

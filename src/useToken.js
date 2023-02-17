@@ -1,6 +1,44 @@
 import { useState, useEffect } from "react";
 import jwt_decode from "jwt-decode";
 
+export function readToken(jwtToken) {
+  if (jwtToken == null) {
+    return { refreshedAt: null, expiresAt: null, isValidToken: false };
+  }
+
+console.log("jwtToken", jwtToken);
+
+  const t = jwt_decode(jwtToken);
+  //    console.log("useToken readToken t", t);
+  //    console.log("Token setExpiresAt", t.exp);
+  return {
+    refreshedAt: t.iat,
+    expiresAt: t.exp,
+    isValidToken: isValidToken(t),
+  };
+}
+
+export function isValidToken(t) {
+
+//console.log("jwtToken", jwtToken);
+
+
+//  const t = jwt_decode(jwtToken);
+  const expiresAt = t.iat;
+
+  const age = parseFloat(expiresAt) * 1000 - Date.now();
+
+  var isValidToken = false;
+  if ((age) => 0) {
+    isValidToken = true;
+  }
+  if (age < 0) {
+    isValidToken = false;
+  }
+
+  return isValidToken;
+}
+
 export default function useToken() {
   const [token, setToken] = useState();
   const [username, setUsername] = useState();

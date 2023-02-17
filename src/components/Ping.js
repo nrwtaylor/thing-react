@@ -184,7 +184,7 @@ function Ping(props) {
         {pings &&
           pings.map((ping, index) => {
             return (
-              <>
+              <div key={"ping_"+index} >
                 HOST {ping.host}
                 <Stream
                   hide={true}
@@ -209,7 +209,7 @@ function Ping(props) {
                   period={5 * 1000}
                 />
                 <br />
-              </>
+              </div>
             );
           })}
       </div>

@@ -35,7 +35,6 @@ const style = {
 
 //export const ThingContainer = memo(function ThingContainer(props) {
 export const ThingContainer = (props) => {
-
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 
   const { thing } = props;
@@ -128,21 +127,6 @@ export const ThingContainer = (props) => {
     [things]
   );
 
-  /*
-function scoreThing() {
-console.log("ThingContainer w
-w
-props datagram", props.datagram);
-if (props.datagram.subject) {
-
-console.log("ThingContainer props subject", props.datagram.subject);
-
-
-}
-return 6;
-}
-*/
-
   useEffect(() => {
     if (things == null) {
       return;
@@ -172,7 +156,6 @@ return 6;
       return;
     }
 
-    //    console.log("ThingContainer subject", subject);
     const f = scoredThings
       .filter((t) => {
         if (t.from === "stack") {
@@ -211,7 +194,6 @@ return 6;
 
     // Make sure all associated items are always shown in collection
     var a = s;
-//    console.log("ThingContainer sss s associations", s, associations);
 
     if (Array.isArray(s) && Array.isArray(associations)) {
       const ass = associations
@@ -227,7 +209,6 @@ return 6;
           return true;
         });
 
-//      console.log("ThingContainer ass", ass);
 
       a = [...s, ...ass];
     }
@@ -254,7 +235,7 @@ return 6;
   return (
     <>
       <div ref={drop} style={style}>
-THING CONTAINER
+        THING CONTAINER
         {/* {datagram && datagram.associations && Array.isArray(datagram.associations) && datagram.associations.join(' ')} */}
         {thing && (
           <Button
@@ -269,31 +250,23 @@ THING CONTAINER
         )}
         {contexts.map((context, lens) => {
           return (
-            <>
-              <div>
-                <Flag
-                  thing={thing}
-                  agentInput={{
-                    channel: "button",
-                    //flag:{flag:context},
-                    flag: lens,
-                    text: context,
-                    texts: [context],
-                  }}
-                  updateThing={(t) => handleThing(t)}
-                />
-              </div>
-            </>
+            <Flag
+              key={"flag_" + thing.uuid + "_" + context}
+              thing={thing}
+              agentInput={{
+                channel: "button",
+                //flag:{flag:context},
+                flag: lens,
+                text: context,
+                texts: [context],
+              }}
+              updateThing={(t) => handleThing(t)}
+            />
           );
         })}
-
-<p/>
-
-<div>
-        LENS {lens}
-</div>
-
-<p/>
+        <p />
+        <div>LENS {lens}</div>
+        <p />
         <Grid container spacing={3} direction="row">
           {filteredScoredThings && (
             <>
@@ -302,33 +275,28 @@ THING CONTAINER
               <br />
             </>
           )}
-          {filteredScoredThings && (
-            <>
-              {filteredScoredThings.map((t) => (
-                <Card
-                  key={"card_" + t.uuid}
-                  id={`${t.index}`}
-                  //datagram={datagram}
-                  card={{ ...t, associations: associations }}
-                  text={t && thing.text}
-                  flipCard={flipThing}
-                  openCard={openThing}
-                  foldCard={foldThing}
-                  moveCard={moveThing}
-                  deleteCard={deleteThing2}
-                  spawnCard={spawnThing}
-                  findCard={findThing}
-                  token={token}
-                />
-
-              ))}
-            </>
-          )}
+          {filteredScoredThings &&
+            filteredScoredThings.map((t) => (
+              <Card
+                key={"card_" + t.uuid}
+                id={`${t.index}`}
+                //datagram={datagram}
+                card={{ ...t, associations: associations }}
+                text={t && thing.text}
+                flipCard={flipThing}
+                openCard={openThing}
+                foldCard={foldThing}
+                moveCard={moveThing}
+                deleteCard={deleteThing2}
+                spawnCard={spawnThing}
+                findCard={findThing}
+                token={token}
+              />
+            ))}
         </Grid>
       </div>
     </>
   );
-//});
-}
+};
 
 export default ThingContainer;
