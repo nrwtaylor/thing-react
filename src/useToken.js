@@ -27,13 +27,14 @@ export function isValidToken(t) {
   const expiresAt = t.iat;
 
   const age = parseFloat(expiresAt) * 1000 - Date.now();
-
+console.log("useToken isValidToken expiresAt age", expiresAt, age);
   var isValidToken = false;
   if ((age) => 0) {
-    isValidToken = true;
-  }
-  if (age < 0) {
     isValidToken = false;
+  }
+
+  if (age < 0) {
+    isValidToken = true;
   }
 
   return isValidToken;
@@ -66,6 +67,7 @@ export default function useToken() {
     setRefreshedAt(t.iat);
 
     setExpiresAt(t.exp);
+    setIsValidToken(t);
   };
 
   // Watch the localStorage for a token we recognize.
@@ -126,7 +128,7 @@ export default function useToken() {
 
     setAge(t);
   }
-
+/*
   useEffect(() => {
     if ((age) => 0) {
       setIsValidToken(true);
@@ -135,7 +137,7 @@ export default function useToken() {
       setIsValidToken(false);
     }
   }, [age]);
-
+*/
   const saveToken = (userToken) => {
     if (!userToken) {
       return false;

@@ -13,6 +13,9 @@ import { createThing, forgetThing } from "../util/database.js";
 const { REACT_APP_CLIENT_SECRET } = process.env;
 const { REACT_APP_API_PREFIX } = process.env;
 
+const defaultWebPrefix = process.env.REACT_APP_WEB_PREFIX;
+
+
 async function loginUser(credentials) {
 
   const url = REACT_APP_API_PREFIX + "auth/signin";
@@ -38,7 +41,8 @@ async function loginUser(credentials) {
 }
 
 export default function Login({ datagram }) {
-  const { webPrefix } = datagram;
+//  const { webPrefix } = datagram;
+const webPrefix = defaultWebPrefix;
   const { things, getThings } = useThings();
   //export default function Login({token, setToken}) {
   const [username, setUserName] = useState();

@@ -84,7 +84,12 @@ import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
 
+import {devFlag, debugFlag} from "../util/dev.js";
+
 import LazyLoad from "react-lazyload";
+import { toast } from 'react-toastify';
+
+import useDeepCompareEffect from 'use-deep-compare-effect'
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -168,12 +173,6 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 }));
 
 const engineState = process.env.REACT_APP_ENGINE_STATE;
-var debugFlag = false;
-var devFlag = false;
-if (engineState === "dev") {
-  debugFlag = true;
-  devFlag = true;
-}
 
 // Either a datagram, or a uuid.
 // datagram - to, from, subject, agentInput
@@ -188,9 +187,9 @@ function Thing(props) {
 
   var { agentInput } = props;
 
-  if (datagram && datagram.input) {
-    agentInput = datagram.input;
-  }
+//  if (datagram && datagram.input) {
+//    agentInput = datagram.input;
+//  }
 
   const webPrefix =
     datagram && datagram.webPrefix ? datagram.webPrefix : defaultWebPrefix;
@@ -203,7 +202,7 @@ function Thing(props) {
 
   //},[defaultWebPrefix]);
 
-
+/*
   useEffect(() => {
     if (thing == null) {
       return;
@@ -214,8 +213,8 @@ function Thing(props) {
       console.log("Thing thing uuid", thing.uuid);
     }
   }, [thing]);
-
-  useEffect(() => {
+*/
+  useDeepCompareEffect(() => {
     if (initialDatagram == null) {
       return;
     }
@@ -225,11 +224,23 @@ function Thing(props) {
       return;
     }
 
+// Check if is the same.
+// Test
+//if (JSON.stringify(initialDatagram) === JSON.stringify(datagram)) {return;}
+//toast(thing.uuid + " " + "initialDatagram");
     console.debug("Thing initialDatagram changed", initialDatagram);
     console.debug("Thing initialDatagram prior datagram", datagram);
     setDatagram(initialDatagram);
 
   }, [initialDatagram]);
+
+/*
+useDeepCompareEffect(() =>{
+
+console.log("Thing agentInput", agentInput);
+
+}, [agentInput]);
+*/
 
   const { text } = useParams();
 
@@ -274,14 +285,6 @@ function Thing(props) {
 
   const { things, setThings } = useThings();
   const { token } = useToken();
-  useEffect(() => {
-    if (url == null) {
-      return;
-    }
-    console.log("Thing url", url);
-  }, [url]);
-
-  // const { to, subject } = datagram;
 
   const startAt = props.createdAt;
 
@@ -313,6 +316,7 @@ function Thing(props) {
     setDatagram({ ...datagram });
   }
 
+
   useEffect(() => {
     if (datagram == null) {
       return;
@@ -329,6 +333,7 @@ function Thing(props) {
       const u = webPrefix + getSlug(initialDatagram.subject) + ".json";
       console.log("Thing initialDatagram setUrl", u);
       setUrl(u);
+
     }
 
     if (typeof datagram.pollInterval !== "undefined") {
@@ -352,14 +357,6 @@ function Thing(props) {
 
     setThing(props.datagram);
   }, [props.datagram]);
-
-  useEffect(() => {
-    processFlag("dev", devFlag);
-  }, [devFlag]);
-
-  useEffect(() => {
-    processFlag("debug", debugFlag);
-  }, [debugFlag]);
 
   function processFlag(flagName, flagState) {
     if (thing == null) {
@@ -482,13 +479,6 @@ function Thing(props) {
     setFlag("green");
   }, [data]);
 
-  useEffect(() => {
-    console.log("foobar data", data);
-  }, [data]);
-
-  useEffect(() => {
-    console.log("foobar url", url);
-  }, [url]);
 
   const handleExpandClick = () => {
     console.log("Thing handleExpandClick expanded");
@@ -517,8 +507,6 @@ function Thing(props) {
     if (props.uuid === undefined) {
       //return;
     }
-    if (text === undefined) {
-    }
     console.log("Thing props.uuid", props.uuid);
     const u = props.uuid ? props.uuid : uuidv4();
     //    const u = props.uuid;
@@ -526,7 +514,7 @@ function Thing(props) {
 
     setUuid(u);
     setNuuid(n.toUpperCase());
-  }, [props.uuid, text]);
+  }, [props.uuid]);
 
   const [error, setError] = useState();
 
@@ -1095,6 +1083,12 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
             </ExpandMore>
           </div>
 */}
+{/*
+              <div>
+                <Login token={token} datagram={datagram} flavour={"card"} />
+              </div>
+*/}
+
           {agentInput &&
             isText(agentInput) &&
             agentInput.toLowerCase().indexOf("login") !== -1 && (
@@ -1208,12 +1202,20 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
         </div>
         ASSOCIATIONS
         <div>
-          {true && expanded && thing && (
+{/*          {thing && thing.variables && thing.variables.collection && (thing.variables.collection !== false) && expanded  && ( */}
+
+{/*{thing && thing.agentInput && thing.agentInput.collection ? "COLLECTION IS TRUE" : "COLLECTION IS FALSE"} */}
+
+{/*          {thing && thing.agentInput && thing.agentInput.collection && (thing.agentInput.collection === true) && expanded && ( */}
+          {true && thing && expanded && (expanded === true) && (
+
+
             <Collection
-              thing={{ ...thing }}
-              agentInput={{ ...agentInput, collection: true }}
+              thing={{ ...thing, variables:{...thing.variables} }}
+              agentInput={{ ...agentInput, collection:false }}
             />
           )}
+
         </div>
         <div>
           <DataReport />
@@ -1221,7 +1223,13 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
       </Card>
     </>
   );
+
+
+
+
+
+
 }
 
-//export default Thing;
-export default memo(Thing);
+export default Thing;
+//export default memo(Thing);

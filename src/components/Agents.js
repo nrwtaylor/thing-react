@@ -29,6 +29,10 @@ import Forget from "../components/Forget.js";
 import Agent from "../components/Agent.js";
 import DynamicComponent from "../components/DynamicComponent.js";
 
+import { devFlag, debugFlag } from "../util/dev.js";
+
+import {getSlug} from "../util/text.js";
+
 const recognizedSlugs = [
   "history",
   "snapshot",
@@ -44,7 +48,10 @@ const recognizedSlugs = [
   "messages",
   "temperature-humidity",
   "humidity-temperature",
+  "log-in",
+  "sign-up"
 ];
+
 
 function slugAgent(slug) {
   const parts = slug.split("-");
@@ -59,13 +66,8 @@ function slugAgent(slug) {
 
 // Refactor to pass this in thing as variables.
 const engineState = process.env.REACT_APP_ENGINE_STATE;
-var debugFlag = false;
-var devFlag = false;
-if (engineState === 'dev') {debugFlag = true; devFlag = true;}
-
 
 function Agents({ thing, agentInput }) {
-
   const agent_input = agentInput; // remove
 
   const [agents, setAgents] = useState();
@@ -115,25 +117,54 @@ function Agents({ thing, agentInput }) {
     if (thing == null) {
       return;
     }
-    console.log("Agents thing", thing);
-console.log("Agents test", agentInput, recognizedSlugs);
-    if (thing.subject) {
+    console.log("Agents thing agentInput", thing, agentInput);
+    console.log("Agents test", agentInput, recognizedSlugs);
+    if (typeof thing.subject !== 'undefined') {
+      console.log("Agents thing.subject", thing.subject);
       const matchedSlugs = recognizedSlugs.filter((recognizedSlug) => {
-console.log("merp", recognizedSlug, agentInput[recognizedSlug], agentInput);
+        console.log(
+          "merp",
+          recognizedSlug,
+          agentInput[recognizedSlug],
+          agentInput
+        );
 
-if (recognizedSlug in agentInput && agentInput[recognizedSlug] === false) {
-console.log("merp");
-return false;
-}
-
+        if (
+          recognizedSlug in agentInput &&
+          agentInput[recognizedSlug] === false
+        ) {
+          console.log("merp");
+          return false;
+        }
 
         if (thing.subject.toLowerCase().indexOf(recognizedSlug) !== -1) {
           return true;
         }
+
+/*
+        if (getSlug(thing.subject).indexOf(recognizedSlug) !== -1) {
+          return true;
+        }
+*/
+
         return false;
       });
 
-      console.log("Agents thing matchedSlugs", matchedSlugs);
+
+// Test
+if (thing.subject.toLowerCase() === 'please log in') {
+matchedSlugs.push('login');
+}
+
+if (thing.subject.toLowerCase() === 'please sign up') {
+matchedSlugs.push('signup');
+}
+
+
+
+
+//      console.log("Agents thing matchedSlugs", matchedSlugs);
+
 
       setAgents(matchedSlugs);
 
@@ -148,7 +179,7 @@ setAgent(recognizedAgents['history']);
       }
     }
   }, [thing]);
-/*
+  /*
 useEffect(()=>{
 
 
@@ -222,37 +253,45 @@ console.log("Agents agentInput xkcd", agentInput);
     <Forget uuid={thing && thing.uuid} callBack={callBack} />
   );
 
-useEffect(() =>{
-
-console.log("Agents thing", thing);
-
-}, [thing]);
+  useEffect(() => {
+    console.log("Agents thing", thing);
+  }, [thing]);
 
   return (
     <>
-{debugFlag && (     <div>AGENTS</div>)}
+      {debugFlag && <div>AGENTS</div>}
 
-{devFlag && (<>
-DEV FLAG{thing && thing.variables && thing.variables.flag && thing.variables.flag.dev}
-</>)}
+      {devFlag && (
+        <>
+          DEV FLAG
+          {thing &&
+            thing.variables &&
+            thing.variables.flag &&
+            thing.variables.flag.dev}
+        </>
+      )}
 
       {thing &&
         agents &&
         agents.map((agent) => {
           return (
             <>
-{debugFlag && (<>              AGENT {agent} 
-              <br /></>)}
+              {true && (
+                <>
+                  {" "}
+                  AGENT {agent}
+                  <br />
+                </>
+              )}
               <Agent
                 thing={thing}
                 agentInput={{ ...agentInput, agent: agent }}
               />
               <br />
-
             </>
           );
         })}
-{/*
+      {/*
       <TextField
         multiline
         //        autoFocus
@@ -267,7 +306,6 @@ DEV FLAG{thing && thing.variables && thing.variables.flag && thing.variables.fla
 */}
     </>
   );
-
 }
 
 export default Agents;

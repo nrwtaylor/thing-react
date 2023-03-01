@@ -42,25 +42,19 @@ import useSnapshot from "../useSnapshot";
 
 import { extractUuid, extractNuuid, getSlug } from "../util/text.js";
 
+import { devFlag, debugFlag } from "../util/dev.js";
+
 //import { useSwipeable } from "react-swipeable";
 
 const { REACT_APP_SNAPSHOT } = process.env;
 
-
-// refactor as 
+// refactor as
 // Snapshot(thing, agentInput)
 
 const engineState = process.env.REACT_APP_ENGINE_STATE;
-var debugFlag = false;
-var devFlag = false;
-if (engineState === 'dev') {debugFlag = true; devFlag = true;}
 
-
-
-function Snapshot({thing, agentInput}) {
-
+function Snapshot({ thing, agentInput }) {
   const datagram = thing;
-  //const { to } = datagram;
 
   const agent_input = agentInput;
   const webPrefix = agentInput;
@@ -75,27 +69,29 @@ function Snapshot({thing, agentInput}) {
   //  const toSnapshot = "http://192.168.10.10/snapshot.json";
   const { snapshot, flag, snapshotRunTime } = useSnapshot(toSnapshot);
 
-useEffect(() =>{
-if (thing == null) {return;}
-if (thing.subject == null) {return;}
+  useEffect(() => {
+    if (thing == null) {
+      return;
+    }
+    if (thing.subject == null) {
+      return;
+    }
 
-const uuidPathname = extractUuid(thing.subject);
+    const uuidPathname = extractUuid(thing.subject);
 
-if (uuidPathname === true) {return;}
-if (uuidPathname === false) {return;}
+    if (uuidPathname === true) {
+      return;
+    }
+    if (uuidPathname === false) {
+      return;
+    }
 
-setToSnapshot("https://stackr.ca/snapshot/" + uuidPathname + "/hey.json");
+    setToSnapshot("https://stackr.ca/snapshot/" + uuidPathname + "/hey.json");
+  }, [thing]);
 
-
-}, [thing]);
-
-useEffect(() =>{
-//const i = "861cd510-65bc-457e-b10f-e58182ff7a3d";
-//setToSnapshot("https://stackr.ca/snapshot/" + i + "/hey.json");
-
-console.log("Snapshot toSnapshot", toSnapshot);
-
-},[toSnapshot]);
+  useEffect(() => {
+    console.log("Snapshot toSnapshot", toSnapshot);
+  }, [toSnapshot]);
 
   //const [data, setData] = useState({
   //  thing: { uuid: "X" },
@@ -131,21 +127,24 @@ console.log("Snapshot toSnapshot", toSnapshot);
   useEffect(() => {
     console.log("Snapshot thing snapshot", thing, snapshot);
 
-if (snapshot && snapshot.thingReport) {
-if (snapshot.thingReport.snapshot) {
-console.log("Snapshot setData snapshot.thingReport.snapshot", snapshot.thingReport.snapshot);
-setData(snapshot.thingReport.snapshot);
-return;
-}
-}
+    if (snapshot && snapshot.thingReport) {
+      if (snapshot.thingReport.snapshot) {
+        console.log(
+          "Snapshot setData snapshot.thingReport.snapshot",
+          snapshot.thingReport.snapshot
+        );
+        setData(snapshot.thingReport.snapshot);
+        return;
+      }
+    }
 
-if (snapshot.thingReport == null) {
-console.log("Snapshot setData snapshot", snapshot);
-    setData(snapshot);
-return;
-}
-// Or perhaps don't refresh snapshot.Snapshot thing snapshot
-setData(true);
+    if (snapshot.thingReport == null) {
+      console.log("Snapshot setData snapshot", snapshot);
+      setData(snapshot);
+      return;
+    }
+    // Or perhaps don't refresh snapshot.Snapshot thing snapshot
+    setData(true);
   }, [snapshot]);
 
   function humanTime(timestamp) {
@@ -154,16 +153,19 @@ setData(true);
   }
 
   useEffect(() => {
-if (thing == null) {return;}
+    if (thing == null) {
+      return;
+    }
     console.log("Snapshot data", toSnapshot, data);
   }, [data]);
 
-useEffect(()=>{
-if (thing == null) {return;}
+  useEffect(() => {
+    if (thing == null) {
+      return;
+    }
 
-console.log("Snapshot thing", toSnapshot, thing.uuid, thing);
-
-},[thing]);
+    console.log("Snapshot thing", toSnapshot, thing.uuid, thing);
+  }, [thing]);
 
   function fromName() {
     if (datagram === undefined) {
@@ -192,11 +194,9 @@ console.log("Snapshot thing", toSnapshot, thing.uuid, thing);
     console.log("Snapshot handleChangeStream c", c);
   }
 
-useEffect(() =>{
-
-console.log("Snapshot data", data);
-
-}, [data]);
+  useEffect(() => {
+    console.log("Snapshot data", data);
+  }, [data]);
 
   function callBack() {
     console.log("Agent callBack called.");
@@ -226,11 +226,11 @@ console.log("Snapshot data", data);
           {data && data.ping && <Ping ping={data.ping} />}
           {data && data.transducers && (
             <>
-              {Object.keys(data.transducers).map((transducer) => {
+              {Object.keys(data.transducers).map((transducer, index) => {
                 console.log("Snapshot transducer", transducer);
                 return (
                   <Stream
-                    key={transducer}
+                    key={"snapshot_transducer_"+transducer+"_"+index}
                     hide={true}
                     quantity={{
                       units: "A",
@@ -256,37 +256,55 @@ console.log("Snapshot data", data);
 
   return (
     <>
-
-{debugFlag && (<>
-      <div>SNAPSHOT</div>
-</>)}
-{debugFlag && (<>
-      <div>URL {toSnapshot}</div>
-</>)}
+      {debugFlag && (
+        <>
+          <div>SNAPSHOT</div>
+        </>
+      )}
+      {debugFlag && (
+        <>
+          <div>URL {toSnapshot}</div>
+        </>
+      )}
       <div>
-{debugFlag && (<>
-        FLAG {flag} COLOUR
-        <br /></>)}
-{debugFlag && (<>
-        GET TIME {snapshotRunTime}ms {Math.round(1000 / snapshotRunTime, 1)}Hz
-        <br /></>)}
+        {debugFlag && (
+          <>
+            FLAG {flag} COLOUR
+            <br />
+          </>
+        )}
+        {debugFlag && (
+          <>
+            GET TIME {snapshotRunTime}ms {Math.round(1000 / snapshotRunTime, 1)}
+            Hz
+            <br />
+          </>
+        )}
 
         {data && data.ping && <Ping ping={data.ping} />}
 
         {data && (
           <>
-{debugFlag && (<>            SNAPSHOT TRANSDUCER
-            <br /></>)}
+            {debugFlag && (
+              <>
+                {" "}
+                SNAPSHOT TRANSDUCER
+                <br />
+              </>
+            )}
             {Object.keys(data).map((transducer) => {
               console.log("Snapshot transducer", transducer);
               if (!["temperature", "humidity"].includes(transducer)) {
-return (<>{transducer} not used<br /></>);
-            //    return;
+                return (
+                  <>
+                    {transducer} not used
+                    <br />
+                  </>
+                );
+                //    return;
               }
 
               return (
-<>
-{transducer} used<br />
                 <Stream
                   key={transducer}
                   hide={true}
@@ -296,7 +314,6 @@ return (<>{transducer} not used<br /></>);
                   }}
                   transducer={data[transducer]}
                 />
-</>
               );
             })}
           </>
@@ -319,7 +336,9 @@ return (<>{transducer} not used<br /></>);
                   }}
                   period={snapshotInterval}
                   transducer={data.transducers[transducer]}
-                  agentInput={{snapshot:{interval:snapshotInterval,period:false}}}
+                  agentInput={{
+                    snapshot: { interval: snapshotInterval, period: false },
+                  }}
                 />
               );
             })}
@@ -470,57 +489,89 @@ ACCZ: {data && data.transducers && data.transducers.thacczax2 && data.transducer
 ACCZ: {data && data.transducers && data.transducers.thacczax2 && data.transducers.thacczax2.amount} m<br />
 ACCZ: {data && data.transducers && data.transducers.thacczax2 && data.transducers.thacczax2.amount} m<br />
 */}
-{data && data.current_latitude && (<>
-        LATITUDE: {data && data.current_latitude}
-        <br /></>)}
+        {data && data.current_latitude && (
+          <>
+            LATITUDE: {data && data.current_latitude}
+            <br />
+          </>
+        )}
 
-{data && data.current_longitude && (<>
-        LONGITUDE: {data && data.current_longitude}
-        <br /></>)}
+        {data && data.current_longitude && (
+          <>
+            LONGITUDE: {data && data.current_longitude}
+            <br />
+          </>
+        )}
 
-{data && data.speed_in_knots && (<>
-        SPEED IN KNOTS: {data && data.speed_in_knots} knots
-        <br /></>)}
+        {data && data.speed_in_knots && (
+          <>
+            SPEED IN KNOTS: {data && data.speed_in_knots} knots
+            <br />
+          </>
+        )}
 
-{data && data.speed_in_knots && (<>
-        <Stream
-          hide={true}
-          quantity={{
-            amount: data && data.speed_in_knots,
-            units: "knots",
-          }}
-          period={50}
-        />
-        <br /></>)}
+        {data && data.speed_in_knots && (
+          <>
+            <Stream
+              hide={true}
+              quantity={{
+                amount: data && data.speed_in_knots,
+                units: "knots",
+              }}
+              period={50}
+            />
+            <br />
+          </>
+        )}
 
-{data && data.true_course && (<>
-        TRUE COURSE: {data && data.true_course}
-        <br /></>)}
+        {data && data.true_course && (
+          <>
+            TRUE COURSE: {data && data.true_course}
+            <br />
+          </>
+        )}
 
-{data && data.number_of_satellites && (<>
-        NUMBER OF SATELLITES: {data && data.number_of_satellites}
-        <br /></>)}
+        {data && data.number_of_satellites && (
+          <>
+            NUMBER OF SATELLITES: {data && data.number_of_satellites}
+            <br />
+          </>
+        )}
 
-{data && data.horizontal_dilution_of_precision && (<>
-        HDOP: {data && data.horizontal_dilution_of_precision}
-        <br /></>)}
+        {data && data.horizontal_dilution_of_precision && (
+          <>
+            HDOP: {data && data.horizontal_dilution_of_precision}
+            <br />
+          </>
+        )}
 
-{data && data.altitude_above_mean_sea_level && (<>
-        ALTITUDE: {data && data.altitude_above_mean_sea_level}m (MSL)
-        <br /></>)}
+        {data && data.altitude_above_mean_sea_level && (
+          <>
+            ALTITUDE: {data && data.altitude_above_mean_sea_level}m (MSL)
+            <br />
+          </>
+        )}
 
-{data && data.fix_time && (<>
-        FIX TIME: {data && data.fix_time}
-        <br /></>)}
+        {data && data.fix_time && (
+          <>
+            FIX TIME: {data && data.fix_time}
+            <br />
+          </>
+        )}
 
-{data && data.time_stamp && (<>
-        TIMESTAMP: {data && data.time_stamp}
-        <br /></>)}
+        {data && data.time_stamp && (
+          <>
+            TIMESTAMP: {data && data.time_stamp}
+            <br />
+          </>
+        )}
 
-{data && data.parsedAt && (<>
-        PARSED AT: {data && data.parsedAt}
-        <br /></>)}
-
+        {data && data.parsedAt && (
+          <>
+            PARSED AT: {data && data.parsedAt}
+            <br />
+          </>
+        )}
       </div>
     </>
   );

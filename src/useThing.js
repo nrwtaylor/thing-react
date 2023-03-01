@@ -37,18 +37,26 @@ export default function useThing(datagram) {
   const { things, getThings, setThings } = useThings();
 
   const [flag, setFlag] = useState();
-
+//const [subject, setSubject] = useState();
+/*
   useEffect(() => {
     if (things == null) {return;}
     console.log("useThing things", things);
   }, [things]);
-
+*/
   //  useEffect(() =>{
   //console.log("useThing datagram", datagram);
   //getThing();
 
   //  }, [datagram]);
 
+/*
+useEffect(()=>{
+
+getThing();
+
+}, [datagram]);
+*/
   const getThing = () => {
     if (token == null) {
       return;
@@ -86,6 +94,7 @@ export default function useThing(datagram) {
           console.log("useThing getThing conditionedThing", conditionedThing);
           setFlag("green");
           setThing(conditionedThing);
+//setSubject(conditionedThing.subject);
         })
         .catch((error) => {
           setFlag("yellow");

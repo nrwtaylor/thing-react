@@ -38,6 +38,8 @@ import { v4 as uuidv4 } from "uuid";
 
 import useToken from "./useToken";
 
+  import { ToastContainer, toast } from 'react-toastify';
+ import 'react-toastify/dist/ReactToastify.css';
 export default function App({ componentName, ...props }) {
 
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
@@ -57,10 +59,11 @@ export default function App({ componentName, ...props }) {
 
   return (
     <>
-      THING-REACT 17 February 2023 378c
+      THING-REACT 26 February 2023 7bc2
       <br />
       {/*identity && <Identity identity={identity} />*/}
       {/*token && token.message*/}
+<ToastContainer />
       <BrowserRouter>
         <Routes>
           <Route

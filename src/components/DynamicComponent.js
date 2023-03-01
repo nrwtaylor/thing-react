@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { useEffect, memo } from "react";
 
 /**
  * @desc the dynamic component is used to render various component dynamically
@@ -9,6 +9,12 @@ import React, { memo } from "react";
  * }
  */
 const DynamicComponent = ({ is, useDefaultPath = true, ...rest }) => {
+
+useEffect(()=>{
+
+console.log("DynamicComponent is", is);
+
+},[is]);
 
 if (is == null) {return null;}
 

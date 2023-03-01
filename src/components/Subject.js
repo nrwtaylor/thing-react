@@ -5,10 +5,10 @@ import TextField from "@mui/material/TextField";
 
 import useThing from "../useThing.js";
 
+import {devFlag, debugFlag} from "../util/dev.js";
+
+
 const engineState = process.env.REACT_APP_ENGINE_STATE;
-var debugFlag = false;
-var devFlag = false;
-if (engineState === 'dev') {debugFlag = true; devFlag = true;}
 
 
 export default function Subject({ thing, setSubject }) {

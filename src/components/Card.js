@@ -176,6 +176,7 @@ export const Card = memo(function Card({
 
 {/*<LazyLoad style={{display:"flex"}} >*/}
           <Thing
+key={card.uuid}
             //          to={card.to}
             //          subject={card.subject}
             //          createdAt={card.createdAt}

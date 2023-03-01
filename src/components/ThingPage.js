@@ -38,7 +38,7 @@ export default function ThingPage(props) {
   const { input, setInput, deleteInput } = useInput();
 
   const { thing, setThing } = useThing();
-  const { things, getThings } = useThings();
+  const { things } = useThings();
 
   const createdAt = Date.now();
 
@@ -58,13 +58,6 @@ export default function ThingPage(props) {
     const u = uuidv4();
     setUuid(u);
   }
-
-//useEffect(() =>{
-
-//const variables={{agent:"channel-token", variable:"hello",open:{isOpen:true,canOpen:false},fold:{canFold:false},play:play}}
-
-
-//}, []);
 
   useEffect(() => {
     if (uuids == null) {
@@ -187,7 +180,7 @@ export default function ThingPage(props) {
             open={true}
             play={play}
             variables={{agent:"channel-token", variable:"hello",open:{isOpen:true,canOpen:false},fold:{canFold:false},play:play}}
-
+            agentInput={{collection:true}}
           />
       )}
       <br />

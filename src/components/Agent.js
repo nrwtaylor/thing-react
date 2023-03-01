@@ -28,6 +28,8 @@ import {
 import Forget from "../components/Forget.js";
 import DynamicComponent from "../components/DynamicComponent.js";
 
+import { devFlag, debugFlag } from "../util/dev.js";
+
 const recognizedSlugs = [
   "history",
   "snapshot",
@@ -46,15 +48,11 @@ const recognizedSlugs = [
 ];
 
 const engineState = process.env.REACT_APP_ENGINE_STATE;
-var debugFlag = false;
-var devFlag = false;
-if (engineState === 'dev') {debugFlag = true; devFlag = true;}
-
 
 function slugAgent(slug) {
-
-if (slug == null) {return false;}
-
+  if (slug == null) {
+    return false;
+  }
 
   const parts = slug.split("-");
 
@@ -67,12 +65,8 @@ if (slug == null) {return false;}
 }
 
 function Agent({ thing, agentInput }) {
-  //const {datagram} = props;
 
-  //  const user_name = props.user_name; // TODO
   const agent_input = agentInput; // remove
-
-  //const [agent, setAgent] = useState();
 
   const agent = slugAgent(agentInput.agent);
 
@@ -95,11 +89,9 @@ function Agent({ thing, agentInput }) {
   }, [getAgent]); // eslint-disable-line react-hooks/exhaustive-deps
 */
   //  const [open, setOpen] = useState(false);
-useEffect(()=>{
-
-console.log("Agent agent", agent);
-
-}, [agent]);
+  useEffect(() => {
+    console.log("Agent agent", agent);
+  }, [agent]);
 
   const replyAgentDialog = (thing) => {
     //    setOpen(true);
@@ -121,7 +113,7 @@ console.log("Agent agent", agent);
 
     return thing.from;
   }
-/*
+  /*
   useEffect(() => {
     if (thing == null) {
       return;
@@ -210,24 +202,29 @@ console.log("Agent agent", agent);
     <Forget uuid={thing && thing.uuid} callBack={callBack} />
   );
 
-function handleThingReport(event) {
-
-console.log("Agent handleThingReport event", event);
-
-}
+  function handleThingReport(event) {
+    console.log("Agent handleThingReport event", event);
+  }
 
   return (
     <>
-{debugFlag && (      <div>AGENT</div>)}
-{debugFlag && (<>
-DEV
-{thing && thing.variables && thing.variables.flag && thing.variables.flag.dev}
-</>)}
+      {debugFlag && <div>AGENT</div>}
+      {debugFlag && (
+        <>
+          DEV
+          {thing &&
+            thing.variables &&
+            thing.variables.flag &&
+            thing.variables.flag.dev}
+        </>
+      )}
 
-{debugFlag && (<>
-      {thing && thing.nomFrom}
-      {thing && thing.from}
-</>)}
+      {debugFlag && (
+        <>
+          {thing && thing.nomFrom}
+          {thing && thing.from}
+        </>
+      )}
 
       {thing && agent && (
         <DynamicComponent
@@ -236,29 +233,27 @@ DEV
           user={null}
           //thing={data.thing}
 
-thing={thing}
-agentInput={agentInput}
-thingReport={()=>handleThingReport()}
-
-
+          thing={thing}
+          agentInput={agentInput}
+          thingReport={() => handleThingReport()}
           datagram={thing}
           agent_input={agentInput}
         />
       )}
 
-{devFlag && (
-      <TextField
-        multiline
-        //        autoFocus
-        margin="normal"
-        label="INPUT"
-        type="text"
-        fullWidth
-        name="updateReply"
-        value={reply}
-        onChange={(event) => setReply(event.target.value)}
-      />
-)}
+      {devFlag && (
+        <TextField
+          multiline
+          //        autoFocus
+          margin="normal"
+          label="INPUT"
+          type="text"
+          fullWidth
+          name="updateReply"
+          value={reply}
+          onChange={(event) => setReply(event.target.value)}
+        />
+      )}
     </>
   );
 
@@ -274,11 +269,13 @@ thingReport={()=>handleThingReport()}
         datagram={thing}
         agent_input={agentInput}
       />
-{devFlag && (<>
-      {thing && thing.nomFrom}
-      {thing && thing.from}
-      {/* flag */}
-</>)}
+      {devFlag && (
+        <>
+          {thing && thing.nomFrom}
+          {thing && thing.from}
+          {/* flag */}
+        </>
+      )}
       <ListItem key={thing && thing.uuid} alignItems="flex-start">
         <ListItemText
           primary={

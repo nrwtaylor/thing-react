@@ -54,11 +54,11 @@ import useThingReport from "../useThingReport";
 
 import { useSwipeable } from "react-swipeable";
 
+import {devFlag, debugFlag} from "../util/dev.js";
+
+
 // Refactor to pass this in thing as variables.
 const engineState = process.env.REACT_APP_ENGINE_STATE;
-var debugFlag = false;
-var devFlag = false;
-if (engineState === 'dev') {debugFlag = true; devFlag = true;}
 
 
 
