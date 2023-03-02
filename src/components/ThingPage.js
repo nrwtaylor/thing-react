@@ -72,8 +72,7 @@ export default function ThingPage(props) {
     if (things == null) {
       return;
     }
-    //const conditionedPathname = pathname.replace(/\//, "");
-    //if (pathname == null) {return;}
+
     const uuidPathname = extractUuid(pathname);
     console.debug("ThingPage uuidPathname", uuidPathname);
 

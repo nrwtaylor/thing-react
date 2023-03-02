@@ -151,7 +151,7 @@ export default function Item({ thing, agentInput, updateThing }) {
       })
       .catch((error) => {
         //setError(error.message);
-        console.warn("Item handleToggleItem updateThing error", error);
+        console.error("Item handleToggleItem updateThing error", error);
       });
   }
 

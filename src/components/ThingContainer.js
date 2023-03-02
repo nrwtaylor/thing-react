@@ -155,8 +155,21 @@ export const ThingContainer = ({thing}) => {
 
     console.log("ThingContainer scoredThings", scoredThings);
 
+
+    const priorityThings = scoredThings
+      .filter((t) => {
+        if (t.priority == null) {
+          return false;
+        }
+        if (t.priority === 'priority') {return true;}
+        return false;
+      })
+
+console.log("ThingContainer priorityThings", priorityThings);
+
     const f = scoredThings
       .filter((t) => {
+        if ((typeof t.priority !== 'undefined') && (t.priority === 'priority')) {return false;}
         if (t.from === "stack") {
           return true;
         }
@@ -211,6 +224,11 @@ export const ThingContainer = ({thing}) => {
 
       a = [...s, ...ass];
     }
+
+
+    a = [...a, ...priorityThings];
+
+
     console.log("ThingContainer a", a);
     setFilteredScoredThings(a);
     //setFilteredScoredThings(scoredThings);

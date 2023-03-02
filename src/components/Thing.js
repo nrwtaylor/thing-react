@@ -4,8 +4,6 @@ import update from "immutability-helper";
 
 import { useParams } from "react-router";
 import Agent from "../components/Agent.js";
-import Snapshot from "../components/Snapshot.js";
-import TextSnapshot from "../components/TextSnapshot.js";
 
 import Datagram from "../components/Datagram.js";
 
@@ -196,12 +194,6 @@ function Thing(props) {
 
   const [subject, setSubject] = useState();
 
-  //useEffect(() =>{
-
-  //console.log("Thing defaultWebPrefix", defaultWebPrefix);
-
-  //},[defaultWebPrefix]);
-
 /*
   useEffect(() => {
     if (thing == null) {
@@ -224,23 +216,11 @@ function Thing(props) {
       return;
     }
 
-// Check if is the same.
-// Test
-//if (JSON.stringify(initialDatagram) === JSON.stringify(datagram)) {return;}
-//toast(thing.uuid + " " + "initialDatagram");
     console.debug("Thing initialDatagram changed", initialDatagram);
     console.debug("Thing initialDatagram prior datagram", datagram);
     setDatagram(initialDatagram);
 
   }, [initialDatagram]);
-
-/*
-useDeepCompareEffect(() =>{
-
-console.log("Thing agentInput", agentInput);
-
-}, [agentInput]);
-*/
 
   const { text } = useParams();
 
@@ -670,14 +650,6 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
     return <>REQUESTED AT {i}</>;
   };
 
-  // Test dynamic loading
-  //  async function load() {
-  //    let say = await import("./Snapshot.js");
-  //    say.hi(); // Hello!
-  //    say.bye(); // Bye!
-  //    say.default(); // Module loaded (export default)!
-  //  }
-
   useEffect(() => {
     // If still processing the last one,
     // Skip a beat, do not request aother.
@@ -1038,6 +1010,8 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
           {!flipped && (
             <>
               <ToGoTime
+                thing={thing}
+                agentInput={agentInput}
                 toGoTime={nextRunAt - currentAt}
                 onRefresh={handleRefresh}
               />
@@ -1120,8 +1094,8 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
 
           {expanded && (
             <>
-              <Content thingReport={data && data.thingReport} />
-              <br />
+              <Content thing={thing} agentInput={data && data.thingReport} />
+              <br />)
               {error && error.message}
               <br />
               {debugFlag && <Typography>RUNTIME {runTime}</Typography>}

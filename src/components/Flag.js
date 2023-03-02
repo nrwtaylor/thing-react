@@ -37,9 +37,9 @@ export default function Flag({ thing, agentInput, updateThing }) {
     }
 
     // Only set on incoming once.
-//    if (thing !== undefined) {
-//      return;
-//    }
+    //    if (thing !== undefined) {
+    //      return;
+    //    }
 
     if (thing.variables && thing.variables !== false) {
       if (thing.variables.flag) {

@@ -7,13 +7,13 @@ import UpdateIcon from "@mui/icons-material/Update";
 
 import { humanTime, humanAge, humanRuntime } from "./../util/time.js";
 
-export default function ToGoTime({ toGoTime, onRefresh }) {
+export default function ToGoTime({ thing, agentInput, toGoTime, onRefresh }) {
   useEffect(() => {
     if (toGoTime == null) {
       return;
     }
 
-    console.debug("ToGoTime toGoTime", toGoTime);
+    console.debug("ToGoTime toGoTime", thing.uuid, toGoTime);
 
     if (toGoTime < 0) {
       onRefresh();

@@ -188,7 +188,8 @@ key={card.uuid}
               card:{visible:cardVisible},
               pollInterval:
                 card && card.pollInterval && cardVisible
-                  ? card.pollInterval
+? 5*60000
+//                  ? card.pollInterval
                   : false,
             }}
             webPrefix={card.webPrefix}

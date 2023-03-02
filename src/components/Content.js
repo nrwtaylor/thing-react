@@ -7,8 +7,10 @@ import UpdateIcon from "@mui/icons-material/Update";
 
 import { humanTime } from "./../util/time.js";
 
-export default function Content({ thingReport }) {
+export default function Content({ thing, agentInput }) {
   const [content, setContent] = useState();
+
+  const thingReport = agentInput;
 
   useEffect(() => {
     if (!thingReport) {
@@ -47,7 +49,8 @@ export default function Content({ thingReport }) {
     </>
   );
 }
-
+/*
 Content.propTypes = {
   thingReport: PropTypes.func.isRequired,
 };
+*/

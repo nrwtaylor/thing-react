@@ -52,6 +52,7 @@ const { REACT_APP_SNAPSHOT } = process.env;
 // Snapshot(thing, agentInput)
 
 const engineState = process.env.REACT_APP_ENGINE_STATE;
+const defaultSnapshotInterval = process.env.REACT_APP_SNAPSHOT_INTERVAL;
 
 function Snapshot({ thing, agentInput }) {
   const datagram = thing;
@@ -61,7 +62,7 @@ function Snapshot({ thing, agentInput }) {
   //const [flag, setFlag] = useState();
   //const [requestedAt, setRequestedAt] = useState();
   const [reply, setReply] = useState("");
-  const [snapshotInterval, setSnapshotInterval] = useState(250);
+  const [snapshotInterval, setSnapshotInterval] = useState(defaultSnapshotInterval);
 
   const defaultToSnapshot = REACT_APP_SNAPSHOT;
   const [toSnapshot, setToSnapshot] = useState(defaultToSnapshot);
@@ -292,14 +293,14 @@ function Snapshot({ thing, agentInput }) {
                 <br />
               </>
             )}
-            {Object.keys(data).map((transducer) => {
+            {Object.keys(data).map((transducer, index) => {
               console.log("Snapshot transducer", transducer);
               if (!["temperature", "humidity"].includes(transducer)) {
                 return (
-                  <>
+                  <div key={"transducer_"+transducer+"_"+index}>
                     {transducer} not used
                     <br />
-                  </>
+                  </div>
                 );
                 //    return;
               }

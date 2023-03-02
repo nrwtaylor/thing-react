@@ -193,6 +193,9 @@ function Trace(props) {
     const interval = setInterval(() => {
       updateTime();
     }, 10000); // 20 Hz was 200.
+
+    return () => clearInterval(interval);
+
   }, []);
 
   function updateTime() {

@@ -6,7 +6,9 @@ import {readToken} from "./../useToken.js";
 
 const apiPrefix = process.env.REACT_APP_API_PREFIX;
 
-const snapshotCacheTimeMilliseconds = 1;
+const defaultSnapshotInterval = process.env.REACT_APP_SNAPSHOT_INTERVAL;
+
+const snapshotCacheTimeMilliseconds = defaultSnapshotInterval; //1;
 
 axios.defaults.headers = {
   "Cache-Control": "no-cache",
@@ -95,7 +97,7 @@ console.log("database request config", config);
     return config;
   },
   function (error) {
-    console.warn("database request error", error);
+    console.error("database request error", error);
 
     txErrorCount += 1;
 
@@ -139,7 +141,7 @@ console.log("database response response", response);
   },
   function (error) {
     rxErrorCount += 1;
-    console.warn("database response error", error);
+    console.error("database response error", error);
 
 //if (response && response.data && response.data.uuid) {
 //if (databaseStatistics[response.data.uuid] == null) {databaseStatistics[response.data.uuid] = {txCount:0, txBytes:0, rxCount:0, rxBytes, rxErrorCount:0, txErrorCount:0};}
@@ -187,7 +189,7 @@ if (txBytes + rxBytes > quotaBytes) {return Promise.resolve({error:{message:'Quo
       return thingy;
     })
     .catch((error) => {
-      console.warn("Database error", error);
+      console.error("Database error", error);
     });
 }
 
@@ -229,7 +231,7 @@ if (txBytes + rxBytes > quotaBytes) {return Promise.resolve({error:{message:'Quo
     })
     .catch((error) => {
       //return {error:true, message:error.data.message};
-      console.warn("database createThing u error", u, error);
+      console.error("database createThing u error", u, error);
 var apiErrorMessage = "Problem creating Thing.";
 if (error && error.response && error.response.data && error.response.data.message) {
       apiErrorMessage = error.response.data.message;
@@ -274,7 +276,7 @@ if (tokenResponse.isValidToken === false) {return Promise.resolve({error:{messag
       return res;
     })
     .catch((error) => {
-      console.warn("database setThing u error", u, error);
+      console.error("database setThing u error", u, error);
       return { thingReport: { error: error } };
     });
 }
@@ -311,7 +313,7 @@ if (tokenResponse.isValidToken === false) {return Promise.resolve({error:{messag
       return res;
     })
     .catch((error) => {
-      console.warn("database getThing u error", u, error);
+      console.error("database getThing u error", u, error);
       return { thingReport: { error: error } };
     });
 }
@@ -341,7 +343,7 @@ if (txBytes + rxBytes > quotaBytes) {return Promise.resolve({error:{message:'Quo
       //     return thingy;
     })
     .catch((error) => {
-      console.warn("database forgetThing error", error);
+      console.error("database forgetThing error", error);
     });
 }
 
@@ -413,7 +415,7 @@ if (txBytes + rxBytes > quotaBytes) {return Promise.resolve({error:{message:'Quo
     .catch((error) => {
       stack[slug] = { error: error, refreshedAt: zuluTime() };
 
-      console.warn("database getSnapshot u error", u, webPrefix, error);
+      console.error("database getSnapshot u error", u, webPrefix, error);
     });
 }
 
@@ -449,7 +451,7 @@ if (txBytes + rxBytes > quotaBytes) {return Promise.resolve({error:{message:'Quo
       return thingy;
     })
     .catch((error) => {
-      console.warn("database getThingReport error", u, datagram, error);
+      console.error("database getThingReport error", u, datagram, error);
       return { thingReport: { message: "message", error: error } };
     });
 }
@@ -490,7 +492,7 @@ if (tokenResponse.isValidToken === false) {return Promise.resolve({error:{messag
       //        const elapsedTime = Date.now() - requestedAt;
     })
     .catch((error) => {
-      console.warn("database getThings axios error", u, error);
+      console.error("database getThings axios error", u, error);
       return { things: [] };
       //        setError({ ...error, message: "Problem" });
     });

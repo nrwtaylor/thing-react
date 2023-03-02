@@ -5,11 +5,13 @@ import { humanTime, zuluTime } from "./util/time.js";
 
 import useDeepCompareEffect from 'use-deep-compare-effect'
 
+const defaultSnapshotInterval = process.env.REACT_APP_SNAPSHOT_INTERVAL;
+
 
 export default function useSnapshot(input, inputSnapshotPollInterval) {
   //const to = input;
 
-  const [snapshotInterval, setSnapshotInterval] = useState(inputSnapshotPollInterval == null ? 50 : inputSnapshotPollInterval);
+  const [snapshotInterval, setSnapshotInterval] = useState(inputSnapshotPollInterval == null ? defaultSnapshotInterval : inputSnapshotPollInterval);
 
   const [flag, setFlag] = useState();
 

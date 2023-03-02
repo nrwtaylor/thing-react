@@ -160,6 +160,10 @@ if (thing.subject.toLowerCase() === 'please sign up') {
 matchedSlugs.push('signup');
 }
 
+if (thing.subject.toLowerCase() === 'log out') {
+matchedSlugs.push('logout');
+}
+
 
 
 
@@ -203,20 +207,6 @@ console.log("Agents agentInput xkcd", agentInput);
     console.log("Datagram");
     console.log(datagram);
 
-    /*
-    db.collection("things")
-      .add(
-        datagram
-      )
-      .then(function () {
-        console.log("Document succesfully written!");
-      })
-      .catch(function (error) {
-        console.error("Error writing document: ", error);
-      });
-*/
-
-    //    setOpen(false);
   };
 
   function timeStamp() {
@@ -245,18 +235,6 @@ console.log("Agents agentInput xkcd", agentInput);
 */
   }
 
-  function callBack() {
-    console.log("Agent callBack called.");
-  }
-
-  const deleteButton = (
-    <Forget uuid={thing && thing.uuid} callBack={callBack} />
-  );
-
-  useEffect(() => {
-    console.log("Agents thing", thing);
-  }, [thing]);
-
   return (
     <>
       {debugFlag && <div>AGENTS</div>}
@@ -273,37 +251,15 @@ console.log("Agents agentInput xkcd", agentInput);
 
       {thing &&
         agents &&
-        agents.map((agent) => {
+        agents.map((agent, index) => {
           return (
-            <>
-              {true && (
-                <>
-                  {" "}
-                  AGENT {agent}
-                  <br />
-                </>
-              )}
               <Agent
+                key={"agents_" + agent + "_" + index}
                 thing={thing}
                 agentInput={{ ...agentInput, agent: agent }}
               />
-              <br />
-            </>
           );
         })}
-      {/*
-      <TextField
-        multiline
-        //        autoFocus
-        margin="normal"
-        label="INPUT"
-        type="text"
-        fullWidth
-        name="updateReply"
-        value={reply}
-        onChange={(event) => setReply(event.target.value)}
-      />
-*/}
     </>
   );
 }
