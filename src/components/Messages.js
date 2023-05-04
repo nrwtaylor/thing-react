@@ -36,8 +36,8 @@ import Login from "../components/Login.js";
 import Token from "../components/Token.js";
 import Signup from "../components/Signup.js";
 
-import Box from "@material-ui/core/Box";
-import { makeStyles } from "@material-ui/core/styles";
+import Box from "@mui/material/Box";
+import makeStyles from '@mui/styles/makeStyles';
 
 import { isText } from "../util/text.js";
 
@@ -64,8 +64,6 @@ import useMessages from "../useMessages";
 
 import { styled } from "@mui/material/styles";
 
-//import Container from '@mui/material/Container';
-
 import Button from "@mui/material/Button";
 
 import Card from "@mui/material/Card";
@@ -78,7 +76,6 @@ import CardMedia from "@mui/material/CardMedia";
 //import Avatar from "@mui/material/Avatar";
 
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
-//import UpdateIcon from "@mui/icons-material/Update";
 
 import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
@@ -119,7 +116,7 @@ const useStyles = makeStyles((theme) => ({
     height: "auto",
     // width:'100%',
     alignItems: "center",
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down('sm')]: {
       height: "auto",
     },
     // height: "auto",
@@ -149,7 +146,7 @@ const useStyles = makeStyles((theme) => ({
     "& img": {
       maxHeight: "180px",
       width: "100%",
-      [theme.breakpoints.down("xs")]: {
+      [theme.breakpoints.down('sm')]: {
         maxHeight: "150px",
       },
       // width: "auto",
@@ -160,7 +157,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ExpandMore = styled((props: ExpandMoreProps) => {
   const { expand, ...other } = props;
-  return <IconButton {...other} />;
+  return <IconButton {...other} size="large" />;
 })(({ theme, expand }) => ({
   transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
   marginLeft: "auto",

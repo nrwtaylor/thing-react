@@ -3,9 +3,9 @@ import React, { memo, useState, useEffect } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-import ThingContainer from "./../components/ThingContainer";
+import ThingContainer from "./../components/ThingContainer.js";
 
-import { Box, Grid } from "@material-ui/core";
+import { Box, Grid } from "@mui/material";
 
 const thumb = {
   // display: "inline-flex",

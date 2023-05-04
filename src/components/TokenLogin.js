@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import crypto from "crypto";
 
-import useToken from "../useToken";
-import useIdentity from "../useIdentity";
+import useToken from "../useToken.js";
+import useIdentity from "../useIdentity.js";
 
   const { REACT_APP_CLIENT_SECRET } = process.env;
   const { REACT_APP_API_PREFIX } = process.env;

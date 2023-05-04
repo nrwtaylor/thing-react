@@ -4,11 +4,13 @@ import PropTypes from "prop-types";
 import crypto from "crypto";
 import { v4 as uuidv4 } from "uuid";
 
-import useToken from "../useToken";
-import useIdentity from "../useIdentity";
-import useThings from "../useThings";
+import useToken from "../useToken.js";
+import useIdentity from "../useIdentity.js";
+import useThings from "../useThings.js";
 
 import { createThing, forgetThing } from "../util/database.js";
+
+import { toast } from 'react-toastify';
 
 const { REACT_APP_CLIENT_SECRET } = process.env;
 const { REACT_APP_API_PREFIX } = process.env;
@@ -59,18 +61,29 @@ const webPrefix = defaultWebPrefix;
 const [login, setLogin] = useState();
 
 useEffect(()=>{
+
+console.log("Login isValidToken", isValidToken);
+
 if (isValidToken == null) {return;}
 if (isValidToken) {setLogin(false); return;}
 if (isValidToken === false) {setLogin(true);return;}
 
 }, [isValidToken]);
 
+function processToken(token) {
+
+if (isValidToken == null) {return;}
+if (isValidToken) {setLogin(false); return;}
+if (isValidToken === false) {setLogin(true);return;}
+
+}
 
   useEffect(() => {
     console.log("Login things", things);
   }, [things]);
 
   useEffect(() => {
+processToken(token);
     console.log("Login token", token);
   }, [token]);
 
@@ -193,6 +206,7 @@ setLogin("yes");
 
   return (
     <div className="login-wrapper">
+LOGIN {login}<br />
       <h1>{login ? "Please Log In" : "Logged In"}</h1>
       <form onSubmit={handleSubmit}>
         <label>

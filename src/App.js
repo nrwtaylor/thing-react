@@ -25,7 +25,7 @@ import History from "../src/components/History.js";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Input from "../src/components/Input.js";
 
-import Container from "@mui/material/Container";
+import {Container} from "@mui/material";
 import ThingsContainer from "../src/components/ThingContainer.js";
 
 import Collection from "../src/components/Collection.js";
@@ -36,7 +36,7 @@ import ThingCarousel from "../src/components/ThingCarousel.js";
 
 import { v4 as uuidv4 } from "uuid";
 
-import useToken from "./useToken";
+import useToken from "./useToken.js";
 
   import { ToastContainer, toast } from 'react-toastify';
  import 'react-toastify/dist/ReactToastify.css';
@@ -59,7 +59,7 @@ export default function App({ componentName, ...props }) {
 
   return (
     <>
-      THING-REACT 26 February 2023 7bc2
+      THING-REACT 3 May 2023 dab2
       <br />
       {/*identity && <Identity identity={identity} />*/}
       {/*token && token.message*/}

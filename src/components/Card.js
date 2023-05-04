@@ -1,11 +1,11 @@
 import React, { memo, useState, useEffect } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import { ItemTypes } from "./ItemTypes";
+import { ItemTypes } from "./ItemTypes.js";
 //import { Thing } from "./../components/Thing.js";
 import Thing from "./../../src/components/Thing.js";
 
 //import FirebaseStorageImage from "./../components/FirebaseStorageImage";
-import { Grid, Box } from "@material-ui/core/";
+import { Grid, Box } from "@mui/material/";
 import VisibilitySensor from "react-visibility-sensor";
 //import arrow from "./../images/arrow.svg";
 

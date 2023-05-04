@@ -34,6 +34,7 @@ export default function useSnapshot(input, inputSnapshotPollInterval) {
   }, [input]);
 
   useEffect(() => {
+
     console.log("useSnapshot snapshotInterval", snapshotInterval);
     getSnapshot();
 

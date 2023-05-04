@@ -17,7 +17,7 @@ import {
   //  Avatar,
   //  ListItemAvatar,
   Box,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import {
   Button,
@@ -28,7 +28,7 @@ import {
   Dialog,
   DialogContent,
   DialogActions,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import Frequency from "../components/Frequency.js";
 
@@ -69,6 +69,10 @@ function Trace(props) {
   const [timeSeriesData, setTimeSeriesData] = useState();
   const [xSeriesData, setXSeriesData] = useState();
   const [ySeriesData, setYSeriesData] = useState();
+
+  const [yMean, setYMean] = useState();
+
+  const [ySeriesMax, setYSeriesMax] = useState(30);
 
   const [currentTime, setCurrentTime] = useState();
   const [spread, setSpread] = useState();
@@ -143,9 +147,31 @@ function Trace(props) {
 //} else {
 //setXSeriesData([]);
 //}
-    console.log("xSeriesData x", x);
+    console.log("Trace xSeriesData x", x);
 
-    setTimeSeriesData(t);
+/*
+const m = calculateMean(t);
+console.log("Trace calculateMean m t", m, t);
+
+const t2 = t.filter((tThing)=>{
+//return false;
+if (tThing>100) {return false;}
+return true;
+});
+*/
+
+const filteredT = t.filter((tThing)=>{
+
+if (t.amount > 20) {return false;}
+if (t.amount2 > 20) {return false;}
+if (t.amount3 > 20) {return false;}
+return true;
+
+});
+
+console.log("Trace timeSeriesData t", t);
+ //   setTimeSeriesData(t);
+setTimeSeriesData(filteredT);
     setSpread(spreadEvent);
 
     var yVals = data.map(function (val) {
@@ -182,8 +208,14 @@ function Trace(props) {
     //if (y.length > 4) {
     //}
 
-    setYSeriesData(y);
+//const yy = y.filter((yData)=>{
 
+//if (yData > 20) {return false;}
+//return true;
+
+//});
+console.log("Trace ySeriesData y", y);
+    setYSeriesData(y);
     //}
   }, [data]);
 
@@ -197,6 +229,15 @@ function Trace(props) {
     return () => clearInterval(interval);
 
   }, []);
+
+
+function calculateMean(grades) {
+if (grades == null) {return true;}
+
+  const total = grades.reduce((acc, c) => acc + c, 0);
+  return total / grades.length;
+}
+
 
   function updateTime() {
     const x = new Date().getTime();
@@ -341,6 +382,7 @@ function Trace(props) {
               }
               //return (<>x</>);
             })}
+<Tooltip />
             {cycles.reverse().map((n) => {
               return (
                 <Line
@@ -354,6 +396,7 @@ function Trace(props) {
                 />
               );
             })}
+
             <Line
               isAnimationActive={false}
               dataKey="amount"
@@ -361,6 +404,7 @@ function Trace(props) {
               strokeWidth={4}
               dot={false}
             />
+
           </LineChart>
         </ResponsiveContainer>
 </div>

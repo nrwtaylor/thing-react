@@ -2,45 +2,46 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 //import { useRouter } from "./../util/router.js";
 //import Section from "./Section";
-import AppBar from "@material-ui/core/AppBar";
-import Container from "@material-ui/core/Container";
-import Toolbar from "@material-ui/core/Toolbar";
+import AppBar from "@mui/material/AppBar";
+import Container from "@mui/material/Container";
+import Toolbar from "@mui/material/Toolbar";
 //import { Link } from "./../util/router.js";
 import { getSlug } from "./../util/text.js";
-import Hidden from "@material-ui/core/Hidden";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import Button from "@material-ui/core/Button";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import Divider from "@material-ui/core/Divider";
-import NightsStayIcon from "@material-ui/icons/NightsStay";
-import WbSunnyIcon from "@material-ui/icons/WbSunny";
-import Drawer from "@material-ui/core/Drawer";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
+import Hidden from "@mui/material/Hidden";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import Button from "@mui/material/Button";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Divider from "@mui/material/Divider";
+import NightsStayIcon from "@mui/icons-material/NightsStay";
+import WbSunnyIcon from "@mui/icons-material/WbSunny";
+import Drawer from "@mui/material/Drawer";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
 //import useDarkMode from "use-dark-mode";
-import { fade, makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import SearchIcon from "@material-ui/icons/Search";
-import InputBase from "@material-ui/core/InputBase";
-import Box from "@material-ui/core/Box";
-import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
-import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
-import GavelOutlinedIcon from "@material-ui/icons/GavelOutlined";
-import LocalShippingOutlinedIcon from "@material-ui/icons/LocalShippingOutlined";
-import PaymentIcon from "@material-ui/icons/Payment";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import GavelIcon from "@material-ui/icons/Gavel";
-import LocalShippingIcon from "@material-ui/icons/LocalShipping";
-import StoreIcon from "@material-ui/icons/Store";
+import { alpha } from "@mui/material/styles";
+import makeStyles from '@mui/styles/makeStyles';
+import Typography from "@mui/material/Typography";
+import SearchIcon from "@mui/icons-material/Search";
+import InputBase from "@mui/material/InputBase";
+import Box from "@mui/material/Box";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
+import GavelOutlinedIcon from "@mui/icons-material/GavelOutlined";
+import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
+import PaymentIcon from "@mui/icons-material/Payment";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import GavelIcon from "@mui/icons-material/Gavel";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import StoreIcon from "@mui/icons-material/Store";
 
 //import { isSeller } from "../util/identity.js";
-import ViewListIcon from "@material-ui/icons/ViewList";
+import ViewListIcon from "@mui/icons-material/ViewList";
 
 const { REACT_APP_LOGO, REACT_APP_DESCRIPTION } = process.env;
 
@@ -96,7 +97,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "700",
     padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
     width: "100%",
     // height: '28px',

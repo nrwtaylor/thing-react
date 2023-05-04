@@ -1,10 +1,10 @@
 import React, { memo, useState, useEffect, useCallback } from "react";
 import { Card } from "./Card.js";
-import { Grid, Box } from "@material-ui/core";
+import { Grid, Box } from "@mui/material";
 import update from "immutability-helper";
 import { useDrop } from "react-dnd";
 import { ItemTypes } from "./ItemTypes.js";
-import { FullscreenExitTwoTone } from "@material-ui/icons";
+import { FullscreenExitTwoTone } from "@mui/icons-material";
 import { v4 as uuidv4 } from "uuid";
 
 import useThings from "../useThings.js";

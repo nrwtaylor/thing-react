@@ -1,9 +1,9 @@
 import React, { useState, useEffect, Fragment } from "react";
 
 // Material UI
-import { Button, Dialog, DialogTitle, DialogActions } from "@material-ui/core";
+import { Button, Dialog, DialogTitle, DialogActions } from "@mui/material";
 
-import { DeleteOutline } from "@material-ui/icons";
+import { DeleteOutline } from "@mui/icons-material";
 
 function Forget(props) {
   const [open, setOpen] = useState(false);

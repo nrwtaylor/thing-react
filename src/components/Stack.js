@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
-import { Button } from "@material-ui/core";
-import Skeleton from "@material-ui/lab/Skeleton";
+import makeStyles from '@mui/styles/makeStyles';
+import { Button } from "@mui/material";
+import Skeleton from '@mui/material/Skeleton';
 import { getSlug } from "./../util/text";
 //import { keywordsByGoogleSheet } from "./../util/gimmu";
 
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
   featured: {
     backgroundColor:
-      theme.palette.type === "dark" ? theme.palette.action.selected : "#fdf8c2",
+      theme.palette.mode === "dark" ? theme.palette.action.selected : "#fdf8c2",
   },
   starFeatured: {
     color: theme.palette.warning.main,

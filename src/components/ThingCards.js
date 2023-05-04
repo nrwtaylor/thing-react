@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Container from "@mui/material/Container";
+import {Container} from "@mui/material";
 import Collection from "../components/Collection.js";
 import useThings from "../useThings.js";
 

@@ -6,7 +6,7 @@ import {
   //  Avatar,
   //  ListItemAvatar,
   Box,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import {
   Button,
@@ -17,13 +17,13 @@ import {
   Dialog,
   DialogContent,
   DialogActions,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import {
   //AddCircleOutlineRounded,
   //DeleteOutlineRounded,
   Edit,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 
 import Forget from "../components/Forget.js";
 import Trace from "../components/Trace.js";
@@ -41,7 +41,7 @@ import History from "../components/History.js";
 
 import { getSnapshot } from "../util/database.js";
 
-import useSnapshot from "../useSnapshot";
+import useSnapshot from "../useSnapshot.js";
 
 //import { useSwipeable } from "react-swipeable";
 

@@ -8,10 +8,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { v4 as uuidv4 } from "uuid";
 
-import useToken from "../useToken";
-import useIdentity from "../useIdentity";
-import useInput from "../useInput";
-import useThings from "../useThings";
+import useToken from "../useToken.js";
+import useIdentity from "../useIdentity.js";
+import useInput from "../useInput.js";
+import useThings from "../useThings.js";
 
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";

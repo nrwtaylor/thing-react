@@ -6,7 +6,7 @@ import {
   //  Avatar,
   //  ListItemAvatar,
   Box,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import {
   Button,
@@ -17,13 +17,13 @@ import {
   Dialog,
   DialogContent,
   DialogActions,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import {
   //AddCircleOutlineRounded,
   //DeleteOutlineRounded,
   Edit,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 
 import Forget from "../components/Forget.js";
 import Agent from "../components/Agent.js";

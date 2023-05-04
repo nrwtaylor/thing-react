@@ -8,7 +8,7 @@ import {
   //  Avatar,
   //  ListItemAvatar,
   Box,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import {
   //  Button,
@@ -19,13 +19,13 @@ import {
   Dialog,
   DialogContent,
   DialogActions,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import {
   //AddCircleOutlineRounded,
   //DeleteOutlineRounded,
   Edit,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 
 import Forget from "../components/Forget.js";
 import Trace from "../components/Trace.js";
@@ -49,8 +49,8 @@ import {
 } from "../util/time.js";
 import { extractUuid, parsePing, prefixText } from "../util/text.js";
 
-import useSnapshot from "../useSnapshot";
-import useThingReport from "../useThingReport";
+import useSnapshot from "../useSnapshot.js";
+import useThingReport from "../useThingReport.js";
 
 import { useSwipeable } from "react-swipeable";
 

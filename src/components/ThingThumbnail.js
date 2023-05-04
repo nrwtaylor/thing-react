@@ -1,10 +1,10 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { emphasize } from "@material-ui/core/styles/colorManipulator";
-import DeleteIcon from "@material-ui/icons/Delete";
-import IconButton from "@material-ui/core/IconButton";
+import { emphasize } from "@mui/material/styles";
+import makeStyles from '@mui/styles/makeStyles';
+import DeleteIcon from "@mui/icons-material/Delete";
+import IconButton from "@mui/material/IconButton";
 
-import { Skeleton } from "@material-ui/lab";
+import { Skeleton } from '@mui/material';
 
 //import { propTypes } from "react-markdown";
 import brokenImage from "../images/brokenImage.png";
@@ -75,40 +75,38 @@ function ThingThumbnail(props) {
   }, []);
 
   // https://stackoverflow.com/questions/34097560/react-js-replace-img-src-onerror
-  return (
-    <>
-      <Skeleton
-        variant="rect"
-        //  width="100%"
+  return <>
+    <Skeleton
+      variant="rectangular"
+      //  width="100%"
 
-        style={{
-          display: loadingContext ? "block" : "none",
-          width: "100%",
-          aspectRatio: "1/1",
-          height: "auto",
-        }}
+      style={{
+        display: loadingContext ? "block" : "none",
+        width: "100%",
+        aspectRatio: "1/1",
+        height: "auto",
+      }}
+    />
+
+    <div style={{ display: loadingContext ? "none" : "block" }}>
+      <img
+        src={src}
+        alt={"image"}
+        onError={handleError}
+        onLoad={handleLoad}
       />
+    </div>
 
-      <div style={{ display: loadingContext ? "none" : "block" }}>
-        <img
-          src={src}
-          alt={"image"}
-          onError={handleError}
-          onLoad={handleLoad}
-        />
-      </div>
-
-      {allowDelete ? (
-        <IconButton
-          edge="end"
-          aria-label="delete"
-          //          onClick={() => deleteItemImage(location)}
-        >
-          <DeleteIcon />
-        </IconButton>
-      ) : null}
-    </>
-  );
+    {allowDelete ? (
+      <IconButton
+        edge="end"
+        //          onClick={() => deleteItemImage(location)}
+        aria-label="delete"
+        size="large">
+        <DeleteIcon />
+      </IconButton>
+    ) : null}
+  </>;
 }
 
 export default ThingThumbnail;

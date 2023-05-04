@@ -14,7 +14,7 @@ import {
   Dialog,
   DialogContent,
   DialogActions,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import { replaceUuids } from "../util/text.js";
 import useThing from "../useThing.js";

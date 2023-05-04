@@ -33,8 +33,8 @@ import Login from "../components/Login.js";
 import Token from "../components/Token.js";
 import Signup from "../components/Signup.js";
 
-import Box from "@material-ui/core/Box";
-import { makeStyles } from "@material-ui/core/styles";
+import Box from "@mui/material/Box";
+import makeStyles from '@mui/styles/makeStyles';
 
 import { isText } from "../util/text.js";
 
@@ -59,12 +59,12 @@ import {
 } from "../util/database.js";
 import { humanTime, zuluTime, humanAge } from "../util/time.js";
 
-import useMessages from "../useMessages";
-import useThingReport from "../useThingReport";
-import useThing from "../useThing";
-import useThings from "../useThings";
-import useDatagram from "../useDatagram";
-import useToken from "../useToken";
+import useMessages from "../useMessages.js";
+import useThingReport from "../useThingReport.js";
+import useThing from "../useThing.js";
+import useThings from "../useThings.js";
+import useDatagram from "../useDatagram.js";
+import useToken from "../useToken.js";
 
 import { getSlug } from "../util/text.js";
 
@@ -120,7 +120,7 @@ const useStyles = makeStyles((theme) => ({
     height: "auto",
     // width:'100%',
     alignItems: "center",
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down('sm')]: {
       height: "auto",
     },
     // height: "auto",
@@ -150,7 +150,7 @@ const useStyles = makeStyles((theme) => ({
     "& img": {
       maxHeight: "180px",
       width: "100%",
-      [theme.breakpoints.down("xs")]: {
+      [theme.breakpoints.down('sm')]: {
         maxHeight: "150px",
       },
       // width: "auto",
@@ -161,7 +161,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ExpandMore = styled((props: ExpandMoreProps) => {
   const { expand, ...other } = props;
-  return <IconButton {...other} />;
+  return <IconButton {...other} size="large" />;
 })(({ theme, expand }) => ({
   transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
   marginLeft: "auto",
@@ -658,6 +658,11 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
     }
 
     const tickInterval = setInterval(() => {
+
+//dev
+return;
+
+console.log("Thing tickInterval");
       incrementTick();
     }, defaultTickInterval);
 
@@ -665,6 +670,10 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
   }, []);
 
   useEffect(() => {
+
+//dev
+//return;
+
     // If still processing the last one,
     // Skip a beat, do not request aother.
     if (flag === "red") {
@@ -673,6 +682,7 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
 
     const timerInterval = setInterval(() => {
       //      incrementTick();
+console.log("Thing timerInterval");
       updateTimer();
     }, defaultTimerInterval);
 
@@ -911,6 +921,7 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
               }}
             />
           )}
+
         {canFold && expanded && <Button onClick={handleFoldThing}>FOLD</Button>}
         {canOpen && !expanded && (
           <Button onClick={handleOpenThing}>OPEN</Button>
@@ -1095,7 +1106,7 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
           {expanded && (
             <>
               <Content thing={thing} agentInput={data && data.thingReport} />
-              <br />)
+              <br />
               {error && error.message}
               <br />
               {debugFlag && <Typography>RUNTIME {runTime}</Typography>}
