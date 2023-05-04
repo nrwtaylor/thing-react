@@ -3,7 +3,7 @@ import React, { useState, useEffect, Fragment } from "react";
 // Material UI
 import { Button, Dialog, DialogTitle, DialogActions } from "@mui/material";
 
-import { DeleteOutline } from "@mui/icons-material";
+import { DeleteOutlined } from "@mui/icons-material";
 
 function Forget(props) {
   const [open, setOpen] = useState(false);
@@ -44,7 +44,7 @@ function Forget(props) {
   return (
     <Fragment>
       <Button tip="Forget Thing" onClick={handleOpen}>
-        <DeleteOutline color="secondary" />
+        <DeleteOutlined color="secondary" />
       </Button>
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogTitle>Are you sure you want to forget this Thing ?</DialogTitle>

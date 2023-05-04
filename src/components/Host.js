@@ -1,11 +1,4 @@
-import React, { useEffect, useState } from "react";
-//import './Login.css';
-import PropTypes from "prop-types";
-
-import Button from "@mui/material/Button";
-import UpdateIcon from '@mui/icons-material/Update';
-
-import { humanTime, humanAge, humanRuntime } from "./../util/time.js";
+import { useEffect } from "react";
 
 export default function Host({ host, onRefresh }) {
 

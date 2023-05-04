@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
+import { Typography, TextField } from "@mui/material";
+// import TextField from "@mui/material/TextField";
 
 
 import useToken from "../useToken.js";
