@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-  const messages = [];
+const messages = [];
 
 export default function useMessages(inputToken) {
-//  const messages = [];
+  //  const messages = [];
   const getMessage = () => {
     return null;
   };
@@ -32,8 +32,6 @@ export default function useMessages(inputToken) {
     console.log("useMessage message", message);
     //    if (props.token) {props.token = token;}
   }, [message]);
-
-
 
   return {
     addMessage: addMessage,

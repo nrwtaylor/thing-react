@@ -46,7 +46,14 @@ function Stream(props) {
 
   const navigate = useNavigate();
 
-  const { at, quantities, quantity, period: inputPeriod, hide, agentInput } = props;
+  const {
+    at,
+    quantities,
+    quantity,
+    period: inputPeriod,
+    hide,
+    agentInput,
+  } = props;
   const canSwipe = true;
 
   const config = {
@@ -77,19 +84,17 @@ function Stream(props) {
     amount = transducer.amount;
   }
 
-useEffect(() =>{
+  useEffect(() => {
+    if (agentInput == null) {
+      return;
+    }
 
-if (agentInput == null) {return;}
-
-if (typeof agentInput.period !== 'undefined') {
-
-if (agentInput.period === false) {
-setPeriod(50)
-}
-
-}
-
-},[agentInput]);
+    if (typeof agentInput.period !== "undefined") {
+      if (agentInput.period === false) {
+        setPeriod(50);
+      }
+    }
+  }, [agentInput]);
 
   if (transducer && transducer.units && transducer.units !== "X") {
     units = transducer.units;

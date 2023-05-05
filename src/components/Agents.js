@@ -31,7 +31,7 @@ import DynamicComponent from "../components/DynamicComponent.js";
 
 import { devFlag, debugFlag } from "../util/dev.js";
 
-import {getSlug} from "../util/text.js";
+import { getSlug } from "../util/text.js";
 
 const recognizedSlugs = [
   "history",
@@ -49,9 +49,8 @@ const recognizedSlugs = [
   "temperature-humidity",
   "humidity-temperature",
   "log-in",
-  "sign-up"
+  "sign-up",
 ];
-
 
 function slugAgent(slug) {
   const parts = slug.split("-");
@@ -119,7 +118,7 @@ function Agents({ thing, agentInput }) {
     }
     console.log("Agents thing agentInput", thing, agentInput);
     console.log("Agents test", agentInput, recognizedSlugs);
-    if (typeof thing.subject !== 'undefined') {
+    if (typeof thing.subject !== "undefined") {
       console.log("Agents thing.subject", thing.subject);
       const matchedSlugs = recognizedSlugs.filter((recognizedSlug) => {
         console.log(
@@ -141,7 +140,7 @@ function Agents({ thing, agentInput }) {
           return true;
         }
 
-/*
+        /*
         if (getSlug(thing.subject).indexOf(recognizedSlug) !== -1) {
           return true;
         }
@@ -150,25 +149,20 @@ function Agents({ thing, agentInput }) {
         return false;
       });
 
+      // Test
+      if (thing.subject.toLowerCase() === "please log in") {
+        matchedSlugs.push("login");
+      }
 
-// Test
-if (thing.subject.toLowerCase() === 'please log in') {
-matchedSlugs.push('login');
-}
+      if (thing.subject.toLowerCase() === "please sign up") {
+        matchedSlugs.push("signup");
+      }
 
-if (thing.subject.toLowerCase() === 'please sign up') {
-matchedSlugs.push('signup');
-}
+      if (thing.subject.toLowerCase() === "log out") {
+        matchedSlugs.push("logout");
+      }
 
-if (thing.subject.toLowerCase() === 'log out') {
-matchedSlugs.push('logout');
-}
-
-
-
-
-//      console.log("Agents thing matchedSlugs", matchedSlugs);
-
+      //      console.log("Agents thing matchedSlugs", matchedSlugs);
 
       setAgents(matchedSlugs);
 
@@ -206,7 +200,6 @@ console.log("Agents agentInput xkcd", agentInput);
     };
     console.log("Datagram");
     console.log(datagram);
-
   };
 
   function timeStamp() {
@@ -253,11 +246,11 @@ console.log("Agents agentInput xkcd", agentInput);
         agents &&
         agents.map((agent, index) => {
           return (
-              <Agent
-                key={"agents_" + agent + "_" + index}
-                thing={thing}
-                agentInput={{ ...agentInput, agent: agent }}
-              />
+            <Agent
+              key={"agents_" + agent + "_" + index}
+              thing={thing}
+              agentInput={{ ...agentInput, agent: agent }}
+            />
           );
         })}
     </>

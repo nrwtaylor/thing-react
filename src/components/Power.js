@@ -38,7 +38,6 @@ import MotionReference from "../components/MotionReference.js";
 import Ping from "../components/Ping.js";
 import History from "../components/History.js";
 
-
 import { getSnapshot } from "../util/database.js";
 
 import useSnapshot from "../useSnapshot.js";
@@ -121,11 +120,9 @@ function Power(props) {
     return date.toString();
   }
 
-useEffect(()=>{
-
-setData(snapshot);
-
-}, [snapshot]);
+  useEffect(() => {
+    setData(snapshot);
+  }, [snapshot]);
 
   //const [ampDataPointer, setAmpDataPointer] = useState(0);
   //const [ampPoints, setAmpPoints] = useState([]);
@@ -141,7 +138,7 @@ setData(snapshot);
     <Forget uuid={datagram && datagram.uuid} callBack={callBack} />
   );
 
-/*
+  /*
 
 {"talker_identifier":"TH","type":"A","amount":"-10.833","units":"X","name":"AMP0","
 sensor_id":"thamp0ax0"},"thvlt0ax1":{"talker_identifier":"TH","type":"A","amount":"12.950","units":"X","name":"VLT0","sensor_id":"thvlt0ax1"},"
@@ -162,73 +159,66 @@ thclb0ax2":{"talker_identifier":"TH","type":"A","amount":"1142011.6","units":"X"
         REQUEST INTERVAL {snapshotInterval}ms{" "}
         {Math.round(1000 / snapshotInterval, 1)}Hz
         <br />
-<br />
-HOUSE AMPS
-                  <History
-                    user={null}
-                    //thing={data.thing}
-                    datagram={{...datagram, subject:"transducers-thamp0ax0-10m"}}
-                    agent_input={webPrefix}
-                    showLive={true}
-                  />
-<br />
-HOUSE VOLTS
-                  <History
-                    user={null}
-                    //thing={data.thing}
-                    datagram={{...datagram, subject:"transducers-thvlt0ax1-10m"}}
-                    agent_input={webPrefix}
-                    showLive={true}
-                  />
-<br />
-HOUSE COLOUMBS > AMP-HOUR
-                  <History
-                    user={null}
-                    //thing={data.thing}
-                    datagram={{...datagram, subject:"transducers-thclb0ax2-10m"}}
-                    agent_input={webPrefix}
-                    showLive={true}
-                  />
-<br />
-START VOLTS
-                  <History
-                    user={null}
-                    //thing={data.thing}
-                    datagram={{...datagram, subject:"transducers-thvlt1ax1-10m"}}
-                    agent_input={webPrefix}
-                    showLive={true}
-                  />
-
-
-
-
-
-
+        <br />
+        HOUSE AMPS
+        <History
+          user={null}
+          //thing={data.thing}
+          datagram={{ ...datagram, subject: "transducers-thamp0ax0-10m" }}
+          agent_input={webPrefix}
+          showLive={true}
+        />
+        <br />
+        HOUSE VOLTS
+        <History
+          user={null}
+          //thing={data.thing}
+          datagram={{ ...datagram, subject: "transducers-thvlt0ax1-10m" }}
+          agent_input={webPrefix}
+          showLive={true}
+        />
+        <br />
+        HOUSE COLOUMBS > AMP-HOUR
+        <History
+          user={null}
+          //thing={data.thing}
+          datagram={{ ...datagram, subject: "transducers-thclb0ax2-10m" }}
+          agent_input={webPrefix}
+          showLive={true}
+        />
+        <br />
+        START VOLTS
+        <History
+          user={null}
+          //thing={data.thing}
+          datagram={{ ...datagram, subject: "transducers-thvlt1ax1-10m" }}
+          agent_input={webPrefix}
+          showLive={true}
+        />
         {data && data.transducers && (
           <>
-<br />
-BATTERY PRESSURE{" "}
+            <br />
+            BATTERY PRESSURE{" "}
             {data &&
               data.transducers &&
               data.transducers.thprsapb0 &&
               data.transducers.thprsapb0.amount}{" "}
             mBar
             <br />
-BATTERY TEMPERATURE{" "}
+            BATTERY TEMPERATURE{" "}
             {data &&
               data.transducers &&
               data.transducers.thtmpatc1 &&
-              data.transducers.thtmpatc1.amount}{"°C "}
+              data.transducers.thtmpatc1.amount}
+            {"°C "}
             <br />
-BATTERY HUMIDITY{" "}
+            BATTERY HUMIDITY{" "}
             {data &&
               data.transducers &&
               data.transducers.thhmdahp2 &&
-              data.transducers.thhmdahp2.amount}{"% "}
+              data.transducers.thhmdahp2.amount}
+            {"% "}
             <br />
-
-
-
           </>
         )}
         <br />

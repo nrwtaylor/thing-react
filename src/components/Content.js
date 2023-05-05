@@ -6,7 +6,6 @@ import PropTypes from "prop-types";
 import { Button } from "@mui/material";
 // import UpdateIcon from '@mui/icons-material/Update';
 
-
 import { humanTime } from "./../util/time.js";
 
 export default function Content({ thing, agentInput }) {

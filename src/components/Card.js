@@ -11,7 +11,6 @@ import VisibilitySensor from "react-visibility-sensor";
 
 import LazyLoad from "react-lazyload";
 
-
 const style = {
   // boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
   // marginRight: '1rem',
@@ -24,7 +23,7 @@ const style = {
 };
 
 export const Card = memo(function Card({
-//export const Card = (function Card({
+  //export const Card = (function Card({
   id,
   card,
   token,
@@ -136,7 +135,9 @@ export const Card = memo(function Card({
             cursor: "move",
           }}
         >
-{'xxx'}{card && card.open}{'yyy'}
+          {"xxx"}
+          {card && card.open}
+          {"yyy"}
 
           <Thing
             uuid={card.uuid}
@@ -173,10 +174,9 @@ export const Card = memo(function Card({
             cursor: "move",
           }}
         >
-
-{/*<LazyLoad style={{display:"flex"}} >*/}
+          {/*<LazyLoad style={{display:"flex"}} >*/}
           <Thing
-key={card.uuid}
+            key={card.uuid}
             //          to={card.to}
             //          subject={card.subject}
             //          createdAt={card.createdAt}
@@ -185,17 +185,17 @@ key={card.uuid}
             token={token}
             datagram={{
               ...card,
-              card:{visible:cardVisible},
+              card: { visible: cardVisible },
               pollInterval:
                 card && card.pollInterval && cardVisible
-? 5*60000
-//                  ? card.pollInterval
-                  : false,
+                  ? 5 * 60000
+                  : //                  ? card.pollInterval
+                    false,
             }}
             webPrefix={card.webPrefix}
             onChange={(e) => handleChange(e)}
           />
-{/*</LazyLoad>*/}
+          {/*</LazyLoad>*/}
         </Box>
       </Grid>
     </VisibilitySensor>

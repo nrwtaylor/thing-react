@@ -40,7 +40,6 @@ import { getSnapshot } from "../util/database.js";
 
 import { isText } from "../util/text.js";
 
-
 import useSnapshot from "../useSnapshot.js";
 
 import { useSwipeable } from "react-swipeable";
@@ -130,44 +129,37 @@ function TextSnapshot(props) {
     <Forget uuid={datagram && datagram.uuid} callBack={callBack} />
   );
 
-    return (
-      <>
-        <div>SNAPSHOT</div>
-        <div>URL {toSnapshot}</div>
-        <div>
-          FLAG {flag} COLOUR
-          <br />
-          GET TIME {snapshotRunTime}ms {Math.round(1000 / snapshotRunTime, 1)}Hz
-          <br />
-          {data && data.transducers && (
-            <>
-              {Object.keys(data.transducers).map((transducer) => {
-                console.log("Snapshot transducer", transducer);
-                return (
-                  <>
-                    {transducer}{" "}
-                    {data &&
-                      data.transducers &&
-                      data.transducers[transducer] &&
-                      data.transducers[transducer].amount}{" "}
-                    {data &&
-                      data.transducers &&
-                      data.transducers[transducer] &&
-                      data.transducers[transducer].units}
-                    <br />
-                  </>
-                );
-              })}
-            </>
-          )}
-
-
-
-
-
-
-
-{/*
+  return (
+    <>
+      <div>SNAPSHOT</div>
+      <div>URL {toSnapshot}</div>
+      <div>
+        FLAG {flag} COLOUR
+        <br />
+        GET TIME {snapshotRunTime}ms {Math.round(1000 / snapshotRunTime, 1)}Hz
+        <br />
+        {data && data.transducers && (
+          <>
+            {Object.keys(data.transducers).map((transducer) => {
+              console.log("Snapshot transducer", transducer);
+              return (
+                <>
+                  {transducer}{" "}
+                  {data &&
+                    data.transducers &&
+                    data.transducers[transducer] &&
+                    data.transducers[transducer].amount}{" "}
+                  {data &&
+                    data.transducers &&
+                    data.transducers[transducer] &&
+                    data.transducers[transducer].units}
+                  <br />
+                </>
+              );
+            })}
+          </>
+        )}
+        {/*
           <br />
           {data && (
             <>
@@ -186,19 +178,9 @@ if (!isText(element)) {return null;}
             </>
           )}
 */}
-
-
-
-
-
-
-
-
-
-        </div>
-      </>
-    );
-
+      </div>
+    </>
+  );
 }
 
 export default TextSnapshot;

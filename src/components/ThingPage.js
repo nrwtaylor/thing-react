@@ -157,7 +157,7 @@ export default function ThingPage(props) {
   return (
     <>
       THING PAGE
-{/*
+      {/*
       <Button
         thing={{
           subject: play ? "play" : "stop",
@@ -165,22 +165,27 @@ export default function ThingPage(props) {
         }}
       />
 */}
-{/*{thing && thing.subject*/}
-
+      {/*{thing && thing.subject*/}
       {thing && (
-          <Thing
-            key={thing.uuid}
-            flavour={"item"}
-//            uuid={thing.uuid}
-            datagram={thing}
-            //        datagram={{...thing, pollInterval:20000}}
-            canOpen={false}
-            canFold={false}
-            open={true}
-            play={play}
-            variables={{agent:"channel-token", variable:"hello",open:{isOpen:true,canOpen:false},fold:{canFold:false},play:play}}
-            agentInput={{collection:true}}
-          />
+        <Thing
+          key={thing.uuid}
+          flavour={"item"}
+          //            uuid={thing.uuid}
+          datagram={thing}
+          //        datagram={{...thing, pollInterval:20000}}
+          canOpen={false}
+          canFold={false}
+          open={true}
+          play={play}
+          variables={{
+            agent: "channel-token",
+            variable: "hello",
+            open: { isOpen: true, canOpen: false },
+            fold: { canFold: false },
+            play: play,
+          }}
+          agentInput={{ collection: true }}
+        />
       )}
       <br />
     </>

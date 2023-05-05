@@ -102,7 +102,7 @@ function Trace(props) {
 
     //console.log("first last", first, last);
     //return;
-    const spreadEvent = last - first > 0 ? last - first : first-last;
+    const spreadEvent = last - first > 0 ? last - first : first - last;
 
     setFirstAt(data[0].at);
     setLastAt(data[data.length - 1].at);
@@ -142,14 +142,14 @@ function Trace(props) {
       x.push(d2);
     }
     //return;
-//if (x.length > 1) {
+    //if (x.length > 1) {
     setXSeriesData(x);
-//} else {
-//setXSeriesData([]);
-//}
+    //} else {
+    //setXSeriesData([]);
+    //}
     console.log("Trace xSeriesData x", x);
 
-/*
+    /*
 const m = calculateMean(t);
 console.log("Trace calculateMean m t", m, t);
 
@@ -160,18 +160,22 @@ return true;
 });
 */
 
-const filteredT = t.filter((tThing)=>{
+    const filteredT = t.filter((tThing) => {
+      if (t.amount > 20) {
+        return false;
+      }
+      if (t.amount2 > 20) {
+        return false;
+      }
+      if (t.amount3 > 20) {
+        return false;
+      }
+      return true;
+    });
 
-if (t.amount > 20) {return false;}
-if (t.amount2 > 20) {return false;}
-if (t.amount3 > 20) {return false;}
-return true;
-
-});
-
-console.log("Trace timeSeriesData t", t);
- //   setTimeSeriesData(t);
-setTimeSeriesData(filteredT);
+    console.log("Trace timeSeriesData t", t);
+    //   setTimeSeriesData(t);
+    setTimeSeriesData(filteredT);
     setSpread(spreadEvent);
 
     var yVals = data.map(function (val) {
@@ -208,13 +212,13 @@ setTimeSeriesData(filteredT);
     //if (y.length > 4) {
     //}
 
-//const yy = y.filter((yData)=>{
+    //const yy = y.filter((yData)=>{
 
-//if (yData > 20) {return false;}
-//return true;
+    //if (yData > 20) {return false;}
+    //return true;
 
-//});
-console.log("Trace ySeriesData y", y);
+    //});
+    console.log("Trace ySeriesData y", y);
     setYSeriesData(y);
     //}
   }, [data]);
@@ -227,17 +231,16 @@ console.log("Trace ySeriesData y", y);
     }, 10000); // 20 Hz was 200.
 
     return () => clearInterval(interval);
-
   }, []);
 
+  function calculateMean(grades) {
+    if (grades == null) {
+      return true;
+    }
 
-function calculateMean(grades) {
-if (grades == null) {return true;}
-
-  const total = grades.reduce((acc, c) => acc + c, 0);
-  return total / grades.length;
-}
-
+    const total = grades.reduce((acc, c) => acc + c, 0);
+    return total / grades.length;
+  }
 
   function updateTime() {
     const x = new Date().getTime();
@@ -272,142 +275,138 @@ if (grades == null) {return true;}
       <br />
 
       <Box>
-<div style={{width:'100%'}} >
-{/*        <ResponsiveContainer width="100%" aspect={3}> */}
-        <ResponsiveContainer aspect={3}>
-
-          <LineChart data={timeSeriesData}>
-            <XAxis
-              interval={0}
-              ticks={xSeriesData.sort()}
-              dataKey="time"
-              domain={["dataMin", currentTime]}
-              //            domain={["dataMin", "dataMax"]}
-
-              type="number"
-              tick={true}
-              tickFormatter={formatXAxis}
-            />{" "}
-            }{/*   <CartesianGrid /> */}
-            {props.domain && (
-              <YAxis
+        <div style={{ width: "100%" }}>
+          {/*        <ResponsiveContainer width="100%" aspect={3}> */}
+          <ResponsiveContainer aspect={3}>
+            <LineChart data={timeSeriesData}>
+              <XAxis
                 interval={0}
-                tick={true}
-                ticks={ySeriesData.sort()}
-                tickFormatter={(value) =>
-                  new Intl.NumberFormat("en", {
-                    notation: "compact",
-                    compactDisplay: "short",
-                  }).format(value)
-                }
-                domain={props.domain}
-              ></YAxis>
-            )}
-            {props.domain === undefined && (
-              <YAxis
-                interval={0}
-                tick={true}
-                ticks={ySeriesData.sort()}
+                ticks={xSeriesData.sort()}
+                dataKey="time"
+                domain={["dataMin", currentTime]}
+                //            domain={["dataMin", "dataMax"]}
+
                 type="number"
-                tickFormatter={(value) =>
-                  new Intl.NumberFormat("en", {
-                    notation: "compact",
-                    compactDisplay: "short",
-                  }).format(value)
-                }
-                domain={[
-                  (dataMin) => {
-                    return 1.0 * dataMin; // With large numbers this can be a problem.
-                  },
-                  (dataMax) => {
-                    return 1.0 * dataMax;
-                  },
-                ]}
-              ></YAxis>
-            )}
-
-            {/*    <Legend /> */}
-            {/*   <Tooltip /> */}
-            {/*  <Line type="monotone" stroke="#8884d8" dataKey="amount" strokeWidth={2}
+                tick={true}
+                tickFormatter={formatXAxis}
+              />{" "}
+              }{/*   <CartesianGrid /> */}
+              {props.domain && (
+                <YAxis
+                  interval={0}
+                  tick={true}
+                  ticks={ySeriesData.sort()}
+                  tickFormatter={(value) =>
+                    new Intl.NumberFormat("en", {
+                      notation: "compact",
+                      compactDisplay: "short",
+                    }).format(value)
+                  }
+                  domain={props.domain}
+                ></YAxis>
+              )}
+              {props.domain === undefined && (
+                <YAxis
+                  interval={0}
+                  tick={true}
+                  ticks={ySeriesData.sort()}
+                  type="number"
+                  tickFormatter={(value) =>
+                    new Intl.NumberFormat("en", {
+                      notation: "compact",
+                      compactDisplay: "short",
+                    }).format(value)
+                  }
+                  domain={[
+                    (dataMin) => {
+                      return 1.0 * dataMin; // With large numbers this can be a problem.
+                    },
+                    (dataMax) => {
+                      return 1.0 * dataMax;
+                    },
+                  ]}
+                ></YAxis>
+              )}
+              {/*    <Legend /> */}
+              {/*   <Tooltip /> */}
+              {/*  <Line type="monotone" stroke="#8884d8" dataKey="amount" strokeWidth={2}
                         stroke="black" activeDot={{ r: 8 }} /> */}
-            {false &&
-              data &&
-              data[0] &&
-              data[0].amounts &&
-              data[0].amounts[0] && (
-                <Line
-                  isAnimationActive={false}
-                  dataKey="amount2"
-                  stroke="grey"
-                  strokeWidth={4}
-                  dot={false}
-                />
-              )}
-            {false &&
-              data &&
-              data[0] &&
-              data[0].amounts &&
-              data[0].amounts[2] && (
-                <Line
-                  isAnimationActive={false}
-                  dataKey="amount3"
-                  stroke="grey"
-                  strokeWidth={4}
-                  dot={false}
-                />
-              )}
-            {Object.keys(data[0]).map((q) => {
-              if (q.startsWith("amount")) {
-                const x = q.replace("amount", "");
-
-                if (x === "") {
-                  return;
-                }
-                if (!Number.isInteger(parseInt(x))) {
-                  return;
-                }
-
-                return (
+              {false &&
+                data &&
+                data[0] &&
+                data[0].amounts &&
+                data[0].amounts[0] && (
                   <Line
-                    key={'trace_'+x}
                     isAnimationActive={false}
-                    dataKey={"amount" + x}
+                    dataKey="amount2"
                     stroke="grey"
                     strokeWidth={4}
                     dot={false}
                   />
+                )}
+              {false &&
+                data &&
+                data[0] &&
+                data[0].amounts &&
+                data[0].amounts[2] && (
+                  <Line
+                    isAnimationActive={false}
+                    dataKey="amount3"
+                    stroke="grey"
+                    strokeWidth={4}
+                    dot={false}
+                  />
+                )}
+              {Object.keys(data[0]).map((q) => {
+                if (q.startsWith("amount")) {
+                  const x = q.replace("amount", "");
+
+                  if (x === "") {
+                    return;
+                  }
+                  if (!Number.isInteger(parseInt(x))) {
+                    return;
+                  }
+
+                  return (
+                    <Line
+                      key={"trace_" + x}
+                      isAnimationActive={false}
+                      dataKey={"amount" + x}
+                      stroke="grey"
+                      strokeWidth={4}
+                      dot={false}
+                    />
+                  );
+
+                  console.log("Trace q", data[0][q]);
+                }
+                //return (<>x</>);
+              })}
+              <Tooltip />
+              {cycles.reverse().map((n) => {
+                return (
+                  <Line
+                    key={"trace" + "_" + "cycle" + "_" + n}
+                    isAnimationActive={false}
+                    dataKey={"amount" + n}
+                    stroke={hexShade(n, 1)}
+                    //        stroke="grey"
+                    strokeWidth={4}
+                    dot={false}
+                  />
                 );
-
-                console.log("Trace q", data[0][q]);
-              }
-              //return (<>x</>);
-            })}
-<Tooltip />
-            {cycles.reverse().map((n) => {
-              return (
-                <Line
-                  key={'trace'+'_'+'cycle'+'_'+n}
-                  isAnimationActive={false}
-                  dataKey={"amount" + n}
-                  stroke={hexShade(n, 1)}
-                  //        stroke="grey"
-                  strokeWidth={4}
-                  dot={false}
-                />
-              );
-            })}
-
-            <Line
-              isAnimationActive={false}
-              dataKey="amount"
-              stroke="red"
-              strokeWidth={4}
-              dot={false}
-            />
-
-          </LineChart>
-        </ResponsiveContainer>
-</div>
+              })}
+              <Line
+                isAnimationActive={false}
+                dataKey="amount"
+                stroke="red"
+                strokeWidth={4}
+                dot={false}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
         {/*
       <ResponsiveContainer width="100%" height="100%">
         <LineChart width={300} height={100} data={data}>
@@ -418,7 +417,6 @@ if (grades == null) {return true;}
         {humanRuntime(spread)}
         <br />
         <p />
-
       </Box>
     </>
   );

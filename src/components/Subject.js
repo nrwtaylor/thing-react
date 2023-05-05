@@ -5,11 +5,9 @@ import TextField from "@mui/material/TextField";
 
 import useThing from "../useThing.js";
 
-import {devFlag, debugFlag} from "../util/dev.js";
-
+import { devFlag, debugFlag } from "../util/dev.js";
 
 const engineState = process.env.REACT_APP_ENGINE_STATE;
-
 
 export default function Subject({ thing, setSubject }) {
   //  const [subject, setSubject] = useState(datagram.subject);
@@ -22,13 +20,13 @@ export default function Subject({ thing, setSubject }) {
 
   const timeoutPeriod = 500;
 
-//  const [subject, setSubject2] =useState();
-const subject = thing.subject;
+  //  const [subject, setSubject2] =useState();
+  const subject = thing.subject;
 
   const [s, setS] = useState(subject);
   const [defaultSubject, setDefaultSubject] = useState(subject);
 
-/*
+  /*
 useEffect(()=>{
 if (thing == null) {return;}
 //if (thing.subject === subject) {return;}
@@ -41,17 +39,17 @@ setSubject(thing.subject);
 },[thing]);
 */
 
-//useEffect(() =>{
+  //useEffect(() =>{
 
-//updateThing(thing);
-//setSubject(thing.subject);
-//setS(thing.subject);
-//},[]);
+  //updateThing(thing);
+  //setSubject(thing.subject);
+  //setS(thing.subject);
+  //},[]);
 
   useEffect(() => {
-console.log("Subject subject", subject);
+    console.log("Subject subject", subject);
     setS(subject);
-//testThing();
+    //testThing();
     textInput.current.value = subject;
   }, [subject]);
 
@@ -71,9 +69,8 @@ console.log("Subject subject", subject);
     setDefaultSubject("");
 
     if (s.endsWith(" ")) {
-//      setSubject(s);
-updateThing({...thing, subject:s});
-
+      //      setSubject(s);
+      updateThing({ ...thing, subject: s });
     }
   }, [s]);
 
@@ -81,9 +78,8 @@ updateThing({...thing, subject:s});
   // After this time the request is sent.
   useEffect(() => {
     const timer = setTimeout(() => {
-//      setSubject(s);
-updateThing({...thing, subject:s});
-
+      //      setSubject(s);
+      updateThing({ ...thing, subject: s });
     }, 2000);
     return () => clearTimeout(timer);
   }, [s]);
@@ -101,7 +97,7 @@ updateThing({...thing, subject:s});
 
   return (
     <>
-{debugFlag && (<>{thing.subject}</>)}
+      {debugFlag && <>{thing.subject}</>}
       <TextField
         //              error = {validation.validator(variableType,subject)}
         variant="filled"

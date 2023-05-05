@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from '@mui/styles';
 import { Button } from "@mui/material";
-import Skeleton from '@mui/material/Skeleton';
+import Skeleton from "@mui/material/Skeleton";
 import { getSlug } from "./../util/text";
 //import { keywordsByGoogleSheet } from "./../util/gimmu";
 
 const { REACT_APP_GOOGLE_SHEET } = process.env;
 const { REACT_APP_KEYWORD } = process.env;
 const { REACT_APP_SLUG } = process.env;
-
 
 const useStyles = makeStyles((theme) => ({
   paperItems: {
@@ -35,8 +34,7 @@ const useStyles = makeStyles((theme) => ({
 // From Stackr.
 
 function Stack(props) {
-
-  const {stack} = props;
+  const { stack } = props;
 
   if (stack === undefined) {
     return "No stack";
@@ -49,7 +47,6 @@ function Stack(props) {
       })}
     </>
   );
-
 }
 
 export default Stack;

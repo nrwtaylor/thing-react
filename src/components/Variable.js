@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 export default function Variable({ variable }) {
-//  const [refreshedAt, setRefreshedAt] = useState();
-//  const [expiresAt, setExpiresAt] = useState();
+  //  const [refreshedAt, setRefreshedAt] = useState();
+  //  const [expiresAt, setExpiresAt] = useState();
   // Display variable.
 
   useEffect(() => {
@@ -17,11 +17,10 @@ export default function Variable({ variable }) {
     if (variable === null) {
       return;
     }
-
   }, [variable]);
 
-return (<>VAR</>);
-/*
+  return <>VAR</>;
+  /*
   return (
     <>
       variable

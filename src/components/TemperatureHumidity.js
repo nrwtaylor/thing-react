@@ -38,7 +38,6 @@ import MotionReference from "../components/MotionReference.js";
 import Ping from "../components/Ping.js";
 import History from "../components/History.js";
 
-
 import { getSnapshot } from "../util/database.js";
 
 import useSnapshot from "../useSnapshot.js";
@@ -60,7 +59,6 @@ function TemperatureHumidity(props) {
   //const [snapshotInterval, setSnapshotInterval] = useState(500);
 
   const toSnapshot = "http://192.168.10.10/snapshot.json";
-
 
   const { snapshot, flag, snapshotRunTime, snapshotInterval } = useSnapshot(
     toSnapshot,
@@ -123,11 +121,9 @@ function TemperatureHumidity(props) {
     return date.toString();
   }
 
-useEffect(()=>{
-
-setData(snapshot);
-
-}, [snapshot]);
+  useEffect(() => {
+    setData(snapshot);
+  }, [snapshot]);
 
   //const [ampDataPointer, setAmpDataPointer] = useState(0);
   //const [ampPoints, setAmpPoints] = useState([]);
@@ -143,7 +139,7 @@ setData(snapshot);
     <Forget uuid={datagram && datagram.uuid} callBack={callBack} />
   );
 
-/*
+  /*
 
 {"talker_identifier":"TH","type":"A","amount":"-10.833","units":"X","name":"AMP0","
 sensor_id":"thamp0ax0"},"thvlt0ax1":{"talker_identifier":"TH","type":"A","amount":"12.950","units":"X","name":"VLT0","sensor_id":"thvlt0ax1"},"
@@ -166,135 +162,104 @@ thclb0ax2":{"talker_identifier":"TH","type":"A","amount":"1142011.6","units":"X"
         REQUEST INTERVAL {snapshotInterval}ms{" "}
         {Math.round(1000 / snapshotInterval, 1)}Hz
         <br />
-{/*
+        {/*
 thtmpdtc1"},"thhmddhp2":{"talker_identifier":"TH","type":"H","amount":"58.28",
 "units":"P","name":"HMDD","sensor_id":"thhmddhp2
 */}
-
-
-
-A - TEMPERATURE
-                  <History
-                    user={null}
-                    //thing={data.thing}
-                    datagram={{...datagram, subject:"transducers-thtmpatc1-10m"}}
-                    agent_input={webPrefix}
-                  />
-
-A - HUMIDITY
-                  <History
-                    user={null}
-                    //thing={data.thing}
-                    datagram={{...datagram, subject:"transducers-thhmdahp2-10m"}}
-                    agent_input={webPrefix}
-                  />
-A - GAS
-                  <History
-                    user={null}
-                    //thing={data.thing}
-                    datagram={{...datagram, subject:"transducers-thgasaxx3-10m"}}
-                    agent_input={webPrefix}
-                  />
-
-
-A - PRESSURE
-                  <History
-                    user={null}
-                    //thing={data.thing}
-                    datagram={{...datagram, subject:"transducers-thprsapb0-10m"}}
-                    agent_input={webPrefix}
-                  />
-
-
-
-
-B - TEMPERATURE
-                  <History
-                    user={null}
-                    //thing={data.thing}
-                    datagram={{...datagram, subject:"transducers-thtmpbtc1-10m"}}
-                    agent_input={webPrefix}
-                  />
-
-B - HUMIDITY
-                  <History
-                    user={null}
-                    //thing={data.thing}
-                    datagram={{...datagram, subject:"transducers-thhmdbhp2-10m"}}
-                    agent_input={webPrefix}
-                  />
-
-
-
-
-C - TEMPERATURE
-                  <History
-                    user={null}
-                    //thing={data.thing}
-                    datagram={{...datagram, subject:"transducers-thtmpctc1-10m"}}
-                    agent_input={webPrefix}
-                  />
-
-C - TEMPERATURE
-                  <History
-                    user={null}
-                    //thing={data.thing}
-                    datagram={{...datagram, subject:"transducers-thhmdchp2-10m"}}
-                    agent_input={webPrefix}
-                  />
-
-
-
-
-
-D - TEMPERATURE
-                  <History
-                    user={null}
-                    //thing={data.thing}
-                    datagram={{...datagram, subject:"transducers-thtmpdtc1-10m"}}
-                    agent_input={webPrefix}
-                  />
-
-D - HUMIDITY
-                  <History
-                    user={null}
-                    //thing={data.thing}
-                    datagram={{...datagram, subject:"transducers-thhmddhp2-10m"}}
-                    agent_input={webPrefix}
-                  />
-
-
-
-
-
-
-
-
+        A - TEMPERATURE
+        <History
+          user={null}
+          //thing={data.thing}
+          datagram={{ ...datagram, subject: "transducers-thtmpatc1-10m" }}
+          agent_input={webPrefix}
+        />
+        A - HUMIDITY
+        <History
+          user={null}
+          //thing={data.thing}
+          datagram={{ ...datagram, subject: "transducers-thhmdahp2-10m" }}
+          agent_input={webPrefix}
+        />
+        A - GAS
+        <History
+          user={null}
+          //thing={data.thing}
+          datagram={{ ...datagram, subject: "transducers-thgasaxx3-10m" }}
+          agent_input={webPrefix}
+        />
+        A - PRESSURE
+        <History
+          user={null}
+          //thing={data.thing}
+          datagram={{ ...datagram, subject: "transducers-thprsapb0-10m" }}
+          agent_input={webPrefix}
+        />
+        B - TEMPERATURE
+        <History
+          user={null}
+          //thing={data.thing}
+          datagram={{ ...datagram, subject: "transducers-thtmpbtc1-10m" }}
+          agent_input={webPrefix}
+        />
+        B - HUMIDITY
+        <History
+          user={null}
+          //thing={data.thing}
+          datagram={{ ...datagram, subject: "transducers-thhmdbhp2-10m" }}
+          agent_input={webPrefix}
+        />
+        C - TEMPERATURE
+        <History
+          user={null}
+          //thing={data.thing}
+          datagram={{ ...datagram, subject: "transducers-thtmpctc1-10m" }}
+          agent_input={webPrefix}
+        />
+        C - TEMPERATURE
+        <History
+          user={null}
+          //thing={data.thing}
+          datagram={{ ...datagram, subject: "transducers-thhmdchp2-10m" }}
+          agent_input={webPrefix}
+        />
+        D - TEMPERATURE
+        <History
+          user={null}
+          //thing={data.thing}
+          datagram={{ ...datagram, subject: "transducers-thtmpdtc1-10m" }}
+          agent_input={webPrefix}
+        />
+        D - HUMIDITY
+        <History
+          user={null}
+          //thing={data.thing}
+          datagram={{ ...datagram, subject: "transducers-thhmddhp2-10m" }}
+          agent_input={webPrefix}
+        />
         {data && data.transducers && (
           <>
-<br />
-BATTERY PRESSURE{" "}
+            <br />
+            BATTERY PRESSURE{" "}
             {data &&
               data.transducers &&
               data.transducers.thprsapb0 &&
               data.transducers.thprsapb0.amount}{" "}
             mBar
             <br />
-BATTERY TEMPERATURE{" "}
+            BATTERY TEMPERATURE{" "}
             {data &&
               data.transducers &&
               data.transducers.thtmpatc1 &&
-              data.transducers.thtmpatc1.amount}{"°C "}
+              data.transducers.thtmpatc1.amount}
+            {"°C "}
             <br />
-BATTERY HUMIDITY{" "}
+            BATTERY HUMIDITY{" "}
             {data &&
               data.transducers &&
               data.transducers.thhmdahp2 &&
-              data.transducers.thhmdahp2.amount}{"% "}
+              data.transducers.thhmdahp2.amount}
+            {"% "}
             <br />
-
-
-
           </>
         )}
         <br />

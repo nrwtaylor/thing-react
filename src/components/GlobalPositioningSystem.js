@@ -136,7 +136,6 @@ function GlobalPositioningSystem(props) {
         <br />
         GET TIME {snapshotRunTime}ms {Math.round(1000 / snapshotRunTime, 1)}Hz
         <br />
-
         LATITUDE: {data && data.current_latitude}
         <br />
         LONGITUDE: {data && data.current_longitude}

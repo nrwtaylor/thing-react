@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import { Typography, TextField } from "@mui/material";
 // import TextField from "@mui/material/TextField";
 
-
 import useToken from "../useToken.js";
 import { setThing } from "../util/database.js";
 
@@ -15,7 +14,7 @@ export default function Datagram({ datagram, setDatagram }) {
   const [to, setTo] = useState(datagram.to);
   const [pollInterval, setPollInterval] = useState(datagram.pollInterval);
 
-  const {token} = useToken();
+  const { token } = useToken();
 
   // Display token.
 

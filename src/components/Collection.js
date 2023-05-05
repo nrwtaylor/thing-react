@@ -30,8 +30,7 @@ const img = {
   height: "100%",
 };
 
-function Collection({thing, agentInput}) {
-
+function Collection({ thing, agentInput }) {
   const dndFlag = true;
 
   // This passes the reordered images back up to
@@ -40,34 +39,34 @@ function Collection({thing, agentInput}) {
   //  props.onCollectionChange(reOrderedThings);
   //}
 
-//return null;
+  //return null;
 
   return (
     <>
       Similar Things
       <br />
-      THING UUID{' '}
-      {thing && thing.uuid}
+      THING UUID {thing && thing.uuid}
       <br />
-      THING ASSOCIATIONS{' '}
-      <br />
+      THING ASSOCIATIONS <br />
       {thing &&
         thing.associations &&
         Array.isArray(thing.associations) &&
         thing.associations.map((d) => {
-          return <div key={"association_"+thing.uuid+"_"+d}> {d.slice(0, 4)} </div>
+          return (
+            <div key={"association_" + thing.uuid + "_" + d}>
+              {" "}
+              {d.slice(0, 4)}{" "}
+            </div>
+          );
         })}
       <br />
-
       <DndProvider backend={HTML5Backend}>
         <ThingContainer
           thing={thing}
-          agentInput={{...agentInput,thingContainer:true}}
-//          onCollectionChange={handleCollectionChange}
+          agentInput={{ ...agentInput, thingContainer: true }}
+          //          onCollectionChange={handleCollectionChange}
         />
-
       </DndProvider>
-
     </>
   );
 }

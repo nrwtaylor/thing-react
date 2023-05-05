@@ -74,10 +74,7 @@ export default function Barometer(props) {
     }
   };
 
-return(<>
-{pressure}
-</>);
-
+  return <>{pressure}</>;
 
   return (
     <div className="App">

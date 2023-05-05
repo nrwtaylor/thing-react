@@ -6,7 +6,7 @@ export function readToken(jwtToken) {
     return { refreshedAt: null, expiresAt: null, isValidToken: false };
   }
 
-console.log("jwtToken", jwtToken);
+  console.log("jwtToken", jwtToken);
 
   const t = jwt_decode(jwtToken);
   //    console.log("useToken readToken t", t);
@@ -19,15 +19,13 @@ console.log("jwtToken", jwtToken);
 }
 
 export function isValidToken(t) {
+  //console.log("jwtToken", jwtToken);
 
-//console.log("jwtToken", jwtToken);
-
-
-//  const t = jwt_decode(jwtToken);
+  //  const t = jwt_decode(jwtToken);
   const expiresAt = t.iat;
 
   const age = parseFloat(expiresAt) * 1000 - Date.now();
-console.log("useToken isValidToken expiresAt age", expiresAt, age);
+  console.log("useToken isValidToken expiresAt age", expiresAt, age);
   var isValidToken = false;
   if ((age) => 0) {
     isValidToken = false;
@@ -128,7 +126,7 @@ export default function useToken() {
 
     setAge(t);
   }
-/*
+  /*
   useEffect(() => {
     if ((age) => 0) {
       setIsValidToken(true);

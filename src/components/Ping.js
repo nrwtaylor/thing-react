@@ -33,7 +33,6 @@ import History from "../components/History.js";
 
 import useSnapshot from "../useSnapshot.js";
 
-
 const defaultWebPrefix = process.env.REACT_APP_WEB_PREFIX;
 
 function Ping(props) {
@@ -184,7 +183,7 @@ function Ping(props) {
         {pings &&
           pings.map((ping, index) => {
             return (
-              <div key={"ping_"+index} >
+              <div key={"ping_" + index}>
                 HOST {ping.host}
                 <Stream
                   hide={true}

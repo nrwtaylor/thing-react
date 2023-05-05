@@ -9,14 +9,13 @@ import React, { useEffect, memo } from "react";
  * }
  */
 const DynamicComponent = ({ is, useDefaultPath = true, ...rest }) => {
+  useEffect(() => {
+    console.log("DynamicComponent is", is);
+  }, [is]);
 
-useEffect(()=>{
-
-console.log("DynamicComponent is", is);
-
-},[is]);
-
-if (is == null) {return null;}
+  if (is == null) {
+    return null;
+  }
 
   return React.createElement(
     useDefaultPath ? require(`./${is}.js`).default : is,

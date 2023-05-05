@@ -3,8 +3,7 @@ import { useState, useEffect } from "react";
 import { getWebJson } from "./util/database.js";
 import { humanTime, zuluTime } from "./util/time.js";
 
-import useDeepCompareEffect from 'use-deep-compare-effect'
-
+import useDeepCompareEffect from "use-deep-compare-effect";
 
 //export default function useToken(inputToken) {
 export default function useThingReport(input, inputThingReportPollInterval) {
@@ -15,7 +14,7 @@ export default function useThingReport(input, inputThingReportPollInterval) {
   const [flag, setFlag] = useState();
 
   const [thingReport, setThingReport] = useState({
-    uuid:null,
+    uuid: null,
     thing: { uuid: "X", subject: to },
     thingReport: { sms: "No response. Yet." },
   });
@@ -146,10 +145,12 @@ export default function useThingReport(input, inputThingReportPollInterval) {
         }
 
         if (result && result.thingReport) {
+          console.log("ThingReport result.thingReport", result.thingReport)
           setThingReport(result.thingReport);
         } else {
           // Failback situation where thingReport format not found.
-          setThingReport(result);
+          console.log("ThingReport result", result)
+          setThingReport({hey:result});
         }
         // dev flag available not available
         setFlag("green");

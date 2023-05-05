@@ -65,7 +65,6 @@ function slugAgent(slug) {
 }
 
 function Agent({ thing, agentInput }) {
-
   const agent_input = agentInput; // remove
 
   const agent = slugAgent(agentInput.agent);

@@ -1,45 +1,40 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from "react";
 //import './Login.css';
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 import { humanTime } from "./../util/time.js";
 
+export default function Identity({ identity }) {
+  // Display token.
 
-export default function Identity({identity}) {
+  useEffect(() => {
+    console.log("Identity identity", identity);
+    if (!identity) {
+      return;
+    }
+    //console.log("Token token", token);
 
-
-// Display token.
-
-useEffect(() =>{
-console.log("Identity identity", identity);
-if (!identity) {return;}
-//console.log("Token token", token);
-
-if (identity === null) {return;}
-
-}, [identity]);
+    if (identity === null) {
+      return;
+    }
+  }, [identity]);
 
   return (
-<>
-IDENTITY 
-{!identity && ("NOT") }
-{identity && identity === null && ("NULL")}
-{identity && identity === false && ("FALSE")}
-{identity && identity === '' && ("EMPTY")}
-{identity && identity === true && ("TRUE")}
-{identity && Array.isArray(identity) && ("ARRAY")}
-
-{identity && identity.isString && (<>{"STRING" + identity}</>)}
-{identity && identity} <br />
-
-<br />
-
-</>
-  )
-
-
+    <>
+      IDENTITY
+      {!identity && "NOT"}
+      {identity && identity === null && "NULL"}
+      {identity && identity === false && "FALSE"}
+      {identity && identity === "" && "EMPTY"}
+      {identity && identity === true && "TRUE"}
+      {identity && Array.isArray(identity) && "ARRAY"}
+      {identity && identity.isString && <>{"STRING" + identity}</>}
+      {identity && identity} <br />
+      <br />
+    </>
+  );
 }
 
 Identity.propTypes = {
-//  token: PropTypes.func.isRequired
-}
+  //  token: PropTypes.func.isRequired
+};

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-import crypto from "crypto";
+// import crypto from "crypto";
 
 async function signupUser(credentials) {
   const { REACT_APP_CLIENT_SECRET } = process.env;
@@ -11,7 +11,6 @@ async function signupUser(credentials) {
   console.log("credentials", credentials);
 
   return fetch(REACT_APP_API_PREFIX + "auth/signup", {
-
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -52,12 +51,12 @@ export default function Signup() {
     const token = await signupUser({
       username: gen_hash,
       password: pass,
-      email: from
+      email: from,
     });
 
     console.log("Signup handleSubmit", token);
 
-setMessage(token.message);
+    setMessage(token.message);
 
     //setIdentity(token);
     //setToken(token);
@@ -78,10 +77,7 @@ setMessage(token.message);
             onChange={(e) => setPassword(e.target.value)}
           />
           <p>From(email)</p>
-          <input
-            type="channel"
-            onChange={(e) => setFrom(e.target.value)}
-          />
+          <input type="channel" onChange={(e) => setFrom(e.target.value)} />
         </label>
         <div>
           <button type="submit">Submit</button>
@@ -92,5 +88,5 @@ setMessage(token.message);
 }
 
 Signup.propTypes = {
-//  setToken: PropTypes.func.isRequired,
+  //  setToken: PropTypes.func.isRequired,
 };

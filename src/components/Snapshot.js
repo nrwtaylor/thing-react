@@ -62,7 +62,9 @@ function Snapshot({ thing, agentInput }) {
   //const [flag, setFlag] = useState();
   //const [requestedAt, setRequestedAt] = useState();
   const [reply, setReply] = useState("");
-  const [snapshotInterval, setSnapshotInterval] = useState(defaultSnapshotInterval);
+  const [snapshotInterval, setSnapshotInterval] = useState(
+    defaultSnapshotInterval
+  );
 
   const defaultToSnapshot = REACT_APP_SNAPSHOT;
   const [toSnapshot, setToSnapshot] = useState(defaultToSnapshot);
@@ -231,7 +233,7 @@ function Snapshot({ thing, agentInput }) {
                 console.log("Snapshot transducer", transducer);
                 return (
                   <Stream
-                    key={"snapshot_transducer_"+transducer+"_"+index}
+                    key={"snapshot_transducer_" + transducer + "_" + index}
                     hide={true}
                     quantity={{
                       units: "A",
@@ -297,7 +299,7 @@ function Snapshot({ thing, agentInput }) {
               console.log("Snapshot transducer", transducer);
               if (!["temperature", "humidity"].includes(transducer)) {
                 return (
-                  <div key={"transducer_"+transducer+"_"+index}>
+                  <div key={"transducer_" + transducer + "_" + index}>
                     {transducer} not used
                     <br />
                   </div>

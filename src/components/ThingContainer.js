@@ -34,10 +34,10 @@ const style = {
 };
 
 //export const ThingContainer = memo(function ThingContainer(props) {
-export const ThingContainer = ({thing}) => {
+export const ThingContainer = ({ thing }) => {
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 
-//  const { thing } = props;
+  //  const { thing } = props;
   const { username, token, getToken, setToken, deleteToken } = useToken();
   const { identity, setIdentity, deleteIdentity } = useIdentity();
 
@@ -129,7 +129,9 @@ export const ThingContainer = ({thing}) => {
       return;
     }
 
-    if (thing == null) {return;}
+    if (thing == null) {
+      return;
+    }
 
     if (Array.isArray(things) && things.length === 0) {
       return;
@@ -148,28 +150,29 @@ export const ThingContainer = ({thing}) => {
   }, [scoredThings, lens]);
 
   function chooseThings() {
-
     if (scoredThings == null) {
       return;
     }
 
     console.log("ThingContainer scoredThings", scoredThings);
 
-
-    const priorityThings = scoredThings
-      .filter((t) => {
-        if (t.priority == null) {
-          return false;
-        }
-        if (t.priority === 'priority') {return true;}
+    const priorityThings = scoredThings.filter((t) => {
+      if (t.priority == null) {
         return false;
-      })
+      }
+      if (t.priority === "priority") {
+        return true;
+      }
+      return false;
+    });
 
-console.log("ThingContainer priorityThings", priorityThings);
+    console.log("ThingContainer priorityThings", priorityThings);
 
     const f = scoredThings
       .filter((t) => {
-        if ((typeof t.priority !== 'undefined') && (t.priority === 'priority')) {return false;}
+        if (typeof t.priority !== "undefined" && t.priority === "priority") {
+          return false;
+        }
         if (t.from === "stack") {
           return true;
         }
@@ -221,13 +224,10 @@ console.log("ThingContainer priorityThings", priorityThings);
           return true;
         });
 
-
       a = [...s, ...ass];
     }
 
-
     a = [...a, ...priorityThings];
-
 
     console.log("ThingContainer a", a);
     setFilteredScoredThings(a);

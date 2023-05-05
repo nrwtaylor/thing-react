@@ -3,10 +3,13 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import Button from "@mui/material/Button";
-import {UpdateIcon} from "@mui/icons-material/Update";
+import { UpdateIcon } from "@mui/icons-material/Update";
 
 import { humanTime, humanAge, humanRuntime, zuluTime } from "./../util/time.js";
-import { zuluTime as zuluTimeF, humanTime as humanTimeF } from "./../util/time.js";
+import {
+  zuluTime as zuluTimeF,
+  humanTime as humanTimeF,
+} from "./../util/time.js";
 
 export default function ZuluTime({ zulutime, onRefresh }) {
   const [zuluTime, setZuluTime] = useState();

@@ -96,7 +96,7 @@ function InertialReference(props) {
     setData(snapshot);
   }, [snapshot]);
 
-/*
+  /*
               data={{
                 displacement: {
 
@@ -210,47 +210,48 @@ function InertialReference(props) {
         {Math.round(1000 / snapshotInterval, 1)}Hz
         <br />
         {inertialReference && <>Inertial array seen</>}
-
-<br />
-Motion Reference component
-<br />
-<MotionReference data={inertialReference} />
-
-<br />
-Intertial Reference parameters
-<br />
+        <br />
+        Motion Reference component
+        <br />
+        <MotionReference data={inertialReference} />
+        <br />
+        Intertial Reference parameters
+        <br />
         {inertialReference && (
           <>
             {Object.keys(inertialReference).map((aspect) => {
               //console.log("InertialReference aspect", aspect);
 
-              return (<>{Object.keys(inertialReference[aspect]).map((dimension) => {
-                //console.log("InertialReference dimension", dimension);
-                return <div>{aspect}{' '}{dimension}{' '}{inertialReference[aspect][dimension]}</div>;
-
-              })}<br /></>);
-
+              return (
+                <>
+                  {Object.keys(inertialReference[aspect]).map((dimension) => {
+                    //console.log("InertialReference dimension", dimension);
+                    return (
+                      <div>
+                        {aspect} {dimension}{" "}
+                        {inertialReference[aspect][dimension]}
+                      </div>
+                    );
+                  })}
+                  <br />
+                </>
+              );
             })}
           </>
         )}
-
-
-<Stream
-                    hide={true}
-                    quantity={{
-                      units: "A",
-                      amount:
-                        data &&
-                        data.transducers &&
-                        data.transducers['thacczxx2'] &&
-                        data.transducers['thacczxx2'].amount,
-                    }}
-                    transducer={data && data.transducers && data.transducers['thacczxx2']}
-                    period={50}
-                  />
-
-
-
+        <Stream
+          hide={true}
+          quantity={{
+            units: "A",
+            amount:
+              data &&
+              data.transducers &&
+              data.transducers["thacczxx2"] &&
+              data.transducers["thacczxx2"].amount,
+          }}
+          transducer={data && data.transducers && data.transducers["thacczxx2"]}
+          period={50}
+        />
         {data && data.transducers && (
           <>
             BUBBLE LEVEL
@@ -319,7 +320,6 @@ Intertial Reference parameters
             MAGNETIC HEADING: {data && data.magnetic_heading_in_degrees} <br />
             TRUE HEADING: {data && data.true_heading_in_degrees} <br />
             RATE OF TURN: {data && data.rate_of_turn} <br />
-
           </>
         )}
         <br />

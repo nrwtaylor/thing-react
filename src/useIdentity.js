@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 
 export default function useIdentity() {
-
-
   const getIdentity = () => {
     return identity;
   };

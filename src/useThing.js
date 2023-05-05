@@ -37,8 +37,8 @@ export default function useThing(datagram) {
   const { things, getThings, setThings } = useThings();
 
   const [flag, setFlag] = useState();
-//const [subject, setSubject] = useState();
-/*
+  //const [subject, setSubject] = useState();
+  /*
   useEffect(() => {
     if (things == null) {return;}
     console.log("useThing things", things);
@@ -50,7 +50,7 @@ export default function useThing(datagram) {
 
   //  }, [datagram]);
 
-/*
+  /*
 useEffect(()=>{
 
 getThing();
@@ -94,7 +94,7 @@ getThing();
           console.log("useThing getThing conditionedThing", conditionedThing);
           setFlag("green");
           setThing(conditionedThing);
-//setSubject(conditionedThing.subject);
+          //setSubject(conditionedThing.subject);
         })
         .catch((error) => {
           setFlag("yellow");
@@ -433,20 +433,21 @@ var result = deepDiffMapper.map({
     //      const { thing, index } = findThing(id);
 
     console.log("useThing updateThing t", t);
-console.log("useThing updateThing token", token);
+    console.log("useThing updateThing token", token);
     console.log("useThing updatething thing", thing);
     const newThing = { ...thing, ...t };
     console.log("useThing updateThing request saveThing", newThing);
-return    saveThing(newThing).then((result)=>{
-console.log("useThing updateThing result", result);
-return result;
+    return saveThing(newThing)
+      .then((result) => {
+        console.log("useThing updateThing result", result);
+        return result;
+      })
+      .catch((error) => {
+        console.error("useThing updateThing error", error);
+        return Promise.reject("Could not update thing");
+      });
 
-}).catch((error)=>{
-console.error("useThing updateThing error", error);
-return Promise.reject("Could not update thing");
-});
-
-//    return Promise.resolve(true);
+    //    return Promise.resolve(true);
   };
 
   const saveThing = (t) => {
@@ -455,11 +456,11 @@ return Promise.reject("Could not update thing");
     return setThingy(t.uuid, t, token)
       .then((result) => {
         console.log("useThing saveThing result", result);
-return result;
+        return result;
       })
       .catch((error) => {
         console.log("useThing saveThing error", error);
-return Promise.reject("Could not save thing.");
+        return Promise.reject("Could not save thing.");
       });
   };
 

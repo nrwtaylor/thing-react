@@ -24,20 +24,21 @@ export default function Associations({ datagram }) {
     setAssociations(datagram && datagram.associations);
   }, [datagram]);
 
-useEffect(() =>{
-
-console.log("Associations associations", associations);
-
-},[associations]);
+  useEffect(() => {
+    console.log("Associations associations", associations);
+  }, [associations]);
 
   return (
     <>
       ASSOCIATIONS
-<Variable variable={associations} />
-
-      {associations && Array.isArray(associations) && (<>{associations.map((association)=>{
-             return (<>X</>)
-      })}</>)}
+      <Variable variable={associations} />
+      {associations && Array.isArray(associations) && (
+        <>
+          {associations.map((association) => {
+            return <>X</>;
+          })}
+        </>
+      )}
       <br />
     </>
   );

@@ -9,37 +9,31 @@ export default function MotionReference(props) {
 
   const canvasCenterX = 150;
   const canvasCenterY = 75;
-//  const { displacement } = data;
+  //  const { displacement } = data;
 
   //const y = x;
   //const z = x;
 
-const [interval, setInterval] = useState();
+  const [interval, setInterval] = useState();
 
-const [data, setData] = useState();
-const [displacement, setDisplacement] = useState();
+  const [data, setData] = useState();
+  const [displacement, setDisplacement] = useState();
 
   const toSnapshot = "http://192.168.10.10/snapshot.json";
   const { snapshot, flag } = useSnapshot(toSnapshot);
 
-useEffect(() =>{
+  useEffect(() => {
+    //console.log("Snapshot", snapshot);
 
-//console.log("Snapshot", snapshot);
+    if (props.data) {
+      setData(props.data);
+      setDisplacement(props.data && props.data.displacement);
+      return;
+    }
 
-if (props.data) {
-
-setData(props.data);
-setDisplacement(props.data && props.data.displacement)
-return;
-
-}
-
-
-setData(snapshot);
-setDisplacement(snapshot && snapshot.displacement)
-
-
-}, [snapshot]);
+    setData(snapshot);
+    setDisplacement(snapshot && snapshot.displacement);
+  }, [snapshot]);
 
   const { streamPoints } = useStream(displacement);
 
@@ -49,11 +43,11 @@ setDisplacement(snapshot && snapshot.displacement)
   }, []);
 
   useEffect(() => {
-   // console.log("MotionReference displacement", displacement);
+    // console.log("MotionReference displacement", displacement);
   }, [displacement]);
 
   useEffect(() => {
-   // console.log("MotionReference data", data);
+    // console.log("MotionReference data", data);
   }, [data]);
 
   function shadeColor(color, percent) {
@@ -97,11 +91,10 @@ setDisplacement(snapshot && snapshot.displacement)
     var GG = G.toString(16).length == 1 ? "0" + G.toString(16) : G.toString(16);
     var BB = B.toString(16).length == 1 ? "0" + B.toString(16) : B.toString(16);
 
-   // console.log("RGB", R, G, B, RR, GG, BB);
+    // console.log("RGB", R, G, B, RR, GG, BB);
 
     return "#" + RR + GG + BB;
   }
-
 
   return (
     <div className="App">
@@ -137,7 +130,7 @@ setDisplacement(snapshot && snapshot.displacement)
           i = i + 50;
           //var colour = shadeColor('#000000', i);
           var colour = shadeGreyPercent(i);
-         // console.log("MotionReference i", i, colour);
+          // console.log("MotionReference i", i, colour);
 
           var strokeWidth = 5;
           if (index === streamPoints.length - 1) {
@@ -150,10 +143,8 @@ setDisplacement(snapshot && snapshot.displacement)
             strokeWidth = 5;
           }
 
-
-const x= displacement && displacement.x ? displacement.x : 0;
-const y= displacement && displacement.y ? displacement.y : 0;
-
+          const x = displacement && displacement.x ? displacement.x : 0;
+          const y = displacement && displacement.y ? displacement.y : 0;
 
           return (
             <circle

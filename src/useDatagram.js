@@ -1,19 +1,18 @@
 import { useState, useEffect } from "react";
 
-import usePrior from "../src/usePrior.js"
+import usePrior from "../src/usePrior.js";
 
 export default function useDatagram(inputDatagram) {
+const [datagram, setDatagram] = useState();
 
   const priorDatagram = usePrior(datagram);
 
-
   // Save datagram locally in memory
 
-  useEffect(()=>{
-
+  useEffect(() => {
+    if (inputDatagram == null) {return;}
     // Consider: Merge strategies.
     saveDatagram(inputDatagram);
-
   }, [inputDatagram]);
 
   useEffect(() => {
@@ -43,38 +42,48 @@ export default function useDatagram(inputDatagram) {
       hasDatagramChanged = true;
     }
 
-if (hasDatagramChanged === false) {return;}
+    if (hasDatagramChanged === false) {
+      return;
+    }
 
-//    console.log(
-//      "useThing getThing datagram changed",
-//      priorDatagram,
-//      datagram,
-//      deepDiffMapper.map([priorDatagram, datagram])
-//    );
+    //    console.log(
+    //      "useThing getThing datagram changed",
+    //      priorDatagram,
+    //      datagram,
+    //      deepDiffMapper.map([priorDatagram, datagram])
+    //    );
 
-//    getThing();
-
+    //    getThing();
   }, [datagram, priorDatagram]);
 
+  useEffect(() => {
+    if (inputDatagram.subject == null) {
+      return;
+    }
+    if (inputDatagram.to == null) {
+      return;
+    }
+    if (inputDatagram.from == null) {
+      return;
+    }
+    if (inputDatagram.agentInput == null) {
+      return;
+    }
 
-useEffect(() =>{
+    setDatagram({
+      to: inputDatagram.to,
+      from: inputDatagram.from,
+      subject: inputDatagram.subject,
+      agentInput: inputDatagram.agentInput,
+    });
+  }, [inputDatagram]);
 
-if (inputDatagram.subject == null) {return;}
-if (inputDatagram.to == null) {return;}
-if (inputDatagram.from == null) {return;}
-if (inputDatagram.agentInput == null) {return;}
+  //  const getDatagram = () => {
+  //    return null;
+  //  };
 
-setDatagram({to:inputDatagram.to, from:inputDatagram.from, subject:inputDatagram.subject, agentInput:inputDatagram.agentInput});
+  //  const [datagram, setDatagram] = useState(getDatagram());
 
-}, [inputDatagram]);
-
-
-//  const getDatagram = () => {
-//    return null;
-//  };
-
-//  const [datagram, setDatagram] = useState(getDatagram());
-const [datagram, setDatagram] = useState();
 
   const saveDatagram = (i) => {
     setDatagram(i);

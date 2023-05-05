@@ -37,10 +37,10 @@ function Frequency(props) {
   //const [requestedAt, setRequestedAt] = useState();
   const [reply, setReply] = useState("");
 
-const period = 1 / frequency;
+  const period = 1 / frequency;
 
-const frequencyRef = React.createRef();
-frequencyRef.current = frequency;
+  const frequencyRef = React.createRef();
+  frequencyRef.current = frequency;
 
   const thing = props.thing;
 
@@ -50,8 +50,8 @@ frequencyRef.current = frequency;
 
   useInterval(() => {
     // Your custom logic here
-getStream();  
-}, period);
+    getStream();
+  }, period);
 
   const [streamGetTime, setStreamGetTime] = useState();
   const replyAgentDialog = (thing) => {
@@ -62,33 +62,32 @@ getStream();
     setOpen(false);
   };
 
+  function useInterval(callback, delay) {
+    const savedCallback = React.useRef();
 
-    function useInterval(callback, delay) {
-        const savedCallback = React.useRef();
-      
-        // Remember the latest function.
-        useEffect(() => {
-          savedCallback.current = callback;
-        }, [callback]);
-      
-        // Set up the interval.
-        useEffect(() => {
-          function tick() {
-            savedCallback.current();
-          }
-          if (delay !== null) {
-            let id = setInterval(tick, delay);
-            return () => clearInterval(id);
-          }
-        }, [delay]);
+    // Remember the latest function.
+    useEffect(() => {
+      savedCallback.current = callback;
+    }, [callback]);
+
+    // Set up the interval.
+    useEffect(() => {
+      function tick() {
+        savedCallback.current();
       }
+      if (delay !== null) {
+        let id = setInterval(tick, delay);
+        return () => clearInterval(id);
+      }
+    }, [delay]);
+  }
 
   //useEffect(()=>{
 
   //getAgent();
 
   //},[]);
-/*
+  /*
   useEffect(() => {
     // If still processing the last one,
     // Skip a beat, do not request another.
@@ -174,32 +173,26 @@ getStream();
   const [voltPoints, setVoltPoints] = useState([]);
   const [tracePeriod, setTracePeriod] = useState();
 
+  function humanFrequency(p) {
+    if (p < 1) {
+      return "1/" + Math.round(1 / p, 0) + " Hz";
+    }
 
-function humanFrequency(p) {
+    return Math.round(p, 1) + " Hz";
+  }
 
-if (p<1) {return "1/"+Math.round(1/p, 0) + " Hz"}
+  function humanPeriod(p) {
+    if (p > 0) {
+      return "1/" + Math.round(p / 1000, 0) + " Hz";
+    }
 
-return Math.round(p, 1) + " Hz";
-
-
-}
-
-
-function humanPeriod(p) {
-
-if (p>0) {return "1/"+Math.round(p / 1000, 0) + " Hz"}
-
-return Math.round(1000 / p, 1) + " Hz";
-
-
-}
+    return Math.round(1000 / p, 1) + " Hz";
+  }
 
   function getStream() {
-
-//console.log("Stream tick");
-const a = frequencyRef.current;
+    //console.log("Stream tick");
+    const a = frequencyRef.current;
     console.log("Stream mountRef.current", a);
-
 
     const conditionedAmount = parseFloat(a);
     console.log("Stream conditionedAmountt", conditionedAmount);
@@ -235,10 +228,10 @@ const a = frequencyRef.current;
 
     //////////
 
-//    const endTime = new Date();
-//    const tf = endTime - startTime;
-//    const timeDiff = tf;
-//    setTracePeriod(timeDiff);
+    //    const endTime = new Date();
+    //    const tf = endTime - startTime;
+    //    const timeDiff = tf;
+    //    setTracePeriod(timeDiff);
   }
 
   useEffect(() => {
@@ -247,7 +240,7 @@ const a = frequencyRef.current;
 
   useEffect(() => {
     console.log("Stream amount", frequency);
-/* 
+    /* 
    if (amount === undefined) {
       return;
     }
@@ -314,13 +307,9 @@ if (isNaN(amount)) {return;}
 
   return (
     <>
-{frequency && (<> 
-{humanFrequency(frequency)}
-</>)}
+      {frequency && <>{humanFrequency(frequency)}</>}
 
-{frequency === undefined && (<>
-UNDEFINED
-</>)}
+      {frequency === undefined && <>UNDEFINED</>}
     </>
   );
 }

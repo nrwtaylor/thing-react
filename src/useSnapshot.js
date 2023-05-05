@@ -3,15 +3,18 @@ import { useState, useEffect } from "react";
 import { getWebJson } from "./util/database.js";
 import { humanTime, zuluTime } from "./util/time.js";
 
-import useDeepCompareEffect from 'use-deep-compare-effect'
+import useDeepCompareEffect from "use-deep-compare-effect";
 
 const defaultSnapshotInterval = process.env.REACT_APP_SNAPSHOT_INTERVAL;
-
 
 export default function useSnapshot(input, inputSnapshotPollInterval) {
   //const to = input;
 
-  const [snapshotInterval, setSnapshotInterval] = useState(inputSnapshotPollInterval == null ? defaultSnapshotInterval : inputSnapshotPollInterval);
+  const [snapshotInterval, setSnapshotInterval] = useState(
+    inputSnapshotPollInterval == null
+      ? defaultSnapshotInterval
+      : inputSnapshotPollInterval
+  );
 
   const [flag, setFlag] = useState();
 
@@ -34,7 +37,6 @@ export default function useSnapshot(input, inputSnapshotPollInterval) {
   }, [input]);
 
   useEffect(() => {
-
     console.log("useSnapshot snapshotInterval", snapshotInterval);
     getSnapshot();
 

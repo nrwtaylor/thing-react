@@ -1,10 +1,10 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
 import { emphasize } from "@mui/material/styles";
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from '@mui/styles';
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 
-import { Skeleton } from '@mui/material';
+import { Skeleton } from "@mui/material";
 
 //import { propTypes } from "react-markdown";
 import brokenImage from "../images/brokenImage.png";
@@ -75,38 +75,41 @@ function ThingThumbnail(props) {
   }, []);
 
   // https://stackoverflow.com/questions/34097560/react-js-replace-img-src-onerror
-  return <>
-    <Skeleton
-      variant="rectangular"
-      //  width="100%"
+  return (
+    <>
+      <Skeleton
+        variant="rectangular"
+        //  width="100%"
 
-      style={{
-        display: loadingContext ? "block" : "none",
-        width: "100%",
-        aspectRatio: "1/1",
-        height: "auto",
-      }}
-    />
-
-    <div style={{ display: loadingContext ? "none" : "block" }}>
-      <img
-        src={src}
-        alt={"image"}
-        onError={handleError}
-        onLoad={handleLoad}
+        style={{
+          display: loadingContext ? "block" : "none",
+          width: "100%",
+          aspectRatio: "1/1",
+          height: "auto",
+        }}
       />
-    </div>
 
-    {allowDelete ? (
-      <IconButton
-        edge="end"
-        //          onClick={() => deleteItemImage(location)}
-        aria-label="delete"
-        size="large">
-        <DeleteIcon />
-      </IconButton>
-    ) : null}
-  </>;
+      <div style={{ display: loadingContext ? "none" : "block" }}>
+        <img
+          src={src}
+          alt={"image"}
+          onError={handleError}
+          onLoad={handleLoad}
+        />
+      </div>
+
+      {allowDelete ? (
+        <IconButton
+          edge="end"
+          //          onClick={() => deleteItemImage(location)}
+          aria-label="delete"
+          size="large"
+        >
+          <DeleteIcon />
+        </IconButton>
+      ) : null}
+    </>
+  );
 }
 
 export default ThingThumbnail;

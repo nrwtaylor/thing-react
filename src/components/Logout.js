@@ -1,12 +1,10 @@
-import React from 'react';
+import React from "react";
 //import './Login.css';
-import PropTypes from 'prop-types';
-
+import PropTypes from "prop-types";
 
 async function logoutUser(token) {
-
-//deleteToken(token);
-/*
+  //deleteToken(token);
+  /*
  return fetch('http://localhost:8080/login', {
    method: 'POST',
    headers: {
@@ -18,30 +16,25 @@ async function logoutUser(token) {
 */
 }
 
-export default function Logout({deleteToken}) {
+export default function Logout({ deleteToken }) {
+  //  const [username, setUserName] = useState();
+  //  const [password, setPassword] = useState();
 
-
-//  const [username, setUserName] = useState();
-//  const [password, setPassword] = useState();
-
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-//    const token = await loginUser({
-//      username,
-//      password
-//    });
-console.log("Logout handleSubmit");
+    //    const token = await loginUser({
+    //      username,
+    //      password
+    //    });
+    console.log("Logout handleSubmit");
     const token = false;
     deleteToken(token);
     logoutUser(token);
 
-    window.history.replaceState(null, null, "/"); 
+    window.history.replaceState(null, null, "/");
+  };
 
-
-  }
-
-
-  return(
+  return (
     <div className="logout-wrapper">
       <form onSubmit={handleSubmit}>
         <div>
@@ -49,11 +42,9 @@ console.log("Logout handleSubmit");
         </div>
       </form>
     </div>
-  )
-
-
+  );
 }
 
 Logout.propTypes = {
-  deleteToken: PropTypes.func.isRequired
-}
+  deleteToken: PropTypes.func.isRequired,
+};

@@ -32,7 +32,6 @@ import BubbleLevel from "../components/BubbleLevel.js";
 
 import Barometer from "../components/Barometer.js";
 
-
 import Inclinometer from "../components/Inclinometer.js";
 
 import Magnetometer from "../components/Magnetometer.js";
@@ -41,7 +40,6 @@ import MotionReference from "../components/MotionReference.js";
 
 import Ping from "../components/Ping.js";
 import History from "../components/History.js";
-
 
 import { getSnapshot } from "../util/database.js";
 
@@ -125,11 +123,9 @@ function Weather(props) {
     return date.toString();
   }
 
-useEffect(()=>{
-
-setData(snapshot);
-
-}, [snapshot]);
+  useEffect(() => {
+    setData(snapshot);
+  }, [snapshot]);
 
   //const [ampDataPointer, setAmpDataPointer] = useState(0);
   //const [ampPoints, setAmpPoints] = useState([]);
@@ -145,7 +141,7 @@ setData(snapshot);
     <Forget uuid={datagram && datagram.uuid} callBack={callBack} />
   );
 
-/*
+  /*
 
 {"talker_identifier":"TH","type":"A","amount":"-10.833","units":"X","name":"AMP0","
 sensor_id":"thamp0ax0"},"thvlt0ax1":{"talker_identifier":"TH","type":"A","amount":"12.950","units":"X","name":"VLT0","sensor_id":"thvlt0ax1"},"
@@ -168,48 +164,45 @@ thclb0ax2":{"talker_identifier":"TH","type":"A","amount":"1142011.6","units":"X"
         REQUEST INTERVAL {snapshotInterval}ms{" "}
         {Math.round(1000 / snapshotInterval, 1)}Hz
         <br />
-
-PRESSURE
-
-                  <History
-                    user={null}
-                    //thing={data.thing}
-                    datagram={{...datagram, subject:"transducers-thprsapb0-1h"}}
-                    agent_input={webPrefix}
-                  />
-
-
-<Barometer pressure={data &&
-              data.transducers &&
-              data.transducers.thprsapb0 &&
-              data.transducers.thprsapb0.amount} />
-
-
+        PRESSURE
+        <History
+          user={null}
+          //thing={data.thing}
+          datagram={{ ...datagram, subject: "transducers-thprsapb0-1h" }}
+          agent_input={webPrefix}
+        />
+        <Barometer
+          pressure={
+            data &&
+            data.transducers &&
+            data.transducers.thprsapb0 &&
+            data.transducers.thprsapb0.amount
+          }
+        />
         {data && data.transducers && (
           <>
-<br />
-BATTERY PRESSURE{" "}
+            <br />
+            BATTERY PRESSURE{" "}
             {data &&
               data.transducers &&
               data.transducers.thprsapb0 &&
               data.transducers.thprsapb0.amount}{" "}
             mBar
             <br />
-BATTERY TEMPERATURE{" "}
+            BATTERY TEMPERATURE{" "}
             {data &&
               data.transducers &&
               data.transducers.thtmpatc1 &&
-              data.transducers.thtmpatc1.amount}{"°C "}
+              data.transducers.thtmpatc1.amount}
+            {"°C "}
             <br />
-BATTERY HUMIDITY{" "}
+            BATTERY HUMIDITY{" "}
             {data &&
               data.transducers &&
               data.transducers.thhmdahp2 &&
-              data.transducers.thhmdahp2.amount}{"% "}
+              data.transducers.thhmdahp2.amount}
+            {"% "}
             <br />
-
-
-
           </>
         )}
         <br />

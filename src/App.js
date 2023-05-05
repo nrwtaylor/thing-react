@@ -25,7 +25,7 @@ import History from "../src/components/History.js";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Input from "../src/components/Input.js";
 
-import {Container} from "@mui/material";
+import { Container } from "@mui/material";
 import ThingsContainer from "../src/components/ThingContainer.js";
 
 import Collection from "../src/components/Collection.js";
@@ -38,10 +38,9 @@ import { v4 as uuidv4 } from "uuid";
 
 import useToken from "./useToken.js";
 
-  import { ToastContainer, toast } from 'react-toastify';
- import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 export default function App({ componentName, ...props }) {
-
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
   const apiPrefix = process.env.REACT_APP_API_PREFIX;
   const stack0Prefix = process.env.REACT_APP_STACK_0;
@@ -63,7 +62,7 @@ export default function App({ componentName, ...props }) {
       <br />
       {/*identity && <Identity identity={identity} />*/}
       {/*token && token.message*/}
-<ToastContainer />
+      <ToastContainer />
       <BrowserRouter>
         <Routes>
           <Route
@@ -83,8 +82,7 @@ export default function App({ componentName, ...props }) {
             path="/things"
             element={
               <>
-                <ThingPage
-                />
+                <ThingPage />
               </>
             }
           >
@@ -109,17 +107,9 @@ export default function App({ componentName, ...props }) {
             SNAPSHOT
           </Route>
 
-          <Route
-            exact
-            path="/thing/:text"
-            element={
-              <ThingPage
-              />
-            }
-          >
+          <Route exact path="/thing/:text" element={<ThingPage />}>
             SNAPSHOT
           </Route>
-
 
           <Route
             exact
@@ -161,14 +151,12 @@ export default function App({ componentName, ...props }) {
             THINGPAGE
           </Route>
 
-
           <Route
             exact
             path="/:channel/:uuid/:text"
             element={
               <>
-                <ThingCarousel
-                />
+                <ThingCarousel />
               </>
             }
           >
@@ -180,8 +168,7 @@ export default function App({ componentName, ...props }) {
             path="/:uuid/:text"
             element={
               <>
-                <ThingCarousel
-                />
+                <ThingCarousel />
               </>
             }
           >
@@ -199,7 +186,6 @@ export default function App({ componentName, ...props }) {
           >
             THINGPAGE
           </Route>
-
         </Routes>
       </BrowserRouter>
       <ZuluTime />

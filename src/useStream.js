@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 //  const messages = [];
 
 export default function useStream(amount, quantities) {
-//  const messages
+  //  const messages
 
-//const quantities = [];
-//const amount = 99;
+  //const quantities = [];
+  //const amount = 99;
 
   const getMessage = () => {
     return null;
@@ -13,7 +13,6 @@ export default function useStream(amount, quantities) {
 
   const amountRef = React.createRef();
   amountRef.current = amount;
-
 
   const [streamPoints, setStreamPoints] = useState([]);
   const [streamPointer, setStreamPointer] = useState();
@@ -68,12 +67,10 @@ export default function useStream(amount, quantities) {
     setStreamPoints(s);
   }
 
-useEffect(() =>{
-console.log("useStream amount", amount);
-getStream();
-
-}, [amount]);
-
+  useEffect(() => {
+    console.log("useStream amount", amount);
+    getStream();
+  }, [amount]);
 
   return {
     getStream: getStream,

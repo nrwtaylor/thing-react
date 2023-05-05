@@ -72,16 +72,14 @@ const errorThing = {
 export default function useThings() {
   const { token } = useToken();
   const [count, setCount] = useState();
-//  const [things, setThings] = useState(userThings.get().things);
+  //  const [things, setThings] = useState(userThings.get().things);
 
   const [things, setThings] = useState();
 
-
-useEffect(() =>{
-
-console.log("useThings token", token);
-getThings();
-}, [token]);
+  useEffect(() => {
+    console.log("useThings token", token);
+    getThings();
+  }, [token]);
 
   const getThings = () => {
     console.log("useThings getThings token", token);
@@ -91,7 +89,7 @@ getThings();
       return;
     }
 
-    const tempThings = userThings.get().things
+    const tempThings = userThings.get().things;
     setThings(tempThings);
 
     getThingies(apiPrefix, token)
@@ -155,30 +153,27 @@ getThings();
     //    return things;
   };
 
-
   useEffect(() => {
-//    getThings();
+    //    getThings();
     return userThings.subscribe(setThings);
   }, []);
 
   useEffect(() => {
-//if (things == null) {return;}
+    //if (things == null) {return;}
     console.log("useThings things", things);
   }, [things]);
 
-useEffect(() =>{
+  useEffect(() => {
+    console.log("useThings setThings");
+  }, [setThings]);
 
-console.log("useThings setThings");
-}, [setThings]);
+  useEffect(() => {
+    //console.log("useThings getThings");
+  }, [getThings]);
 
-useEffect(() =>{
-//console.log("useThings getThings");
-}, [getThings]);
-
-useEffect(()=>{
-
-getThings();
-},[]);
+  useEffect(() => {
+    getThings();
+  }, []);
 
   const actions = useMemo(() => {
     return {
@@ -221,7 +216,7 @@ getThings();
 
   return {
     //    deleteIdentity: deleteIdentity,
-//    state: things,
+    //    state: things,
     setThings: saveThings,
     getThings: getThings,
     things,

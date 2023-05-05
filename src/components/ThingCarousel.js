@@ -17,7 +17,6 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 export default function ThingCarousel(props) {
-
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
   const apiPrefix = process.env.REACT_APP_API_PREFIX;
 
@@ -59,7 +58,7 @@ export default function ThingCarousel(props) {
   }, [identity]);
 
   function handleCollectionChange(things) {
-return;
+    return;
     //   setThings(things);
     if (things && things[0] && things[0].uuid) {
       console.log("App setUuid", things[0].uuid);
@@ -70,7 +69,6 @@ return;
     const u = uuidv4();
     setUuid(u);
   }
-
 
   function handleOpenThing(t) {
     console.log("ThingCarousel handleOpenThing");
@@ -101,28 +99,29 @@ return;
         swipeScrollTolerance={100}
         preventMovementUntilSwipeScrollTolerance={true}
       >
-        {things && things.map((thing) => {
-          //const modifiedThing = {...thing, expanded:canSwipe};
-          //const modifiedThing = thing;
-          return (
-            <div key={thing.uuid}>
-              <Thing
-                key={thing.uuid}
-                flavour={"item"}
-   //             token={token}
-   //             things={things}
-                uuid={thing.uuid}
-                datagram={thing}
-                onFold={(t) => {
-                  handleFoldThing(t);
-                }}
-                onOpen={(t) => {
-                  handleOpenThing(t);
-                }}
-              />
-            </div>
-          );
-        })}
+        {things &&
+          things.map((thing) => {
+            //const modifiedThing = {...thing, expanded:canSwipe};
+            //const modifiedThing = thing;
+            return (
+              <div key={thing.uuid}>
+                <Thing
+                  key={thing.uuid}
+                  flavour={"item"}
+                  //             token={token}
+                  //             things={things}
+                  uuid={thing.uuid}
+                  datagram={thing}
+                  onFold={(t) => {
+                    handleFoldThing(t);
+                  }}
+                  onOpen={(t) => {
+                    handleOpenThing(t);
+                  }}
+                />
+              </div>
+            );
+          })}
       </Carousel>
     </>
   );

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 //import './Login.css';
 import PropTypes from "prop-types";
-import crypto from "crypto";
+// import crypto from "crypto";
 import { v4 as uuidv4 } from "uuid";
 
 import useToken from "../useToken.js";
@@ -10,16 +10,14 @@ import useThings from "../useThings.js";
 
 import { createThing, forgetThing } from "../util/database.js";
 
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 const { REACT_APP_CLIENT_SECRET } = process.env;
 const { REACT_APP_API_PREFIX } = process.env;
 
 const defaultWebPrefix = process.env.REACT_APP_WEB_PREFIX;
 
-
 async function loginUser(credentials) {
-
   const url = REACT_APP_API_PREFIX + "auth/signin";
   console.log("Login loginUser url credentials", url, credentials);
 
@@ -43,8 +41,8 @@ async function loginUser(credentials) {
 }
 
 export default function Login({ datagram }) {
-//  const { webPrefix } = datagram;
-const webPrefix = defaultWebPrefix;
+  //  const { webPrefix } = datagram;
+  const webPrefix = defaultWebPrefix;
   const { things, getThings } = useThings();
   //export default function Login({token, setToken}) {
   const [username, setUserName] = useState();
@@ -56,34 +54,46 @@ const webPrefix = defaultWebPrefix;
   const { identity, setIdentity, deleteIdentity } = useIdentity();
   //const [ error, setError ] = useState();
 
-// FRAMING Needs to be minimal, 
+  // FRAMING Needs to be minimal,
 
-const [login, setLogin] = useState();
+  const [login, setLogin] = useState();
 
-useEffect(()=>{
+  useEffect(() => {
+    console.log("Login isValidToken", isValidToken);
 
-console.log("Login isValidToken", isValidToken);
+    if (isValidToken == null) {
+      return;
+    }
+    if (isValidToken) {
+      setLogin(false);
+      return;
+    }
+    if (isValidToken === false) {
+      setLogin(true);
+      return;
+    }
+  }, [isValidToken]);
 
-if (isValidToken == null) {return;}
-if (isValidToken) {setLogin(false); return;}
-if (isValidToken === false) {setLogin(true);return;}
-
-}, [isValidToken]);
-
-function processToken(token) {
-
-if (isValidToken == null) {return;}
-if (isValidToken) {setLogin(false); return;}
-if (isValidToken === false) {setLogin(true);return;}
-
-}
+  function processToken(token) {
+    if (isValidToken == null) {
+      return;
+    }
+    if (isValidToken) {
+      setLogin(false);
+      return;
+    }
+    if (isValidToken === false) {
+      setLogin(true);
+      return;
+    }
+  }
 
   useEffect(() => {
     console.log("Login things", things);
   }, [things]);
 
   useEffect(() => {
-processToken(token);
+    processToken(token);
     console.log("Login token", token);
   }, [token]);
 
@@ -118,8 +128,7 @@ processToken(token);
 
       setMessage("Got token message. " + t.message);
     } else {
-
-setLogin("yes");
+      setLogin("yes");
       // Change window location here... route.
       console.log("Login change window location");
       //window.location.href = "http://localhost:3000/" + "thing";
@@ -133,7 +142,7 @@ setLogin("yes");
           to: "localhost",
           from: "stack",
           subject: "Log Out",
-          priority: 'priority',
+          priority: "priority",
           createdAt: Date.now(),
           uuid: uuidv4(),
           input: "Logout",
@@ -143,7 +152,7 @@ setLogin("yes");
           to: "localhost",
           from: "stack",
           subject: "Here is your token",
-          priority: 'priority',
+          priority: "priority",
           createdAt: Date.now(),
           uuid: uuidv4(),
           input: "Token",
@@ -201,12 +210,12 @@ setLogin("yes");
     handleSubmitButton();
   }
 
-  function handleSubmitButton() {
-  }
+  function handleSubmitButton() {}
 
   return (
     <div className="login-wrapper">
-LOGIN {login}<br />
+      LOGIN {login}
+      <br />
       <h1>{login ? "Please Log In" : "Logged In"}</h1>
       <form onSubmit={handleSubmit}>
         <label>
@@ -237,7 +246,6 @@ LOGIN {login}<br />
       {message}
     </div>
   );
-
 }
 
 Login.propTypes = {

@@ -1,26 +1,28 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App.js';
-import * as serviceWorker from './serviceWorker.js';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import App from "./App.js";
+import * as serviceWorker from "./serviceWorker.js";
 
 // replace console.* for disable log on production
 
 // This feels like good practice.
 
- if ((process.env.REACT_APP_ENGINE_STATE === 'production') || (process.env.REACT_APP_ENGINE_STATE === 'pre_launch')) {
-   console.log = () => {}
-   console.error = () => {}
-   console.debug = () => {}
-   console.info = () => {}
- }
-
+if (
+  process.env.REACT_APP_ENGINE_STATE === "production" ||
+  process.env.REACT_APP_ENGINE_STATE === "pre_launch"
+) {
+  console.log = () => {};
+  console.error = () => {};
+  console.debug = () => {};
+  console.info = () => {};
+}
 
 ReactDOM.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 
 // If you want your app to work offline and load faster, you can change

@@ -54,26 +54,22 @@ import useThingReport from "../useThingReport.js";
 
 import { useSwipeable } from "react-swipeable";
 
-import {devFlag, debugFlag} from "../util/dev.js";
-
+import { devFlag, debugFlag } from "../util/dev.js";
 
 // Refactor to pass this in thing as variables.
 const engineState = process.env.REACT_APP_ENGINE_STATE;
 
-
-
-function History({thing, agentInput}) {
+function History({ thing, agentInput }) {
   const navigate = useNavigate();
 
   //const {agentInput} = props;
 
   //const { datagram } = props;
-const datagram = thing;
-//  const { showLive } = props;
-const showLive = true;
+  const datagram = thing;
+  //  const { showLive } = props;
+  const showLive = true;
 
-const [subject, setSubject] = useState();
-
+  const [subject, setSubject] = useState();
 
   const [windowIndex, setWindowIndex] = useState();
   const [tracePoints, setTracePoints] = useState([]);
@@ -96,20 +92,22 @@ const [subject, setSubject] = useState();
     .replace("history-", "")
     .replace("history ", "");
 */
-useEffect(() =>{
-if (datagram == null) {return;}
+  useEffect(() => {
+    if (datagram == null) {
+      return;
+    }
 
-if (datagram.subject) {setSubject(datagram.subject);}
+    if (datagram.subject) {
+      setSubject(datagram.subject);
+    }
 
-   console.log("History datagram", datagram);
-
-}, [datagram]);
+    console.log("History datagram", datagram);
+  }, [datagram]);
 
   useEffect(() => {
     if (subject == null) {
       return;
     }
-
 
     console.debug("History subject", subject);
     const r = subject
@@ -134,7 +132,6 @@ if (datagram.subject) {setSubject(datagram.subject);}
     }
     setHistoryTo(webPrefix + "history/" + hr + ".json");
 
-
     console.debug("History subject", subject);
     const subjectTokens = subject.split("-");
     console.debug("History parts", subjectTokens[subjectTokens.length - 1]);
@@ -145,16 +142,14 @@ if (datagram.subject) {setSubject(datagram.subject);}
 
   //const user_name = props.user_name; // TODO
   //const agent_input = props.agent_input;
-//  const webPrefix =
-//    agentInput.web && agentInput.web.webPrefix == null ? process.env.REACT_APP_WEB_PREFIX : agentInput.web.webPrefix;
+  //  const webPrefix =
+  //    agentInput.web && agentInput.web.webPrefix == null ? process.env.REACT_APP_WEB_PREFIX : agentInput.web.webPrefix;
 
+  const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 
-const webPrefix = process.env.REACT_APP_WEB_PREFIX;
+  //const [webPrefix, setWebPrefix] = useState();
 
-//const [webPrefix, setWebPrefix] = useState();
-
-
-/*
+  /*
   useEffect(() =>{
 if (agentInput == null) {return;}
 
@@ -196,13 +191,13 @@ console.log("History webPrefix", webPrefix);
     snapshot: data,
     flag: snapshotFlag,
     snapshotRunTime: snapshotRunTime,
-    snapshotRunAt
+    snapshotRunAt,
   } = useSnapshot(snapshotTo, snapshotInterval);
 
   const {
     thingReport,
     flag: thingReportFlag,
-//    thingReportGetTime: thingReportGetTime,
+    //    thingReportGetTime: thingReportGetTime,
   } = useThingReport(snapshotTo, snapshotInterval);
 
   const {
@@ -220,7 +215,9 @@ console.log("History webPrefix", webPrefix);
   }, [snapshotTo, historyTo]);
 
   useEffect(() => {
-if (datagram == null) {return;}
+    if (datagram == null) {
+      return;
+    }
     // Extract uuid from datagram.
     // To provide access to the snapshot.
     // Consider: Can refactor this code into useSnapshot().
@@ -228,11 +225,9 @@ if (datagram == null) {return;}
     const uuid = extractUuid(datagram.subject);
 
     var to = webPrefix + "/snapshot/" + uuid + "/hey.json";
-if (uuid === false) {
-to = webPrefix + "/snapshot.json";
-}
-
-
+    if (uuid === false) {
+      to = webPrefix + "/snapshot.json";
+    }
 
     setSnapshotTo(to);
   }, [datagram]);
@@ -359,7 +354,6 @@ to = webPrefix + "/snapshot.json";
       return f;
     });
     setHistoryPoints(p);
-
   }, [history]);
 
   function humanTime(timestamp) {
@@ -466,23 +460,28 @@ to = webPrefix + "/snapshot.json";
 
   return (
     <>
-{debugFlag && (<>
-DEV
-{thing && thing.variables && thing.variables.flag && thing.variables.flag.dev}
-</>)}
-{debugFlag && (
-      <div>HISTORY</div>)}
-{snapshotRunAt}
-<br/>
-{debugFlag && (<>
-      {historyFlag}
+      {debugFlag && (
+        <>
+          DEV
+          {thing &&
+            thing.variables &&
+            thing.variables.flag &&
+            thing.variables.flag.dev}
+        </>
+      )}
+      {debugFlag && <div>HISTORY</div>}
+      {snapshotRunAt}
       <br />
-      {snapshotFlag}
-      <br />
-      {thingReportFlag}
-      <br />
-</>)}
-
+      {debugFlag && (
+        <>
+          {historyFlag}
+          <br />
+          {snapshotFlag}
+          <br />
+          {thingReportFlag}
+          <br />
+        </>
+      )}
       TEXT {thingReport && thingReport.text}
       <br />
       {text} {resolution}
@@ -510,8 +509,7 @@ DEV
           <br />
         </>
       )}
-{debugFlag && (<>
-      SNAPSHOT INTERVAL {snapshotInterval}</>)}
+      {debugFlag && <>SNAPSHOT INTERVAL {snapshotInterval}</>}
       <Trace data={tracePoints} cycle={1} />
       <Trace data={historyPoints} cycle={1} />
       <br />

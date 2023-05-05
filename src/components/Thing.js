@@ -34,8 +34,7 @@ import Token from "../components/Token.js";
 import Signup from "../components/Signup.js";
 
 import Box from "@mui/material/Box";
-// import makeStyles from '@mui/styles/makeStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from '@mui/styles';
 
 import { isText } from "../util/text.js";
 
@@ -83,12 +82,12 @@ import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
 
-import {devFlag, debugFlag} from "../util/dev.js";
+import { devFlag, debugFlag } from "../util/dev.js";
 
 import LazyLoad from "react-lazyload";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
-import useDeepCompareEffect from 'use-deep-compare-effect'
+import useDeepCompareEffect from "use-deep-compare-effect";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -121,9 +120,9 @@ const useStyles = makeStyles((theme) => ({
     height: "auto",
     // width:'100%',
     alignItems: "center",
-    [theme.breakpoints.down('sm')]: {
-      height: "auto",
-    },
+    // [theme.breakpoints.down("sm")]: {
+    //   height: "auto",
+    // },
     // height: "auto",
     justifyContent: "center",
     alignItems: "center",
@@ -151,9 +150,9 @@ const useStyles = makeStyles((theme) => ({
     "& img": {
       maxHeight: "180px",
       width: "100%",
-      [theme.breakpoints.down('sm')]: {
-        maxHeight: "150px",
-      },
+      // [theme.breakpoints.down("sm")]: {
+      //   maxHeight: "150px",
+      // },
       // width: "auto",
       // height:'200px'
     },
@@ -186,16 +185,16 @@ function Thing(props) {
 
   var { agentInput } = props;
 
-//  if (datagram && datagram.input) {
-//    agentInput = datagram.input;
-//  }
+  //  if (datagram && datagram.input) {
+  //    agentInput = datagram.input;
+  //  }
 
   const webPrefix =
     datagram && datagram.webPrefix ? datagram.webPrefix : defaultWebPrefix;
 
   const [subject, setSubject] = useState();
 
-/*
+  /*
   useEffect(() => {
     if (thing == null) {
       return;
@@ -213,14 +212,13 @@ function Thing(props) {
     }
     console.log("Thing initialDatagram", initialDatagram);
     // Don't let the datagram be reset.
-    if (typeof datagram !== 'undefined') {
+    if (typeof datagram !== "undefined") {
       return;
     }
 
     console.debug("Thing initialDatagram changed", initialDatagram);
     console.debug("Thing initialDatagram prior datagram", datagram);
     setDatagram(initialDatagram);
-
   }, [initialDatagram]);
 
   const { text } = useParams();
@@ -297,7 +295,6 @@ function Thing(props) {
     setDatagram({ ...datagram });
   }
 
-
   useEffect(() => {
     if (datagram == null) {
       return;
@@ -314,15 +311,12 @@ function Thing(props) {
       const u = webPrefix + getSlug(initialDatagram.subject) + ".json";
       console.log("Thing initialDatagram setUrl", u);
       setUrl(u);
-
     }
 
     if (typeof datagram.pollInterval !== "undefined") {
       setTimedInterval(datagram.pollInterval);
     }
-
   }, [datagram]);
-
 
   useEffect(() => {
     if (props.datagram == null) {
@@ -334,7 +328,6 @@ function Thing(props) {
     }
 
     console.log("Thing datagram uuid", uuid);
-
 
     setThing(props.datagram);
   }, [props.datagram]);
@@ -459,7 +452,6 @@ function Thing(props) {
 
     setFlag("green");
   }, [data]);
-
 
   const handleExpandClick = () => {
     console.log("Thing handleExpandClick expanded");
@@ -630,7 +622,7 @@ https://www.reddit.com/r/reactjs/comments/p7ky46/is_react_synchronous_with_respe
 https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_JavaScript
 */
   }, [tick]);
-//}, []);
+  //}, []);
   const incrementTick = () => {
     setTick((tick) => (tick + 1) % maxTick);
     //if (tick >=2) {incrementBar();}
@@ -659,11 +651,10 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
     }
 
     const tickInterval = setInterval(() => {
+      //dev
+      return;
 
-//dev
-return;
-
-console.log("Thing tickInterval");
+      console.log("Thing tickInterval");
       incrementTick();
     }, defaultTickInterval);
 
@@ -671,9 +662,8 @@ console.log("Thing tickInterval");
   }, []);
 
   useEffect(() => {
-
-//dev
-//return;
+    //dev
+    //return;
 
     // If still processing the last one,
     // Skip a beat, do not request aother.
@@ -683,7 +673,7 @@ console.log("Thing tickInterval");
 
     const timerInterval = setInterval(() => {
       //      incrementTick();
-console.log("Thing timerInterval");
+      console.log("Thing timerInterval");
       updateTimer();
     }, defaultTimerInterval);
 
@@ -922,7 +912,6 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
               }}
             />
           )}
-
         {canFold && expanded && <Button onClick={handleFoldThing}>FOLD</Button>}
         {canOpen && !expanded && (
           <Button onClick={handleOpenThing}>OPEN</Button>
@@ -1057,7 +1046,6 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
             />
           )}
 
-
           {/*          <div>
             <ExpandMore
               expand={expanded}
@@ -1069,7 +1057,7 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
             </ExpandMore>
           </div>
 */}
-{/*
+          {/*
               <div>
                 <Login token={token} datagram={datagram} flavour={"card"} />
               </div>
@@ -1188,20 +1176,17 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
         </div>
         ASSOCIATIONS
         <div>
-{/*          {thing && thing.variables && thing.variables.collection && (thing.variables.collection !== false) && expanded  && ( */}
+          {/*          {thing && thing.variables && thing.variables.collection && (thing.variables.collection !== false) && expanded  && ( */}
 
-{/*{thing && thing.agentInput && thing.agentInput.collection ? "COLLECTION IS TRUE" : "COLLECTION IS FALSE"} */}
+          {/*{thing && thing.agentInput && thing.agentInput.collection ? "COLLECTION IS TRUE" : "COLLECTION IS FALSE"} */}
 
-{/*          {thing && thing.agentInput && thing.agentInput.collection && (thing.agentInput.collection === true) && expanded && ( */}
-          {true && thing && expanded && (expanded === true) && (
-
-
+          {/*          {thing && thing.agentInput && thing.agentInput.collection && (thing.agentInput.collection === true) && expanded && ( */}
+          {true && thing && expanded && expanded === true && (
             <Collection
-              thing={{ ...thing, variables:{...thing.variables} }}
-              agentInput={{ ...agentInput, collection:false }}
+              thing={{ ...thing, variables: { ...thing.variables } }}
+              agentInput={{ ...agentInput, collection: false }}
             />
           )}
-
         </div>
         <div>
           <DataReport />
@@ -1209,12 +1194,6 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
       </Card>
     </>
   );
-
-
-
-
-
-
 }
 
 export default Thing;
