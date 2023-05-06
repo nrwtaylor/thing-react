@@ -43,6 +43,8 @@ import DynamicComponent from "../components/DynamicComponent.js";
 
 import Agents from "../components/Agents.js";
 
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 import { v4 as uuidv4, uuid as uuidLibrary } from "uuid";
 import {
   //  getThingReport,
@@ -72,6 +74,7 @@ import { styled } from "@mui/material/styles";
 
 import Button from "@mui/material/Button";
 
+import Collapse from "@mui/material/Collapse";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
@@ -169,6 +172,25 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
     duration: theme.transitions.duration.shortest,
   }),
 }));
+
+
+
+
+interface WebExpandMoreProps extends IconButtonProps {
+  webExpand: boolean;
+}
+
+const WebExpandMore = styled((props: WebExpandMoreProps) => {
+  const { webExpand, ...other } = props;
+  return <IconButton {...other} />;
+})(({ theme, webExpand }) => ({
+  transform: !webExpand ? 'rotate(0deg)' : 'rotate(180deg)',
+  marginLeft: 'auto',
+  transition: theme.transitions.create('transform', {
+    duration: theme.transitions.duration.shortest,
+  }),
+}));
+
 
 const engineState = process.env.REACT_APP_ENGINE_STATE;
 
@@ -274,6 +296,14 @@ function Thing(props) {
   const defaultTickInterval = 25; //ms
   const defaultTimerInterval = 25;
   //  const minimumPollInterval = 2 * 60 * 1000; //ms
+
+const [webExpanded, setWebExpanded] = useState(false);
+
+useEffect(() =>{
+
+console.log("Thing webExpanded", webExpanded);
+
+}, [webExpanded]);
 
   const [minimumPollInterval, setMinimumPollInterval] = useState(100);
 
@@ -728,6 +758,11 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
     }
   };
 
+  const handleWebExpandClick = () => {
+console.log("Thing handleWebExpandClick webExpanded", webExpanded);
+    setWebExpanded(!webExpanded);
+  };
+
   const handleAddThing = (e) => {
     console.log("Thing handleAddThing", datagram);
 
@@ -1034,6 +1069,9 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
 <>{data.thingReport.text}</>
           )}
 */}
+
+
+
           {expanded && data && data.thingReport && data.thingReport.web && (
             <div
               dangerouslySetInnerHTML={{ __html: data && data.thingReport.web }}
@@ -1163,7 +1201,20 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
               </div>
               <div>
                 {/* Note */}
+
+
+        <WebExpandMore
+          webExpand={webExpanded}
+          onClick={handleWebExpandClick}
+          aria-expanded={webExpanded}
+          aria-label="show more"
+        >
+          <ExpandMoreIcon />
+        </WebExpandMore>
+
+      <Collapse in={webExpanded} timeout="auto" unmountOnExit>
                 <div dangerouslySetInnerHTML={{ __html: data && data.web }} />
+</Collapse>
                 <div>UUID {data && data.thing && data.thing.uuid}</div>
               </div>
               TICK {tick} {timedTickInterval} ms
