@@ -1,4 +1,7 @@
 import React, { useEffect, useState, lazy, Suspense } from "react";
+
+import theme from './util/theme.js';
+
 import Thing from "../src/components/Thing.js";
 
 import ThingPage from "../src/components/ThingPage.js";

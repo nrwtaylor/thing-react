@@ -5,7 +5,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 
 import ThingContainer from "./../components/ThingContainer.js";
 
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Chip } from "@mui/material";
 
 const thumb = {
   // display: "inline-flex",
@@ -48,17 +48,18 @@ function Collection({ thing, agentInput }) {
       THING UUID {thing && thing.uuid}
       <br />
       THING ASSOCIATIONS <br />
-      {thing &&
-        thing.associations &&
-        Array.isArray(thing.associations) &&
-        thing.associations.map((d) => {
-          return (
-            <div key={"association_" + thing.uuid + "_" + d}>
-              {" "}
-              {d.slice(0, 4)}{" "}
-            </div>
-          );
-        })}
+{thing &&
+  thing.associations &&
+  Array.isArray(thing.associations) &&
+  thing.associations.map((d) => (
+    <Chip
+      key={"association_" + thing.uuid + "_" + d}
+      label={d.slice(0, 4)}
+      color="default"
+      variant="outlined"
+      sx={{ backgroundColor: '#888', color: '#fff', borderRadius: '4px' }}
+    />
+  ))}
       <br />
       <DndProvider backend={HTML5Backend}>
         <ThingContainer

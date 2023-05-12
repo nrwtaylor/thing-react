@@ -122,7 +122,7 @@ function Agents({ thing, agentInput }) {
       console.log("Agents thing.subject", thing.subject);
       const matchedSlugs = recognizedSlugs.filter((recognizedSlug) => {
         console.log(
-          "merp",
+          "Agents recognizedSlug agentInput[recognizedSlug agentInput",
           recognizedSlug,
           agentInput[recognizedSlug],
           agentInput
@@ -132,7 +132,7 @@ function Agents({ thing, agentInput }) {
           recognizedSlug in agentInput &&
           agentInput[recognizedSlug] === false
         ) {
-          console.log("merp");
+          console.log("Agents recognizedSlug in agentInput as false");
           return false;
         }
 
@@ -167,24 +167,11 @@ function Agents({ thing, agentInput }) {
       setAgents(matchedSlugs);
 
       {
-        /*
-     if (datagram.subject.toLowerCase().indexOf("history") !== -1) {
 
-setAgent(recognizedAgents['history']);
-
-     }
-*/
       }
     }
   }, [thing]);
-  /*
-useEffect(()=>{
 
-
-console.log("Agents agentInput xkcd", agentInput);
-
-},[agentInput]);
-*/
   useEffect(() => {
     console.log("Agents agents", agents);
   }, [agents]);
@@ -205,27 +192,6 @@ console.log("Agents agentInput xkcd", agentInput);
   function timeStamp() {
     var date = Date.now();
     return date.toString();
-    //    return date.toLocaleDateString("en-US");
-    /*
-    if (timestamp === undefined) {
-      return "X";
-    }
-
-    if (timestamp === null) {
-      return "X";
-    }
-
-
-//    const date = timestamp.toDate();
-    const d = date.toString();
-
-    const thing_date = new Date(d);
-    const today_date = new Date();
-    const seconds_diff = Math.round(
-      today_date.getTime() - thing_date.getTime()
-    );
-    return thing_date.toLocaleDateString("en-US");
-*/
   }
 
   return (

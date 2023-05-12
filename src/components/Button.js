@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import {
-  Button as MaterialUiButton,
+  Button as MuiButton,
   TextField,
   //  IconButton,
   //  ListItem,
@@ -72,14 +72,15 @@ navigate("/"+subject)
       {/* <a href={subject} disabled="disabled" > */}
 
       <div>
-        <MaterialUiButton
+        <MuiButton
+variant="url"
           component={Link}
           to={"/" + subject}
           disabled={disabled}
         >
           {/*     <MaterialUiButton disabled={disabled} type="submit"> */}
           {text}
-        </MaterialUiButton>
+        </MuiButton>
       </div>
       {/*</a>*/}
       {/*</div>*/}

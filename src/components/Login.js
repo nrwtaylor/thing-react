@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 //import './Login.css';
 import PropTypes from "prop-types";
-// import crypto from "crypto";
+import crypto from "crypto";
+//import * as crypto from "crypto"
+
 import { v4 as uuidv4 } from "uuid";
 
 import useToken from "../useToken.js";
@@ -11,6 +13,8 @@ import useThings from "../useThings.js";
 import { createThing, forgetThing } from "../util/database.js";
 
 import { toast } from "react-toastify";
+
+//const crypto = require("crypto");
 
 const { REACT_APP_CLIENT_SECRET } = process.env;
 const { REACT_APP_API_PREFIX } = process.env;

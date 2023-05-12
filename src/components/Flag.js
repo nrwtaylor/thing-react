@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import {
+  Chip,
   Button as MaterialUiButton,
   TextField,
   //  IconButton,
@@ -112,41 +113,17 @@ if (flag ==='red') {setFlag('green');}
     //getThing();
   }
 
-  return (
-    <div>
-      <MaterialUiButton disabled={disabled} onClick={(e) => handleClick(e)}>
-        {/*        {flag} */}
-        {text}
-        {/*     <MaterialUiButton disabled={disabled} type="submit"> */}
-      </MaterialUiButton>
-    </div>
-  );
+return (
+  <div>
+    <Chip
+      label={text}
+      variant="outlined"
+      color="primary"
+      disabled={disabled}
+      onClick={(e) => handleClick(e)}
+      sx={{ m: 1 }}
+    />
+  </div>
+);
 
-  return (
-    <>
-      {/*
-      <div onClick={() => 
-{
-if (disabled) {return;}
-navigate("/"+subject)
-}
-}>
-*/}
-      {/* Provide the hint of a link in browser. */}
-      {/* <a href={subject} disabled="disabled" > */}
-
-      <div>
-        <MaterialUiButton
-          component={Link}
-          to={"/" + subject}
-          disabled={disabled}
-        >
-          {/*     <MaterialUiButton disabled={disabled} type="submit"> */}
-          text {text} flag {flag}
-        </MaterialUiButton>
-      </div>
-      {/*</a>*/}
-      {/*</div>*/}
-    </>
-  );
 }

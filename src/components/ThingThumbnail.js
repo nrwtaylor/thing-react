@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     // Add border that contrasts lightly with background color.
     // We use boxShadow so that it's hidden around outer edge
     // due to container <Card> having overflow: hidden
-    boxShadow: `1px 1px 0 0 ${emphasize(theme.palette.background.paper, 0.08)}`,
+    //boxShadow: `1px 1px 0 0 ${emphasize(theme.palette.background.paper, 0.08)}`,
     textAlign: "center",
   },
   imageContainer: {

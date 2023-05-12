@@ -162,7 +162,7 @@ axios.interceptors.response.use(
   },
   function (error) {
     rxErrorCount += 1;
-    console.error("database response error", error);
+    console.error("database response error rxErrorCount", error, rxErrorCount);
 
     //if (response && response.data && response.data.uuid) {
     //if (databaseStatistics[response.data.uuid] == null) {databaseStatistics[response.data.uuid] = {txCount:0, txBytes:0, rxCount:0, rxBytes, rxErrorCount:0, txErrorCount:0};}
@@ -499,7 +499,7 @@ export function getThingReport(datagram, token) {
 }
 
 // https://kollox.com/cancel-axios-request-very-quick-solution/
-
+/*
 export function getThings(prefix = null, token = null) {
   console.log("database getThings called");
   if (txBytes + rxBytes > quotaBytes) {
@@ -513,12 +513,12 @@ export function getThings(prefix = null, token = null) {
   }
 
   console.debug("database getThings prefix token", prefix, token);
-  var u = apiPrefix + "things/";
+  var url = apiPrefix + "things/";
   if (prefix !== null) {
-    u = prefix + "things/";
+    url = prefix + "things/";
   }
   return axios
-    .get(u, {
+    .get(url, {
       headers: {
         Authorization: "my secret token",
         "x-access-token": token,
@@ -528,8 +528,8 @@ export function getThings(prefix = null, token = null) {
 
     .then((res) => {
       let thingy = res.data;
-      console.log("database getThings axios res", u, res);
-      console.log("database getThings axios res.data", u, res.data);
+      console.debug("database getThings axios url res", url, res);
+      console.log("database getThings axios url res.data", url, res.data);
       return thingy;
       // agent etime info json:null thing etc
       //        setData(res.data);
@@ -537,11 +537,70 @@ export function getThings(prefix = null, token = null) {
       //        const elapsedTime = Date.now() - requestedAt;
     })
     .catch((error) => {
-      console.error("database getThings axios error", u, error);
+      console.error("database getThings axios url error", url, error);
       return { things: [] };
       //        setError({ ...error, message: "Problem" });
     });
 }
+*/
+
+
+
+// Cache object to store the responses
+const cache = {};
+
+export function getThings(prefix = null, token = null, cacheTime = 5000) {
+  console.log("database getThings called");
+  if (txBytes + rxBytes > quotaBytes) {
+    return Promise.resolve({ error: { message: "Quota exceeded." } });
+  }
+
+  const tokenResponse = readToken(token);
+  console.log("database getThings tokenResponse", tokenResponse);
+  if (tokenResponse.isValidToken === false) {
+    return Promise.resolve({ error: { message: "Token not valid." } });
+  }
+
+  console.debug("database getThings prefix token", prefix, token);
+  var url = apiPrefix + "things/";
+  if (prefix !== null) {
+    url = prefix + "things/";
+  }
+
+  // Check if the response is cached and not expired
+  const cachedResponse = cache[url];
+  if (cachedResponse && Date.now() - cachedResponse.timestamp < cacheTime) {
+    console.debug("database getThings returning cached response", url, cachedResponse.data);
+    return Promise.resolve(cachedResponse.data);
+  }
+
+  return axios
+    .get(url, {
+      headers: {
+        Authorization: "my secret token",
+        "x-access-token": token,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((res) => {
+      let thingy = res.data;
+      console.debug("database getThings axios url res", url, res);
+      console.log("database getThings axios url res.data", url, res.data);
+
+      // Cache the response
+      cache[url] = {
+        data: thingy,
+        timestamp: Date.now(),
+      };
+
+      return thingy;
+    })
+    .catch((error) => {
+      console.error("database getThings axios url error", url, error);
+      return { things: [] };
+    });
+}
+
 //}
 
 export function makeObservable(target) {

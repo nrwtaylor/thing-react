@@ -261,6 +261,9 @@ export const ThingContainer = ({ thing }) => {
             }}
           />
         )}
+<div style={{ display: 'flex', flexWrap: 'wrap' }}>
+
+
         {contexts.map((context, lens) => {
           return (
             <Flag
@@ -277,6 +280,7 @@ export const ThingContainer = ({ thing }) => {
             />
           );
         })}
+</div>
         <p />
         <div>LENS {lens}</div>
         <p />

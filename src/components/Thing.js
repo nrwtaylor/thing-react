@@ -45,6 +45,8 @@ import Agents from "../components/Agents.js";
 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
+import { useTheme } from '@mui/material/styles';
+
 import { v4 as uuidv4, uuid as uuidLibrary } from "uuid";
 import {
   //  getThingReport,
@@ -198,8 +200,8 @@ const engineState = process.env.REACT_APP_ENGINE_STATE;
 // datagram - to, from, subject, agentInput
 function Thing(props) {
   //  const text = props.match.params.text;
-
-  const classes = useStyles();
+  const theme = useTheme();
+  const classes = useStyles(theme);
 
   const { datagram: initialDatagram, canOpen, open, canFold } = props;
 
@@ -330,16 +332,16 @@ console.log("Thing webExpanded", webExpanded);
       return;
     }
 
-    console.log("Thing datagram", datagram);
-    console.log("Thing datagram uuid", uuid, datagram.subject);
+    console.debug("Thing " + nuuidText + " datagram", datagram);
+    console.log("Thing " + nuuidText + " datagram uuid", uuid, datagram.subject);
 
     setThing(datagram);
 
     if (typeof datagram.subject !== "undefined") {
       setSubject(initialDatagram.subject);
-      console.log("Thing initialDatagram setSubject", initialDatagram.subject);
+      console.log("Thing " + nuuidText + " initialDatagram setSubject", initialDatagram.subject);
       const u = webPrefix + getSlug(initialDatagram.subject) + ".json";
-      console.log("Thing initialDatagram setUrl", u);
+      console.log("Thing " + nuuidText + " initialDatagram setUrl", u);
       setUrl(u);
     }
 
@@ -357,7 +359,7 @@ console.log("Thing webExpanded", webExpanded);
       setTimedInterval(props.datagram.pollInterval);
     }
 
-    console.log("Thing datagram uuid", uuid);
+    console.log("Thing " + nuuidText + " datagram uuid", uuid);
 
     setThing(props.datagram);
   }, [props.datagram]);
@@ -429,7 +431,7 @@ console.log("Thing webExpanded", webExpanded);
   const [flipped, setFlipped] = React.useState();
 
   useEffect(() => {
-    console.log("Thing thing", thing);
+    console.log("Thing " + nuuidText + " thing", thing);
   }, [thing]);
 
   useEffect(() => {
@@ -441,14 +443,14 @@ console.log("Thing webExpanded", webExpanded);
     setAgentRequestedAt(requestedAt);
 
     console.log(
-      "Thing thingReport data",
+      "Thing " + nuuidText + " thingReport data url",
       data && data.datagram && data.datagram.text,
       data,
       url
     );
 
     if (data) {
-      console.log("Thing thingReport data", data);
+      console.log("Thing " + nuuidText + " thingReport data", data);
     }
 
     //setData(thingReport);
@@ -458,7 +460,7 @@ console.log("Thing webExpanded", webExpanded);
       data.thingReport.error.message
     ) {
       //console.log("Thing getThingReport", result.thingReport.error.message);
-      console.error("Thing getThingReport error", data.thingReport.error);
+      console.error("Thing " + nuuidText + " getThingReport error", data.thingReport.error);
       setError(data.thingReport.error.message);
     }
 
@@ -484,7 +486,7 @@ console.log("Thing webExpanded", webExpanded);
   }, [data]);
 
   const handleExpandClick = () => {
-    console.log("Thing handleExpandClick expanded");
+    console.log("Thing " + nuuidText + " handleExpandClick expanded");
     setExpanded(true);
   };
 
@@ -498,12 +500,14 @@ console.log("Thing webExpanded", webExpanded);
   const [uuid, setUuid] = useState();
   const [nuuid, setNuuid] = useState();
 
+const nuuidText = nuuid ? nuuid : "none";
+
   useEffect(() => {
-    console.log("Thing start");
+    console.log("Thing " + nuuidText + " start");
   }, []);
 
   useEffect(() => {
-    console.log("Thing expanded uuid", expanded, datagram && datagram.uuid);
+    console.log("Thing "+ nuuidText + " expanded uuid", expanded, datagram && datagram.uuid);
   }, [expanded]);
 
   useEffect(() => {
@@ -522,7 +526,7 @@ console.log("Thing webExpanded", webExpanded);
   const [error, setError] = useState();
 
   useEffect(() => {
-    console.info("Thing started");
+    console.info("Thing "+ nuuidText + " started");
     getUuid();
     //getResponse(webPrefix);
   }, []);
@@ -545,14 +549,14 @@ console.log("Thing uuid ass", uuid, ass);
     if (subject == null) {
       return;
     }
-    console.log("Thing subject changed", subject);
+    console.log("Thing "+ nuuidText + " subject changed", subject);
     //setFlag('green');
     //   getResponse(webPrefix, true);
 
     //console.log("Thing datagram ", datagram);
     if (subject) {
       const u = webPrefix + getSlug(subject) + ".json";
-      console.log("Thing datagram setUrl u", u);
+      console.log("Thing "+ nuuidText + " datagram setUrl u", u);
       setUrl(u);
     }
 
@@ -914,8 +918,12 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
           </>
         )}
         {/*<Item thing={{...datagram, uuid:uuid}} />*/}
+
         <Item thing={thing} agentInput={null} updateThing={updateThing} />
+<Typography className={classes.overlayNumber} >
+
         {datagram && datagram.score}
+</Typography>
         {token && token.message}
         {/*
         {expanded ? "expanded" : "not expanded"}
@@ -923,7 +931,7 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
         */}
         {error && <Error error={error} agentInput={data.thingReport} />}
         {/*expanded && <Button onClick={handleSpawnThing}>SPAWN</Button>*/}
-        {!expanded && <Button onClick={handleForgetThing}>FORGET</Button>}
+        {!expanded && <Button  variant="forget" onClick={handleForgetThing}>FORGET</Button>}
         {/*expanded && (
           <Button onClick={handleFlipThing}>
             {flipped ? "MESSAGE" : "SOURCE"}
@@ -934,7 +942,7 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
             thing={{ subject: "thing/" + uuid, agentInput: "Open" }}
           />
         )}
-        {expanded && <Button onClick={handleAddThing}>ADD</Button>}
+       {expanded && <Button  variant="default" onClick={handleAddThing}>ADD</Button>}
         {data &&
           data.thing &&
           data.thing.associations &&
@@ -947,9 +955,9 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
               }}
             />
           )}
-        {canFold && expanded && <Button onClick={handleFoldThing}>FOLD</Button>}
+        {canFold && expanded && <Button  variant="default" onClick={handleFoldThing}>FOLD</Button>}
         {canOpen && !expanded && (
-          <Button onClick={handleOpenThing}>OPEN</Button>
+          <Button  variant="default" onClick={handleOpenThing}>OPEN</Button>
         )}
         {/*<div onClick={handleExpandClick} >*/}
         <div>
@@ -988,7 +996,9 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
             </>
           )}
           {!flipped && <Subject thing={thing} setSubject={setSubject} />}
+<Typography variant="caption" className={theme.typography.note} >
           {thing && thing.createdAt && <>{humanAge(thing.createdAt)}</>}
+</Typography>
           {!expanded && !flipped && (
             <>
               <LazyLoad height={400} offset={200} once>
@@ -1054,11 +1064,14 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
             </>
           )}
           {expanded && (
-            <CardMedia
-              component="img"
-              src={PNG}
-              onError={(event) => (event.target.style.display = "none")}
-            />
+ <div style={{ maxHeight: '100vh', width: '100%', display: 'flex', justifyContent: 'center' }}>
+    <CardMedia
+      component="img"
+      src={PNG}
+      onError={(event) => (event.target.style.display = 'none')}
+      style={{ maxHeight: '100%', objectFit: 'contain' }}
+    />
+  </div>
           )}
           {/*
           {expanded && data && data.thingReport && data.thingReport.snippet && (

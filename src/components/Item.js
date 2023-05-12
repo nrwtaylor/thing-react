@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
+//import { Button, Link } from '@mui/material';
 import { setThing } from "../util/database.js";
 
 //import SwitchUnstyled from '@mui/base/SwitchUnstyled';
 
 import {
-  Button as MaterialUiButton,
   TextField,
-  //  IconButton,
-  //  ListItem,
-  //  ListItemText,
   Dialog,
   DialogContent,
   DialogActions,
+  Switch
 } from "@mui/material";
 
 import { replaceUuids } from "../util/text.js";
@@ -22,11 +19,6 @@ import useMessages from "../useMessages.js";
 import useToken from "../useToken.js";
 
 import { useNavigate } from "react-router-dom";
-
-// import { styled } from '@mui/material/styles';
-// import SwitchUnstyled, { switchUnstyledClasses } from '@mui/base/SwitchUnstyled';
-
-
 
 
 const blue = {
@@ -38,76 +30,6 @@ const grey = {
   500: "#6e7781",
   600: "#57606a",
 };
-
-// const Root = styled("span")(
-//   ({ theme }) => `
-//   font-size: 0;
-//   position: relative;
-//   display: inline-block;
-//   width: 40px;
-//   height: 24px;
-//   margin: 10px;
-//   cursor: pointer;
-
-//   &.${switchUnstyledClasses.disabled} {
-//     opacity: 0.4;
-//     cursor: not-allowed;
-//   }
-
-//   & .${switchUnstyledClasses.track} {
-//     background: ${theme.palette.mode === "dark" ? grey[600] : grey[400]};
-//     border-radius: 16px;
-//     display: block;
-//     height: 100%;
-//     width: 100%;
-//     position: absolute;
-//   }
-
-//   & .${switchUnstyledClasses.thumb} {
-//     display: block;
-//     width: 16px;
-//     height: 16px;
-//     top: 4px;
-//     left: 4px;
-//     border-radius: 16px;
-//     background-color: #fff;
-//     position: relative;
-    
-//     transition-property: all;
-//     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-//     transition-duration: 120ms;
-//   }
-
-//   &.${switchUnstyledClasses.focusVisible} .${switchUnstyledClasses.thumb} {
-//     background-color: ${grey[500]};
-//     box-shadow: 0 0 1px 8px rgba(0, 0, 0, 0.25);
-//   }
-
-//   &.${switchUnstyledClasses.checked} {
-//     .${switchUnstyledClasses.thumb} {
-//       left: 20px;
-//       top: 4px;
-//       background-color: #fff;
-//     }
-
-//     .${switchUnstyledClasses.track} {
-//       background: ${blue[500]};
-//     }
-//   }
-
-//   & .${switchUnstyledClasses.input} {
-//     cursor: inherit;
-//     position: absolute;
-//     width: 100%;
-//     height: 100%;
-//     top: 0;
-//     left: 0;
-//     opacity: 0;
-//     z-index: 1;
-//     margin: 0;
-//   }
-//   `
-// );
 
 export default function Item({ thing, agentInput, updateThing }) {
   //  const { updateThing } = useThing(thing);
@@ -155,7 +77,6 @@ export default function Item({ thing, agentInput, updateThing }) {
         console.error("Item handleToggleItem updateThing error", error);
       });
   }
-
   if (thing == null) {
     return null;
   }
@@ -174,6 +95,13 @@ navigate("/"+subject)
       {/* <a href={subject} disabled="disabled" > */}
 
       <div>
+
+    <Switch
+      checked={thing && thing.variables && thing.variables.item}
+      onChange={handleToggleItem}
+      color="primary"
+    />
+
         {/* <SwitchUnstyled
           component={Root}
           onChange={(e) => handleToggleItem(e)}
@@ -183,14 +111,12 @@ navigate("/"+subject)
           ? "ITEM TRUE"
           : "NOT ITEM"}
         <br />
-        <MaterialUiButton
-          component={Link}
-          to={"/" + subject}
-          disabled={disabled}
-        >
-          {/*     <MaterialUiButton disabled={disabled} type="submit"> */}
-          {text}
-        </MaterialUiButton>
+
+{/*
+<Button component={Link} to={"/" + subject} disabled={disabled} variant="url">
+  {text}
+</Button>
+*/}
       </div>
       {/*</a>*/}
       {/*</div>*/}
