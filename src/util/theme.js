@@ -137,8 +137,33 @@ const theme = createTheme({
             },
           },
         },
+
+{
+props: { variant: 'url' },
+style: {
+backgroundColor: 'white',
+border: '2px solid #1976d2', // Blue perimeter
+color: '#1976d2', // Sea blue
+fontWeight: 'bold',
+borderRadius: '4px',
+padding: '8px 16px',
+textTransform: 'uppercase',
+transition: 'background-color 0.3s',
+cursor: 'pointer',
+},
+'&:hover': {
+backgroundColor: '#87ceeb', // Sky blue
+borderColor: '#87ceeb', // Sky blue
+color: '#87ceeb', // Sky blue
+},
+'&:active': {
+backgroundColor: '#1976d2', // Sea blue
+color: '#1976d2', // Sea blue
+},
+},
+
         {
-          props: { variant: 'url' },
+          props: { variant: 'url_old' },
           style: {
             backgroundColor: '#f4b400', // Yellow
             color: '#1976d2', // Sea blue
