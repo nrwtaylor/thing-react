@@ -29,6 +29,7 @@ import {
 
 import Forget from "../components/Forget.js";
 import Trace from "../components/Trace.js";
+import TraceCircle from "../components/TraceCircle.js";
 import Stream from "../components/Stream.js";
 import BubbleLevel from "../components/BubbleLevel.js";
 import Inclinometer from "../components/Inclinometer.js";
@@ -510,6 +511,9 @@ console.log("History webPrefix", webPrefix);
         </>
       )}
       {debugFlag && <>SNAPSHOT INTERVAL {snapshotInterval}</>}
+
+      <TraceCircle data={tracePoints} cycle={1} />
+
       <Trace data={tracePoints} cycle={1} />
       <Trace data={historyPoints} cycle={1} />
       <br />

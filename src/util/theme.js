@@ -160,6 +160,12 @@ color: '#87ceeb', // Sky blue
 backgroundColor: '#1976d2', // Sea blue
 color: '#1976d2', // Sea blue
 },
+  '&:disabled': {
+    backgroundColor: 'white',
+    border: '2px solid lightgray', // Light gray perimeter for disabled state
+    color: 'gray', // Gray text for disabled state
+    cursor: 'not-allowed',
+  },
 },
 
         {
