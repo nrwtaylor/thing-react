@@ -149,7 +149,7 @@ export const Card = memo(function Card({
         </Box>
       </Grid>
     );
-  }
+  }         
 
   return (
     <VisibilitySensor
@@ -172,6 +172,7 @@ export const Card = memo(function Card({
             height: "100%",
             display: "flex",
             cursor: "move",
+            position: "relative", // Added positioning for the score
           }}
         >
           {/*<LazyLoad style={{display:"flex"}} >*/}
@@ -195,6 +196,25 @@ export const Card = memo(function Card({
             webPrefix={card.webPrefix}
             onChange={(e) => handleChange(e)}
           />
+
+        {card && card.score && ( // Render the score if it exists
+          <div
+            style={{
+              position: "absolute",
+              bottom: "8px",
+              right: "8px",
+              fontWeight: "bold",
+              fontSize: "32px",
+              color: "lightgray",
+              lineHeight: 1,
+              zIndex: 1, // Ensure the score is displayed above the Thing component
+            }}
+          >
+            {card.score}
+          </div>
+        )}
+
+
           {/*</LazyLoad>*/}
         </Box>
       </Grid>

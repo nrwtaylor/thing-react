@@ -69,7 +69,7 @@ function Weather(props) {
 
   const [data, setData] = useState({
     thing: { uuid: "X" },
-    thing_report: { sms: "No response. Yet." },
+    thing_report: { status:"loading", sms: "No response. Yet." },
   });
 
   const [open, setOpen] = useState(false);

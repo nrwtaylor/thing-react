@@ -50,7 +50,7 @@ function Error(props) {
 
   const [data, setData] = useState({
     ping: ping,
-    thing_report: { sms: "No response. Yet." },
+    thing_report: { status:"loading", sms: "No response. Yet." },
   });
 
   const [pings, setPings] = useState([]);

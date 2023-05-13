@@ -79,7 +79,7 @@ function Agents({ thing, agentInput }) {
 
   const [data, setData] = useState({
     thing: { uuid: "X" },
-    thingReport: { sms: "No response. Yet." },
+    thingReport: { status:"loading", sms: "No response. Yet." },
   });
 
   /*

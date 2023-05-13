@@ -227,14 +227,7 @@ function History({ thing, agentInput }) {
   const availableWindows = ["", "1m", "2m", "10m", "15m", "30m", "1h"];
 
   const [reply, setReply] = useState("");
-  //  const [snapshotInterval, setSnapshotInterval] = useState(50);
-  /*
-  const [data, setData] = useState({
-    thing: { uuid: "X" },
-    thing_report: { sms: "No response. Yet." },
-  });
-*/
-  //  const [data, setData] = useState([]);
+
   const [open, setOpen] = useState(false);
 
   const replyAgentDialog = (thing) => {
@@ -257,8 +250,6 @@ function History({ thing, agentInput }) {
       "History history",
       history && history.thingReport && history.thingReport.history
     );
-
-    //setSnapshotTo(webPrefix + "/snapshot/" + history.uuid + "/hey.json");
 
     var hist = false;
 
@@ -451,7 +442,7 @@ function History({ thing, agentInput }) {
           <br />
         </>
       )}
-      TEXT {thingReport && thingReport.text}
+      {debugFlag && (<>TEXT {thingReport && thingReport.text}</>)}
       <br />
       {text} {resolution}
       <br />

@@ -923,7 +923,7 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
         <Item thing={thing} agentInput={null} updateThing={updateThing} />
 <Typography className={classes.overlayNumber} >
 
-        {datagram && datagram.score}
+        {debugFlag && datagram && datagram.score}
 </Typography>
         {token && token.message}
         {/*

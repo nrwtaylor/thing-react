@@ -1,4 +1,6 @@
 import React, { memo, useState, useEffect, useCallback } from "react";
+import { devFlag, debugFlag } from "../util/dev.js";
+
 import { Card } from "./Card.js";
 import { Grid, Box } from "@mui/material";
 import update from "immutability-helper";
@@ -248,7 +250,7 @@ export const ThingContainer = ({ thing }) => {
   return (
     <>
       <div ref={drop} style={style}>
-        THING CONTAINER
+        {debugFlag && (<>THING CONTAINER</>)}
         {/* {datagram && datagram.associations && Array.isArray(datagram.associations) && datagram.associations.join(' ')} */}
         {thing && (
           <Button

@@ -1,5 +1,8 @@
 import React, { memo, useState, useEffect } from "react";
 
+import { devFlag, debugFlag } from "../util/dev.js";
+
+
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
@@ -45,9 +48,14 @@ function Collection({ thing, agentInput }) {
     <>
       Similar Things
       <br />
+{debugFlag && (<>
       THING UUID {thing && thing.uuid}
       <br />
+</>)}
+{debugFlag && (<>
       THING ASSOCIATIONS <br />
+</>)}
+
 {thing &&
   thing.associations &&
   Array.isArray(thing.associations) &&
