@@ -28,6 +28,8 @@ export default function Flag({ thing, agentInput, updateThing }) {
 
   const [disabled, setDisabled] = useState();
 
+const isSelected = agentInput?.flag === agentInput?.text;
+
   useEffect(() => {
     console.debug("Flag start");
   }, []);
@@ -36,11 +38,6 @@ export default function Flag({ thing, agentInput, updateThing }) {
     if (thing == null) {
       return;
     }
-
-    // Only set on incoming once.
-    //    if (thing !== undefined) {
-    //      return;
-    //    }
 
     if (thing.variables && thing.variables !== false) {
       if (thing.variables.flag) {
@@ -118,10 +115,17 @@ return (
     <Chip
       label={text}
       variant="outlined"
-      color="primary"
+      color={isSelected ? "primary" : "default"}
       disabled={disabled}
       onClick={(e) => handleClick(e)}
-      sx={{ m: 1 }}
+      sx={{
+        backgroundColor: isSelected ? '#1976d2' : 'transparent',
+        color: isSelected ? '#fff' : 'inherit',
+        '&:hover': {
+          backgroundColor: isSelected ? '#1565c0' : '#f5f5f5',
+        },
+        m: 1
+}}
     />
   </div>
 );

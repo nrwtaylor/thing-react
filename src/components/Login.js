@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 //import './Login.css';
 import PropTypes from "prop-types";
 import crypto from "crypto";
+
+import Button from "@mui/material/Button";
+
+
 //import * as crypto from "crypto"
 
 import { v4 as uuidv4 } from "uuid";
@@ -242,9 +246,9 @@ export default function Login({ datagram }) {
         </label>
 
         <div>
-          <button disabled={false} type="submit">
+          <Button variant="action" disabled={false} type="submit">
             Submit
-          </button>
+          </Button>
         </div>
       </form>
       {message}

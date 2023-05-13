@@ -197,7 +197,7 @@ function Agents({ thing, agentInput }) {
   return (
     <>
       {debugFlag && <div>AGENTS</div>}
-
+{/*
       {devFlag && (
         <>
           DEV FLAG
@@ -207,7 +207,7 @@ function Agents({ thing, agentInput }) {
             thing.variables.flag.dev}
         </>
       )}
-
+*/}
       {thing &&
         agents &&
         agents.map((agent, index) => {

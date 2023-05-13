@@ -892,7 +892,8 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
             </>
           }
         />
-        {expanded ? "EXPANDED" : "NOT EXPANDED"}
+
+        {debugFlag && (<>{expanded ? "EXPANDED" : "NOT EXPANDED"}</>) }
         {debugFlag && (
           <>
             pollInterval {pollInterval}
@@ -931,7 +932,7 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
         */}
         {error && <Error error={error} agentInput={data.thingReport} />}
         {/*expanded && <Button onClick={handleSpawnThing}>SPAWN</Button>*/}
-        {!expanded && <Button  variant="forget" onClick={handleForgetThing}>FORGET</Button>}
+        {!expanded && <Button  variant="irreversible" onClick={handleForgetThing}>FORGET</Button>}
         {/*expanded && (
           <Button onClick={handleFlipThing}>
             {flipped ? "MESSAGE" : "SOURCE"}
@@ -996,10 +997,11 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
             </>
           )}
           {!flipped && <Subject thing={thing} setSubject={setSubject} />}
-<Typography variant="caption" className={theme.typography.note} >
+<Typography variant="note" sx={{ fontSize: '14px', color: 'grey' }} >
           {thing && thing.createdAt && <>{humanAge(thing.createdAt)}</>}
 </Typography>
-          {!expanded && !flipped && (
+
+         {!expanded && !flipped && (
             <>
               <LazyLoad height={400} offset={200} once>
                 <div>

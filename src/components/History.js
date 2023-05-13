@@ -148,40 +148,8 @@ function History({ thing, agentInput }) {
 
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 
-  //const [webPrefix, setWebPrefix] = useState();
-
-  /*
-  useEffect(() =>{
-if (agentInput == null) {return;}
-
-setWebPrefix(process.env.REACT_APP_WEB_PREFIX);
-return;
-
-    if (agentInput.web == null || agentInput.web.webPrefix == null) {
-setWebPrefix(process.env.REACT_APP_WEB_PREFIX);
-return;
-    }
-
-setWebPrefix(agentInput.web.webPrefix);
-
-
-  }, [agentInput]);
-
-
-useEffect(()=>{
-
-console.log("History webPrefix", webPrefix);
-
-}, [webPrefix]);
-*/
-  //  const webPrefix =
-  //    process.env.REACT_APP_WEB_PREFIX;
-
   const [snapshotTo, setSnapshotTo] = useState();
   const [historyTo, setHistoryTo] = useState();
-  //const to = webPrefix + "/snapshot/" + history.uuid + "/hey.json";
-
-  //const historyTo = webPrefix + "history/" + historyRef + ".json";
 
   var snapshotInterval = 1000;
   if (showLive === false) {
@@ -490,6 +458,7 @@ console.log("History webPrefix", webPrefix);
       {data && data.thingReport && data.thingReport.text}
       {false && <>SUBJECT {subject}</>}
       <Button
+        variant="url"
         thing={{
           subject: prefixText(subject, ""),
           agentInput: "Go To History",

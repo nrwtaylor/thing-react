@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-//import { Button, Link } from '@mui/material';
-import { setThing } from "../util/database.js";
+import { devFlag, debugFlag } from "../util/dev.js";
 
-//import SwitchUnstyled from '@mui/base/SwitchUnstyled';
+import { Link } from "react-router-dom";
+import { setThing } from "../util/database.js";
 
 import {
   TextField,
@@ -107,9 +106,17 @@ navigate("/"+subject)
           onChange={(e) => handleToggleItem(e)}
         /> */}
         <br />
+
+        {debugFlag && (<>
+
+
         {thing && thing.variables && thing.variables.item === true
           ? "ITEM TRUE"
           : "NOT ITEM"}
+
+</>) }
+
+
         <br />
 
 {/*

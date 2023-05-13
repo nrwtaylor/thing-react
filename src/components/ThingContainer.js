@@ -261,26 +261,27 @@ export const ThingContainer = ({ thing }) => {
             }}
           />
         )}
-<div style={{ display: 'flex', flexWrap: 'wrap' }}>
-
-
-        {contexts.map((context, lens) => {
-          return (
-            <Flag
-              key={"flag_" + thing.uuid + "_" + context}
-              thing={thing}
-              agentInput={{
-                channel: "button",
-                //flag:{flag:context},
-                flag: lens,
-                text: context,
-                texts: [context],
-              }}
-              updateThing={(t) => handleThing(t)}
-            />
-          );
-        })}
-</div>
+        <div style={{ display: "flex", flexWrap: "wrap" }}>
+          {contexts.map((context) => {
+            const capturedLens = lens;
+            return (() => {
+              return (
+                <Flag
+                  key={"flag_" + thing.uuid + "_" + context}
+                  thing={thing}
+                  agentInput={{
+                    channel: "button",
+                    //flag:{flag:context},
+                    flag: capturedLens,
+                    text: context,
+                    texts: [context],
+                  }}
+                  updateThing={(t) => handleThing(t)}
+                />
+              );
+            })();
+          })}
+        </div>
         <p />
         <div>LENS {lens}</div>
         <p />

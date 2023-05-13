@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+
+import { devFlag, debugFlag } from "../util/dev.js";
+
 import Thing from "./Thing.js";
 import ThingContainer from "./ThingContainer.js";
 import Token from "./Token.js";
@@ -156,7 +159,7 @@ export default function ThingPage(props) {
 
   return (
     <>
-      THING PAGE
+      THING PAGE {debugFlag && (<>DEBUG</>)}{' '}{devFlag && (<>DEV</>)}
       {/*
       <Button
         thing={{

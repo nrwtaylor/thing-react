@@ -1,4 +1,8 @@
 import React from "react";
+import Button from "@mui/material/Button";
+import useToken from "../useToken.js";
+
+
 //import './Login.css';
 import PropTypes from "prop-types";
 
@@ -16,7 +20,11 @@ async function logoutUser(token) {
 */
 }
 
-export default function Logout({ deleteToken }) {
+export default function Logout() {
+
+const { deleteToken } = useToken();
+
+
   //  const [username, setUserName] = useState();
   //  const [password, setPassword] = useState();
 
@@ -38,13 +46,13 @@ export default function Logout({ deleteToken }) {
     <div className="logout-wrapper">
       <form onSubmit={handleSubmit}>
         <div>
-          <button type="submit">Logout</button>
+          <Button variant="action" type="submit">Logout</Button>
         </div>
       </form>
     </div>
   );
 }
 
-Logout.propTypes = {
-  deleteToken: PropTypes.func.isRequired,
-};
+//Logout.propTypes = {
+//  deleteToken: PropTypes.func.isRequired,
+//};

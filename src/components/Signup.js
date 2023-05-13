@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import Button from "@mui/material/Button";
 
 // import crypto from "crypto";
 
@@ -80,7 +81,7 @@ export default function Signup() {
           <input type="channel" onChange={(e) => setFrom(e.target.value)} />
         </label>
         <div>
-          <button type="submit">Submit</button>
+          <Button variant="action" type="submit">Submit</Button>
         </div>
       </form>
     </div>
