@@ -471,9 +471,12 @@ function History({ thing, agentInput }) {
         </>
       )}
       {debugFlag && <>SNAPSHOT INTERVAL {snapshotInterval}</>}
-
+<div style={{
+    maxWidth: '100%', // Ensures the container does not exceed its parent's width
+    display: 'flex'}}
+>
       <TraceCircle data={tracePoints} cycle={1} />
-
+</div>
       <Trace data={tracePoints} cycle={1} />
       <Trace data={historyPoints} cycle={1} />
       <br />
