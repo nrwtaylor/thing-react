@@ -207,56 +207,25 @@ if (data.length === 0) {return;}
   // Convert raw data to the desired format
 
 console.log("newData data", data);
-/*
-  const newData = [];
-  data.forEach(obj => {
-    Object.entries(obj).forEach(([key, value]) => {
-      if (key.startsWith('amount')) {
-        const seriesIndex = parseInt(key.slice(6)) - 1;
-        if (!newData[seriesIndex]) {
-          newData[seriesIndex] = [];
-        }
 
 
-//const t = (new Date(obj.at)).getTime() - seriesIndex * 24 * 60 * 60 * 1000;
-const t = (new Date(obj.at)).getTime();
-
-console.log("TraceCircle time", t);
-        newData[seriesIndex].push({ x: t, y: value });
-      }
-    });
-  });
-*/
 
 const newData = [];
 data.forEach(obj => {
-  Object.entries(obj).forEach(([key, value]) => {
-    if (key.startsWith('amount')) {
-      //const amountKeyLength = 'amount'.length;
-//console.log("amountKeyLength", amountKeyLength)
-//      const seriesIndex = parseInt(key.slice(amountKeyLength)) - 1;
-      //const seriesIndex = parseInt(key.slice(amountKeyLength)) -1;
-
-var seriesIndex = parseInt(key.replace("amount",""));
-
-if (key === 'amount') {seriesIndex = 0;}
-
-      if (!newData[seriesIndex]) {
-        newData[seriesIndex] = [];
-      }
-
-      const t = new Date(obj.at).getTime();
-      newData[seriesIndex].push({ x: t, y: value });
+  const amountKeys = Object.keys(obj).filter(key => key.startsWith('amount'));
+  amountKeys.forEach(key => {
+    const seriesIndex = parseInt(key.slice(6));
+    const timestamp = new Date(obj.at).getTime() / 1000;
+    
+    if (!newData[seriesIndex]) {
+      newData[seriesIndex] = [];
     }
+
+    newData[seriesIndex].push({ x: timestamp, y: obj[key] });
   });
 });
 
-
-
-
-console.log("newData", newData);
-
-setConditionedData(newData.reverse());
+setConditionedData(newData);
 
 
 
@@ -285,11 +254,14 @@ setConditionedData(newData.reverse());
 //  const colors = ['#ff0000', '#00ff00', '#0000ff'];
 //const colors= [hexShade(0,1),hexShade(1,1), hexShade(2,1)];
 
-const colors = conditionedData && conditionedData.map((c, index)=>{
-if (index === 0) {return '#ff0000';}
+const colors = conditionedData && conditionedData.reverse().map((c, index)=>{
+//console.log("TraceCircle conditionedData index", index);
+if (index === conditionedData.length - 1 ) {return '#ff0000';}
 return hexShade(index,1);
-}).reverse();
+});
 
+
+//const colors = colorsTemp && colorsTemp.push('#ff0000');
 
 //  if (xSeriesData == null) {
 //    return null;
@@ -297,7 +269,7 @@ return hexShade(index,1);
 
 
 if (conditionedData == null) {return;}
-
+//if (colors == null) {return;}
 return (
 <>
 <PolarChart data={conditionedData} colors={colors} strokeWidth={4} />

@@ -51,7 +51,7 @@ const offset = new Date(minTimestamp).setUTCHours(timezoneOffset / 60, timezoneO
 const angleScale = d3
   .scaleTime()
   .domain([new Date(offset), new Date(offset + 24 * 60 * 60 * 1000)]) // 24 hours in milliseconds
-  .range([Math.PI * 2, 0]);
+  .range([0, Math.PI * 2]);
 
 const minRadius = radius / 4;
     const radiusScale = d3.scaleLinear().domain([minValue, maxValue]).range([minRadius, radius]);
