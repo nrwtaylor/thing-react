@@ -921,10 +921,11 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
         {/*<Item thing={{...datagram, uuid:uuid}} />*/}
 
         <Item thing={thing} agentInput={null} updateThing={updateThing} />
+{/*
 <Typography className={classes.overlayNumber} >
 
         {debugFlag && datagram && datagram.score}
-</Typography>
+</Typography>*/}
         {token && token.message}
         {/*
         {expanded ? "expanded" : "not expanded"}

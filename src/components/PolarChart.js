@@ -1,7 +1,40 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
+import Box from "@mui/material/Box";
+import { makeStyles } from '@mui/styles';
+
+
+const useStyles = makeStyles((theme) => ({
+  cardImageContainer: {
+    margin: '0 auto',
+    maxWidth: '100%',
+    width: '100%',
+  },
+  media: {
+    minHeight: '200px',
+    height: 'auto',
+    alignItems: 'center',
+    justifyContent: 'center',
+    display: 'flex',
+
+    [theme.breakpoints.down('sm')]: {
+      minHeight: '150px',
+    },
+  },
+  image: {
+    maxHeight: '180px',
+    width: '100%',
+  },
+}));
+
+
 const PolarChart = ({ data, colors, strokeWidth }) => {
+
+  //const theme = useTheme();
+  const classes = useStyles();
+
+
   const chartRef = useRef(null);
 
   useEffect(() => {
@@ -20,6 +53,9 @@ const PolarChart = ({ data, colors, strokeWidth }) => {
       .append('svg')
       .attr('width', width)
       .attr('height', height)
+//      .style('width', "100%")
+//      .style('height', "100%")
+      .style("max-width","100%")
       .append('g')
       .attr('transform', `translate(${width / 2},${height / 2})`);
 
@@ -128,14 +164,29 @@ axes.append('line')
 
 
 
-
   }, [data, colors]);
 
-  return <div ref={chartRef} />;
+
+/*
+  return (
+    <Box className={classes.cardImageContainer}>
+      <div className={classes.media}>
+        <div className={classes.image} ref={chartRef} />
+      </div>
+    </Box>
+  );
+*/
+/*
+  return (
+        <div className={classes.image} ref={chartRef} />
+  );
+*/
+  return (
+        <div ref={chartRef} />
+  );
+
+
+
 };
 
 export default PolarChart;
-
-
-
-

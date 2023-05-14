@@ -549,7 +549,7 @@ export function getThings(prefix = null, token = null) {
 // Cache object to store the responses
 const cache = {};
 
-export function getThings(prefix = null, token = null, cacheTime = 5000) {
+export function getThings(prefix = null, token = null, cacheTime = 20000) {
   console.log("database getThings called");
   if (txBytes + rxBytes > quotaBytes) {
     return Promise.resolve({ error: { message: "Quota exceeded." } });

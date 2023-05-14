@@ -11,6 +11,10 @@ import {
   Box,
 } from "@mui/material";
 
+
+
+
+
 /*
 import {
   Button,
@@ -29,7 +33,12 @@ import {
 
 import { humanTime, humanRuntime, zuluTextSpread } from "../util/time.js";
 
+
+
+
 function TraceCircle(props) {
+
+
   const { data } = props;
   const canSwipe = true;
 //  const shade = true;
@@ -104,12 +113,23 @@ function TraceCircle(props) {
   if (conditionedData == null) {
     return;
   }
+/*
+  return (
+    <>
+    <div style={{ maxWidth: '100%', overflowX: 'hidden' }}>
+      <PolarChart data={conditionedData} colors={colors} strokeWidth={4} />
+    </div>
+    </>
+  );
+*/
 
   return (
     <>
       <PolarChart data={conditionedData} colors={colors} strokeWidth={4} />
     </>
   );
+
+
 }
 
 function hexShade(n, maxN) {

@@ -3,6 +3,10 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import "../index.css";
+
+import { makeStyles } from '@mui/styles';
+
+
 import {
   Typography,
   //  Avatar,
@@ -57,10 +61,15 @@ import { useSwipeable } from "react-swipeable";
 
 import { devFlag, debugFlag } from "../util/dev.js";
 
+import { useTheme } from '@mui/material/styles';
+
+
 // Refactor to pass this in thing as variables.
 const engineState = process.env.REACT_APP_ENGINE_STATE;
 
 function History({ thing, agentInput }) {
+
+
   const navigate = useNavigate();
 
   //const {agentInput} = props;
@@ -471,12 +480,9 @@ function History({ thing, agentInput }) {
         </>
       )}
       {debugFlag && <>SNAPSHOT INTERVAL {snapshotInterval}</>}
-<div style={{
-    maxWidth: '100%', // Ensures the container does not exceed its parent's width
-    display: 'flex'}}
->
+
       <TraceCircle data={tracePoints} cycle={1} />
-</div>
+
       <Trace data={tracePoints} cycle={1} />
       <Trace data={historyPoints} cycle={1} />
       <br />
