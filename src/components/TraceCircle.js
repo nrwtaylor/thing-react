@@ -44,7 +44,7 @@ function TraceCircle(props) {
 //  const shade = true;
 
   const [conditionedData, setConditionedData] = useState();
-
+  const [colors, setColors] = useState();
   //const now = new Date().getTime();
 
   const [currentTime, setCurrentTime] = useState();
@@ -99,7 +99,10 @@ function TraceCircle(props) {
     setCurrentTime(x);
   }
 
-  const colors =
+
+useEffect(() =>{ 
+if (conditionedData == null) {return;}
+  const c =
     conditionedData &&
     conditionedData
       .map((c, index) => {
@@ -109,10 +112,25 @@ function TraceCircle(props) {
         return hexShade(index, 1);
       })
       .reverse();
+setColors(c);
+}, [conditionedData]);
+
+useEffect(() =>{
+
+  console.log("TraceCircle data", data);
+
+}, [ conditionedData  ]);
+
 
   if (conditionedData == null) {
     return;
   }
+
+  if (colors == null) {
+return;
+  }
+
+
 /*
   return (
     <>
