@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
+import { findUUIDPositions, isValidUUID } from "../util/uuid.js";
+import { findTokenPositions } from "../util/token.js";
+import { findTextPositions } from "../util/text.js";
 
 import "../index.css";
 
-import { makeStyles } from '@mui/styles';
-
+import { makeStyles } from "@mui/styles";
 
 import {
   Typography,
@@ -61,15 +63,12 @@ import { useSwipeable } from "react-swipeable";
 
 import { devFlag, debugFlag } from "../util/dev.js";
 
-import { useTheme } from '@mui/material/styles';
-
+import { useTheme } from "@mui/material/styles";
 
 // Refactor to pass this in thing as variables.
 const engineState = process.env.REACT_APP_ENGINE_STATE;
 
 function History({ thing, agentInput }) {
-
-
   const navigate = useNavigate();
 
   //const {agentInput} = props;
@@ -147,6 +146,21 @@ function History({ thing, agentInput }) {
     console.debug("History parts", subjectTokens[subjectTokens.length - 1]);
 
     setResolution(subjectTokens[subjectTokens.length - 1]);
+
+    const tokenPositions = findTokenPositions(subjectTokens, "snapshot");
+
+    console.log("History tokenPositions", subjectTokens, tokenPositions);
+
+    if (tokenPositions.length === 1) {
+      const startIndex = tokenPositions[0];
+      const t = subjectTokens.slice(startIndex + 1, subjectTokens.length - 1);
+      const f = t.join(" ");
+      setText(f);
+      // setText(subjectTokens[tokenPositions[0]]]);
+
+      return;
+    }
+
     setText(subjectTokens[subjectTokens.length - 2]);
   }, [subject]);
 
@@ -451,7 +465,7 @@ function History({ thing, agentInput }) {
           <br />
         </>
       )}
-      {debugFlag && (<>TEXT {thingReport && thingReport.text}</>)}
+      {debugFlag && <>TEXT {thingReport && thingReport.text}</>}
       <br />
       {text} {resolution}
       <br />
@@ -480,9 +494,7 @@ function History({ thing, agentInput }) {
         </>
       )}
       {debugFlag && <>SNAPSHOT INTERVAL {snapshotInterval}</>}
-
       <TraceCircle data={tracePoints} cycle={1} />
-
       <Trace data={tracePoints} cycle={1} />
       <Trace data={historyPoints} cycle={1} />
       <br />

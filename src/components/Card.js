@@ -197,7 +197,7 @@ export const Card = memo(function Card({
             onChange={(e) => handleChange(e)}
           />
 
-        {card && card.score && ( // Render the score if it exists
+        {card && 'score' in card && ( // Render the score if it exists
           <div
             style={{
               position: "absolute",

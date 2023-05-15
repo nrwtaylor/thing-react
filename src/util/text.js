@@ -425,3 +425,5 @@ export function prefixText(text, prefix) {
 export function isText(x) {
   return Object.prototype.toString.call(x) === "[object String]";
 }
+
+
