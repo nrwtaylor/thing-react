@@ -12,6 +12,38 @@ export function humanTime(at) {
   //  return ts.toISOString();
 }
 
+export function convertToMilliseconds(timeString) {
+  const [value, unit] = parseTimeString(timeString);
+
+  const unitsInMilliseconds = {
+    'ms': 1,
+    's': 1000,
+    'min': 60 * 1000,
+    'hr': 60 * 60 * 1000,
+    'd': 24 * 60 * 60 * 1000,
+    'µs': 0.001,
+    'ps': 0.000001,
+    // Add more units as needed
+  };
+
+  const lowercaseUnit = unit.toLowerCase();
+  if (unitsInMilliseconds.hasOwnProperty(lowercaseUnit)) {
+    return value * unitsInMilliseconds[lowercaseUnit];
+  } else {
+    throw new Error('Invalid unit');
+  }
+}
+
+export function parseTimeString(timeString) {
+  const numericValue = parseFloat(timeString);
+  if (isNaN(numericValue)) {
+    throw new Error('Invalid time string');
+  }
+
+  const unitString = timeString.replace(/[0-9.]/g, '');
+  return [numericValue, unitString];
+}
+
 export function humanPosixTime(posixSecondsAt) {
   //var d = new Date();
   var d = new Date(posixSecondsAt * 1000);

@@ -249,7 +249,7 @@ export const ThingContainer = ({ thing }) => {
 
   return (
     <>
-      <div ref={drop} style={style}>
+      <div ref={drop} style={{...style, width:'100%'}}>
         {debugFlag && (<>THING CONTAINER</>)}
         {/* {datagram && datagram.associations && Array.isArray(datagram.associations) && datagram.associations.join(' ')} */}
         {thing && (
@@ -287,14 +287,17 @@ export const ThingContainer = ({ thing }) => {
         <p />
         <div>LENS {lens}</div>
         <p />
-        <Grid container spacing={3} direction="row">
+    {/*    <Grid container spacing={3} direction="row"> */}
           {filteredScoredThings && (
-            <>
+            <div>
               Showing {filteredScoredThings.length} of {things.length} known
               Things.
               <br />
-            </>
+            </div>
           )}
+ 
+<Grid container spacing={3} direction="row" justify="flex-start"> {/* Added justify="flex-start" */}
+    
           {filteredScoredThings &&
             filteredScoredThings.map((t) => (
               <Card

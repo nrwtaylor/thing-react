@@ -112,7 +112,7 @@ export const Card = memo(function Card({
   }
 
   function handleDelete() {
-    //console.log("Saw delete index", id)
+    //ole.log("Saw delete index", id)
     deleteCard(id);
   }
 
@@ -162,18 +162,24 @@ export const Card = memo(function Card({
         xs={12}
         sm={3}
         ref={(node) => drag(drop(node))}
-        style={{ ...style, opacity }}
+//        style={{ ...style, opacity }}
       >
         <Box
           style={{
-            border: "1px solid #1d7d1d",
+            border: "1px solid #d3d3d3",
             borderRadius: "8px",
             padding: "4px",
             height: "100%",
             display: "flex",
             cursor: "move",
             position: "relative", // Added positioning for the score
-          }}
+//width:"100%"  
+width: "calc(100% - 2px)", // Adjusted width to accommodate the border and padding
+    boxSizing: "border-box", // Added box-sizing property
+    marginLeft: "1px", // Added margin to create space between adjacent components
+    marginRight: "1px", // Added margin to create space between adjacent components
+  
+        }}
         >
           {/*<LazyLoad style={{display:"flex"}} >*/}
           <Thing

@@ -878,7 +878,7 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
           //          border: "10px solid",
           //          backgroundColor: flag === "red" ? bRed : bGreen,
         }}
-        raised={flag === "red" ? true : false}
+        raised={flag === "red"}
       >
         <CardHeader
           action={
@@ -1042,7 +1042,6 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
               {/*             <Typography>TOGOTIME {nextRunAt - currentAt}</Typography> */}
             </>
           )}
-
           <Message
             message={{
               subject: data && data.thingReport && data.thingReport.sms,
@@ -1227,7 +1226,6 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
         >
           <ExpandMoreIcon />
         </WebExpandMore>
-
       <Collapse in={webExpanded} timeout="auto" unmountOnExit>
                 <div dangerouslySetInnerHTML={{ __html: data && data.web }} />
 </Collapse>

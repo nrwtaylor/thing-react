@@ -53,6 +53,7 @@ import {
   zuluTimeDifferenceMilliseconds,
   zuluTime,
   humanRuntime,
+  convertToMilliseconds,
 } from "../util/time.js";
 import { extractUuid, parsePing, prefixText } from "../util/text.js";
 
@@ -119,15 +120,55 @@ function History({ thing, agentInput }) {
     }
 
     console.debug("History subject", subject);
-    const r = subject
+    var tempR = subject
       .replace("transducers-", "")
+      .replace("history/", "")
       .replace("history-", "")
-      .replace("history ", "")
-      .replace("-10m", "")
-      .replace("-1h", "")
-      .replace("-2m", "");
+      .replace("history ", "");
+    //      .replace("-10m", "")
+    //      .replace("-1h", "")
+    //      .replace("-2m", "");
 
-    setRef(r);
+    const r = tempR;
+    //console.log("History tempR", tempR);
+    const i = tempR.split("-");
+    console.log("History tempR i", tempR, i);
+
+    var textInterval = true;
+    if (i.length === 2) {
+      textInterval = i[1];
+    }
+
+    if (textInterval !== true) {
+      tempR = tempR.replace("-" + textInterval, "");
+    }
+
+    console.log("History tempR textInterval", tempR, textInterval);
+
+    const maxInterval = 1000;
+
+    //if (interval > 1000) {textInterval = maxInterval;}
+
+    try {
+      var interval = true;
+      // Convert ms s and minutes and hours to milliseconds
+
+      interval = convertToMilliseconds(textInterval);
+
+      if (interval > 1000) {
+        interval = 1000;
+      }
+    } catch (error) {
+      interval = 1000;
+    }
+
+    setSnapshotInterval(interval);
+
+    console.log("History interval", tempR, textInterval, interval);
+
+   // setRef(r);
+
+    setRef(tempR);
 
     const hr = subject
       .replace("history/", "")
@@ -173,12 +214,18 @@ function History({ thing, agentInput }) {
 
   const [snapshotTo, setSnapshotTo] = useState();
   const [historyTo, setHistoryTo] = useState();
+  //  const [snapshotInterval, setSnapshotInterval] = useState(showLive === false ? true : 1000);
 
-  var snapshotInterval = 1000;
+  const [snapshotInterval, setSnapshotInterval] = useState(1000);
+
+  //  var snapshotInterval = 1000;
+  /*
   if (showLive === false) {
-    snapshotInterval = true;
+//    snapshotInterval = true;
+setSnapshotInterval(true);
   }
-
+*/
+/*
   const {
     snapshot: data,
     flag: snapshotFlag,
@@ -191,13 +238,34 @@ function History({ thing, agentInput }) {
     flag: thingReportFlag,
     //    thingReportGetTime: thingReportGetTime,
   } = useThingReport(snapshotTo, snapshotInterval);
+*/  
+  const {
+    snapshot: data,
+    flag: snapshotFlag,
+    snapshotRunTime: snapshotRunTime,
+    snapshotRunAt,
+  } = useSnapshot(snapshotTo, 1000);
+
+  const {
+    thingReport,
+    flag: thingReportFlag,
+    //    thingReportGetTime: thingReportGetTime,
+  } = useThingReport(snapshotTo, 1000);
+
 
   const {
     snapshot: history,
     flag: historyFlag,
     snapshotRunTime: historyRunTime,
-  } = useSnapshot(historyTo, 60000);
+  } = useSnapshot(historyTo, 1000);
 
+/*
+  const {
+    snapshot: history,
+    flag: historyFlag,
+    snapshotRunTime: historyRunTime,
+  } = useSnapshot(historyTo, snapshotInterval);
+*/
   useEffect(() => {
     console.debug("History thingReport", thingReport);
   }, [thingReport]);
