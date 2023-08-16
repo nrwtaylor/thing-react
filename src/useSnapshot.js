@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import { getWebJson } from "./util/database.js";
 import { humanTime, zuluTime } from "./util/time.js";
 
-import useDeepCompareEffect from "use-deep-compare-effect";
+import useHybridEffect from "./useHybridEffect.js";
+//import useDeepCompareEffect from "use-deep-compare-effect";
 
 const defaultSnapshotInterval = process.env.REACT_APP_SNAPSHOT_INTERVAL;
 
@@ -52,7 +53,7 @@ export default function useSnapshot(input, inputSnapshotPollInterval) {
     return () => clearInterval(interval);
   }, [snapshotInterval]);
 
-  useDeepCompareEffect(() => {
+  useHybridEffect(() => {
     if (snapshot == null) {
       return;
     }

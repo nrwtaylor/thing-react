@@ -1,4 +1,5 @@
-import React, { memo, lazy, useState, useEffect } from "react";
+import React, { memo, lazy, useState, useEffect } from 
+"react";
 
 import update from "immutability-helper";
 
@@ -62,6 +63,9 @@ import {
   txErrorCount,
 } from "../util/database.js";
 import { humanTime, zuluTime, humanAge } from "../util/time.js";
+
+import useHybridEffect from "../useHybridEffect.js";
+
 
 import useMessages from "../useMessages.js";
 import useThingReport from "../useThingReport.js";
@@ -230,10 +234,15 @@ function Thing(props) {
     }
   }, [thing]);
 */
-  useDeepCompareEffect(() => {
+  useHybridEffect(() => {
     if (initialDatagram == null) {
       return;
     }
+/*
+    if (Array.isArray(initialDatagram) && initialDatagram.length === 0) {
+      return;
+    }
+*/
     console.log("Thing initialDatagram", initialDatagram);
     // Don't let the datagram be reset.
     if (typeof datagram !== "undefined") {

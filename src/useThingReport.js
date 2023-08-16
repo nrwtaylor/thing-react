@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import { getWebJson } from "./util/database.js";
 import { humanTime, zuluTime } from "./util/time.js";
 
-import useDeepCompareEffect from "use-deep-compare-effect";
+import useHybridEffect from "./useHybridEffect.js";
+//import useDeepCompareEffect from "use-deep-compare-effect";
 
 //export default function useToken(inputToken) {
 export default function useThingReport(input, inputThingReportPollInterval) {
@@ -76,7 +77,7 @@ export default function useThingReport(input, inputThingReportPollInterval) {
     getThingReport();
   }, [input]);
 
-  useDeepCompareEffect(() => {
+  useHybridEffect(() => {
     if (thingReport == null) {
       console.log("useThingReport thingReport undefined");
       return;

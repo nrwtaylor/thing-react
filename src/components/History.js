@@ -272,15 +272,18 @@ setSnapshotInterval(true);
 
   const x = snapshotInterval / 1000 < 500 ? 500 : snapshotInterval/1000;
   const y = convertFromMilliseconds(x);
-  console.log("History y", snapshotInterval, y);
 
-  const periodTo = historyTo;
+  const periodTo = ref + "-" + y;
+  console.log("History y", snapshotInterval, y, periodTo);
 
   const {
     snapshot: periodHistory,
     flag: periodFlag,
     snapshotRunTime: periodRunTime,
   } = useSnapshot(periodTo, 1000);
+
+
+
 
   /*
   const {
