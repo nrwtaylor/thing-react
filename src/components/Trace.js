@@ -124,7 +124,8 @@ function Trace(props) {
 
     const numberOfTicks = 4;
     //const maxTickSpacing = spreadEvent / numberOfTicks;
-    const maxTickSpacing = 1000 * 60 * 60 * 4;
+   const maxTickSpacing = 1000 * 60 * 60 * 4;
+//const maxTickSpacing = 1000 * 60;
     var x = [];
     //for (let i = 0; i < numberOfTicks; i++) {
     var d2 = 0;
@@ -284,7 +285,7 @@ return true;
                 ticks={xSeriesData.sort()}
                 dataKey="time"
                 domain={["dataMin", currentTime]}
-                //            domain={["dataMin", "dataMax"]}
+                //           domain={["dataMin", "dataMax"]}
 
                 type="number"
                 tick={true}

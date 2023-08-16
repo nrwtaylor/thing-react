@@ -12,14 +12,70 @@ export function humanTime(at) {
   //  return ts.toISOString();
 }
 
+export function spliceArrayByDate(dataArray, splittingDate) {
+  const beforeSplitting = [];
+  const afterSplitting = [];
+
+  for (const item of dataArray) {
+    const itemDate = new Date(item.at);
+    const splittingDateObj = new Date(splittingDate);
+
+    if (itemDate <= splittingDateObj) {
+      beforeSplitting.push(item);
+    } else {
+      afterSplitting.push(item);
+    }
+  }
+
+  return [beforeSplitting, afterSplitting];
+}
+
+export function convertFromMilliseconds(durationInMilliseconds, minimumDurationInMilliseconds = 500) {
+//export function convertFromMilliseconds(durationInMilliseconds) {
+
+  if (minimumDurationInMilliseconds && durationInMilliseconds < minimumDurationInMilliseconds) {
+    durationInMilliseconds = minimumDurationInMilliseconds;
+  }
+
+  const unitsInMilliseconds = {
+    'd': 24 * 60 * 60 * 1000,
+    'hr': 60 * 60 * 1000,
+    'min': 60 * 1000,
+    's': 1000,
+    'ms': 1,
+    'µs': 0.001,
+    'ps': 0.000001,
+    // Add more units as needed
+  };
+
+
+  const unitNames = ['d', 'h', 'm', 's', 'ms', 'µs', 'ps'];
+  for (const unit of unitNames) {
+    if (durationInMilliseconds >= unitsInMilliseconds[unit]) {
+      const value = durationInMilliseconds / unitsInMilliseconds[unit];
+      const roundedValue = roundToClosest(value, [1, 2, 5]);
+      return `${roundedValue.toFixed(0)}${unit}`;
+    } 
+  }
+
+  return '0ms';
+}
+
+function roundToClosest(value, allowedRounds) {
+  const closest = allowedRounds.reduce((prev, curr) =>
+    (Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev)
+  );
+  return closest;
+}
+
 export function convertToMilliseconds(timeString) {
   const [value, unit] = parseTimeString(timeString);
 
   const unitsInMilliseconds = {
     'ms': 1,
     's': 1000,
-    'min': 60 * 1000,
-    'hr': 60 * 60 * 1000,
+    'm': 60 * 1000,
+    'h': 60 * 60 * 1000,
     'd': 24 * 60 * 60 * 1000,
     'µs': 0.001,
     'ps': 0.000001,

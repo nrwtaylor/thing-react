@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 
 //import { Link } from "react-router-dom";
 
+import useSnapshot from "../useSnapshot.js";
+
+
 import "../index.css";
 import {
   Typography,
@@ -34,7 +37,7 @@ import Frequency from "../components/Frequency.js";
 import Forget from "../components/Forget.js";
 import Trace from "../components/Trace.js";
 
-import { zuluTime } from "../util/time.js";
+import { zuluTime,spliceArrayByDate } from "../util/time.js";
 
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -47,6 +50,7 @@ function Stream(props) {
   const navigate = useNavigate();
 
   const {
+    data,
     at,
     quantities,
     quantity,
@@ -54,7 +58,33 @@ function Stream(props) {
     hide,
     agentInput,
   } = props;
+
+/*
+  const {
+    snapshot: history,
+    flag: historyFlag,
+    snapshotRunTime: historyRunTime,
+  } = useSnapshot("transducers-thvlt0ax1-500ms", 1000);
+*/
+/*
+  const {
+    snapshot: aa,
+    flag: xx,
+    snapshotRunTime: yy,
+  } = useSnapshot("thvlt0ax1-500ms", 1000);
+*/
+
+/*
+useEffect(() =>{
+
+console.log("Stream history", history);
+
+}, [history]);
+*/
   const canSwipe = true;
+
+
+
 
   const config = {
     delta: 10, // min distance(px) before a swipe starts. *See Notes*
@@ -95,6 +125,7 @@ function Stream(props) {
       }
     }
   }, [agentInput]);
+
 
   if (transducer && transducer.units && transducer.units !== "X") {
     units = transducer.units;
@@ -161,6 +192,27 @@ function Stream(props) {
       }
     }
   }
+
+
+// Put this here for now.
+// Needs proofing
+
+function generateTimestampFromCurrentTime(amountInMilliseconds) {
+  const currentTime = new Date();
+  const newTime = new Date(currentTime.getTime() - amountInMilliseconds);
+
+  const year = newTime.getUTCFullYear();
+  const month = String(newTime.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(newTime.getUTCDate()).padStart(2, '0');
+  const hours = String(newTime.getUTCHours()).padStart(2, '0');
+  const minutes = String(newTime.getUTCMinutes()).padStart(2, '0');
+  const seconds = String(newTime.getUTCSeconds()).padStart(2, '0');
+  const milliseconds = String(newTime.getUTCMilliseconds()).padStart(3, '0');
+
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
+}
+
+
 
   function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -249,6 +301,22 @@ function Stream(props) {
 
     // console.log("Stream conditionedAmountt", conditionedAmount);
     // Create a new array based on current state:
+console.log("Stream data", data);
+
+
+
+
+//const splittingDate = "2023-08-15T18:00:00.000Z"; // Example splitting date
+
+const splittingDate = generateTimestampFromCurrentTime(period);
+
+
+const [beforeSplitting, afterSplitting] = spliceArrayByDate(data, splittingDate);
+
+console.log("Stream splittingDate", splittingDate);
+console.log("Stream Before Splitting:", beforeSplitting);
+console.log("Stream After Splitting:", afterSplitting);
+
     let s = [...streamPoints];
     const amounts = [];
     if (quantities) {
@@ -359,6 +427,7 @@ function Stream(props) {
   return (
     <>
       <div {...handlers}>
+
         {availableWindows[windowIndex]}
         {period && hide && (
           <>

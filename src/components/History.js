@@ -53,6 +53,7 @@ import {
   zuluTimeDifferenceMilliseconds,
   zuluTime,
   humanRuntime,
+  convertFromMilliseconds,
   convertToMilliseconds,
 } from "../util/time.js";
 import { extractUuid, parsePing, prefixText } from "../util/text.js";
@@ -62,9 +63,16 @@ import useThingReport from "../useThingReport.js";
 
 import { useSwipeable } from "react-swipeable";
 
-import { devFlag, debugFlag } from "../util/dev.js";
+//import { devFlag, debugFlag } from "../util/dev.js";
+import { devFlag } from "../util/dev.js";
+
 
 import { useTheme } from "@mui/material/styles";
+
+
+const debugFlag = true;
+
+
 
 // Refactor to pass this in thing as variables.
 const engineState = process.env.REACT_APP_ENGINE_STATE;
@@ -154,11 +162,12 @@ function History({ thing, agentInput }) {
       // Convert ms s and minutes and hours to milliseconds
 
       interval = convertToMilliseconds(textInterval);
-
-      if (interval > 1000) {
-        interval = 1000;
-      }
+setPeriod(interval);
+      //if (interval > 1000) {
+      //  interval = 1000;
+      //}
     } catch (error) {
+      console.error("History convertToMilliseconds", error);
       interval = 1000;
     }
 
@@ -166,7 +175,7 @@ function History({ thing, agentInput }) {
 
     console.log("History interval", tempR, textInterval, interval);
 
-   // setRef(r);
+    // setRef(r);
 
     setRef(tempR);
 
@@ -216,7 +225,10 @@ function History({ thing, agentInput }) {
   const [historyTo, setHistoryTo] = useState();
   //  const [snapshotInterval, setSnapshotInterval] = useState(showLive === false ? true : 1000);
 
-  const [snapshotInterval, setSnapshotInterval] = useState(1000);
+  const [snapshotInterval, setSnapshotInterval] = useState();
+
+  const [period, setPeriod] = useState();
+
 
   //  var snapshotInterval = 1000;
   /*
@@ -225,7 +237,7 @@ function History({ thing, agentInput }) {
 setSnapshotInterval(true);
   }
 */
-/*
+  /*
   const {
     snapshot: data,
     flag: snapshotFlag,
@@ -238,7 +250,7 @@ setSnapshotInterval(true);
     flag: thingReportFlag,
     //    thingReportGetTime: thingReportGetTime,
   } = useThingReport(snapshotTo, snapshotInterval);
-*/  
+*/
   const {
     snapshot: data,
     flag: snapshotFlag,
@@ -252,14 +264,25 @@ setSnapshotInterval(true);
     //    thingReportGetTime: thingReportGetTime,
   } = useThingReport(snapshotTo, 1000);
 
-
   const {
     snapshot: history,
     flag: historyFlag,
     snapshotRunTime: historyRunTime,
   } = useSnapshot(historyTo, 1000);
 
-/*
+  const x = snapshotInterval / 1000 < 500 ? 500 : snapshotInterval/1000;
+  const y = convertFromMilliseconds(x);
+  console.log("History y", snapshotInterval, y);
+
+  const periodTo = historyTo;
+
+  const {
+    snapshot: periodHistory,
+    flag: periodFlag,
+    snapshotRunTime: periodRunTime,
+  } = useSnapshot(periodTo, 1000);
+
+  /*
   const {
     snapshot: history,
     flag: historyFlag,
@@ -520,6 +543,9 @@ setSnapshotInterval(true);
             thing.variables.flag.dev}
         </>
       )}
+PERIOD{' '}
+{period}
+<br />
       {debugFlag && <div>HISTORY</div>}
       {snapshotRunAt}
       <br />
@@ -566,6 +592,7 @@ setSnapshotInterval(true);
       <Trace data={tracePoints} cycle={1} />
       <Trace data={historyPoints} cycle={1} />
       <br />
+      HEY
       {data &&
         data.transducers &&
         data.transducers[ref] &&
@@ -573,7 +600,8 @@ setSnapshotInterval(true);
         showLive && (
           <Stream
             hide={true}
-            period={1000}
+            period={snapshotInterval}
+            data={historyPoints} // Use this as it should be a singular array of time points
             quantity={{
               units: "A",
               amount:
