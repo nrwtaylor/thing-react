@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 
 import useSnapshot from "../useSnapshot.js";
 
-
 import "../index.css";
 import {
   Typography,
@@ -37,7 +36,10 @@ import Frequency from "../components/Frequency.js";
 import Forget from "../components/Forget.js";
 import Trace from "../components/Trace.js";
 
-import { zuluTime,spliceArrayByDate } from "../util/time.js";
+import { zuluTime, spliceArrayByDate } from "../util/time.js";
+
+import { sortThingsByAt } from "../util/text.js";
+
 
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -50,6 +52,7 @@ function Stream(props) {
   const navigate = useNavigate();
 
   const {
+    domain,
     data,
     at,
     quantities,
@@ -59,14 +62,20 @@ function Stream(props) {
     agentInput,
   } = props;
 
-/*
+useEffect(() =>{
+
+console.log("Stream domain", domain);
+
+}, [domain]);
+
+  /*
   const {
     snapshot: history,
     flag: historyFlag,
     snapshotRunTime: historyRunTime,
   } = useSnapshot("transducers-thvlt0ax1-500ms", 1000);
 */
-/*
+  /*
   const {
     snapshot: aa,
     flag: xx,
@@ -74,7 +83,7 @@ function Stream(props) {
   } = useSnapshot("thvlt0ax1-500ms", 1000);
 */
 
-/*
+  /*
 useEffect(() =>{
 
 console.log("Stream history", history);
@@ -82,9 +91,6 @@ console.log("Stream history", history);
 }, [history]);
 */
   const canSwipe = true;
-
-
-
 
   const config = {
     delta: 10, // min distance(px) before a swipe starts. *See Notes*
@@ -106,13 +112,21 @@ console.log("Stream history", history);
     ...config,
   });
 
-  const [period, setPeriod] = useState(inputPeriod);
+  const [period, setPeriod] = useState();
   var { amount, units } = quantity;
 
   var { transducer } = props;
   if (transducer && transducer.amount) {
     amount = transducer.amount;
   }
+
+  useEffect(() => {
+    if (inputPeriod == null) {
+      return;
+    }
+    console.log("Stream inputPeriod", inputPeriod);
+    setPeriod(inputPeriod);
+  }, [inputPeriod]);
 
   useEffect(() => {
     if (agentInput == null) {
@@ -125,7 +139,6 @@ console.log("Stream history", history);
       }
     }
   }, [agentInput]);
-
 
   if (transducer && transducer.units && transducer.units !== "X") {
     units = transducer.units;
@@ -149,11 +162,13 @@ console.log("Stream history", history);
 
   const [open, setOpen] = useState(false);
 
+const [splittingDate, setSplittingDate] = useState();
+
   const [currentAmount, setCurrentAmount] = useState();
 
   useInterval(() => {
     // Your custom logic here
-    //console.log("Stream useInterval amount", amount);
+    console.log("Stream useInterval period", period);
     getStream();
   }, period);
 
@@ -193,26 +208,23 @@ console.log("Stream history", history);
     }
   }
 
+  // Put this here for now.
+  // Needs proofing
 
-// Put this here for now.
-// Needs proofing
+  function generateTimestampFromCurrentTime(amountInMilliseconds) {
+    const currentTime = new Date();
+    const newTime = new Date(currentTime.getTime() - amountInMilliseconds);
 
-function generateTimestampFromCurrentTime(amountInMilliseconds) {
-  const currentTime = new Date();
-  const newTime = new Date(currentTime.getTime() - amountInMilliseconds);
+    const year = newTime.getUTCFullYear();
+    const month = String(newTime.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(newTime.getUTCDate()).padStart(2, "0");
+    const hours = String(newTime.getUTCHours()).padStart(2, "0");
+    const minutes = String(newTime.getUTCMinutes()).padStart(2, "0");
+    const seconds = String(newTime.getUTCSeconds()).padStart(2, "0");
+    const milliseconds = String(newTime.getUTCMilliseconds()).padStart(3, "0");
 
-  const year = newTime.getUTCFullYear();
-  const month = String(newTime.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(newTime.getUTCDate()).padStart(2, '0');
-  const hours = String(newTime.getUTCHours()).padStart(2, '0');
-  const minutes = String(newTime.getUTCMinutes()).padStart(2, '0');
-  const seconds = String(newTime.getUTCSeconds()).padStart(2, '0');
-  const milliseconds = String(newTime.getUTCMilliseconds()).padStart(3, '0');
-
-  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
-}
-
-
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
+  }
 
   function useInterval(callback, delay) {
     const savedCallback = React.useRef();
@@ -225,9 +237,11 @@ function generateTimestampFromCurrentTime(amountInMilliseconds) {
     // Set up the interval.
     useEffect(() => {
       function tick() {
+        console.log("Stream tick");
         savedCallback.current();
       }
       if (delay !== null) {
+        console.log("Stream delay not null", generateTimestampFromCurrentTime(0));
         let id = setInterval(tick, delay);
         return () => clearInterval(id);
       }
@@ -281,6 +295,10 @@ function generateTimestampFromCurrentTime(amountInMilliseconds) {
   const [voltPoints, setVoltPoints] = useState([]);
   const [tracePeriod, setTracePeriod] = useState();
 
+  useEffect(() => {
+    console.log("Stream init");
+  }, []);
+
   function handleChange(windowIndex, b) {
     console.log("Stream handleChange windowIndex b", windowIndex, b);
   }
@@ -292,6 +310,14 @@ function generateTimestampFromCurrentTime(amountInMilliseconds) {
     return Math.round(p / 1000, 0) + " s";
   }
 
+useEffect(() =>{
+
+if (data == null) {return;}
+
+getStream();
+
+}, [data]);
+
   function getStream() {
     //console.log("Stream tick");
     const a = amountRef.current;
@@ -301,23 +327,38 @@ function generateTimestampFromCurrentTime(amountInMilliseconds) {
 
     // console.log("Stream conditionedAmountt", conditionedAmount);
     // Create a new array based on current state:
-console.log("Stream data", data);
+    console.log("Stream split data", data, data && data.length);
 
+    //const splittingDate = "2023-08-15T18:00:00.000Z"; // Example splitting date
 
+//    const splittingDate = generateTimestampFromCurrentTime(period);
+console.log("Stream split period", period);
+//    const splittingDate = generateTimestampFromCurrentTime(1000 * 60);
 
+const splitPeriod = period;
+    const tempSplittingDate = generateTimestampFromCurrentTime(splitPeriod);
+setSplittingDate(tempSplittingDate);
 
-//const splittingDate = "2023-08-15T18:00:00.000Z"; // Example splitting date
+//    let knownStreamPoints = sortThingsByAt([...data, ...streamPoints]);
+//
+let knownStreamPoints = data;
 
-const splittingDate = generateTimestampFromCurrentTime(period);
+    const [beforeSplitting, afterSplitting] = spliceArrayByDate(
+      knownStreamPoints,
+      tempSplittingDate
+    );
 
+    console.log("Stream split splittingDate", splittingDate);
+    console.log("Stream split Before Splitting:", beforeSplitting);
+    console.log("Stream split After Splitting:", afterSplitting);
 
-const [beforeSplitting, afterSplitting] = spliceArrayByDate(data, splittingDate);
+    //let s = [...streamPoints];
+// HERE
 
-console.log("Stream splittingDate", splittingDate);
-console.log("Stream Before Splitting:", beforeSplitting);
-console.log("Stream After Splitting:", afterSplitting);
+    //let s = afterSplitting;sortThingsByAt([...data, ...streamPoints]);
+let s = knownStreamPoints;
+///let s = afterSplitting;
 
-    let s = [...streamPoints];
     const amounts = [];
     if (quantities) {
       quantities.map((quantity) => {
@@ -359,7 +400,10 @@ console.log("Stream After Splitting:", afterSplitting);
 
     //console.log("Stream f", s);
     // Set state
-    setStreamPoints(s);
+
+const sortedS = sortThingsByAt(s);
+
+    setStreamPoints(sortedS);
   }
 
   useEffect(() => {
@@ -370,7 +414,7 @@ console.log("Stream After Splitting:", afterSplitting);
     setRefreshedAt(startTime);
 
     var conditionedAmount = parseFloat(amount);
-
+console.log("Stream data", data);
     // Create a new array based on current state:
     let f = [...dataPoints];
 
@@ -414,7 +458,7 @@ console.log("Stream After Splitting:", afterSplitting);
     const tf = endTime - startTime;
     const timeDiff = tf;
     setTracePeriod(d);
-  }, [amount]);
+  }, [data, amount]);
 
   function callBack() {
     console.log("Strean callBack called.");
@@ -426,13 +470,25 @@ console.log("Stream After Splitting:", afterSplitting);
 
   return (
     <>
+<div>
+STREAM
+</div>
       <div {...handlers}>
-
-        {availableWindows[windowIndex]}
-        {period && hide && (
+HANDLERS<br />
+SPLITTING DATE{' '}{splittingDate}<br />
+AVAILABLE WINDOWS{' '}        {availableWindows[windowIndex]}
+<br />
+      {/*  {period && hide && ( */}
+PERIOD{' '}{period}
+<br />
+STREAM POINTS {streamPoints && streamPoints.length}
+<br />
+{period && (
           <>
-            PERIOD {period} <Trace data={streamPoints} domain={props.domain} />
+            PERIOD {period} <Trace period={period} timeType={'continuum'} data={streamPoints} domain={props.domain} />
             <br />
+AAA
+<br />
             <Typography>
               Period {humanPeriod(period)}{" "}
               <Frequency frequency={1000 / period} /> requested{" "}
@@ -444,7 +500,10 @@ console.log("Stream After Splitting:", afterSplitting);
         {period === undefined && hide && (
           <>
             PERIOD UNDEFINED
-            <Trace data={dataPoints} domain={props.domain} />
+<br />
+BBB
+<br />   
+         <Trace data={dataPoints} domain={props.domain} />
             <br />
             <Typography>
               Period {humanPeriod(tracePeriod)}{" "}
@@ -452,9 +511,10 @@ console.log("Stream After Splitting:", afterSplitting);
             </Typography>
           </>
         )}
-
+CCC
         {hide && (
           <>
+DDD
             amount {amount} {units}
             <br />
             {transducer && (
@@ -469,6 +529,8 @@ console.log("Stream After Splitting:", afterSplitting);
             <br />
           </>
         )}
+
+{!hide && (<>Hidden</>)}
       </div>
     </>
   );

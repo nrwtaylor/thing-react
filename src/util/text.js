@@ -101,6 +101,17 @@ export function extractAlphaTokens(text) {
   });
 }
 
+
+export function sortThingsByAt(things) {
+
+  const copyOfThings = [...things]; // Create a copy of the array
+  const sortedThings = copyOfThings.sort((a, b) => new Date(b.at) - new Date(a.at));
+  return sortedThings;
+
+} 
+
+
+
 // Sort high to low score
 export function sortThingsByScore(things) {
   //if (items === undefined) {return [];}

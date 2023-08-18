@@ -60,7 +60,7 @@ import { useSwipeable } from "react-swipeable";
 */
 
 function Trace(props) {
-  const { data } = props;
+  const { data, timeType, period } = props;
   //  const [canSwipe, setCanSwipe] = useState();
   const canSwipe = true;
   const shade = true;
@@ -88,6 +88,12 @@ function Trace(props) {
   const maxCycles = 100;
   const cycles = Array.from(Array(maxCycles), (_, x) => x);
 
+useEffect(() =>{
+
+console.log("Trace period", period);
+
+}, [period]);
+
   useEffect(() => {
     if (data == null) {
       return;
@@ -95,6 +101,7 @@ function Trace(props) {
     if (Array.isArray(data) && data.length === 0) {
       return;
     }
+
     //console.log("Trace data", data);
 
     const first = new Date(data[0].at);
@@ -107,6 +114,7 @@ function Trace(props) {
     setFirstAt(data[0].at);
     setLastAt(data[data.length - 1].at);
 
+    /*
     const t = data.map((d) => {
       var cycle = 1; // 1 day
       //const milliseconds = new Date(d.at).getTime() -  new Date().getTime();
@@ -117,6 +125,7 @@ function Trace(props) {
 
       return { ...d, time: new Date(d.at).getTime() };
     });
+*/
     //return;
     //    const x = t.map((d) => {
     //      return d.time;
@@ -124,8 +133,8 @@ function Trace(props) {
 
     const numberOfTicks = 4;
     //const maxTickSpacing = spreadEvent / numberOfTicks;
-   const maxTickSpacing = 1000 * 60 * 60 * 4;
-//const maxTickSpacing = 1000 * 60;
+    const maxTickSpacing = 1000 * 60 * 60 * 4;
+    //const maxTickSpacing = 1000 * 60;
     var x = [];
     //for (let i = 0; i < numberOfTicks; i++) {
     var d2 = 0;
@@ -142,13 +151,24 @@ function Trace(props) {
       i = i + 1;
       x.push(d2);
     }
+    //setXSeriesData(x);
     //return;
     //if (x.length > 1) {
-    setXSeriesData(x);
+
+    if (timeType === "four hourly") {
+      setXSeriesData(x);
+    } else if (timeType === "continuum") {
+      setXSeriesData([]);
+    } else {
+      // Current default is 4 hourly
+      setXSeriesData(x);
+    }
+    //return;
+
     //} else {
     //setXSeriesData([]);
     //}
-    console.log("Trace xSeriesData x", x);
+    //console.log("Trace xSeriesData x", x);
 
     /*
 const m = calculateMean(t);
@@ -161,6 +181,18 @@ return true;
 });
 */
 
+    const t = data.map((d) => {
+      var cycle = 1; // 1 day
+      //const milliseconds = new Date(d.at).getTime() -  new Date().getTi>
+      //const cycleCount = (milliseconds / (cycle * 60 * 60 * 24 * 1000));
+
+      //
+      //d['amount'+cycleCount] = d;
+
+      return { ...d, time: new Date(d.at).getTime() };
+    });
+
+/*
     const filteredT = t.filter((tThing) => {
       if (t.amount > 20) {
         return false;
@@ -173,10 +205,12 @@ return true;
       }
       return true;
     });
+*/
+const filteredT = t;
 
     console.log("Trace timeSeriesData t", t);
     //   setTimeSeriesData(t);
-    setTimeSeriesData(filteredT);
+    setTimeSeriesData(t);
     setSpread(spreadEvent);
 
     var yVals = data.map(function (val) {
@@ -220,7 +254,8 @@ return true;
 
     //});
     console.log("Trace ySeriesData y", y);
-    setYSeriesData(y);
+//    setYSeriesData(y);
+setYSeriesData([]);
     //}
   }, [data]);
 
@@ -267,36 +302,87 @@ return true;
   //  return <>Blank Trace 2</>;
 
   if (xSeriesData == null) {
-    return null;
+    return (
+      <>
+        <br />
+        NULL XSERIESDATA {Array.isArray(data) && data.length}
+        <br />
+      </>
+    );
+    //    return null;
   }
+
+//useEffect(() =>{
+
+//console.log("Trace period", period);
+
+//},[period]);
+
+
+  //  const xAxisDomain = [currentTime - period, currentTime]; // Calculate the start and end of the desired period
+
+  const currentTime2 = new Date();
+//  const period = 60 * 1000; // 30 days in milliseconds
+
+  //const ChartComponent = () => {
+//  const xAxisDomain = [currentTime2 - period, currentTime2]; // Calculate the start and end of the desired period
+
+//const startTime = currentTime2 - period;
+const startTime = currentTime2.getTime() - period; // Convert current time to timestamp
+
+console.log("Trace startTime", startTime);
+
+let filteredData = timeSeriesData.filter(item => {
+
+console.log("Trace item", item);
+return item.time >= startTime
+
+}
+);
+
+
+if (typeof period !== 'number' || isNaN(period)) {
+filteredData = timeSeriesData;
+}
+
+
+
   return (
     <>
       <br />
-      {zuluTextSpread(firstAt, lastAt)}
+      TRACE {zuluTextSpread(firstAt, lastAt)}
       <br />
+      DATA LENGTH{' '} {Array.isArray(data) && data.length}
+      <br />
+PERIOD {period}
+<br />
 
       <Box>
         <div style={{ width: "100%" }}>
           {/*        <ResponsiveContainer width="100%" aspect={3}> */}
           <ResponsiveContainer aspect={3}>
-            <LineChart data={timeSeriesData}>
+         {/*   <LineChart data={timeSeriesData}> */}
+<LineChart data={filteredData}>
               <XAxis
                 interval={0}
                 ticks={xSeriesData.sort()}
                 dataKey="time"
-                domain={["dataMin", currentTime]}
-                //           domain={["dataMin", "dataMax"]}
+                //    domain={["dataMin", currentTime]}
+                //domain={xAxisDomain}
+                           domain={["dataMin", "dataMax"]}
 
                 type="number"
                 tick={true}
                 tickFormatter={formatXAxis}
               />{" "}
               }{/*   <CartesianGrid /> */}
+{props.domain && (<>PROPS DOMAIN</>)}
+HEY
               {props.domain && (
                 <YAxis
                   interval={0}
                   tick={true}
-                  ticks={ySeriesData.sort()}
+   //               ticks={ySeriesData.sort()}
                   tickFormatter={(value) =>
                     new Intl.NumberFormat("en", {
                       notation: "compact",
@@ -306,7 +392,8 @@ return true;
                   domain={props.domain}
                 ></YAxis>
               )}
-              {props.domain === undefined && (
+{props.domain === undefined && (<>PROPS DOMAIN NOT DEFINED</>)}
+              {props.domain == null && (
                 <YAxis
                   interval={0}
                   tick={true}
@@ -328,7 +415,8 @@ return true;
                   ]}
                 ></YAxis>
               )}
-              {/*    <Legend /> */}
+     
+         {/*    <Legend /> */}
               {/*   <Tooltip /> */}
               {/*  <Line type="monotone" stroke="#8884d8" dataKey="amount" strokeWidth={2}
                         stroke="black" activeDot={{ r: 8 }} /> */}
@@ -415,8 +503,10 @@ return true;
         </LineChart>
       </ResponsiveContainer>
 */}
-        {humanRuntime(spread)}
+<br/ >
+        DATA SPREAD{' '}{humanRuntime(spread)}
         <br />
+PERIOD{' '}{humanRuntime(period)}
         <p />
       </Box>
     </>

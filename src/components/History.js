@@ -56,7 +56,7 @@ import {
   convertFromMilliseconds,
   convertToMilliseconds,
 } from "../util/time.js";
-import { extractUuid, parsePing, prefixText } from "../util/text.js";
+import { sortThingsByAt, extractUuid, parsePing, prefixText } from "../util/text.js";
 
 import useSnapshot from "../useSnapshot.js";
 import useThingReport from "../useThingReport.js";
@@ -270,18 +270,39 @@ setSnapshotInterval(true);
     snapshotRunTime: historyRunTime,
   } = useSnapshot(historyTo, 1000);
 
-  const x = snapshotInterval / 1000 < 500 ? 500 : snapshotInterval/1000;
-  const y = convertFromMilliseconds(x);
+// 1000 points in each snapshot
+// So need a 1000 points to fill in each inter
 
-  const periodTo = ref + "-" + y;
-  console.log("History y", snapshotInterval, y, periodTo);
+  //const x = snapshotInterval / 1000 < 500 ? 500 : snapshotInterval/1000;
+  //const y = convertFromMilliseconds(x);
+
+
+
+  const period1 = linkHistory("transducers-" + ref + "-" + "1s");
 
   const {
-    snapshot: periodHistory,
-    flag: periodFlag,
-    snapshotRunTime: periodRunTime,
-  } = useSnapshot(periodTo, 1000);
+    snapshot: historyPeriod1,
+    flag: periodFlag1,
+    snapshotRunTime: snapshotRunTime1,
+  } = useSnapshot(period1, 1000);
 
+  const period2 = linkHistory("transducers-" + ref + "-" + "500ms");
+
+  const {
+    snapshot: historyPeriod2,
+    flag: periodFlag2,
+    snapshotRunTime: snapshotRunTime2,
+  } = useSnapshot(period2, 1000);
+
+  const period3 = linkHistory( "transducers-" + ref + "-" + "1m");
+
+  const {
+    snapshot: historyPeriod3,
+    flag: periodFlag3,
+    snapshotRunTime: snapshotRunTime3,
+  } = useSnapshot(period3, 60000);
+
+  console.log("History historyTo period1", snapshotInterval, historyTo, period1, period2, period3);
 
 
 
@@ -360,14 +381,28 @@ setSnapshotInterval(true);
   }, [data]);
 
   useEffect(() => {
+console.log("History historyPoints",history, historyPeriod1, historyPeriod2, historyPeriod3);
+//if (history == null) {return;}
+
+//const p = processHistory(history);
+
+//    setHistoryPoints(p);
+//  }, [history, periodHistory]);
+
+
+
+//function processHistory(history) {
     if (history == null) {
       return;
     }
-    console.debug(
-      "History history",
-      history && history.thingReport && history.thingReport.history
-    );
 
+
+
+//    console.debug(
+//      "History history",
+//      history && history.thingReport && history.thingReport.history
+//    );
+/*
     var hist = false;
 
     if (history.agent_input) {
@@ -381,10 +416,82 @@ setSnapshotInterval(true);
       console.debug("History set history from history.thingReport.history");
       hist = history.thingReport.history;
     }
+*/
+const hist = extractHistory(history);
+const hist1 = extractHistory(historyPeriod1);
+const hist2 = extractHistory(historyPeriod2);
+const hist3 = extractHistory(historyPeriod3);
+
 
     if (hist === false) {
       return;
     }
+
+const p = processHistory(hist);
+const p1 = processHistory(hist1);
+const p2 = processHistory(hist2);
+const p3 = processHistory(hist3);
+
+console.log("History historyPoints p p1 p2 p3",period1, p, period1, p1, period2, p2,period3, p3);
+
+let hs = concatenateArrays(p,p1,p2,p3);
+
+//const areAllArray = Array.isArray(p) && Array.isArray(p1) && Array.isArray(p2) && Array.isArray(p3);
+
+//if (areAllArray) {
+
+const hp = sortThingsByAt(hs);
+
+//console.log("History Both Array Yes", hp);
+    setHistoryPoints(hp);
+//} else {
+
+//setHistoryPoints(p);
+
+//}
+
+  }, [history, historyPeriod1, historyPeriod2, historyPeriod3]);
+
+function concatenateArrays(...arrays) {
+  return arrays.filter(array => array !== undefined).reduce((result, array) => result.concat(array), []);
+}
+
+function extractHistory(h) {
+
+    var hist = false;
+
+    if (h.agent_input) {
+      if (Array.isArray(h.agent_input)) {
+        console.debug("History set history from history.agent_input");
+        hist = h.agent_input;
+      }
+    }
+
+    if (h.thingReport && h.thingReport.history) {
+      console.debug("History set history from history.thingReport.history");
+      hist = h.thingReport.history;
+    }
+
+return hist;
+}
+
+function linkHistory(hr) {
+
+    return webPrefix + "history/" + hr + ".json";
+
+
+}
+
+function processHistory(hist) {
+
+    if (hist == null) {
+      return;
+    }
+
+const isArrayEmpty = Array.isArray(hist) && hist.length === 0;
+const isArrayNotEmpty = Array.isArray(hist) && hist.length > 0;
+
+if (!Array.isArray(hist)) {return;}
 
     console.debug("History hist", hist);
     //    const hist = history.agent_input;
@@ -430,8 +537,10 @@ setSnapshotInterval(true);
 
       return f;
     });
-    setHistoryPoints(p);
-  }, [history]);
+return p;
+}
+//   setHistoryPoints(p);
+//  }, [history, periodHistory]);
 
   function humanTime(timestamp) {
     const ts = new Date();
@@ -595,12 +704,14 @@ PERIOD{' '}
       <Trace data={tracePoints} cycle={1} />
       <Trace data={historyPoints} cycle={1} />
       <br />
-      HEY
-      {data &&
-        data.transducers &&
-        data.transducers[ref] &&
-        data.transducers[ref].amount &&
-        showLive && (
+      FOO
+      {
+        //data &&
+        //data.transducers &&
+        //data.transducers[ref] &&
+        //data.transducers[ref].amount &&
+        //showLive &&
+           (
           <Stream
             hide={true}
             period={snapshotInterval}
@@ -618,6 +729,7 @@ PERIOD{' '}
             //              domain={[-50, 50]}
           />
         )}
+      BAR
       {false && (
         <>
           <br />

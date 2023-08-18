@@ -1013,8 +1013,10 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
 
          {!expanded && !flipped && (
             <>
+              LAZY LOAD
               <LazyLoad height={400} offset={200} once>
                 <div>
+                  AGENTS
                   <Agents
                     channel={"image"}
                     user={null}
