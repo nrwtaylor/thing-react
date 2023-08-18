@@ -20,6 +20,17 @@ if (
   console.info = () => {};
 }
 
+if (
+  process.env.REACT_APP_ENGINE_STATE === "no_debug"
+) {
+  console.log = () => {};
+  //console.error = () => {};
+  console.debug = () => {};
+  console.info = () => {};
+}
+
+
+
 ReactDOM.render(
   <React.StrictMode>
   <ThemeProvider theme={theme}>

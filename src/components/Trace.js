@@ -353,6 +353,9 @@ filteredData = timeSeriesData;
       TRACE {zuluTextSpread(firstAt, lastAt)}
       <br />
       DATA LENGTH{' '} {Array.isArray(data) && data.length}
+<br />
+      FILTERED DATA LENGTH{' '} {Array.isArray(filteredData) && filteredData.length}
+
       <br />
 PERIOD {period}
 <br />
@@ -506,7 +509,7 @@ HEY
 <br/ >
         DATA SPREAD{' '}{humanRuntime(spread)}
         <br />
-PERIOD{' '}{humanRuntime(period)}
+{period !== null && (<>PERIOD{' '}{period}{' '}{humanRuntime(period)} </>) }
         <p />
       </Box>
     </>

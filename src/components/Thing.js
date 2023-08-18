@@ -256,7 +256,12 @@ function Thing(props) {
 
   const { text } = useParams();
 
-  const variables = { poll: { interval: 20000, aggressive: "yes" } };
+// This sets the overall poll interval which is experienced by Trace.
+// Affects data consumption.
+
+// Todo: Make a definable quantity user side.
+
+  const variables = { poll: { interval: 1000, aggressive: "yes" } };
 
   const { messages, addMessage } = useMessages();
 
