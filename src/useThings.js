@@ -5,6 +5,8 @@ import {
   makeObservable,
 } from "./util/database.js";
 
+import useHybridEffect from "./useHybridEffect.js";
+
 import { v4 as uuidv4 } from "uuid";
 
 import useToken from "./useToken.js";
@@ -158,7 +160,7 @@ export default function useThings() {
     return userThings.subscribe(setThings);
   }, []);
 
-  useEffect(() => {
+  useHybridEffect(() => {
     //if (things == null) {return;}
     console.log("useThings things", things);
   }, [things]);

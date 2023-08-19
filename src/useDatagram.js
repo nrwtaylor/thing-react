@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 
 import usePrior from "../src/usePrior.js";
 
+import useHybridEffect from "./useHybridEffect.js";
+
+
 export default function useDatagram(inputDatagram) {
 const [datagram, setDatagram] = useState();
 
@@ -9,13 +12,13 @@ const [datagram, setDatagram] = useState();
 
   // Save datagram locally in memory
 
-  useEffect(() => {
+  useHybridEffect(() => {
     if (inputDatagram == null) {return;}
     // Consider: Merge strategies.
     saveDatagram(inputDatagram);
   }, [inputDatagram]);
 
-  useEffect(() => {
+  useHybridEffect(() => {
     //console.log("useThing getThing datagram changed", priorDatagram, datagram, deepDiffMapper.map([priorDatagram, datagram]) );
 
     if (priorDatagram == null) {
@@ -56,7 +59,7 @@ const [datagram, setDatagram] = useState();
     //    getThing();
   }, [datagram, priorDatagram]);
 
-  useEffect(() => {
+  useHybridEffect(() => {
     if (inputDatagram.subject == null) {
       return;
     }

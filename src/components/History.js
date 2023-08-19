@@ -7,6 +7,9 @@ import { findTextPositions } from "../util/text.js";
 
 import "../index.css";
 
+import useHybridEffect from "../useHybridEffect.js";
+
+
 import { makeStyles } from "@mui/styles";
 
 import {
@@ -96,6 +99,7 @@ function History({ thing, agentInput }) {
   const [historyRef, setHistoryRef] = useState();
   const [text, setText] = useState();
   const [resolution, setResolution] = useState();
+const [amount, setAmount] = useState();
   /*
   const ref = subject
     .replace("transducers-", "")
@@ -110,7 +114,7 @@ function History({ thing, agentInput }) {
     .replace("history-", "")
     .replace("history ", "");
 */
-  useEffect(() => {
+  useHybridEffect(() => {
     if (datagram == null) {
       return;
     }
@@ -276,34 +280,57 @@ setSnapshotInterval(true);
   //const x = snapshotInterval / 1000 < 500 ? 500 : snapshotInterval/1000;
   //const y = convertFromMilliseconds(x);
 
+let period1 = null;
+let period2 = null;
+let period3 = null;
 
-
-  const period1 = linkHistory("transducers-" + ref + "-" + "1s");
-
+if (ref && typeof ref !== "undefined") {
+console.log("History ref not undefined");
+  period1 = linkHistory("transducers-" + ref + "-" + "1s");
+  period2 = linkHistory("transducers-" + ref + "-" + "500ms");
+  period3 = linkHistory( "transducers-" + ref + "-" + "1m");
+}
   const {
     snapshot: historyPeriod1,
     flag: periodFlag1,
     snapshotRunTime: snapshotRunTime1,
-  } = useSnapshot(period1, 1000);
+  } = useSnapshot(period1, 1001);
 
-  const period2 = linkHistory("transducers-" + ref + "-" + "500ms");
+//  const period2 = linkHistory("transducers-" + ref + "-" + "500ms");
 
   const {
     snapshot: historyPeriod2,
     flag: periodFlag2,
     snapshotRunTime: snapshotRunTime2,
-  } = useSnapshot(period2, 1000);
-
-  const period3 = linkHistory( "transducers-" + ref + "-" + "1m");
+  } = useSnapshot(period2, 1002);
+// const period3 = linkHistory( "transducers-" + ref + "-" + "1m");
 
   const {
     snapshot: historyPeriod3,
     flag: periodFlag3,
     snapshotRunTime: snapshotRunTime3,
-  } = useSnapshot(period3, 60000);
+  } = useSnapshot(period3, 1003);
 
   console.log("History historyTo period1", snapshotInterval, historyTo, period1, period2, period3);
 
+useEffect(()=>{
+console.log("History snapshotRunTime1");
+}, [snapshotRunTime1]);
+
+useEffect(()=>{
+console.log("History snapshotRunTime1");
+}, [snapshotRunTime2]);
+
+useEffect(()=>{
+console.log("History snapshotRunTime1");
+}, [snapshotRunTime3]);
+
+
+useEffect(()=>{
+
+console.log("History ref", ref);
+
+}, [ref]);
 
 
   /*
@@ -313,7 +340,7 @@ setSnapshotInterval(true);
     snapshotRunTime: historyRunTime,
   } = useSnapshot(historyTo, snapshotInterval);
 */
-  useEffect(() => {
+  useHybridEffect(() => {
     console.debug("History thingReport", thingReport);
   }, [thingReport]);
 
@@ -321,7 +348,7 @@ setSnapshotInterval(true);
     console.debug("History snapshotTo historyTo", snapshotTo, historyTo);
   }, [snapshotTo, historyTo]);
 
-  useEffect(() => {
+  useHybridEffect(() => {
     if (datagram == null) {
       return;
     }
@@ -376,8 +403,13 @@ setSnapshotInterval(true);
     setOpen(false);
   };
 
-  useEffect(() => {
-    console.debug("History data", snapshotTo, data);
+  useHybridEffect(() => {
+console.log("History hybrideffect data");
+if (data == null) {return;}
+    console.log("History data", snapshotTo, data);
+setAmount(data.transducers &&
+                data.transducers[ref] &&
+                data.transducers[ref].amount);
   }, [data]);
 
   useEffect(() => {
@@ -601,7 +633,7 @@ return p;
     }
   }
 
-  useEffect(() => {
+  useHybridEffect(() => {
     // Bin history points in to cycle.
     const cycleMilliseconds = 1000 * 24 * 60 * 60;
 
@@ -614,7 +646,9 @@ return p;
     console.debug("History cycleRunAt", cycleRunAt);
     const cycleStartMilliseconds = cycleStartDate.getTime();
 
-    const cyclePoints = historyPoints.map((historyPoint) => {
+ let sortedHistoryPoints = sortThingsByAt(historyPoints);
+
+    const cyclePoints = sortedHistoryPoints.map((historyPoint) => {
       var cyclePoint = {};
       const ageMilliseconds = zuluTimeDifferenceMilliseconds(
         historyPoint.at,
@@ -636,6 +670,8 @@ return p;
       cyclePoint["at"] = at;
       return cyclePoint;
     });
+
+
 
     setTracePoints(cyclePoints);
   }, [historyPoints]);
@@ -729,6 +765,14 @@ PERIOD{' '}
             //              domain={[-50, 50]}
           />
         )}
+<br />
+      DATA TRANSDUCERS AMOUNT{' '}{ref}{' '}{          data &&
+                data.transducers &&
+                data.transducers[ref] &&
+                data.transducers[ref].amount}
+{' '}{amount}
+<br />
+
       BAR
       {false && (
         <>

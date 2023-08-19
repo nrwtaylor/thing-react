@@ -10,18 +10,19 @@ const defaultSnapshotInterval = process.env.REACT_APP_SNAPSHOT_INTERVAL;
 
 export default function useSnapshot(input, inputSnapshotPollInterval) {
   //const to = input;
-
+/*
   const [snapshotInterval, setSnapshotInterval] = useState(
     inputSnapshotPollInterval == null
       ? defaultSnapshotInterval
       : inputSnapshotPollInterval
   );
-
+*/
+const [snapshotInterval, setSnapshotInterval] = useState();
   const [flag, setFlag] = useState();
 
   const [snapshot, setSnapshot] = useState({
     thing: { uuid: "X" },
-    thingReport: { sms: "No response. Yet." },
+    thingReport: { sms: "No snapshot response. Yet." },
   });
 
   const [snapshotRunTime, setSnapshotRunTime] = useState();
@@ -29,37 +30,70 @@ export default function useSnapshot(input, inputSnapshotPollInterval) {
   const [snapshotResults, setSnapshotResults] = useState([]);
   const [sequentialErrorCount, setSequentialErrorCount] = useState();
 
-  useEffect(() => {
+useEffect(()=>{
+
+if (inputSnapshotPollInterval == null) {return;}
+
+setSnapshotInterval(inputSnapshotPollInterval);
+
+},[inputSnapshotPollInterval]);
+
+  useHybridEffect(() => {
+    console.debug("useSnapshot hybrideffect input", input);
+
     if (input == null) {
+    console.debug("useSnapshot hybrideffore input is null", input);
+
       return;
     }
-    console.log("useSnapshot input", input);
     getSnapshot();
   }, [input]);
 
+useEffect(()=>{
+
+console.debug("useSnapshot inputSnapshotPollInterval", inputSnapshotPollInterval);
+
+},[inputSnapshotPollInterval]);
+
+useEffect(() => {
+
+console.debug("useSnapshot init");
+
+}, []);
+
   useEffect(() => {
-    console.log("useSnapshot snapshotInterval", snapshotInterval);
+
+  //if (typeof snapshotInterval !== 'number') {
+  //  console.error('snapshotInterval should be a valid number.');
+  //  return;
+  //}
+
+  const intervalValue = typeof snapshotInterval === 'number' ? snapshotInterval : defaultSnapshotInterval;
+
+
+    console.debug("useSnapshot interval input snapshotInterval", input, snapshotInterval, defaultSnapshotInterval);
     getSnapshot();
 
     const interval = setInterval(() => {
-      console.log(
-        "useSnapshot getSnapshot() call requested",
-        snapshotInterval,
+      console.debug(
+        "useSnapshot interval call requested",
+        snapshotInterval, intervalValue,
         input
       );
       getSnapshot();
-    }, snapshotInterval); // 20 Hz was 200.
+    }, intervalValue); // 20 Hz was 200.
 
     return () => clearInterval(interval);
   }, [snapshotInterval]);
 
   useHybridEffect(() => {
+    console.debug("useSnapshot hybrideffect snapshot");
     if (snapshot == null) {
       return;
     }
 
     if (snapshotResults == null) {
-      console.log("useSnapshot snapshotResults undefined");
+      console.debug("useSnapshot snapshotResults undefined");
       setSnapshotResults([{ ...snapshot, snapshotAt: zuluTime() }]);
 
       return;
@@ -82,28 +116,30 @@ export default function useSnapshot(input, inputSnapshotPollInterval) {
   }, [snapshot]);
 
   useEffect(() => {
-    console.log("sequentialErrorCount", sequentialErrorCount);
+    console.log("useSnapshot sequentialErrorCount", sequentialErrorCount);
   }, [sequentialErrorCount]);
 
   function getSnapshot() {
+      console.debug("useSnapshot getSnapshot input", input);
+
     const startTime = new Date();
     if (flag === "red") {
-      console.log("useSnapshot getSnapshot flag", flag);
+      console.debug("useSnapshot getSnapshot flag", flag);
       return;
     }
 
     if (input == null) {
-      console.log("useSnapshot getSnapshot input", input);
+      console.debug("useSnapshot getSnapshot input null", input);
 
       return;
     }
 
     const url = input;
 
-    console.log("useSnapshot url", url);
+    console.debug("useSnapshot url", url);
     return getWebJson(url, "")
       .then((result) => {
-        console.log("useSnapshot getSnapshot result", url, result);
+        console.debug("useSnapshot getSnapshot result", url, result);
         if (!result) {
           return true;
         }
@@ -119,6 +155,7 @@ export default function useSnapshot(input, inputSnapshotPollInterval) {
           // Failback situation where thingReport format not found.
           setSnapshot(result);
         }
+console.debug("useSnapshot setSnapshot");
         // dev flag available not available
         setFlag("green");
         const endTime = new Date();

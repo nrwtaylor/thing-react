@@ -21,13 +21,33 @@ if (
 }
 
 if (
-  process.env.REACT_APP_ENGINE_STATE === "no_debug"
+  process.env.REACT_APP_CONSOLE === "no_debug"
+) {
+  //console.log = () => {};
+  //console.error = () => {};
+  console.debug = () => {};
+  //console.info = () => {};
+}
+
+if (
+  process.env.REACT_APP_CONSOLE === "only_debug"
 ) {
   console.log = () => {};
-  //console.error = () => {};
+  console.error = () => {};
+  //console.debug = () => {};
+  console.info = () => {};
+}
+
+if (
+  process.env.REACT_APP_CONSOLE === "only_log"
+) {
+  //console.log = () => {};
+  console.error = () => {};
   console.debug = () => {};
   console.info = () => {};
 }
+
+
 
 
 

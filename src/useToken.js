@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import jwt_decode from "jwt-decode";
 
+import useHybridEffect from "./useHybridEffect.js";
+
+
 export function readToken(jwtToken) {
   if (jwtToken == null) {
     return { refreshedAt: null, expiresAt: null, isValidToken: false };
@@ -103,7 +106,7 @@ export default function useToken() {
 
     return null;
   };
-  useEffect(() => {
+  useHybridEffect(() => {
     console.log("useToken token", token);
     validToken(token);
     //    if (props.token) {props.token = token;}

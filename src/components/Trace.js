@@ -19,6 +19,8 @@ import {
   Box,
 } from "@mui/material";
 
+import useHybridEffect from "../useHybridEffect.js";
+
 import {
   Button,
   TextField,
@@ -37,10 +39,6 @@ import useThing from "../useThing.js";
 import { humanTime, humanRuntime, zuluTextSpread } from "../util/time.js";
 
 import { useSwipeable } from "react-swipeable";
-//import { humanRuntime } from "../util/time.js";
-
-//import { Carousel } from "react-responsive-carousel";
-//import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 /*
 
@@ -77,24 +75,50 @@ function Trace(props) {
   const [currentTime, setCurrentTime] = useState();
   const [spread, setSpread] = useState();
 
+const [filteredData, setFilteredData] = useState();
+const [filteredDataSpread, setFilteredDataSpread] = useState();
+
   const [firstAt, setFirstAt] = useState();
   const [lastAt, setLastAt] = useState();
 
   const availableWindows = ["", "1m", "2m", "10m", "15m", "30m", "1h"];
 
-  // This will get the twilight times.
-  //const { thing } = useThing({ subject: "day twilight" });
-
   const maxCycles = 100;
   const cycles = Array.from(Array(maxCycles), (_, x) => x);
 
-useEffect(() =>{
-
-console.log("Trace period", period);
-
-}, [period]);
-
   useEffect(() => {
+    console.log("Trace period", period);
+  }, [period]);
+
+  function atSpread(data) {
+    const first = new Date(data[0].at);
+    const last = new Date(data[data.length - 1].at);
+
+    //console.log("first last", first, last);
+    //return;
+    const spreadEvent = last - first > 0 ? last - first : first - last;
+
+    setFirstAt(data[0].at);
+    setLastAt(data[data.length - 1].at);
+return spreadEvent;
+  }
+
+/*
+function atSpread(data) {
+    const dates = data.map(item => new Date(item.at));
+    
+    const oldestDate = new Date(Math.min(...dates));
+    const newestDate = new Date(Math.max(...dates));
+    
+    setFirstAt(oldestDate);
+    setLastAt(newestDate);
+
+    const timeSpread = Math.abs(newestDate - oldestDate);
+
+    return timeSpread;
+}
+*/
+  useHybridEffect(() => {
     if (data == null) {
       return;
     }
@@ -102,14 +126,16 @@ console.log("Trace period", period);
       return;
     }
 
-    //console.log("Trace data", data);
+    console.log("Trace data", data);
 
     const first = new Date(data[0].at);
     const last = new Date(data[data.length - 1].at);
-
+    /*
     //console.log("first last", first, last);
     //return;
     const spreadEvent = last - first > 0 ? last - first : first - last;
+*/
+    const spreadEvent = atSpread(data);
 
     setFirstAt(data[0].at);
     setLastAt(data[data.length - 1].at);
@@ -192,7 +218,7 @@ return true;
       return { ...d, time: new Date(d.at).getTime() };
     });
 
-/*
+    /*
     const filteredT = t.filter((tThing) => {
       if (t.amount > 20) {
         return false;
@@ -206,7 +232,7 @@ return true;
       return true;
     });
 */
-const filteredT = t;
+    const filteredT = t;
 
     console.log("Trace timeSeriesData t", t);
     //   setTimeSeriesData(t);
@@ -254,8 +280,8 @@ const filteredT = t;
 
     //});
     console.log("Trace ySeriesData y", y);
-//    setYSeriesData(y);
-setYSeriesData([]);
+    //    setYSeriesData(y);
+    setYSeriesData([]);
     //}
   }, [data]);
 
@@ -268,6 +294,16 @@ setYSeriesData([]);
 
     return () => clearInterval(interval);
   }, []);
+
+useEffect(() =>{
+if (filteredData == null) {return;}
+const s = atSpread(filteredData);
+console.debug("Trace filteredData", s, filteredData);
+  setFilteredDataSpread(s);
+
+
+}, [filteredData]);
+
 
   function calculateMean(grades) {
     if (grades == null) {
@@ -301,6 +337,40 @@ setYSeriesData([]);
 
   //  return <>Blank Trace 2</>;
 
+  //useEffect(() =>{
+
+  //console.log("Trace period", period);
+
+  //},[period]);
+
+  //  const xAxisDomain = [currentTime - period, currentTime]; // Calculate the start and end of the desired period
+useEffect(() =>{
+if (timeSeriesData == null) {return;}
+  const currentTime2 = new Date();
+  //  const period = 60 * 1000; // 30 days in milliseconds
+
+  //const ChartComponent = () => {
+  //  const xAxisDomain = [currentTime2 - period, currentTime2]; // Calculate the start and end of the desired period
+
+  //const startTime = currentTime2 - period;
+  const startTime = currentTime2.getTime() - period; // Convert current time to timestamp
+
+  console.log("Trace startTime", startTime);
+
+  let f = timeSeriesData.filter((item) => {
+    console.log("Trace item", item);
+    return item.time >= startTime;
+  });
+
+  if (typeof period !== "number" || isNaN(period)) {
+    f = timeSeriesData;
+  }
+
+setFilteredData(f);
+
+}, [timeSeriesData]);
+ // const filteredDataSpread = atSpread(filteredData);
+
   if (xSeriesData == null) {
     return (
       <>
@@ -312,80 +382,43 @@ setYSeriesData([]);
     //    return null;
   }
 
-//useEffect(() =>{
-
-//console.log("Trace period", period);
-
-//},[period]);
-
-
-  //  const xAxisDomain = [currentTime - period, currentTime]; // Calculate the start and end of the desired period
-
-  const currentTime2 = new Date();
-//  const period = 60 * 1000; // 30 days in milliseconds
-
-  //const ChartComponent = () => {
-//  const xAxisDomain = [currentTime2 - period, currentTime2]; // Calculate the start and end of the desired period
-
-//const startTime = currentTime2 - period;
-const startTime = currentTime2.getTime() - period; // Convert current time to timestamp
-
-console.log("Trace startTime", startTime);
-
-let filteredData = timeSeriesData.filter(item => {
-
-console.log("Trace item", item);
-return item.time >= startTime
-
-}
-);
-
-
-if (typeof period !== 'number' || isNaN(period)) {
-filteredData = timeSeriesData;
-}
-
-
 
   return (
     <>
       <br />
       TRACE {zuluTextSpread(firstAt, lastAt)}
       <br />
-      DATA LENGTH{' '} {Array.isArray(data) && data.length}
-<br />
-      FILTERED DATA LENGTH{' '} {Array.isArray(filteredData) && filteredData.length}
-
+      DATA LENGTH {Array.isArray(data) && data.length}
       <br />
-PERIOD {period}
-<br />
-
+      FILTERED DATA LENGTH {Array.isArray(filteredData) && filteredData.length}
+      <br />
+      PERIOD {period}
+      <br />
       <Box>
         <div style={{ width: "100%" }}>
           {/*        <ResponsiveContainer width="100%" aspect={3}> */}
           <ResponsiveContainer aspect={3}>
-         {/*   <LineChart data={timeSeriesData}> */}
-<LineChart data={filteredData}>
+            {/*   <LineChart data={timeSeriesData}> */}
+            <LineChart data={filteredData}>
               <XAxis
                 interval={0}
                 ticks={xSeriesData.sort()}
                 dataKey="time"
                 //    domain={["dataMin", currentTime]}
                 //domain={xAxisDomain}
-                           domain={["dataMin", "dataMax"]}
-
+                domain={["dataMin", "dataMax"]}
                 type="number"
                 tick={true}
                 tickFormatter={formatXAxis}
               />{" "}
               }{/*   <CartesianGrid /> */}
-{props.domain && (<>PROPS DOMAIN</>)}
-HEY
+              {props.domain && <>PROPS DOMAIN</>}
+              HEY
               {props.domain && (
                 <YAxis
                   interval={0}
                   tick={true}
-   //               ticks={ySeriesData.sort()}
+                  //               ticks={ySeriesData.sort()}
                   tickFormatter={(value) =>
                     new Intl.NumberFormat("en", {
                       notation: "compact",
@@ -395,7 +428,7 @@ HEY
                   domain={props.domain}
                 ></YAxis>
               )}
-{props.domain === undefined && (<>PROPS DOMAIN NOT DEFINED</>)}
+              {props.domain === undefined && <>PROPS DOMAIN NOT DEFINED</>}
               {props.domain == null && (
                 <YAxis
                   interval={0}
@@ -418,8 +451,7 @@ HEY
                   ]}
                 ></YAxis>
               )}
-     
-         {/*    <Legend /> */}
+              {/*    <Legend /> */}
               {/*   <Tooltip /> */}
               {/*  <Line type="monotone" stroke="#8884d8" dataKey="amount" strokeWidth={2}
                         stroke="black" activeDot={{ r: 8 }} /> */}
@@ -506,10 +538,16 @@ HEY
         </LineChart>
       </ResponsiveContainer>
 */}
-<br/ >
-        DATA SPREAD{' '}{humanRuntime(spread)}
         <br />
-{period !== null && (<>PERIOD{' '}{period}{' '}{humanRuntime(period)} </>) }
+        DATA SPREAD {humanRuntime(spread)}
+        <br />
+        FILTERED DATA SPREAD {humanRuntime(filteredDataSpread)} 
+        <br />
+        {period !== null && (
+          <>
+            PERIOD {period} {humanRuntime(period)}{" "}
+          </>
+        )}
         <p />
       </Box>
     </>
