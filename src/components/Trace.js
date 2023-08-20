@@ -40,6 +40,7 @@ import { humanTime, humanRuntime, zuluTextSpread } from "../util/time.js";
 
 import { useSwipeable } from "react-swipeable";
 
+import { minMaxData, minMaxTicks } from "../util/data.js";
 /*
 
       <Carousel
@@ -91,7 +92,9 @@ const [filteredDataSpread, setFilteredDataSpread] = useState();
   }, [period]);
 
   function atSpread(data) {
-    const first = new Date(data[0].at);
+if (data == null) {return;}
+if (Array.isArray(data) && data.length === 0) {return;}
+   const first = new Date(data[0].at);
     const last = new Date(data[data.length - 1].at);
 
     //console.log("first last", first, last);
@@ -281,7 +284,9 @@ return true;
     //});
     console.log("Trace ySeriesData y", y);
     //    setYSeriesData(y);
+if (ySeriesData == null) {
     setYSeriesData([]);
+}
     //}
   }, [data]);
 
@@ -298,10 +303,12 @@ return true;
 useEffect(() =>{
 if (filteredData == null) {return;}
 const s = atSpread(filteredData);
-console.debug("Trace filteredData", s, filteredData);
+const [min,max] = minMaxData(filteredData);
+console.debug("Trace filteredData", s, filteredData, min, max);
   setFilteredDataSpread(s);
-
-
+const a = minMaxTicks(min, max, 5);
+console.debug("Trace filteredData a", a);
+    setYSeriesData(a);
 }, [filteredData]);
 
 
