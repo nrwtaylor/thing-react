@@ -9,7 +9,6 @@ import "../index.css";
 
 import useHybridEffect from "../useHybridEffect.js";
 
-
 import { makeStyles } from "@mui/styles";
 
 import {
@@ -59,7 +58,12 @@ import {
   convertFromMilliseconds,
   convertToMilliseconds,
 } from "../util/time.js";
-import { sortThingsByAt, extractUuid, parsePing, prefixText } from "../util/text.js";
+import {
+  sortThingsByAt,
+  extractUuid,
+  parsePing,
+  prefixText,
+} from "../util/text.js";
 
 import useSnapshot from "../useSnapshot.js";
 import useThingReport from "../useThingReport.js";
@@ -69,13 +73,9 @@ import { useSwipeable } from "react-swipeable";
 //import { devFlag, debugFlag } from "../util/dev.js";
 import { devFlag } from "../util/dev.js";
 
-
 import { useTheme } from "@mui/material/styles";
 
-
 const debugFlag = true;
-
-
 
 // Refactor to pass this in thing as variables.
 const engineState = process.env.REACT_APP_ENGINE_STATE;
@@ -99,7 +99,8 @@ function History({ thing, agentInput }) {
   const [historyRef, setHistoryRef] = useState();
   const [text, setText] = useState();
   const [resolution, setResolution] = useState();
-const [amount, setAmount] = useState();
+  const [amount, setAmount] = useState();
+  const [textInterval, setTextInterval] = useState();
   /*
   const ref = subject
     .replace("transducers-", "")
@@ -146,16 +147,18 @@ const [amount, setAmount] = useState();
     const i = tempR.split("-");
     console.log("History tempR i", tempR, i);
 
-    var textInterval = true;
+    var tempTextInterval = true;
     if (i.length === 2) {
-      textInterval = i[1];
+      tempTextInterval = i[1];
     }
+
+    setTextInterval(tempTextInterval);
 
     if (textInterval !== true) {
-      tempR = tempR.replace("-" + textInterval, "");
+      tempR = tempR.replace("-" + tempTextInterval, "");
     }
 
-    console.log("History tempR textInterval", tempR, textInterval);
+    console.log("History tempR textInterval", tempR, tempTextInterval);
 
     const maxInterval = 1000;
 
@@ -165,8 +168,8 @@ const [amount, setAmount] = useState();
       var interval = true;
       // Convert ms s and minutes and hours to milliseconds
 
-      interval = convertToMilliseconds(textInterval);
-setPeriod(interval);
+      interval = convertToMilliseconds(tempTextInterval);
+      setPeriod(interval);
       //if (interval > 1000) {
       //  interval = 1000;
       //}
@@ -177,7 +180,7 @@ setPeriod(interval);
 
     setSnapshotInterval(interval);
 
-    console.log("History interval", tempR, textInterval, interval);
+    console.log("History interval", tempR, tempTextInterval, interval);
 
     // setRef(r);
 
@@ -193,7 +196,14 @@ setPeriod(interval);
     if (hr == null) {
       return;
     }
-    setHistoryTo(webPrefix + "history/" + hr + ".json");
+
+    // Lowest resolution allowed in half an hour.
+    var hrTemp = hr;
+    if (hr.includes("1d")) {
+      hrTemp = "transducers-" + tempR + "-10m";
+    }
+
+    setHistoryTo(webPrefix + "history/" + hrTemp + ".json");
 
     console.debug("History subject", subject);
     const subjectTokens = subject.split("-");
@@ -232,7 +242,6 @@ setPeriod(interval);
   const [snapshotInterval, setSnapshotInterval] = useState();
 
   const [period, setPeriod] = useState();
-
 
   //  var snapshotInterval = 1000;
   /*
@@ -274,36 +283,36 @@ setSnapshotInterval(true);
     snapshotRunTime: historyRunTime,
   } = useSnapshot(historyTo, 1000);
 
-// 1000 points in each snapshot
-// So need a 1000 points to fill in each inter
+  // 1000 points in each snapshot
+  // So need a 1000 points to fill in each inter
 
   //const x = snapshotInterval / 1000 < 500 ? 500 : snapshotInterval/1000;
   //const y = convertFromMilliseconds(x);
 
-let period1 = null;
-let period2 = null;
-let period3 = null;
+  let period1 = null;
+  let period2 = null;
+  let period3 = null;
 
-if (ref && typeof ref !== "undefined") {
-console.log("History ref not undefined");
-  period1 = linkHistory("transducers-" + ref + "-" + "1s");
-  period2 = linkHistory("transducers-" + ref + "-" + "500ms");
-  period3 = linkHistory( "transducers-" + ref + "-" + "1m");
-}
+  if (ref && typeof ref !== "undefined") {
+    console.log("History ref not undefined");
+    period1 = linkHistory("transducers-" + ref + "-" + "1s");
+    period2 = linkHistory("transducers-" + ref + "-" + "500ms");
+    period3 = linkHistory("transducers-" + ref + "-" + "1m");
+  }
   const {
     snapshot: historyPeriod1,
     flag: periodFlag1,
     snapshotRunTime: snapshotRunTime1,
   } = useSnapshot(period1, 1001);
 
-//  const period2 = linkHistory("transducers-" + ref + "-" + "500ms");
+  //  const period2 = linkHistory("transducers-" + ref + "-" + "500ms");
 
   const {
     snapshot: historyPeriod2,
     flag: periodFlag2,
     snapshotRunTime: snapshotRunTime2,
   } = useSnapshot(period2, 1002);
-// const period3 = linkHistory( "transducers-" + ref + "-" + "1m");
+  // const period3 = linkHistory( "transducers-" + ref + "-" + "1m");
 
   const {
     snapshot: historyPeriod3,
@@ -311,27 +320,30 @@ console.log("History ref not undefined");
     snapshotRunTime: snapshotRunTime3,
   } = useSnapshot(period3, 1003);
 
-  console.log("History historyTo period1", snapshotInterval, historyTo, period1, period2, period3);
+  console.log(
+    "History historyTo period1",
+    snapshotInterval,
+    historyTo,
+    period1,
+    period2,
+    period3
+  );
 
-useEffect(()=>{
-console.log("History snapshotRunTime1");
-}, [snapshotRunTime1]);
+  useEffect(() => {
+    console.log("History snapshotRunTime1");
+  }, [snapshotRunTime1]);
 
-useEffect(()=>{
-console.log("History snapshotRunTime1");
-}, [snapshotRunTime2]);
+  useEffect(() => {
+    console.log("History snapshotRunTime1");
+  }, [snapshotRunTime2]);
 
-useEffect(()=>{
-console.log("History snapshotRunTime1");
-}, [snapshotRunTime3]);
+  useEffect(() => {
+    console.log("History snapshotRunTime1");
+  }, [snapshotRunTime3]);
 
-
-useEffect(()=>{
-
-console.log("History ref", ref);
-
-}, [ref]);
-
+  useEffect(() => {
+    console.log("History ref", ref);
+  }, [ref]);
 
   /*
   const {
@@ -404,37 +416,41 @@ console.log("History ref", ref);
   };
 
   useHybridEffect(() => {
-console.log("History hybrideffect data");
-if (data == null) {return;}
+    console.log("History hybrideffect data");
+    if (data == null) {
+      return;
+    }
     console.log("History data", snapshotTo, data);
-setAmount(data.transducers &&
-                data.transducers[ref] &&
-                data.transducers[ref].amount);
+    setAmount(
+      data.transducers && data.transducers[ref] && data.transducers[ref].amount
+    );
   }, [data]);
 
   useEffect(() => {
-console.log("History historyPoints",history, historyPeriod1, historyPeriod2, historyPeriod3);
-//if (history == null) {return;}
+    console.log(
+      "History historyPoints",
+      history,
+      historyPeriod1,
+      historyPeriod2,
+      historyPeriod3
+    );
+    //if (history == null) {return;}
 
-//const p = processHistory(history);
+    //const p = processHistory(history);
 
-//    setHistoryPoints(p);
-//  }, [history, periodHistory]);
+    //    setHistoryPoints(p);
+    //  }, [history, periodHistory]);
 
-
-
-//function processHistory(history) {
+    //function processHistory(history) {
     if (history == null) {
       return;
     }
 
-
-
-//    console.debug(
-//      "History history",
-//      history && history.thingReport && history.thingReport.history
-//    );
-/*
+    //    console.debug(
+    //      "History history",
+    //      history && history.thingReport && history.thingReport.history
+    //    );
+    /*
     var hist = false;
 
     if (history.agent_input) {
@@ -449,47 +465,56 @@ console.log("History historyPoints",history, historyPeriod1, historyPeriod2, his
       hist = history.thingReport.history;
     }
 */
-const hist = extractHistory(history);
-const hist1 = extractHistory(historyPeriod1);
-const hist2 = extractHistory(historyPeriod2);
-const hist3 = extractHistory(historyPeriod3);
-
+    const hist = extractHistory(history);
+    const hist1 = extractHistory(historyPeriod1);
+    const hist2 = extractHistory(historyPeriod2);
+    const hist3 = extractHistory(historyPeriod3);
 
     if (hist === false) {
       return;
     }
 
-const p = processHistory(hist);
-const p1 = processHistory(hist1);
-const p2 = processHistory(hist2);
-const p3 = processHistory(hist3);
+    const p = processHistory(hist);
+    const p1 = processHistory(hist1);
+    const p2 = processHistory(hist2);
+    const p3 = processHistory(hist3);
 
-console.log("History historyPoints p p1 p2 p3",period1, p, period1, p1, period2, p2,period3, p3);
+    console.log(
+      "History historyPoints p p1 p2 p3",
+      period1,
+      p,
+      period1,
+      p1,
+      period2,
+      p2,
+      period3,
+      p3
+    );
 
-let hs = concatenateArrays(p,p1,p2,p3);
+    let hs = concatenateArrays(p, p1, p2, p3);
 
-//const areAllArray = Array.isArray(p) && Array.isArray(p1) && Array.isArray(p2) && Array.isArray(p3);
+    //const areAllArray = Array.isArray(p) && Array.isArray(p1) && Array.isArray(p2) && Array.isArray(p3);
 
-//if (areAllArray) {
+    //if (areAllArray) {
 
-const hp = sortThingsByAt(hs);
+    const hp = sortThingsByAt(hs);
 
-//console.log("History Both Array Yes", hp);
+    //console.log("History Both Array Yes", hp);
     setHistoryPoints(hp);
-//} else {
+    //} else {
 
-//setHistoryPoints(p);
+    //setHistoryPoints(p);
 
-//}
-
+    //}
   }, [history, historyPeriod1, historyPeriod2, historyPeriod3]);
 
-function concatenateArrays(...arrays) {
-  return arrays.filter(array => array !== undefined).reduce((result, array) => result.concat(array), []);
-}
+  function concatenateArrays(...arrays) {
+    return arrays
+      .filter((array) => array !== undefined)
+      .reduce((result, array) => result.concat(array), []);
+  }
 
-function extractHistory(h) {
-
+  function extractHistory(h) {
     var hist = false;
 
     if (h.agent_input) {
@@ -504,26 +529,24 @@ function extractHistory(h) {
       hist = h.thingReport.history;
     }
 
-return hist;
-}
+    return hist;
+  }
 
-function linkHistory(hr) {
-
+  function linkHistory(hr) {
     return webPrefix + "history/" + hr + ".json";
+  }
 
-
-}
-
-function processHistory(hist) {
-
+  function processHistory(hist) {
     if (hist == null) {
       return;
     }
 
-const isArrayEmpty = Array.isArray(hist) && hist.length === 0;
-const isArrayNotEmpty = Array.isArray(hist) && hist.length > 0;
+    const isArrayEmpty = Array.isArray(hist) && hist.length === 0;
+    const isArrayNotEmpty = Array.isArray(hist) && hist.length > 0;
 
-if (!Array.isArray(hist)) {return;}
+    if (!Array.isArray(hist)) {
+      return;
+    }
 
     console.debug("History hist", hist);
     //    const hist = history.agent_input;
@@ -569,10 +592,10 @@ if (!Array.isArray(hist)) {return;}
 
       return f;
     });
-return p;
-}
-//   setHistoryPoints(p);
-//  }, [history, periodHistory]);
+    return p;
+  }
+  //   setHistoryPoints(p);
+  //  }, [history, periodHistory]);
 
   function humanTime(timestamp) {
     const ts = new Date();
@@ -590,6 +613,10 @@ return p;
 
     return datagram.from;
   }
+
+  useEffect(() => {
+    console.debug("History textInterval", textInterval);
+  }, [textInterval]);
 
   function timeStamp() {
     var date = Date.now();
@@ -646,7 +673,7 @@ return p;
     console.debug("History cycleRunAt", cycleRunAt);
     const cycleStartMilliseconds = cycleStartDate.getTime();
 
- let sortedHistoryPoints = sortThingsByAt(historyPoints);
+    let sortedHistoryPoints = sortThingsByAt(historyPoints);
 
     const cyclePoints = sortedHistoryPoints.map((historyPoint) => {
       var cyclePoint = {};
@@ -671,8 +698,6 @@ return p;
       return cyclePoint;
     });
 
-
-
     setTracePoints(cyclePoints);
   }, [historyPoints]);
 
@@ -684,16 +709,15 @@ return p;
     <>
       {debugFlag && (
         <>
-          DEV
+          DEV{" "}
           {thing &&
             thing.variables &&
             thing.variables.flag &&
             thing.variables.flag.dev}
         </>
       )}
-PERIOD{' '}
-{period}
-<br />
+      PERIOD {period}
+      <br />
       {debugFlag && <div>HISTORY</div>}
       {snapshotRunAt}
       <br />
@@ -736,18 +760,32 @@ PERIOD{' '}
         </>
       )}
       {debugFlag && <>SNAPSHOT INTERVAL {snapshotInterval}</>}
-      <TraceCircle data={tracePoints} cycle={1} />
-      <Trace data={tracePoints} cycle={1} />
-      <Trace data={historyPoints} cycle={1} />
       <br />
-      FOO
-      {
-        //data &&
-        //data.transducers &&
-        //data.transducers[ref] &&
-        //data.transducers[ref].amount &&
-        //showLive &&
-           (
+      TEXT INTERVAL {textInterval}
+      <br />
+      HISTORYREF {historyRef}
+      <br />
+      {textInterval &&
+        typeof textInterval === "string" &&
+        textInterval.includes("1d") && (
+          <>
+            <TraceCircle data={tracePoints} cycle={1} />
+            <Trace data={tracePoints} cycle={1} />
+          </>
+        )}
+      {textInterval && textInterval === true && (
+        <>
+          <Trace data={historyPoints} cycle={1} />
+        </>
+      )}
+      {textInterval &&
+        typeof textInterval === "string" &&
+        !textInterval.includes("1d") && (
+          //data &&
+          //data.transducers &&
+          //data.transducers[ref] &&
+          //data.transducers[ref].amount &&
+          //showLive &&
           <Stream
             hide={true}
             period={snapshotInterval}
@@ -765,15 +803,14 @@ PERIOD{' '}
             //              domain={[-50, 50]}
           />
         )}
-<br />
-      DATA TRANSDUCERS AMOUNT{' '}{ref}{' '}{          data &&
-                data.transducers &&
-                data.transducers[ref] &&
-                data.transducers[ref].amount}
-{' '}{amount}
-<br />
-
-      BAR
+      <div>
+        DATA TRANSDUCERS AMOUNT {ref}{" "}
+        {data &&
+          data.transducers &&
+          data.transducers[ref] &&
+          data.transducers[ref].amount}{" "}
+        {amount}
+      </div>
       {false && (
         <>
           <br />

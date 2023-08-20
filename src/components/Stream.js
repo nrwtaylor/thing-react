@@ -353,8 +353,8 @@ console.log("Stream history", history);
 
     //let s = afterSplitting;sortThingsByAt([...data, ...streamPoints]);
     //let s = [...knownStreamPoints, ...dataPoints];
-//let s = [...data,...streamPoints];
-let s= [...data, ...streamPoints];
+    //let s = [...data,...streamPoints];
+    let s = [...data, ...streamPoints];
     ///let s = afterSplitting;
 
     const amounts = [];
@@ -364,13 +364,10 @@ let s= [...data, ...streamPoints];
         amounts.push(amount);
       });
       conditionedAmount = amounts[1];
-    } else if(quantity) {
-
-    const amount = parseFloat(quantity.amount);
-    amounts.push(amount);
-    conditionedAmount = amount;
-
-
+    } else if (quantity) {
+      const amount = parseFloat(quantity.amount);
+      amounts.push(amount);
+      conditionedAmount = amount;
     }
 
     var atTemp = at;
@@ -393,7 +390,7 @@ let s= [...data, ...streamPoints];
       at: atTemp,
     });
 
-/*
+    /*
     const maxStreamPoints = 100;
 
     const sortedS = sortThingsByAt(s);
@@ -415,29 +412,26 @@ let s= [...data, ...streamPoints];
     // Set state
 
     const sortedS = sortThingsByAt(s);
-const deduplicatedSortedS = removeDuplicatesByProps(sortedS);
+    const deduplicatedSortedS = removeDuplicatesByProps(sortedS);
     setStreamPoints(deduplicatedSortedS);
   }
 
+  function removeDuplicatesByProps(arr) {
+    const uniqueItems = [];
 
-function removeDuplicatesByProps(arr) {
-  const uniqueItems = [];
+    for (const item of arr) {
+      const { at, amount, ...rest } = item;
+      const foundIndex = uniqueItems.findIndex(
+        (uniqueItem) => uniqueItem.at === at && uniqueItem.amount === amount
+      );
 
-  for (const item of arr) {
-    const { at, amount, ...rest } = item;
-    const foundIndex = uniqueItems.findIndex(
-      (uniqueItem) => uniqueItem.at === at && uniqueItem.amount === amount
-    );
-
-    if (foundIndex === -1) {
-      uniqueItems.push({ at, amount, ...rest });
+      if (foundIndex === -1) {
+        uniqueItems.push({ at, amount, ...rest });
+      }
     }
+
+    return uniqueItems;
   }
-
-  return uniqueItems;
-}
-
-
 
   useHybridEffect(() => {
     // console.log("Stream amount", amount);
@@ -526,8 +520,6 @@ function removeDuplicatesByProps(arr) {
               domain={props.domain}
             />
             <br />
-            AAA
-            <br />
             <Typography>
               Period {humanPeriod(period)}{" "}
               <Frequency frequency={1000 / period} /> requested{" "}
@@ -539,8 +531,6 @@ function removeDuplicatesByProps(arr) {
           <>
             PERIOD UNDEFINED
             <br />
-            BBB
-            <br />
             <Trace data={dataPoints} domain={props.domain} />
             <br />
             <Typography>
@@ -549,10 +539,8 @@ function removeDuplicatesByProps(arr) {
             </Typography>
           </>
         )}
-        CCC
         {hide && (
           <>
-            DDD
             <br />
             AMOUNT {amount} {units}
             <br />
