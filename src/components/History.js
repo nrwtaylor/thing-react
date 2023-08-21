@@ -183,19 +183,13 @@ var tempTextInterval = tempTextIntervalArray[0];
       return;
     }
 
-    // Lowest resolution allowed in half an hour.
-//    var hrTemp = hr;
-//    if (hr.includes("1d")) {
-//      hrTemp = tempR + "-10m";
-//    }
+    // Lowest resolution allowed is 10 minutes.
 
-var hrTemp = hr.replace("-" + tempTextInterval, "-10m");
-
-//if (subject.includes("transducers-")) {
-
-//hrTemp = "transducers-" + hrTemp;
-
-//}
+var hrTemp = hr;
+//if (tempTextInterval === "1d" || tempTextInterval === "20m" || tempTextInterval === "30m") {
+if (tempTextInterval === "1d") {
+    hrTemp = hr.replace("-" + tempTextInterval, "-10m");
+}
 
     setHistoryTo(webPrefix + "history/" + hrTemp + ".json");
 
@@ -273,19 +267,19 @@ var hrTemp = hr.replace("-" + tempTextInterval, "-10m");
     snapshot: historyPeriod1,
     flag: periodFlag1,
     snapshotRunTime: snapshotRunTime1,
-  } = useSnapshot(period1, 1001);
+  } = useSnapshot(period1, 1000);
 
   const {
     snapshot: historyPeriod2,
     flag: periodFlag2,
     snapshotRunTime: snapshotRunTime2,
-  } = useSnapshot(period2, 1002);
+  } = useSnapshot(period2, 500);
 
   const {
     snapshot: historyPeriod3,
     flag: periodFlag3,
     snapshotRunTime: snapshotRunTime3,
-  } = useSnapshot(period3, 1003);
+  } = useSnapshot(period3, 60*1000);
 
   console.debug(
     "History snapshotInterval period1 period2 period3",
@@ -705,24 +699,24 @@ var hrTemp = hr.replace("-" + tempTextInterval, "-10m");
       )}
       {debugFlag && <>SNAPSHOT INTERVAL {snapshotInterval}</>}
       <br />
-      TEXT INTERVAL{'x'}{textInterval}{'x'}
+      TEXT INTERVAL{' '}{textInterval}
       <br />
       HISTORYREF {historyRef}
       <br />
-{textInterval && (<>TEXT INTERVAL</>)}
-{textInterval && typeof textInterval === "string" && (<>TEXT INTERVAL IS STRING</>)}
+{false && textInterval && (<>TEXT INTERVAL</>)}
+{false && textInterval && typeof textInterval === "string" && (<>TEXT INTERVAL IS STRING</>)}
       {textInterval &&
         typeof textInterval === "string" &&
         textInterval.includes("1d") && (
           <>
-1D RENDER
+<div>1 DAY RENDER</div>
             <TraceCircle data={tracePoints} cycle={1} />
             <Trace data={tracePoints} cycle={1} />
           </>
         )}
       {textInterval && textInterval === true && (
         <>
-TRACE
+<div>TRACE</div>
           <Trace data={historyPoints} cycle={1} />
         </>
       )}
@@ -730,12 +724,7 @@ TRACE
         typeof textInterval === "string" &&
         !textInterval.includes("1d") && (
 <>
-STREAM
-          //data &&
-          //data.transducers &&
-          //data.transducers[ref] &&
-          //data.transducers[ref].amount &&
-          //showLive &&
+<div>STREAM</div>
           <Stream
             hide={true}
             period={snapshotInterval}
@@ -748,7 +737,6 @@ STREAM
                 data.transducers[ref] &&
                 data.transducers[ref].amount,
             }}
-            //             transducer={data && data.transducers && data.transducers[ref]}
             //              period={100}
             //              domain={[-50, 50]}
           />
@@ -756,10 +744,10 @@ STREAM
         )}
       <div>
         DATA TRANSDUCERS AMOUNT {ref}{" "}
-        {data &&
+        {/*data &&
           data.transducers &&
           data.transducers[ref] &&
-          data.transducers[ref].amount}{" "}
+          data.transducers[ref].amount}{" "}*/}
         {amount}
       </div>
       {false && (
@@ -775,9 +763,23 @@ STREAM
       <div>
         SNAPSHOT GET TIME {snapshotRunTime}ms{" "}
         {Math.round(1000 / snapshotRunTime, 1)}Hz
+
         <br />
         HISTORY GET TIME {historyRunTime}ms{" "}
         {Math.round(1000 / historyRunTime, 1)}Hz
+
+        <br />
+        SNAPSHOT1 GET TIME {snapshotRunTime1}ms{" "}
+        {Math.round(1000 / snapshotRunTime1, 1)}Hz
+
+
+        <br />
+        SNAPSHOT2 GET TIME {snapshotRunTime2}ms{" "}
+        {Math.round(1000 / snapshotRunTime2, 1)}Hz
+
+        <br />
+        SNAPSHOT3 GET TIME {snapshotRunTime3}ms{" "}
+        {Math.round(1000 / snapshotRunTime3, 1)}Hz
       </div>
     </>
   );

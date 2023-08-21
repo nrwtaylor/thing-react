@@ -64,7 +64,6 @@ function Trace(props) {
   const canSwipe = true;
   const shade = true;
 
-  //const now = new Date().getTime();
   const [timeSeriesData, setTimeSeriesData] = useState();
   const [xSeriesData, setXSeriesData] = useState();
   const [ySeriesData, setYSeriesData] = useState();
@@ -76,8 +75,8 @@ function Trace(props) {
   const [currentTime, setCurrentTime] = useState();
   const [spread, setSpread] = useState();
 
-const [filteredData, setFilteredData] = useState();
-const [filteredDataSpread, setFilteredDataSpread] = useState();
+  const [filteredData, setFilteredData] = useState();
+  const [filteredDataSpread, setFilteredDataSpread] = useState();
 
   const [firstAt, setFirstAt] = useState();
   const [lastAt, setLastAt] = useState();
@@ -92,18 +91,20 @@ const [filteredDataSpread, setFilteredDataSpread] = useState();
   }, [period]);
 
   function atSpread(data) {
-if (data == null) {return;}
-if (Array.isArray(data) && data.length === 0) {return;}
-   const first = new Date(data[0].at);
+    if (data == null) {
+      return;
+    }
+    if (Array.isArray(data) && data.length === 0) {
+      return;
+    }
+    const first = new Date(data[0].at);
     const last = new Date(data[data.length - 1].at);
 
-    //console.log("first last", first, last);
-    //return;
     const spreadEvent = last - first > 0 ? last - first : first - last;
 
     setFirstAt(data[0].at);
     setLastAt(data[data.length - 1].at);
-return spreadEvent;
+    return spreadEvent;
   }
 
   useHybridEffect(() => {
@@ -264,9 +265,9 @@ return true;
     //});
     console.log("Trace ySeriesData y", y);
     //    setYSeriesData(y);
-if (ySeriesData == null) {
-    setYSeriesData([]);
-}
+    if (ySeriesData == null) {
+      setYSeriesData([]);
+    }
     //}
   }, [data]);
 
@@ -280,17 +281,18 @@ if (ySeriesData == null) {
     return () => clearInterval(interval);
   }, []);
 
-useEffect(() =>{
-if (filteredData == null) {return;}
-const s = atSpread(filteredData);
-const [min,max] = minMaxData(filteredData);
-console.debug("Trace filteredData", s, filteredData, min, max);
-  setFilteredDataSpread(s);
-const a = minMaxTicks(min, max, 5);
-console.debug("Trace filteredData a", a);
+  useEffect(() => {
+    if (filteredData == null) {
+      return;
+    }
+    const s = atSpread(filteredData);
+    const [min, max] = minMaxData(filteredData);
+    console.debug("Trace filteredData", s, filteredData, min, max);
+    setFilteredDataSpread(s);
+    const a = minMaxTicks(min, max, 5);
+    console.debug("Trace filteredData a", a);
     setYSeriesData(a);
-}, [filteredData]);
-
+  }, [filteredData]);
 
   function calculateMean(grades) {
     if (grades == null) {
@@ -331,32 +333,33 @@ console.debug("Trace filteredData a", a);
   //},[period]);
 
   //  const xAxisDomain = [currentTime - period, currentTime]; // Calculate the start and end of the desired period
-useEffect(() =>{
-if (timeSeriesData == null) {return;}
-  const currentTime2 = new Date();
-  //  const period = 60 * 1000; // 30 days in milliseconds
+  useEffect(() => {
+    if (timeSeriesData == null) {
+      return;
+    }
+    const currentTime2 = new Date();
+    //  const period = 60 * 1000; // 30 days in milliseconds
 
-  //const ChartComponent = () => {
-  //  const xAxisDomain = [currentTime2 - period, currentTime2]; // Calculate the start and end of the desired period
+    //const ChartComponent = () => {
+    //  const xAxisDomain = [currentTime2 - period, currentTime2]; // Calculate the start and end of the desired period
 
-  //const startTime = currentTime2 - period;
-  const startTime = currentTime2.getTime() - period; // Convert current time to timestamp
+    //const startTime = currentTime2 - period;
+    const startTime = currentTime2.getTime() - period; // Convert current time to timestamp
 
-  console.log("Trace startTime", startTime);
+    console.log("Trace startTime", startTime);
 
-  let f = timeSeriesData.filter((item) => {
-    console.log("Trace item", item);
-    return item.time >= startTime;
-  });
+    let f = timeSeriesData.filter((item) => {
+      console.log("Trace item", item);
+      return item.time >= startTime;
+    });
 
-  if (typeof period !== "number" || isNaN(period)) {
-    f = timeSeriesData;
-  }
+    if (typeof period !== "number" || isNaN(period)) {
+      f = timeSeriesData;
+    }
 
-setFilteredData(f);
-
-}, [timeSeriesData]);
- // const filteredDataSpread = atSpread(filteredData);
+    setFilteredData(f);
+  }, [timeSeriesData]);
+  // const filteredDataSpread = atSpread(filteredData);
 
   if (xSeriesData == null) {
     return (
@@ -369,15 +372,12 @@ setFilteredData(f);
     //    return null;
   }
 
-
   return (
     <>
       <br />
-      TRACE {zuluTextSpread(firstAt, lastAt)}
-      <br />
-      DATA LENGTH {Array.isArray(data) && data.length}
-      <br />
-      FILTERED DATA LENGTH {Array.isArray(filteredData) && filteredData.length}
+      TRACE {zuluTextSpread(firstAt, lastAt)}{" "}
+      {Array.isArray(data) && data.length}
+      {" events"} {humanRuntime(spread)}
       <br />
       PERIOD {period}
       <br />
@@ -526,15 +526,12 @@ setFilteredData(f);
       </ResponsiveContainer>
 */}
         <br />
-        DATA SPREAD {humanRuntime(spread)}
+        FILTERED DATA SPREAD{' '}
+        {humanRuntime(filteredDataSpread)}{" "}
+        {Array.isArray(filteredData) && filteredData.length}
+        {" events"}
         <br />
-        FILTERED DATA SPREAD {humanRuntime(filteredDataSpread)} 
-        <br />
-        {period !== null && (
-          <>
-            PERIOD {period} {humanRuntime(period)}{" "}
-          </>
-        )}
+        {period !== null && <>PERIOD {humanRuntime(period)}</>}
         <p />
       </Box>
     </>
