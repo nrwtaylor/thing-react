@@ -305,14 +305,11 @@ setSnapshotInterval(true);
     snapshotRunTime: snapshotRunTime1,
   } = useSnapshot(period1, 1001);
 
-  //  const period2 = linkHistory("transducers-" + ref + "-" + "500ms");
-
   const {
     snapshot: historyPeriod2,
     flag: periodFlag2,
     snapshotRunTime: snapshotRunTime2,
   } = useSnapshot(period2, 1002);
-  // const period3 = linkHistory( "transducers-" + ref + "-" + "1m");
 
   const {
     snapshot: historyPeriod3,
@@ -345,13 +342,6 @@ setSnapshotInterval(true);
     console.log("History ref", ref);
   }, [ref]);
 
-  /*
-  const {
-    snapshot: history,
-    flag: historyFlag,
-    snapshotRunTime: historyRunTime,
-  } = useSnapshot(historyTo, snapshotInterval);
-*/
   useHybridEffect(() => {
     console.debug("History thingReport", thingReport);
   }, [thingReport]);

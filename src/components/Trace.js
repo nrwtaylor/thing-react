@@ -106,21 +106,6 @@ if (Array.isArray(data) && data.length === 0) {return;}
 return spreadEvent;
   }
 
-/*
-function atSpread(data) {
-    const dates = data.map(item => new Date(item.at));
-    
-    const oldestDate = new Date(Math.min(...dates));
-    const newestDate = new Date(Math.max(...dates));
-    
-    setFirstAt(oldestDate);
-    setLastAt(newestDate);
-
-    const timeSpread = Math.abs(newestDate - oldestDate);
-
-    return timeSpread;
-}
-*/
   useHybridEffect(() => {
     if (data == null) {
       return;
@@ -133,11 +118,6 @@ function atSpread(data) {
 
     const first = new Date(data[0].at);
     const last = new Date(data[data.length - 1].at);
-    /*
-    //console.log("first last", first, last);
-    //return;
-    const spreadEvent = last - first > 0 ? last - first : first - last;
-*/
     const spreadEvent = atSpread(data);
 
     setFirstAt(data[0].at);
