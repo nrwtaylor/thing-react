@@ -101,20 +101,7 @@ function History({ thing, agentInput }) {
   const [resolution, setResolution] = useState();
   const [amount, setAmount] = useState();
   const [textInterval, setTextInterval] = useState();
-  /*
-  const ref = subject
-    .replace("transducers-", "")
-    .replace("history-", "")
-    .replace("history ", "")
-    .replace("-10m", "")
-    .replace("-1h", "")
-    .replace("-2m", "");
 
-  const historyRef = subject
-    .replace("history/", "")
-    .replace("history-", "")
-    .replace("history ", "");
-*/
   useHybridEffect(() => {
     if (datagram == null) {
       return;
@@ -138,9 +125,6 @@ function History({ thing, agentInput }) {
       .replace("history/", "")
       .replace("history-", "")
       .replace("history ", "");
-    //      .replace("-10m", "")
-    //      .replace("-1h", "")
-    //      .replace("-2m", "");
 
     const r = tempR;
     //console.log("History tempR", tempR);
@@ -170,9 +154,6 @@ function History({ thing, agentInput }) {
 
       interval = convertToMilliseconds(tempTextInterval);
       setPeriod(interval);
-      //if (interval > 1000) {
-      //  interval = 1000;
-      //}
     } catch (error) {
       console.error("History convertToMilliseconds", error);
       interval = 1000;
@@ -181,8 +162,6 @@ function History({ thing, agentInput }) {
     setSnapshotInterval(interval);
 
     console.log("History interval", tempR, tempTextInterval, interval);
-
-    // setRef(r);
 
     setRef(tempR);
 
@@ -243,27 +222,6 @@ function History({ thing, agentInput }) {
 
   const [period, setPeriod] = useState();
 
-  //  var snapshotInterval = 1000;
-  /*
-  if (showLive === false) {
-//    snapshotInterval = true;
-setSnapshotInterval(true);
-  }
-*/
-  /*
-  const {
-    snapshot: data,
-    flag: snapshotFlag,
-    snapshotRunTime: snapshotRunTime,
-    snapshotRunAt,
-  } = useSnapshot(snapshotTo, snapshotInterval);
-
-  const {
-    thingReport,
-    flag: thingReportFlag,
-    //    thingReportGetTime: thingReportGetTime,
-  } = useThingReport(snapshotTo, snapshotInterval);
-*/
   const {
     snapshot: data,
     flag: snapshotFlag,
@@ -285,9 +243,6 @@ setSnapshotInterval(true);
 
   // 1000 points in each snapshot
   // So need a 1000 points to fill in each inter
-
-  //const x = snapshotInterval / 1000 < 500 ? 500 : snapshotInterval/1000;
-  //const y = convertFromMilliseconds(x);
 
   let period1 = null;
   let period2 = null;
@@ -317,8 +272,8 @@ setSnapshotInterval(true);
     snapshotRunTime: snapshotRunTime3,
   } = useSnapshot(period3, 1003);
 
-  console.log(
-    "History historyTo period1",
+  console.debug(
+    "History snapshotInterval period1 period2 period3",
     snapshotInterval,
     historyTo,
     period1,
@@ -424,14 +379,7 @@ setSnapshotInterval(true);
       historyPeriod2,
       historyPeriod3
     );
-    //if (history == null) {return;}
 
-    //const p = processHistory(history);
-
-    //    setHistoryPoints(p);
-    //  }, [history, periodHistory]);
-
-    //function processHistory(history) {
     if (history == null) {
       return;
     }
@@ -469,7 +417,7 @@ setSnapshotInterval(true);
     const p2 = processHistory(hist2);
     const p3 = processHistory(hist3);
 
-    console.log(
+    console.debug(
       "History historyPoints p p1 p2 p3",
       period1,
       p,
@@ -483,19 +431,10 @@ setSnapshotInterval(true);
 
     let hs = concatenateArrays(p, p1, p2, p3);
 
-    //const areAllArray = Array.isArray(p) && Array.isArray(p1) && Array.isArray(p2) && Array.isArray(p3);
-
-    //if (areAllArray) {
-
     const hp = sortThingsByAt(hs);
 
-    //console.log("History Both Array Yes", hp);
     setHistoryPoints(hp);
-    //} else {
 
-    //setHistoryPoints(p);
-
-    //}
   }, [history, historyPeriod1, historyPeriod2, historyPeriod3]);
 
   function concatenateArrays(...arrays) {

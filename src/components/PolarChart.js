@@ -34,6 +34,7 @@ const PolarChart = ({ data, colors, strokeWidth }) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
+    console.debug("PolarChart data", data);
     const chartContainer = d3.select(chartRef.current);
 
     // Function to update chart dimensions

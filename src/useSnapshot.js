@@ -67,7 +67,7 @@ console.debug("useSnapshot init");
   //  console.error('snapshotInterval should be a valid number.');
   //  return;
   //}
-
+if (input == null) {return;}
   const intervalValue = typeof snapshotInterval === 'number' ? snapshotInterval : defaultSnapshotInterval;
 
 
@@ -84,7 +84,7 @@ console.debug("useSnapshot init");
     }, intervalValue); // 20 Hz was 200.
 
     return () => clearInterval(interval);
-  }, [snapshotInterval]);
+  }, [input, snapshotInterval]);
 
   useHybridEffect(() => {
     console.debug("useSnapshot hybrideffect snapshot");
