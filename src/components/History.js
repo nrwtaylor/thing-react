@@ -57,6 +57,7 @@ import {
   humanRuntime,
   convertFromMilliseconds,
   convertToMilliseconds,
+  extractDurations,
 } from "../util/time.js";
 import {
   sortThingsByAt,
@@ -131,10 +132,15 @@ function History({ thing, agentInput }) {
     const i = tempR.split("-");
     console.log("History tempR i", tempR, i);
 
-    var tempTextInterval = true;
-    if (i.length === 2) {
-      tempTextInterval = i[1];
-    }
+    //var tempTextInterval = true;
+    //if (i.length === 2) {
+    //  tempTextInterval = i[1];
+    //}
+
+var tempTextIntervalArray = extractDurations(i);
+if ( Array.isArray(tempTextIntervalArray) && tempTextIntervalArray.length === 1) { 
+var tempTextInterval = tempTextIntervalArray[0];
+}
 
     setTextInterval(tempTextInterval);
 
@@ -161,7 +167,7 @@ function History({ thing, agentInput }) {
 
     setSnapshotInterval(interval);
 
-    console.log("History interval", tempR, tempTextInterval, interval);
+    console.debug("History interval", tempR, tempTextInterval, interval);
 
     setRef(tempR);
 
@@ -170,6 +176,7 @@ function History({ thing, agentInput }) {
       .replace("history-", "")
       .replace("history ", "");
 
+
     setHistoryRef(hr);
 
     if (hr == null) {
@@ -177,10 +184,18 @@ function History({ thing, agentInput }) {
     }
 
     // Lowest resolution allowed in half an hour.
-    var hrTemp = hr;
-    if (hr.includes("1d")) {
-      hrTemp = "transducers-" + tempR + "-10m";
-    }
+//    var hrTemp = hr;
+//    if (hr.includes("1d")) {
+//      hrTemp = tempR + "-10m";
+//    }
+
+var hrTemp = hr.replace("-" + tempTextInterval, "-10m");
+
+//if (subject.includes("transducers-")) {
+
+//hrTemp = "transducers-" + hrTemp;
+
+//}
 
     setHistoryTo(webPrefix + "history/" + hrTemp + ".json");
 
@@ -690,26 +705,32 @@ function History({ thing, agentInput }) {
       )}
       {debugFlag && <>SNAPSHOT INTERVAL {snapshotInterval}</>}
       <br />
-      TEXT INTERVAL {textInterval}
+      TEXT INTERVAL{'x'}{textInterval}{'x'}
       <br />
       HISTORYREF {historyRef}
       <br />
+{textInterval && (<>TEXT INTERVAL</>)}
+{textInterval && typeof textInterval === "string" && (<>TEXT INTERVAL IS STRING</>)}
       {textInterval &&
         typeof textInterval === "string" &&
         textInterval.includes("1d") && (
           <>
+1D RENDER
             <TraceCircle data={tracePoints} cycle={1} />
             <Trace data={tracePoints} cycle={1} />
           </>
         )}
       {textInterval && textInterval === true && (
         <>
+TRACE
           <Trace data={historyPoints} cycle={1} />
         </>
       )}
       {textInterval &&
         typeof textInterval === "string" &&
         !textInterval.includes("1d") && (
+<>
+STREAM
           //data &&
           //data.transducers &&
           //data.transducers[ref] &&
@@ -731,6 +752,7 @@ function History({ thing, agentInput }) {
             //              period={100}
             //              domain={[-50, 50]}
           />
+</>
         )}
       <div>
         DATA TRANSDUCERS AMOUNT {ref}{" "}

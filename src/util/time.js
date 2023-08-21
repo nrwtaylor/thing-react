@@ -77,6 +77,7 @@ export function convertToMilliseconds(timeString) {
     'm': 60 * 1000,
     'h': 60 * 60 * 1000,
     'd': 24 * 60 * 60 * 1000,
+    'y': true,
     'µs': 0.001,
     'ps': 0.000001,
     // Add more units as needed
@@ -271,4 +272,14 @@ export function zuluTimeDifferenceMilliseconds(atA, atB) {
   const differenceMilliseconds = b.getTime() - a.getTime();
 
   return differenceMilliseconds;
+}
+
+
+export function extractDurations(tokens) {
+  const timeUnitSuffixes = ['y', 'd', 'h', 'm', 's', 'ms', 'µs', 'ps'];
+  
+  return tokens.filter(token => {
+    const lastChar = token[token.length - 1];
+    return timeUnitSuffixes.includes(lastChar);
+  });
 }
