@@ -236,7 +236,7 @@ export function createThing(webPrefix, datagram, token) {
     return Promise.resolve({ error: "No subject provided." });
   }
   if (txBytes + rxBytes > quotaBytes) {
-    return Promise.resolve({ error: { message: "Quota exceeded." } });
+    return Promise.resolve({ error: { message: "Client quota exceeded." } });
   }
 
   console.debug("database createThing datagram", datagram);

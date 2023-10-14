@@ -16,6 +16,8 @@ export default function Message(props) {
 
   return (
     <>
+MESSAGE
+<br />
       {message && message.subject && (
         <>
           <Typography variant="subtitle1">

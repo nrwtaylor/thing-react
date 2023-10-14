@@ -1,188 +1,158 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-
-import { Toolbar, AppBar, Container, Box, InputBase, Typography } from "@mui/material";
-//import { Link } from "./../util/router.js";
-import { getSlug } from "./../util/text.js";
-import { makeStyles } from '@mui/styles';
+import * as React from 'react';
+import Paper from '@mui/material/Paper';
+import InputBase from '@mui/material/InputBase';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
+import SendIcon from '@mui/icons-material/Send';
 
-//import { isSeller } from "../util/identity.js";
-import ViewListIcon from "@mui/icons-material/ViewList";
+import { createThing, forgetThing } from "../util/database.js";
+import useToken from "../useToken.js";
 
-const { REACT_APP_LOGO, REACT_APP_DESCRIPTION } = process.env;
+import { v4 as uuidv4 } from "uuid";
 
-const useStyles = makeStyles((theme) => ({
-  logo: {
-    height: 28,
-    marginRight: theme.spacing(2),
-  },
-  drawerList: {
-    width: 250,
-  },
-  spacer: {
-    flexGrow: 1,
-  },
-  navbarBackground: {
-    background: "#ffffff",
-  },
-  search: {
-    position: "relative",
-    borderRadius: theme.shape.borderRadius,
-    // backgroundColor: "#e2e2e2",
-    color: "black",
-    fontWeight: "600",
-    border: "1px solid #e2e2e2",
 
-    // backgroundColor: fade(theme.palette.common.black, 0.05),
-    // '&:hover': {
-    //   backgroundColor: fade(theme.palette.common.black, 0.1),
-    // },
-    marginRight: 1,
-    marginLeft: 10,
-    width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      marginLeft: theme.spacing(2),
-      width: "auto",
-      flexGrow: "1",
-    },
-  },
-  searchIcon: {
-    padding: theme.spacing(0, 2),
-    height: "100%",
-    position: "absolute",
-    pointerEvents: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: "#f44336",
-  },
 
-  inputInput: {
-    fontSize: "1em",
-    color: "black",
-    fontWeight: "700",
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    // height: '28px',
-    [theme.breakpoints.up("sm")]: {
-      width: "35ch",
-      fontSize: "1em",
-    },
-    [theme.breakpoints.up("md")]: {
-      width: "35ch",
-    },
-  },
-  inputRoot: {
-    display: "flex",
-  },
-}));
+const { REACT_APP_CLIENT_SECRET } = process.env;
+const { REACT_APP_API_PREFIX } = process.env;
 
-function Input(props) {
-  const classes = useStyles();
-  // const router = useRouter();
-  //const id = router.query.itemid;
+const defaultWebPrefix = process.env.REACT_APP_WEB_PREFIX;
 
-  const { setInput } = props;
-  const searchEnabled = false; // Algolia / Elastic search. Pay to play. Disable for launch.
 
-  const darkMode = false;
-  //  const darkMode = useDarkMode();
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [menuState, setMenuState] = useState(null);
+export default function Input({thing, agentInput, onThingReport}) {
 
-  const [keywords, setKeywords] = useState(null);
+//const {thing, agentInput, onThingReport} = props;
 
-  // Use inverted logo if specified
-  // and we are in dark mode
-  const logo =
-    props.logoInverted && darkMode.value ? props.logoInverted : props.logo;
+const webPrefix = defaultWebPrefix;
 
-  const handleOpenMenu = (event, id) => {
-    // Store clicked element (to anchor the menu to)
-    // and the menu id so we can tell which menu is open.
-    setMenuState({ anchor: event.currentTarget, id });
-  };
+const {token, isValidToken} = useToken();
+const [inputText, setInputText] = React.useState('');
+  const [successMessage, setSuccessMessage] = React.useState(false);
+const [status, setStatus] = React.useState('idle');
+const [response, setResponse] = React.useState('');
+const sendText= () =>{
 
-  let history = useNavigate();
+    if (inputText.trim() !== '') {
+setStatus('sending');
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+console.log("InputText sendText text", inputText);
+console.log("InputText sendText token", token);
+   const datagram = {
+          index: 20,
+          to: "localhost",
+          from: "null",
+          subject: inputText,
+          priority: "routine",
+//          createdAt: Date.now(),
+//          uuid: uuidv4(),
+          input: "InputText",
+        };
 
-    setInput(keywords);
-  };
+let tokent = null;
+    if (isValidToken === true) {
+tokent = token;
+}
+      createThing(defaultWebPrefix, datagram, tokent).then((response)=>{
+console.log("Input createThing response", response);
+        setInputText(''); // Clear the input field
+setStatus('idle');
+setResponse((response) => {return response + 'Text sent successfully. '});
+//if (updateThingreport) {
+//        updateThingreport({input:'Text sent successfully'});
+//}
 
-  const handleCloseMenu = () => {
-    setMenuState(null);
-  };
+})
+.catch((error)=>{
+setStatus('error');
+console.error("Input createThing error", error);
 
-  return (
-    <>
-      <AppBar position="static" color="transparent" elevation={0}>
-        <Container disableGutters={true}>
-          <Toolbar>
-            {/*         <Link to="/" style={{ textDecoration: "none" }}> */}
-            {/* <img src={logo} alt="Logo" className={classes.logo} /> */}
+});
 
-            {/* Desktop view */}
 
-            <Box
-              style={{
-                backgroundColor: "#f44336",
-                height: "2.5em",
-                width: "2.9em",
-              }}
-            >
-              <Typography
-                color="primary"
-                style={{
-                  fontSize: "2.3em",
-                  fontWeight: "900",
-                  fontFamily: "'Fredoka One', 'cursive'",
-                  fontWeight: "700",
-                  color: "#ffffff",
-                  textAlign: "left",
 
-                  // textAlign: 'center',
-                  // position :'absolute',
-                  // top: '50%',
-                  // left: '50%',
-                  // transform: 'translate(-50%, -50%)',
-                }}
-              >
-                {REACT_APP_LOGO}
-              </Typography>
-            </Box>
 
-            {/*           </Link>*/}
-            <form onSubmit={handleSubmit} style={{ width: "100%" }}>
-              <div className={classes.search}>
-                <div className={classes.searchIcon}>
-                  <SearchIcon />
-                </div>
-                <InputBase
-                  placeholder={REACT_APP_DESCRIPTION}
-                  classes={{
-                    root: classes.inputRoot,
-                    input: classes.inputInput,
-                  }}
-                  inputProps={{ "aria-label": "search" }}
-                  onChange={(e) => setKeywords(e.target.value)}
-                />
-              </div>
-            </form>
-          </Toolbar>
-        </Container>
-      </AppBar>
+      // Simulate a successful action with a delay
+//      setTimeout(() => {
+//if (updateThingreport) {
+//        updateThingreport({input:'Text sent successfully'});
+//}
+//        setInputText(''); // Clear the input field
+//      }, 1000); // Display success message for 1 second
+    }
 
-      {/* Mobile view */}
-
-      {/*  </Section> */}
-    </>
-  );
 }
 
-export default Input;
+React.useEffect(() =>{
+
+if (response == null) {return;}
+
+if (onThingReport) {
+        onThingReport({input:response});
+}
+
+
+
+}, [response]);
+
+const handleInputEvent = (event) =>{
+
+if (event.key==='Enter') {
+event.preventDefault();
+sendText();
+
+}
+
+}
+
+
+
+ const handleInputChange = (event) => {
+event.preventDefault();
+
+    setInputText(event.target.value);
+  }
+
+  return (
+    <Paper
+      component="form"
+      sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
+    >
+{/*
+      <IconButton sx={{ p: '10px' }} aria-label="menu">
+        <MenuIcon />
+      </IconButton>
+*/}
+      <InputBase
+        sx={{ ml: 1, flex: 1 }}
+        placeholder="Log text"
+        inputProps={{ 'aria-label': 'File text message' }}
+
+onKeyDown={handleInputEvent}
+        value={inputText}
+        onChange={handleInputChange}
+
+      />
+{/*
+      <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+        <SearchIcon />
+      </IconButton>*/}
+      <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+      <IconButton disabled={
+// true is disable
+//false is not disabled
+(status!=='idle')
+} color="primary" sx={{ p: '10px' }} aria-label="directions"
+onClick={sendText}>
+        <SendIcon />
+      </IconButton>
+{/*
+      {successMessage && (
+        <div style={{ color: 'green', marginLeft: '10px' }}>
+          {successMessage}
+        </div>
+      )}
+*/}
+    </Paper>
+  );
+}

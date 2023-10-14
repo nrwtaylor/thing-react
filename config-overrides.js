@@ -1,10 +1,36 @@
 const webpack = require("webpack");
 
+const fs = require('fs');
+const path = require('path');
+const https = require('https');
+const { override } = require('customize-cra');
+
+
+const options = {
+//  key: fs.readFileSync(path.resolve(__dirname, 'server.key')),
+//  cert: fs.readFileSync(path.resolve(__dirname, 'server.crt')),
+
+  key: fs.readFileSync(path.resolve('/etc/ssl/private/pilothouse.key')),
+  cert: fs.readFileSync(path.resolve('/etc/ssl/certs/pilothouse.crt')),
+
+
+};
+
+const overrideDevServer = (config) => {
+  if (process.env.NODE_ENV === 'development') {
+    config.https = options;
+  }
+  return config;
+};
+
+module.exports = override(overrideDevServer);
+
 
 module.exports = function override (config, env) {
 console.log('override')
-let loaders = config.resolve
-loaders.fallback = {
+//let loaders = config.resolve
+//loaders.fallback = {
+config.resolve.fallback = {
 "fs": false,
 "tls": false,
 "net": false,
@@ -17,8 +43,40 @@ loaders.fallback = {
 "crypto": require.resolve("crypto-browserify")
 }
 
+
 return config
 } 
+
+
+
+//const fs = require('fs');
+//const path = require('path');
+//const https = require('https');
+//const { override, addWebpackDevServer } = require('customize-cra');
+/*
+const options = {
+  key: fs.readFileSync(path.resolve(__dirname, 'server.key')),
+  cert: fs.readFileSync(path.resolve(__dirname, 'server.crt')),
+};
+
+module.exports = function override(config, env) {
+  if (env === 'development') {
+    config.devServer.https = true;
+    config.devServer.before = function (app) {
+      // Replace 'src/App' with the path to your main App component
+      const appModule = require('src/App');
+      app.use(appModule);
+    };
+  }
+  return config;
+};
+*/
+
+
+
+
+
+
 /*
 module.exports = function override(config) {
   config.module.rules.push({

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, lazy, Suspense } from "react";
 
-import theme from './util/theme.js';
+import theme from "./util/theme.js";
 
 import Thing from "../src/components/Thing.js";
 
@@ -61,7 +61,7 @@ export default function App({ componentName, ...props }) {
 
   return (
     <>
-      THING-REACT 21 August 2023 efed
+      THING-REACT 7 October 2023 132e
       <br />
       {/*identity && <Identity identity={identity} />*/}
       {/*token && token.message*/}

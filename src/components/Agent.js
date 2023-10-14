@@ -28,6 +28,8 @@ import {
 import Forget from "../components/Forget.js";
 import DynamicComponent from "../components/DynamicComponent.js";
 
+import Input from "../components/Input.js";
+
 import { devFlag, debugFlag } from "../util/dev.js";
 
 const recognizedSlugs = [
@@ -240,6 +242,8 @@ function Agent({ thing, agentInput }) {
         />
       )}
 
+<Input />
+{/*
       {devFlag && (
         <TextField
           multiline
@@ -253,6 +257,7 @@ function Agent({ thing, agentInput }) {
           onChange={(event) => setReply(event.target.value)}
         />
       )}
+*/}
     </>
   );
 
@@ -303,6 +308,8 @@ function Agent({ thing, agentInput }) {
         />
       </ListItem>
 
+<Input thing={thing} />
+TEXT FIELD
       <TextField
         multiline
         //        autoFocus

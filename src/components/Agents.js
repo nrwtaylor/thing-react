@@ -27,7 +27,6 @@ import {
 
 import Forget from "../components/Forget.js";
 import Agent from "../components/Agent.js";
-import DynamicComponent from "../components/DynamicComponent.js";
 
 import { devFlag, debugFlag } from "../util/dev.js";
 

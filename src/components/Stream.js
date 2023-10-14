@@ -354,7 +354,13 @@ console.log("Stream history", history);
     //let s = afterSplitting;sortThingsByAt([...data, ...streamPoints]);
     //let s = [...knownStreamPoints, ...dataPoints];
     //let s = [...data,...streamPoints];
-    let s = [...data, ...streamPoints];
+
+let s = [];
+if (data == null) {
+   s = [...streamPoints];
+} else {
+   s = [...data, ...streamPoints];
+}
     ///let s = afterSplitting;
 
     const amounts = [];

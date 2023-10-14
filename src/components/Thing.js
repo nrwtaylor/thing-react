@@ -40,7 +40,6 @@ import { makeStyles } from '@mui/styles';
 import { isText } from "../util/text.js";
 
 import Associations from "../components/Associations.js";
-import DynamicComponent from "../components/DynamicComponent.js";
 
 import Agents from "../components/Agents.js";
 
