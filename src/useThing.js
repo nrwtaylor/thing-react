@@ -24,10 +24,10 @@ const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 const defaultThing = {
   index: 20,
   to: "localhost",
-  subject: "Please Log In",
+  subject: "Default",
   createdAt: Date.now(),
   uuid: uuidv4(),
-  input: "Login",
+  input: "Default",
 };
 
 export default function useThing(datagram) {
@@ -85,6 +85,13 @@ getThing();
           if (result && result.thing) {
             combinedThing = mergeObjectsInUnique(
               [...thing, ...result.thing],
+              "uuid"
+            );
+          }
+
+          if (result && result.error) {
+            combinedThing = mergeObjectsInUnique(
+              [...thing, ...result.error],
               "uuid"
             );
           }

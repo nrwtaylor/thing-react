@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import jwt_decode from "jwt-decode";
 
+import useThing from "../useThing.js";
 import useToken from "../useToken.js";
 import useIdentity from "../useIdentity.js";
 
@@ -16,7 +17,7 @@ import Reauthorize from "../components/Reauthorize.js";
 import Login from "../components/Login.js";
 import Logout from "../components/Logout.js";
 
-export default function Token({ token, setToken, setIdentity }) {
+export default function Token({thing:inputThing }) {
   const [refreshedAt, setRefreshedAt] = useState();
   const [expiresAt, setExpiresAt] = useState();
   //const [age, setAge] = useState();
@@ -24,7 +25,10 @@ export default function Token({ token, setToken, setIdentity }) {
   const updateInterval = 1000;
   // Display token.
 
-  const { age, isValidToken, deleteToken } = useToken();
+// Not used
+  const { thing } = useThing(inputThing);
+
+  const { token, age, isValidToken, deleteToken } = useToken();
 
   useEffect(() => {
     if (!token) {
@@ -58,6 +62,7 @@ export default function Token({ token, setToken, setIdentity }) {
   return (
     <>
       TOKEN {!token && "NONE"}
+
       {token && token === null && "NULL"}
       {token && token === false && "FALSE"}
       {token && token === "" && "EMPTY"}
@@ -74,11 +79,6 @@ export default function Token({ token, setToken, setIdentity }) {
       {age < 0 && (
         <>
           TOKEN EXPIRED {humanRuntime(age, "text", "ago")}{" "}
-          <Login
-            datagram={true}
-            setToken={setToken}
-            setIdentity={setIdentity}
-          />
         </>
       )}
       {age >= 0 && (

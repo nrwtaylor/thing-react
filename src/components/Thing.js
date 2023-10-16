@@ -912,7 +912,7 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
         <CardHeader
           action={
             <>
-          {!flipped && <Subject thing={thing} setSubject={setSubject} />}
+          {!flipped && <Subject thing={thing} agentInput={{edit:expanded}} setSubject={setSubject} />}
 
               <Typography>{getNuuid(uuid)}</Typography>
 
@@ -1176,7 +1176,7 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
             isText(agentInput) &&
             agentInput.toLowerCase().indexOf("token") !== -1 && (
               <div>
-                <Token token={token} datagram={datagram} flavour={"card"} />
+                <Token thing={datagram} flavour={"card"} />
               </div>
             )}
 

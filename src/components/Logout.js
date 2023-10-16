@@ -22,7 +22,7 @@ async function logoutUser(token) {
 
 export default function Logout() {
 
-const { deleteToken } = useToken();
+const { deleteToken, isValidToken } = useToken();
 
 
   //  const [username, setUserName] = useState();
@@ -44,11 +44,15 @@ const { deleteToken } = useToken();
 
   return (
     <div className="logout-wrapper">
+
+{isValidToken && (<>
       <form onSubmit={handleSubmit}>
         <div>
           <Button variant="action" type="submit">Logout</Button>
         </div>
       </form>
+</>)}
+
     </div>
   );
 }

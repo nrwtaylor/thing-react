@@ -49,6 +49,8 @@ const recognizedSlugs = [
   "humidity-temperature",
   "log-in",
   "sign-up",
+  "token",
+  "log-out"
 ];
 
 function slugAgent(slug) {

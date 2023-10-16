@@ -69,11 +69,14 @@ export default function Login({ datagram }) {
 const [response, setResponse] = useState('');
 
   useEffect(() => {
+console.log("Login response", response);
     const intervalId = setInterval(() => {
-      const sentences = response.split(',');
+console.log("Login response interval called");
+      const sentences = response.split('. ');
+console.log("Login response sentences", sentences);
       if (sentences.length > 1) {
         sentences.shift(); // Remove the first sentence
-        const newText = sentences.join(',');
+        const newText = sentences.join('. ');
         setResponse(newText);
       }
     }, 5000);
@@ -295,7 +298,8 @@ return (<>LOGIN Valid token seen.</>);
     <div className="login-wrapper">
       LOGIN {login }
       <br />
-      <h1>{login ? "Please Log In" : "Logged In"}</h1>
+      <h1>{!isValidToken ? "Please Log In" : "Logged In"}</h1>
+{!isValidToken && (<>
       <form onSubmit={handleSubmit}>
         <label>
           <p>Username</p>
@@ -322,6 +326,7 @@ return (<>LOGIN Valid token seen.</>);
           </Button>
         </div>
       </form>
+</>)}
       {message}
 <div>
 {response}
