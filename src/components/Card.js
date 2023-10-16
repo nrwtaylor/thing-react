@@ -140,9 +140,9 @@ export const Card = memo(function Card({
           {"yyy"}
 
           <Thing
-            uuid={card.uuid}
+            //uuid={card.uuid}
             token={token}
-            datagram={card}
+            thing={card}
             webPrefix={card.webPrefix}
             onChange={(e) => handleChange(e)}
           />
@@ -187,10 +187,10 @@ width: "calc(100% - 2px)", // Adjusted width to accommodate the border and paddi
             //          to={card.to}
             //          subject={card.subject}
             //          createdAt={card.createdAt}
-            uuid={card.uuid}
+            //uuid={card.uuid}
             //          input={card.input}
             token={token}
-            datagram={{
+            thing={{
               ...card,
               card: { visible: cardVisible },
               pollInterval:

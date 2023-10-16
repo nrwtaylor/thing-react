@@ -40,7 +40,7 @@ export const ThingContainer = ({ thing }) => {
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 
   //  const { thing } = props;
-  const { username, token, getToken, setToken, deleteToken } = useToken();
+  const { token } = useToken();
   const { identity, setIdentity, deleteIdentity } = useIdentity();
 
   const [flag, setFlag] = useState();
@@ -75,6 +75,7 @@ export const ThingContainer = ({ thing }) => {
       Array.isArray(filteredScoredThings) &&
       filteredScoredThings.length === 0
     ) {
+//console.log("ThingContainer call getThings");
       getThings();
       return;
     }
@@ -127,6 +128,8 @@ export const ThingContainer = ({ thing }) => {
   );
 
   useEffect(() => {
+console.log("ThingContainer things thing.subject listener triggered");
+
     if (things == null) {
       return;
     }

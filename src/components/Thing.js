@@ -62,11 +62,13 @@ import {
   txErrorCount,
 } from "../util/database.js";
 import { humanTime, zuluTime, humanAge } from "../util/time.js";
+import { getNuuid } from "../util/uuid.js";
+
+
 
 import useHybridEffect from "../useHybridEffect.js";
 
 
-import useMessages from "../useMessages.js";
 import useThingReport from "../useThingReport.js";
 import useThing from "../useThing.js";
 import useThings from "../useThings.js";
@@ -206,9 +208,9 @@ function Thing(props) {
   const theme = useTheme();
   const classes = useStyles(theme);
 
-  const { datagram: initialDatagram, canOpen, open, canFold } = props;
+  const { thing: inputThing, canOpen, open, canFold } = props;
 
-  const { datagram, setDatagram } = useDatagram(initialDatagram);
+  const { datagram, setDatagram } = useDatagram(inputThing);
 
   var { agentInput } = props;
 
@@ -234,24 +236,24 @@ function Thing(props) {
   }, [thing]);
 */
   useHybridEffect(() => {
-    if (initialDatagram == null) {
+    if (inputThing == null) {
       return;
     }
 /*
-    if (Array.isArray(initialDatagram) && initialDatagram.length === 0) {
+    if (Array.isArray(inputThing) && inputThing.length === 0) {
       return;
     }
 */
-    console.log("Thing initialDatagram", initialDatagram);
+    console.log("Thing inputThing", inputThing);
     // Don't let the datagram be reset.
     if (typeof datagram !== "undefined") {
       return;
     }
 
-    console.debug("Thing initialDatagram changed", initialDatagram);
-    console.debug("Thing initialDatagram prior datagram", datagram);
-    setDatagram(initialDatagram);
-  }, [initialDatagram]);
+    console.debug("Thing inputThing changed", inputThing);
+    console.debug("Thing inputThing prior datagram", datagram);
+    setDatagram(inputThing);
+  }, [inputThing]);
 
   const { text } = useParams();
 
@@ -262,7 +264,6 @@ function Thing(props) {
 
   const variables = { poll: { interval: 1000, aggressive: "yes" } };
 
-  const { messages, addMessage } = useMessages();
 
   const [url, setUrl] = useState();
 
@@ -351,10 +352,10 @@ console.log("Thing webExpanded", webExpanded);
     setThing(datagram);
 
     if (typeof datagram.subject !== "undefined") {
-      setSubject(initialDatagram.subject);
-      console.log("Thing " + nuuidText + " initialDatagram setSubject", initialDatagram.subject);
-      const u = webPrefix + getSlug(initialDatagram.subject) + ".json";
-      console.log("Thing " + nuuidText + " initialDatagram setUrl", u);
+      setSubject(inputThing.subject);
+      console.log("Thing " + nuuidText + " inputThing setSubject", inputThing.subject);
+      const u = webPrefix + getSlug(inputThing.subject) + ".json";
+      console.log("Thing " + nuuidText + " inputThing setUrl", u);
       setUrl(u);
     }
 
@@ -443,8 +444,21 @@ console.log("Thing webExpanded", webExpanded);
 
   const [flipped, setFlipped] = React.useState();
 
-  useEffect(() => {
-    console.log("Thing " + nuuidText + " thing", thing);
+  useHybridEffect(() => {
+    console.log("Thing HybridEffect" + nuuidText + " thing", thing);
+
+if (thing == null) {return;}
+
+if (thing.uuid) {
+    setUuid(thing.uuid);
+}
+
+
+    if (thing.pollInterval) {
+      setTimedInterval(thing.pollInterval);
+    }
+
+
   }, [thing]);
 
   useEffect(() => {
@@ -511,9 +525,9 @@ console.log("Thing webExpanded", webExpanded);
   //  const uuid = props.uuid ? props.uuid : uuidv4();
 
   const [uuid, setUuid] = useState();
-  const [nuuid, setNuuid] = useState();
+  //const [nuuid, setNuuid] = useState();
 
-const nuuidText = nuuid ? nuuid : "none";
+const nuuidText = uuid ? getNuuid(uuid) : "none";
 
   useEffect(() => {
     console.log("Thing " + nuuidText + " start");
@@ -523,24 +537,26 @@ const nuuidText = nuuid ? nuuid : "none";
     console.log("Thing "+ nuuidText + " expanded uuid", expanded, datagram && datagram.uuid);
   }, [expanded]);
 
+/*
   useEffect(() => {
     if (props.uuid === undefined) {
       //return;
     }
     console.log("Thing props.uuid", props.uuid);
     const u = props.uuid ? props.uuid : uuidv4();
+
     //    const u = props.uuid;
     const n = u.substring(0, 4);
 
     setUuid(u);
-    setNuuid(n.toUpperCase());
+   // setNuuid(n.toUpperCase());
   }, [props.uuid]);
-
+*/
   const [error, setError] = useState();
 
   useEffect(() => {
     console.info("Thing "+ nuuidText + " started");
-    getUuid();
+    //getUuid();
     //getResponse(webPrefix);
   }, []);
 
@@ -577,9 +593,9 @@ console.log("Thing uuid ass", uuid, ass);
   }, [subject]);
 
   // refactor out
-  function getUuid() {
-    return uuid;
-  }
+  //function getUuid() {
+  //  return uuid;
+  //}
 
   function handleRefresh() {
     if (flag === "red") {
@@ -896,7 +912,9 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
         <CardHeader
           action={
             <>
-              <Typography>{nuuid}</Typography>
+          {!flipped && <Subject thing={thing} setSubject={setSubject} />}
+
+              <Typography>{getNuuid(uuid)}</Typography>
 
               {/*            <IconButton>
               <MoreVertIcon />
@@ -1010,17 +1028,19 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
               <br />
             </>
           )}
-          {!flipped && <Subject thing={thing} setSubject={setSubject} />}
+
 <Typography variant="note" sx={{ fontSize: '14px', color: 'grey' }} >
           {thing && thing.createdAt && <>{humanAge(thing.createdAt)}</>}
 </Typography>
 
          {!expanded && !flipped && (
             <>
-              LAZY LOAD
+{debugFlag && (<>LAZY LOAD</>)}
               <LazyLoad height={400} offset={200} once>
                 <div>
-                  AGENTS
+{debugFlag && (<>AGENTS</>)}
+{debugFlag && thing && thing.uuid}
+{debugFlag && datagram && datagram.subject}
                   <Agents
                     channel={"image"}
                     user={null}
@@ -1173,7 +1193,7 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
                 user={null}
                 //thing={data.thing}
                 //   thing={props.datagram}
-                thing={thing}
+                thing={{...thing, uuid:uuid}}
                 agentInput={{ ...agentInput, stack: { url: webPrefix } }}
               />
               {subject && subject.toLowerCase().indexOf("ping") !== -1 && (

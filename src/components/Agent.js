@@ -219,7 +219,9 @@ function Agent({ thing, agentInput }) {
             thing.variables.flag.dev}
         </>
       )}
-
+AGENT THING
+{JSON.stringify(thing)}
+<br/>
       {debugFlag && (
         <>
           {thing && thing.nomFrom}
@@ -241,8 +243,10 @@ function Agent({ thing, agentInput }) {
           agent_input={agentInput}
         />
       )}
+{thing && agent && (
+<Input thing={thing} agentInput={agentInput} />
+)}
 
-<Input />
 {/*
       {devFlag && (
         <TextField

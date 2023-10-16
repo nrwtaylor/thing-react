@@ -66,6 +66,26 @@ export default function Login({ datagram }) {
 
   const [login, setLogin] = useState();
 
+const [response, setResponse] = useState('');
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      const sentences = response.split(',');
+      if (sentences.length > 1) {
+        sentences.shift(); // Remove the first sentence
+        const newText = sentences.join(',');
+        setResponse(newText);
+      }
+    }, 5000);
+
+    // Cleanup the interval on component unmount
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [response]);
+
+
+
   useEffect(() => {
     console.log("Login isValidToken", isValidToken);
 
@@ -73,10 +93,13 @@ export default function Login({ datagram }) {
       return;
     }
     if (isValidToken) {
+setResponse((response) => {return response + 'Saw valid token. '});
+
       setLogin(false);
       return;
     }
     if (isValidToken === false) {
+setResponse((response) => {return response + 'Saw false token. '});
       setLogin(true);
       return;
     }
@@ -95,6 +118,46 @@ export default function Login({ datagram }) {
       return;
     }
   }
+
+
+useEffect(() =>{
+
+// Make sure the logout and token things are added.
+if (login) {
+let datagram = {
+          index: 21,
+          to: "localhost",
+          from: "stack",
+          subject: "Here is your token",
+//          priority: "priority",
+//          createdAt: Date.now(),
+//          uuid: uuidv4(),
+          input: "Token",
+        };
+
+
+createThing(defaultWebPrefix, datagram, token).then((result)=>{
+}).catch((error)=>{});
+/*
+datagram =  {
+          index: 21,
+          to: "localhost",
+          from: "stack",
+          subject: "Here is your token",
+          priority: "priority",
+          createdAt: Date.now(),
+          uuid: uuidv4(),
+          input: "Token",
+        };
+
+
+createThing(defaultWebPrefix, datagram, token).then((result)=>{
+}).catch((error)=>{}; 
+*/
+// Get id of this login thing and remove it.
+}
+
+}, [login]);
 
   useEffect(() => {
     console.log("Login things", things);
@@ -195,6 +258,8 @@ export default function Login({ datagram }) {
       setMessage(
         "Made a Token card. Made a Log Out card. Removed non-conguent cards. Swipe Right."
       );
+
+setResponse((response)=>{return response + "Logged in. "   })
     }
 
     // Authentication ... and Authorisation.
@@ -220,9 +285,15 @@ export default function Login({ datagram }) {
 
   function handleSubmitButton() {}
 
+if (isValidToken) {
+
+return (<>LOGIN Valid token seen.</>);
+
+}
+
   return (
     <div className="login-wrapper">
-      LOGIN {login}
+      LOGIN {login }
       <br />
       <h1>{login ? "Please Log In" : "Logged In"}</h1>
       <form onSubmit={handleSubmit}>
@@ -252,6 +323,9 @@ export default function Login({ datagram }) {
         </div>
       </form>
       {message}
+<div>
+{response}
+</div>
     </div>
   );
 }

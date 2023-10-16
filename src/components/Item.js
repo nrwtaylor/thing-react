@@ -41,7 +41,7 @@ export default function Item({ thing, agentInput, updateThing }) {
 
   const [disabled, setDisabled] = useState();
 
-  const { messages, addMessage } = useMessages();
+  const { addMessage } = useMessages();
 
   useEffect(() => {
     if (thing) {

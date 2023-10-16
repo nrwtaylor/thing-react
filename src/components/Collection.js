@@ -8,6 +8,8 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 
 import ThingContainer from "./../components/ThingContainer.js";
 
+import { getNuuid } from "./../util/uuid.js";
+
 import { Box, Grid, Chip } from "@mui/material";
 
 const thumb = {
@@ -62,7 +64,7 @@ function Collection({ thing, agentInput }) {
   thing.associations.map((d) => (
     <Chip
       key={"association_" + thing.uuid + "_" + d}
-      label={d.slice(0, 4)}
+      label={getNuuid(d)}
       color="default"
       variant="outlined"
       sx={{ backgroundColor: '#888', color: '#fff', borderRadius: '4px' }}

@@ -211,11 +211,14 @@ function Agents({ thing, agentInput }) {
         agents &&
         agents.map((agent, index) => {
           return (
+<>
+{thing && thing.uuid}
             <Agent
               key={"agents_" + agent + "_" + index}
               thing={thing}
               agentInput={{ ...agentInput, agent: agent }}
             />
+</>
           );
         })}
     </>

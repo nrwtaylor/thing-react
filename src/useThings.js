@@ -15,7 +15,13 @@ const userThings = makeObservable({ things: [], count: 0 });
 const apiPrefix = process.env.REACT_APP_API_PREFIX;
 const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 
+// Basically a list of the minimum suite for your 'application'
+// to run.
+
+// Took out the first one to isolate the new item creation behaviour.
+
 const defaultThings = [
+/*
   {
     to: "localhost",
     subject: window.location.pathname.replace(/^\/|\/$/g, ""),
@@ -23,6 +29,27 @@ const defaultThings = [
     uuid: uuidv4(),
     input: null,
   },
+*/
+  {
+    index: 20,
+    to: "localhost",
+    from: "stack",
+    subject: "Log Out",
+    createdAt: Date.now(),
+    uuid: uuidv4(),
+    input: "Logout",
+  },
+
+  {
+    index: 20,
+    to: "localhost",
+    from: "stack",
+    subject: "Token",
+    createdAt: Date.now(),
+    uuid: uuidv4(),
+    input: "Token",
+  },
+
   {
     index: 20,
     to: "localhost",
@@ -32,6 +59,7 @@ const defaultThings = [
     uuid: uuidv4(),
     input: "Login",
   },
+
   {
     index: 21,
     to: "localhost",
@@ -86,7 +114,16 @@ export default function useThings() {
   const getThings = () => {
     console.log("useThings getThings token", token);
     if (token == null) {
+
+// If the token is null, it means there is no access
+// to the forward stack pointer.
+
+// No need to set default.
+// But need to establish a hook to monitor changes in [things].
+
       setThings(defaultThings);
+
+
       console.log("useThings saw null token");
       return;
     }

@@ -8,7 +8,8 @@ import React, { useEffect, memo } from "react";
  *    ...rest: the props to be passed into the new component
  * }
  */
-const DynamicComponent = ({ is, useDefaultPath = true, ...rest }) => {
+const DynamicComponent = ({ is, useDefaultPath = true, thing, agentInput, onThingReport, ...rest }) => {
+
   useEffect(() => {
     console.log("DynamicComponent is", is);
   }, [is]);
@@ -19,7 +20,7 @@ const DynamicComponent = ({ is, useDefaultPath = true, ...rest }) => {
 
   return React.createElement(
     useDefaultPath ? require(`./${is}.js`).default : is,
-    {
+    {thing, agentInput, onThingReport,
       ...rest,
     }
   );

@@ -73,7 +73,8 @@ export default function App({ componentName, ...props }) {
             path="/"
             element={
               <>
-                <ThingCarousel />
+{/*<ThingCarousel />*/}
+                <ThingPage />
               </>
             }
           >

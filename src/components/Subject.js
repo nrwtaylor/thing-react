@@ -119,6 +119,8 @@ setSubject(thing.subject);
           }
         }}
       />
+SUBJECT {thing.subject}
+<br />
     </>
   );
 }

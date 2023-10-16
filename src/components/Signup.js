@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Button from "@mui/material/Button";
 
-// import crypto from "crypto";
+import crypto from "crypto";
 
 async function signupUser(credentials) {
   const { REACT_APP_CLIENT_SECRET } = process.env;

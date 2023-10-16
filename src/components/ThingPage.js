@@ -36,7 +36,7 @@ export default function ThingPage(props) {
 
   const uuids = pathname.match(reg);
 
-  const { username, token, getToken, setToken, deleteToken } = useToken();
+  const { username, token, isValidToken, getToken, setToken, deleteToken } = useToken();
   const { identity, setIdentity, deleteIdentity } = useIdentity();
   const { input, setInput, deleteInput } = useInput();
 
@@ -75,9 +75,11 @@ export default function ThingPage(props) {
     if (things == null) {
       return;
     }
-
+console.log("ThingPage pathnameEffect things", things);
     const uuidPathname = extractUuid(pathname);
     console.debug("ThingPage uuidPathname", uuidPathname);
+
+
 
     var uuidMatch = null;
     things.forEach((t) => {
@@ -97,7 +99,7 @@ export default function ThingPage(props) {
     }
 
     const nuuidPathname = extractNuuid(pathname);
-    console.debug("ThingPage nuuidPathname", nuuidPathname);
+//    console.debug("ThingPage nuuidPathname", nuuidPathname);
 
     var nuuidMatch = null;
     things.forEach((t) => {
@@ -138,16 +140,21 @@ export default function ThingPage(props) {
 
     console.debug("ThingPage using provided url");
     const d = {
-      to: "agent",
-      subject: pathname,
-      webPrefix: webPrefix,
+uuid:uuidPathname,
+      //to: "agent",
+      //subject: pathname,
+      //webPrefix: webPrefix,
     };
     //    getThing(d);
+//getThing(uuidPathname);
+
 
     //setDatagram(d);
     setThing(d);
     setPlay(false);
   }, [pathname, things]);
+
+
 
   useEffect(() => {
     console.debug("ThingPage thing", thing);
@@ -160,6 +167,8 @@ export default function ThingPage(props) {
   return (
     <>
       THING PAGE {debugFlag && (<>DEBUG</>)}{' '}{devFlag && (<>DEV</>)}
+{' '}{isValidToken ? "VALID TOKEN" : "FALSE TOKEN"}
+xx
       {/*
       <Button
         thing={{
@@ -174,7 +183,7 @@ export default function ThingPage(props) {
           key={thing.uuid}
           flavour={"item"}
           //            uuid={thing.uuid}
-          datagram={thing}
+          thing={thing}
           //        datagram={{...thing, pollInterval:20000}}
           canOpen={false}
           canFold={false}

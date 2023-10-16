@@ -110,8 +110,8 @@ export default function ThingCarousel(props) {
                   flavour={"item"}
                   //             token={token}
                   //             things={things}
-                  uuid={thing.uuid}
-                  datagram={thing}
+                  //uuid={thing.uuid}
+                  thing={thing}
                   onFold={(t) => {
                     handleFoldThing(t);
                   }}

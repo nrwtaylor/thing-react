@@ -36,12 +36,14 @@ const sendText= () =>{
     if (inputText.trim() !== '') {
 setStatus('sending');
 
-console.log("InputText sendText text", inputText);
-console.log("InputText sendText token", token);
+console.log("Input sendText text", inputText);
+console.log("Input sendText token", token);
+console.log("Input sendText thing uuid", thing && thing.uuid);
+
    const datagram = {
           index: 20,
           to: "localhost",
-          from: "null",
+          from: thing && thing.uuid,
           subject: inputText,
           priority: "routine",
 //          createdAt: Date.now(),
@@ -53,10 +55,17 @@ let tokent = null;
     if (isValidToken === true) {
 tokent = token;
 }
-      createThing(defaultWebPrefix, datagram, tokent).then((response)=>{
-console.log("Input createThing response", response);
+      createThing(defaultWebPrefix, datagram, tokent).then((result)=>{
+console.log("Input sendText createThing result", result);
         setInputText(''); // Clear the input field
 setStatus('idle');
+
+if (result.hasOwnProperty('error')) {
+
+setResponse((response) => {return response + result.error.message});
+return;
+}
+
 setResponse((response) => {return response + 'Text sent successfully. '});
 //if (updateThingreport) {
 //        updateThingreport({input:'Text sent successfully'});
@@ -65,8 +74,8 @@ setResponse((response) => {return response + 'Text sent successfully. '});
 })
 .catch((error)=>{
 setStatus('error');
-console.error("Input createThing error", error);
-
+console.error("Input sendText createThing error", error);
+setResponse((response) => {return response + error.message});
 });
 
 
@@ -98,14 +107,27 @@ if (onThingReport) {
 const handleInputEvent = (event) =>{
 
 if (event.key==='Enter') {
+
+
+
 event.preventDefault();
 sendText();
 
 }
 
 }
+/*
+React.useEffect(() => {
+
+      setTimeout(() => {
+ //       setSuccessMessage('Text sent successfully');
+        setResponse(''); // Clear the input field
+      }, 10000); // Display success message for 1 second
+ 
 
 
+}, [response]);
+*/
 
  const handleInputChange = (event) => {
 event.preventDefault();
@@ -114,6 +136,7 @@ event.preventDefault();
   }
 
   return (
+<>
     <Paper
       component="form"
       sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
@@ -154,5 +177,9 @@ onClick={sendText}>
       )}
 */}
     </Paper>
+
+{response && (<>{response}</>)}
+
+</>
   );
 }
