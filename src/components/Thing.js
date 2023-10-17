@@ -8,6 +8,8 @@ import Agent from "../components/Agent.js";
 
 import Datagram from "../components/Datagram.js";
 
+
+
 import ToGoTime from "../components/ToGoTime.js";
 import Poll from "../components/Poll.js";
 import Subject from "../components/Subject.js";
@@ -365,18 +367,18 @@ console.log("Thing webExpanded", webExpanded);
   }, [datagram]);
 
   useEffect(() => {
-    if (props.datagram == null) {
+    if (datagram == null) {
       return;
     }
 
-    if (props.datagram.pollInterval) {
-      setTimedInterval(props.datagram.pollInterval);
+    if (datagram.pollInterval) {
+      setTimedInterval(datagram.pollInterval);
     }
 
     console.log("Thing " + nuuidText + " datagram uuid", uuid);
 
-    setThing(props.datagram);
-  }, [props.datagram]);
+    setThing(datagram);
+  }, [datagram]);
 
   function processFlag(flagName, flagState) {
     if (thing == null) {
@@ -896,6 +898,7 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
 
   return (
     <>
+
       <Card
         disableGutters={true}
         //sx={{ borderColor: flag }}
@@ -923,8 +926,12 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
             </>
           }
         />
+{debugFlag && (<>JSONTHING {JSON.stringify(thing)}<br/></>)}
 
-        {debugFlag && (<>{expanded ? "EXPANDED" : "NOT EXPANDED"}</>) }
+THING {JSON.stringify(thing)}
+<br />
+
+        {debugFlag && (<>{expanded ? "EXPANDED" : "NOT EXPANDED"}<br /></>) }
         {debugFlag && (
           <>
             pollInterval {pollInterval}
@@ -951,7 +958,7 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
         )}
         {/*<Item thing={{...datagram, uuid:uuid}} />*/}
 
-        <Item thing={thing} agentInput={null} updateThing={updateThing} />
+        <Item thing={{...thing, uuid:uuid}} agentInput={null} updateThing={updateThing} />
 {/*
 <Typography className={classes.overlayNumber} >
 
@@ -972,10 +979,25 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
         )*/}
         {!expanded && (
           <ThingButton
-            thing={{ subject: "thing/" + uuid, agentInput: "Open" }}
+            thing={thing} agentInput={{text: "Open", link: webPrefix + "thing/" + uuid}}
           />
         )}
+
+{/*
+          <ThingButton
+            //          thing={{ subject: ("thing/"+ (uuid ==null ? "" : uuid)), a>
+            //          thing={{ subject: "add-thing", agentInput: "Add Thing" }}
+            thing={{
+              ...thing
+//              subject: "thing/" + thing.uuid + "/",
+//              agentInput: "Add Thing",
+            }}
+agentInput={{text:"Start New Thing",link:webPrefix + "thing"}}
+          />
+
+*/}{/*
        {expanded && <Button  variant="default" onClick={handleAddThing}>ADD</Button>}
+*/}
         {data &&
           data.thing &&
           data.thing.associations &&
@@ -1023,7 +1045,7 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
               <br />
               {/*{TOTAL CHARACTERS RECEIVED DATA {totalBytesReceivedData}
               <br />*/}
-              <Associations datagram={datagram} />
+              <Associations thing={datagram} />
               {error && error.message}
               <br />
             </>
@@ -1039,8 +1061,6 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
               <LazyLoad height={400} offset={200} once>
                 <div>
 {debugFlag && (<>AGENTS</>)}
-{debugFlag && thing && thing.uuid}
-{debugFlag && datagram && datagram.subject}
                   <Agents
                     channel={"image"}
                     user={null}

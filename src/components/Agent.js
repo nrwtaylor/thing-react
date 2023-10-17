@@ -47,6 +47,7 @@ const recognizedSlugs = [
   "messages",
   "temperature-humidity",
   "humidity-temperature",
+"data-monitor"
 ];
 
 const engineState = process.env.REACT_APP_ENGINE_STATE;
@@ -82,14 +83,6 @@ function Agent({ thing, agentInput }) {
     thingReport: { sms: "No response. Yet." },
   });
 
-  /*
-  useEffect(() => {
-    setFlag("green");
-
-//    getAgent();
-  }, [getAgent]); // eslint-disable-line react-hooks/exhaustive-deps
-*/
-  //  const [open, setOpen] = useState(false);
   useEffect(() => {
     console.log("Agent agent", agent);
   }, [agent]);
@@ -137,9 +130,6 @@ function Agent({ thing, agentInput }) {
   }, [thing]);
 */
 
-  useEffect(() => {
-    console.log("Agent agent", agent);
-  }, [agent]);
 
   // Used??
   const editAgent = () => {
@@ -153,46 +143,11 @@ function Agent({ thing, agentInput }) {
     console.log("Datagram");
     console.log(datagram);
 
-    /*
-    db.collection("things")
-      .add(
-        datagram
-      )
-      .then(function () {
-        console.log("Document succesfully written!");
-      })
-      .catch(function (error) {
-        console.error("Error writing document: ", error);
-      });
-*/
-
-    //    setOpen(false);
   };
 
   function timeStamp() {
     var date = Date.now();
     return date.toString();
-    //    return date.toLocaleDateString("en-US");
-    /*
-    if (timestamp === undefined) {
-      return "X";
-    }
-
-    if (timestamp === null) {
-      return "X";
-    }
-
-
-//    const date = timestamp.toDate();
-    const d = date.toString();
-
-    const thing_date = new Date(d);
-    const today_date = new Date();
-    const seconds_diff = Math.round(
-      today_date.getTime() - thing_date.getTime()
-    );
-    return thing_date.toLocaleDateString("en-US");
-*/
   }
 
   function callBack() {
@@ -219,9 +174,6 @@ function Agent({ thing, agentInput }) {
             thing.variables.flag.dev}
         </>
       )}
-AGENT THING
-{JSON.stringify(thing)}
-<br/>
       {debugFlag && (
         <>
           {thing && thing.nomFrom}

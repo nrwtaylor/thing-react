@@ -7,6 +7,7 @@ import useMessages from "../useMessages";
 //import{ Collapse} from '@mui/core';
 import { styled } from "@mui/material/styles";
 
+import { devFlag, debugFlag } from "../util/dev.js";
 
 //import CardContent from "@mui/material/CardContent";
 //import CardActions from "@mui/material/CardActions";
@@ -114,8 +115,8 @@ export default function Messages(props) {
   return (
     <>
       <div>
-        MESSAGES
-        <br />
+{debugFlag && (<>        MESSAGES
+        <br /></>)}
         {messages &&
           messages.map((message) => {
             return (

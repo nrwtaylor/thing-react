@@ -3,26 +3,29 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Variable from "../components/Variable.js";
 
-export default function Associations({ datagram }) {
+import useHybridEffect from "../useHybridEffect.js";
+
+
+export default function Associations({ thing }) {
   const [associations, setAssociations] = useState();
   // Display token.
 
-  useEffect(() => {
-    console.log("Associations datagram", datagram);
-    if (!datagram) {
+  useHybridEffect(() => {
+    //console.log("Associations thing", thing);
+    if (!thing) {
       return;
     }
 
-    if (datagram === null) {
+    if (thing === null) {
       return;
     }
 
-    if (!datagram.associations) {
+    if (!thing.associations) {
       return;
     }
 
-    setAssociations(datagram && datagram.associations);
-  }, [datagram]);
+    setAssociations(thing && thing.associations);
+  }, [thing]);
 
   useEffect(() => {
     console.log("Associations associations", associations);
@@ -44,6 +47,6 @@ export default function Associations({ datagram }) {
   );
 }
 
-Associations.propTypes = {
+//Associations.propTypes = {
   //  token: PropTypes.func.isRequired
-};
+//};

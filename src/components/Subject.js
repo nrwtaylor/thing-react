@@ -118,9 +118,10 @@ console.log("Subject space settle");
   return (
     <>
       {debugFlag && <>{thing.subject}</>}
+{agentInput && agentInput.edit && (<>
       <TextField
         //              error = {validation.validator(variableType,subject)}
-disabled={agentInput && !agentInput.edit}
+//disabled={agentInput && !agentInput.edit}
         variant="filled"
         margin="normal"
         label={"subject"}
@@ -147,8 +148,6 @@ handleSubjectSubmit(ev);
 
       />
 
-
-
 <div>
 {thing.subject !== defaultSubject && (<>Not synced</>)}
 </div>
@@ -161,6 +160,16 @@ DEFAULT SUBJECT {defaultSubject}
 </div>
 
 <br />
+
+
+</>)}
+
+{agentInput && !agentInput.edit && (
+<div ref={textInput} >
+{defaultSubject}
+</div>
+)}
+
 
     </>
   );

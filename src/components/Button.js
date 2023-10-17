@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
+import useHybridEffect from "../useHybridEffect.js";
+
 import {
   Button as MuiButton,
   TextField,
@@ -16,7 +18,7 @@ import { replaceUuids } from "../util/text.js";
 
 import { useNavigate } from "react-router-dom";
 
-export default function Button(props) {
+export default function Button({thing, agentInput}) {
   const navigate = useNavigate();
 
   const pathname = window.location.pathname.replace(/\//, "");
@@ -32,20 +34,20 @@ export default function Button(props) {
 
   const [disabled, setDisabled] = useState();
 
-  useEffect(() => {
-    if (props.thing) {
-      if (props.thing.subject) {
+  useHybridEffect(() => {
+    if (thing) {
+      if (thing.subject) {
         // pre-recognition
-        setSubject(props.thing.subject);
-        setLink(props.thing.subject);
+        setSubject(thing.subject);
+        setLink(thing.subject);
 
-        setText(replaceUuids(props.thing.agentInput));
+        setText(replaceUuids(thing.agentInput));
         //setText("Hello");
 
         //setText(props.thing.subject);
       }
     }
-  }, [props]);
+  }, [thing]);
 
   useEffect(() => {
     console.log("Button pathname", pathname, link);
@@ -57,6 +59,34 @@ export default function Button(props) {
       setDisabled(true);
     }
   }, [pathname, link]);
+
+
+
+useHybridEffect(() =>{
+
+if (agentInput == null) {return;}
+
+if (
+    typeof agentInput === 'object' &&
+    !Array.isArray(agentInput) &&
+    agentInput !== null
+) {
+
+if (agentInput.link) {
+setLink(agentInput.link);
+}
+if (agentInput.text) {
+setText(agentInput.text);
+}
+
+
+}
+
+
+
+
+}, [agentInput]);
+
 
   return (
     <>
@@ -75,7 +105,8 @@ navigate("/"+subject)
         <MuiButton
 variant="url"
           component={Link}
-          to={"/" + subject}
+//          to={"/" + subject}
+to={link}
           disabled={disabled}
         >
           {/*     <MaterialUiButton disabled={disabled} type="submit"> */}

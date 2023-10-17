@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { IconButton, Typography, Box } from "@mui/material";
 
+import { devFlag, debugFlag } from "../util/dev.js";
+
 var style = {
   whiteSpace: "pre-line",
   fontWeight: "500",
@@ -16,8 +18,9 @@ export default function Message(props) {
 
   return (
     <>
+{debugFlag && (<>
 MESSAGE
-<br />
+<br /></>)}
       {message && message.subject && (
         <>
           <Typography variant="subtitle1">

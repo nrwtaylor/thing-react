@@ -4,6 +4,8 @@ import { devFlag, debugFlag } from "../util/dev.js";
 
 import Thing from "./Thing.js";
 import ThingContainer from "./ThingContainer.js";
+import ThingButton from "./Button.js";
+
 import Token from "./Token.js";
 import Identity from "./Identity.js";
 import Button from "./Button.js";
@@ -19,6 +21,7 @@ import useThings from "../useThings.js";
 import useThing from "../useThing.js";
 
 import { extractUuid, extractNuuid, getSlug } from "../util/text.js";
+import { isValidUUID } from "../util/uuid.js";
 
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -138,13 +141,29 @@ console.log("ThingPage pathnameEffect things", things);
       return;
     }
 
-    console.debug("ThingPage using provided url");
+
     const d = {
 uuid:uuidPathname,
       //to: "agent",
-      //subject: pathname,
+//      subject: pathname,
       //webPrefix: webPrefix,
     };
+
+console.log("ThingPage uuidPathname", uuidPathname);
+if (isValidUUID(uuidPathname)) {
+    console.debug("ThingPage using provided url");
+d.uuid = uuidPathname;
+} else {
+    console.debug("ThingPage using provided url");
+d.uuid= uuidv4(); // local stack can assign uuids. Other stacks will accept them on trust.
+d.subject = pathname;
+
+
+}
+
+
+
+
     //    getThing(d);
 //getThing(uuidPathname);
 
@@ -160,6 +179,11 @@ uuid:uuidPathname,
     console.debug("ThingPage thing", thing);
   }, [thing]);
 
+function handleThingReport(t) {
+
+
+}
+
   if (pathname == null) {
     return null;
   }
@@ -168,7 +192,7 @@ uuid:uuidPathname,
     <>
       THING PAGE {debugFlag && (<>DEBUG</>)}{' '}{devFlag && (<>DEV</>)}
 {' '}{isValidToken ? "VALID TOKEN" : "FALSE TOKEN"}
-xx
+
       {/*
       <Button
         thing={{
@@ -178,6 +202,20 @@ xx
       />
 */}
       {/*{thing && thing.subject*/}
+
+          <ThingButton
+            //          thing={{ subject: ("thing/"+ (uuid ==null ? "" : uuid)), a>
+            //          thing={{ subject: "add-thing", agentInput: "Add Thing" }}
+            thing={{
+              ...thing
+//              subject: "thing/" + thing.uuid + "/",
+//              agentInput: "Add Thing",
+            }}
+agentInput={{text:"Start New Thing",link:webPrefix + "thing"}}
+          />
+
+
+
       {thing && (
         <Thing
           key={thing.uuid}
@@ -197,6 +235,7 @@ xx
             play: play,
           }}
           agentInput={{ collection: true }}
+          onThingReport={(t)=>handleThingReport(t)}
         />
       )}
       <br />

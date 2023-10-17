@@ -192,7 +192,7 @@ width: "calc(100% - 2px)", // Adjusted width to accommodate the border and paddi
             token={token}
             thing={{
               ...card,
-              card: { visible: cardVisible },
+              variables:{...card.variables, card: { visible: cardVisible }},
               pollInterval:
                 card && card.pollInterval && cardVisible
                   ? 5 * 60000

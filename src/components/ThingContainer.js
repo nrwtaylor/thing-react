@@ -260,10 +260,11 @@ console.log("ThingContainer things thing.subject listener triggered");
             //          thing={{ subject: ("thing/"+ (uuid ==null ? "" : uuid)), agentInput: "Add Thing" }}
             //          thing={{ subject: "add-thing", agentInput: "Add Thing" }}
             thing={{
-              ...thing,
-              subject: "thing/" + thing.uuid + "/",
-              agentInput: "Add Thing",
+              ...thing
+//              subject: "thing/" + thing.uuid + "/",
+//              agentInput: "Add Thing",
             }}
+agentInput={{text:"Add Thing",link:webPrefix + "thing/"+thing.uuid+"/"}}
           />
         )}
         <div style={{ display: "flex", flexWrap: "wrap" }}>

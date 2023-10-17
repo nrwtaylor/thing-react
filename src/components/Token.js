@@ -17,7 +17,7 @@ import Reauthorize from "../components/Reauthorize.js";
 import Login from "../components/Login.js";
 import Logout from "../components/Logout.js";
 
-export default function Token({thing:inputThing }) {
+export default function Token({ thing: inputThing }) {
   const [refreshedAt, setRefreshedAt] = useState();
   const [expiresAt, setExpiresAt] = useState();
   //const [age, setAge] = useState();
@@ -25,10 +25,10 @@ export default function Token({thing:inputThing }) {
   const updateInterval = 1000;
   // Display token.
 
-// Not used
+  // Not used
   const { thing } = useThing(inputThing);
 
-  const { token, age, isValidToken, deleteToken } = useToken();
+  const { token, age } = useToken();
 
   useEffect(() => {
     if (!token) {
@@ -62,7 +62,6 @@ export default function Token({thing:inputThing }) {
   return (
     <>
       TOKEN {!token && "NONE"}
-
       {token && token === null && "NULL"}
       {token && token === false && "FALSE"}
       {token && token === "" && "EMPTY"}
@@ -76,15 +75,11 @@ export default function Token({thing:inputThing }) {
       <br />
       REFRESHED AT {refreshedAt && <>{humanPosixTime(refreshedAt)}</>}
       <br />
-      {age < 0 && (
-        <>
-          TOKEN EXPIRED {humanRuntime(age, "text", "ago")}{" "}
-        </>
-      )}
+      {age < 0 && <>EXPIRED {humanRuntime(age, "text", "ago")} </>}
       {age >= 0 && (
         <>
-          TOKEN CURRENT {humanRuntime(age, "text", "remaining")} <Reauthorize />
-          <Logout deleteToken={deleteToken} />
+          {"EXPIRES IN "}
+          {humanRuntime(age, "text", ". ")}
         </>
       )}
       <br />

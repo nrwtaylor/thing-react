@@ -54,12 +54,31 @@ const defaultThings = [
     index: 20,
     to: "localhost",
     from: "stack",
+    subject: "Data Monitor",
+    createdAt: Date.now(),
+    uuid: uuidv4(),
+    input: "DataMonitor",
+  },
+
+
+  {
+    index: 20,
+    to: "localhost",
+    from: "stack",
     subject: "Please Log In",
     createdAt: Date.now(),
     uuid: uuidv4(),
     input: "Login",
   },
-
+  {
+    index: 21,
+    to: "localhost",
+    from: "stack",
+    subject: "Reauthorize",
+    createdAt: Date.now(),
+    uuid: uuidv4(),
+    input: "Reauthorize",
+  },
   {
     index: 21,
     to: "localhost",

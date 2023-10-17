@@ -44,19 +44,29 @@ export default function useThing(datagram) {
     console.log("useThing things", things);
   }, [things]);
 */
-  //  useEffect(() =>{
-  //console.log("useThing datagram", datagram);
+    useEffect(() =>{
+  console.log("useThing datagram", datagram && datagram.uuid, datagram);
   //getThing();
 
-  //  }, [datagram]);
+    }, [datagram]);
 
-  /*
+const uuid = datagram && datagram.uuid;
+
 useEffect(()=>{
-
+if (uuid == null) {
+return;}
+if (isNotObject(thing)) {
 getThing();
+}
+//console.log("useThing datagram", thing,datagram)
+//getThing();
 
-}, [datagram]);
-*/
+}, [uuid]);
+
+function isNotObject(obj) {
+  return obj !== null && typeof obj !== 'object' && !Array.isArray(obj);
+}
+
   const getThing = () => {
     if (token == null) {
       return;
@@ -79,24 +89,31 @@ getThing();
       getThingy(datagram, token)
         .then((result) => {
           console.log("useThing getThing result", datagram.uuid, result);
+console.log("useThing getThing result data thing", datagram.uuid, result.data.thing);
+console.log("useThing getThing thing", thing);
 
-          var combinedThing = defaultThing;
+if (result.data == null) {return;}
 
-          if (result && result.thing) {
+
+var combinedThing = thing;
+          //var combinedThing = defaultThing;
+
+          if (result && result.data && result.data.thing) {
             combinedThing = mergeObjectsInUnique(
-              [...thing, ...result.thing],
+              [...thing, ...result.data.thing],
+              "uuid"
+            );
+console.log("useThing getThing combinedThing", combinedThing);
+          }
+
+          if (result && result.data && result.data.error) {
+            combinedThing = mergeObjectsInUnique(
+              [...thing, ...result.data.error],
               "uuid"
             );
           }
 
-          if (result && result.error) {
-            combinedThing = mergeObjectsInUnique(
-              [...thing, ...result.error],
-              "uuid"
-            );
-          }
-
-          const uuids = combinedThing.uuid;
+          //const uuids = combinedThing.wsuuid;
           const conditionedThing = combinedThing;
           console.log("useThing getThing conditionedThing", conditionedThing);
           setFlag("green");
