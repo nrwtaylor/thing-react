@@ -42,6 +42,12 @@ function deepCompare(obj1, obj2, seen = new WeakMap()) {
   if (keys1.length !== keys2.length) return false;
 
   for (const key of keys1) {
+
+// Skip always changing keys
+//if ((['createdAt']).includes(key)) return false;
+// Skip at fields
+if (key.endsWith('At')) return false;
+
     if (!keys2.includes(key)) return false;
 
     if (!deepCompare(obj1[key], obj2[key], seen)) return false;
@@ -59,8 +65,13 @@ function useHybridEffect(callback, dependencies) {
       !deepCompare(dependency, previousDependenciesRef.current[index])
     );
   });
+//console.log("useHybridEffect shouldUseDeepCompare", shouldUseDeepCompare);
+//  const usedEffect = shouldUseDeepCompare ? useEffect : useLayoutEffect; // Use useLayoutEffect for regular shallow comparisons
 
-  const usedEffect = shouldUseDeepCompare ? useEffect : useLayoutEffect; // Use useLayoutEffect for regular shallow comparisons
+//dev
+// test always using deepcompare
+
+const usedEffect = useLayoutEffect;
 
   usedEffect(() => {
 console.debug("useHybridEffect usedEffect dependencies", dependencies);

@@ -26,6 +26,9 @@ import { isValidUUID } from "../util/uuid.js";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
+import useHybridEffect from "../useHybridEffect.js";
+
+
 export default function ThingPage(props) {
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
   const apiPrefix = process.env.REACT_APP_API_PREFIX;
@@ -174,12 +177,25 @@ d.subject = pathname;
   }, [pathname, things]);
 
 
-
-  useEffect(() => {
+/*
+  useHybridEffect(() => {
     console.debug("ThingPage thing", thing);
+console.debug("ThingPage thing pathname", pathname);
+
+
+if (getSlug(thing.subject) !== getSlug(pathname)) {
+console.log("ThingPage thing update url");
+
+window.history.replaceState(null, null, getSlug(thing.subject));
+
+}
+
+
   }, [thing]);
+*/
 
 function handleThingReport(t) {
+console.log("ThingPage handleThingReport",t);
 
 
 }

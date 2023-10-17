@@ -35,6 +35,7 @@ export default function Button({thing, agentInput}) {
   const [disabled, setDisabled] = useState();
 
   useHybridEffect(() => {
+if (thing == null) {return;}
     if (thing) {
       if (thing.subject) {
         // pre-recognition

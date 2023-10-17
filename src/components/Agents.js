@@ -50,7 +50,7 @@ const recognizedSlugs = [
   "log-in",
   "sign-up",
   "token",
-  "log-out"
+  "log-out",
 ];
 
 function slugAgent(slug) {
@@ -162,6 +162,11 @@ function Agents({ thing, agentInput }) {
       if (thing.subject.toLowerCase() === "log out") {
         matchedSlugs.push("logout");
       }
+
+      if (thing.subject.toLowerCase() === "data monitor") {
+        matchedSlugs.push("datamonitor");
+      }
+
 
       //      console.log("Agents thing matchedSlugs", matchedSlugs);
 

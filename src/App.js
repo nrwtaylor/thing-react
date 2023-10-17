@@ -61,7 +61,7 @@ export default function App({ componentName, ...props }) {
 
   return (
     <>
-      THING-REACT 7 October 2023 132e
+      THING-REACT 16 October 2023 b5df
       <br />
       {/*identity && <Identity identity={identity} />*/}
       {/*token && token.message*/}

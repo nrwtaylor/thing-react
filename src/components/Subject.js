@@ -9,10 +9,11 @@ import useHybridEffect from "../useHybridEffect.js";
 import useThing from "../useThing.js";
 
 import { devFlag, debugFlag } from "../util/dev.js";
+import { getSlug } from "./../util/text.js";
 
 const engineState = process.env.REACT_APP_ENGINE_STATE;
 
-export default function Subject({ thing:inputThing, agentInput }) {
+export default function Subject({ thing:inputThing, agentInput, onThingReport }) {
   //  const [subject, setSubject] = useState(datagram.subject);
 
   const { thing, setThing, testThing, updateThing } = useThing(inputThing);
@@ -44,6 +45,14 @@ setDefaultSubject(tempSubject);
 
 },[inputThing]);
 
+//useEffect(() =>{
+
+//window.history.replaceState(null, null, getSlug(defaultSubject));
+
+
+//},[defaultSubject]);
+
+
 function handleSubjectSubmit(ev) {
 
           console.log(`Subject onKeyDown ${ev.key}`);
@@ -60,6 +69,7 @@ const s = ev.target.value;
 
 
 }
+
 
   // Look for a space
   // Then send what you have.

@@ -447,7 +447,6 @@ console.log("Thing webExpanded", webExpanded);
   const [flipped, setFlipped] = React.useState();
 
   useHybridEffect(() => {
-    console.log("Thing HybridEffect" + nuuidText + " thing", thing);
 
 if (thing == null) {return;}
 
@@ -717,7 +716,7 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
 
     const tickInterval = setInterval(() => {
       //dev
-      return;
+      //return;
 
       console.log("Thing tickInterval");
       incrementTick();

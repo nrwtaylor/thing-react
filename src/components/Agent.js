@@ -32,24 +32,6 @@ import Input from "../components/Input.js";
 
 import { devFlag, debugFlag } from "../util/dev.js";
 
-const recognizedSlugs = [
-  "history",
-  "snapshot",
-  "ping",
-  "error",
-  "text-snapshot",
-  "global-positioning-system",
-  "barometer",
-  "weather",
-  "motion-reference",
-  "inertial-reference",
-  "power",
-  "messages",
-  "temperature-humidity",
-  "humidity-temperature",
-"data-monitor"
-];
-
 const engineState = process.env.REACT_APP_ENGINE_STATE;
 
 function slugAgent(slug) {
@@ -107,28 +89,6 @@ function Agent({ thing, agentInput }) {
 
     return thing.from;
   }
-  /*
-  useEffect(() => {
-    if (thing == null) {
-      return;
-    }
-
-    console.log("Agent thing", thing);
-    if (thing.subject) {
-      recognizedSlugs.every((recognizedSlug) => {
-        console.log("Agent key value", recognizedSlug);
-        console.log("xxx", thing.subject, recognizedSlug);
-        if (thing.subject.toLowerCase().indexOf(recognizedSlug) !== -1) {
-          setAgent(slugAgent(recognizedSlug));
-          return false;
-        }
-
-        return true;
-      });
-
-    }
-  }, [thing]);
-*/
 
 
   // Used??
