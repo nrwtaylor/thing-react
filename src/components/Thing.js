@@ -205,16 +205,19 @@ const engineState = process.env.REACT_APP_ENGINE_STATE;
 
 // Either a datagram, or a uuid.
 // datagram - to, from, subject, agentInput
-function Thing(props) {
+function Thing({thing:inputThing, agentInput, canOpen, open, createdAt, canFold,onChange, onForget, onFlip, onSpawn, onOpen, onFold}) {
+
+
+
   //  const text = props.match.params.text;
   const theme = useTheme();
   const classes = useStyles(theme);
 
-  const { thing: inputThing, canOpen, open, canFold } = props;
+//  const { thing: inputThing, canOpen, open, canFold } = props;
 
   const { datagram, setDatagram } = useDatagram(inputThing);
 
-  var { agentInput } = props;
+//  var { agentInput } = props;
 
   //  if (datagram && datagram.input) {
   //    agentInput = datagram.input;
@@ -305,7 +308,7 @@ function Thing(props) {
   const { things, setThings } = useThings();
   const { token } = useToken();
 
-  const startAt = props.createdAt;
+  const startAt = createdAt;
 
   const currentAt = Date.now();
 
@@ -662,12 +665,12 @@ console.log("Thing uuid ass", uuid, ass);
     //forgetThing(e);
     //getThings();
     //return;
-    if (props.onChange) {
-      props.onChange("forget");
+    if (onChange) {
+      onChange("forget");
     }
 
-    if (props.onForget) {
-      props.onForget(e);
+    if (onForget) {
+      onForget(e);
     }
     //getThings();
   };
@@ -761,12 +764,12 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
     setFlipped(!flipped);
     flipThing();
     return;
-    if (props.onChange) {
-      props.onChange("flip");
+    if (onChange) {
+      onChange("flip");
     }
 
-    if (props.onFlip) {
-      props.onFlip(e);
+    if (onFlip) {
+      onFlip(e);
     }
   };
 
@@ -782,13 +785,13 @@ https://developer.mozilla.org/en-US/docs/Tools/Performance/Scenarios/Intensive_J
     spawnThing();
 
     return;
-    if (props.onChange) {
-      props.onChange("spawn");
+    if (onChange) {
+      onChange("spawn");
       return;
     }
 
-    if (props.onSpawn) {
-      props.onSpawn(e);
+    if (onSpawn) {
+      onSpawn(e);
     }
   };
 
@@ -808,24 +811,24 @@ console.log("Thing handleWebExpandClick webExpanded", webExpanded);
     //setExpanded(true);
     handleExpandClick(e);
     //   setExpanded(true);
-    if (props.onChange) {
-      props.onChange("open");
+    if (onChange) {
+      onChange("open");
     }
 
-    if (props.onOpen) {
-      props.onOpen(e);
+    if (onOpen) {
+      onOpen(e);
     }
   };
 
   const handleFoldThing = (e) => {
     handleFoldClick();
     //setExpanded(false);
-    if (props.onChange) {
-      props.onChange("fold");
+    if (onChange) {
+      onChange("fold");
     }
 
-    if (props.onFold) {
-      props.onFold(e);
+    if (onFold) {
+      onFold(e);
     }
   };
 

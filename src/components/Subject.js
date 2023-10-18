@@ -57,14 +57,56 @@ function handleSubjectSubmit(ev) {
 
           console.log(`Subject onKeyDown ${ev.key}`);
           if (ev.key === "Enter") {
+ev.preventDefault();
 //            setSubject(ev.target.value);
             // Do code here
 const s = ev.target.value;
       updateThing({ ...thing, subject: s });
 
 
+    setStatus("saving");
+//    return updateThing({ ...inputThing, variables: { item: e.target.checked } })
+      updateThing({ ...inputThing, subject: s })
+      .then((result) => {
+        //addMessage("Item handleToggleItem update thing " + inputThing.subject);
 
-            ev.preventDefault();
+        if (result && result.error && result.error.message) {
+          setResponse((response) => {
+            return response + result.error.message;
+          });
+
+          return;
+        }
+        setStatus("synced");
+        setResponse((response) => {
+          return response + "Update thing. ";
+        });
+
+        console.debug(
+          "Subject handleToggleItem updateThing result data",
+          result.data
+        );
+        console.debug("Item handleToggleItem updateThing result", result);
+      })
+      .catch((error) => {
+        setResponse((response) => {
+          return response + "Error";
+        });
+        //setError(error.message);
+        console.error("Item handleToggleItem updateThing error", error);
+      });
+
+
+
+
+
+
+
+
+
+
+
+
           }
 
 
@@ -167,6 +209,12 @@ SUBJECT {thing.subject}
 S {s}
 <br />
 DEFAULT SUBJECT {defaultSubject}
+<br/>
+{status}
+<br />
+{response}
+
+
 </div>
 
 <br />
