@@ -10,6 +10,11 @@ import useHybridEffect from "./useHybridEffect.js";
 import { v4 as uuidv4 } from "uuid";
 
 import useToken from "./useToken.js";
+
+import sha256 from 'crypto-js';
+//import crypto from 'crypto';
+
+
 const userThings = makeObservable({ things: [], count: 0 });
 
 const apiPrefix = process.env.REACT_APP_API_PREFIX;
@@ -118,6 +123,13 @@ const errorThing = {
   input: "Error",
 };
 
+function hashFunction(obj) {
+return "hello";
+  const jsonString = JSON.stringify(obj);
+  const hash = sha256(jsonString);
+  return hash.toString(crypto.enc.Hex);
+}
+
 export default function useThings() {
   const { token } = useToken();
   const [count, setCount] = useState();
@@ -141,8 +153,6 @@ export default function useThings() {
 // But need to establish a hook to monitor changes in [things].
 
       setThings(defaultThings);
-
-
       console.log("useThings saw null token");
       return;
     }
@@ -154,6 +164,60 @@ export default function useThings() {
       .then((result) => {
         console.log("useThings getThings getThingies things", things);
         console.log("useThings getThings getThingies result", result);
+
+// This does a straight drop of any duplicated uuids.
+// This is a problem because a more sophicated merge
+// is required based on change history.
+
+// Consider also. The server does not need to send stale things.
+// Only things which have changed in the prior interval.
+// Otherwise can send uuid as placeholder.
+
+if (result.hasOwnProperty("error")) {
+
+console.error("useThings getThingies error", result.error);
+
+
+}
+
+    const addedThings = [];
+    const removedThings = [];
+
+    // Compare result.things with tempThings
+    for (const thing of result.things) {
+      if (!tempThings.includes(thing)) {
+        // If the thing is in result.things but not in tempThings, it's added.
+        addedThings.push(thing);
+      }
+    }
+
+    for (const thing of tempThings) {
+      if (!result.things.includes(thing)) {
+        // If the thing is in tempThings but not in result.things, it's removed.
+        removedThings.push(thing);
+      }
+    }
+
+    // Create hashes for each thing in result.things and tempThings
+    const tempHashes = tempThings.map(thing => hashFunction(thing));
+    const resultHashes = result.things.map(thing => hashFunction(thing));
+
+    // Find the indices of changed things
+    const changedThingIndices = [];
+
+    for (let i = 0; i < resultHashes.length; i++) {
+      if (tempHashes.indexOf(resultHashes[i]) === -1) {
+        // The thing at index i has changed
+        changedThingIndices.push(i);
+      }
+    }
+
+    // Create an array of the changed things based on the indices
+    const changedThings = changedThingIndices.map(index => result.things[index]);
+
+console.log("useThings changedThings", changedThings);
+// Not used these.
+// Because need to consider how to merge two things together.
 
         var combinedThings = [];
         if (result && result.things && result.things.length !== 0) {
@@ -204,7 +268,7 @@ export default function useThings() {
         //setThings(defaultThings);
         //webPrefix, defaultThings[1], token
         createThing(webPrefix, errorThing, token);
-        console.log("useThings loadThings error", error);
+        console.error("useThings loadThings error", error);
       });
 
     //    const things = getThings();
@@ -250,6 +314,7 @@ export default function useThings() {
     console.log("useThings saveThings userThings", userThings);
     setThings(userThings);
   };
+
 
   function mergeObjectsInUnique<T>(array: T[], property: any): T[] {
     const newArray = new Map();

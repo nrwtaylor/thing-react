@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 //import './Login.css';
 import PropTypes from "prop-types";
+//import CryptoJS from "crypto-js";
 import crypto from "crypto";
-
 import Button from "@mui/material/Button";
 
 
@@ -140,7 +140,10 @@ let datagram = {
 
 
 createThing(defaultWebPrefix, datagram, token).then((result)=>{
-}).catch((error)=>{});
+}).catch((error)=>{
+console.error("Login createThing error",error);
+
+});
 /*
 datagram =  {
           index: 21,
@@ -181,7 +184,22 @@ createThing(defaultWebPrefix, datagram, token).then((result)=>{
     //Creating the hash in the required format
     var gen_hash = data.digest("hex");
 
+
+
     const pass = "";
+/*
+
+const salt = process.env.REACT_APP_CLIENT_SECRET;
+  // Combine the username, password, and salt
+  const combinedData = username + pass + salt;
+
+  // Create an HMAC hash using crypto-js
+  const hash = CryptoJS.HmacSHA256(combinedData, REACT_APP_CLIENT_SECRET);
+
+  // Convert the hash to the required format (hex)
+  const gen_hash = hash.toString(CryptoJS.enc.Hex);
+
+*/
 
     const t = await loginUser({
       username: gen_hash,
@@ -250,10 +268,12 @@ createThing(defaultWebPrefix, datagram, token).then((result)=>{
           });
           return !found;
         });
-        console.log("thingsToBeForgotten", thingsToBeForgotten);
+        console.log("Login thingsToBeForgotten", thingsToBeForgotten);
 
         thingsToBeForgotten.map((thingToBeForgotten) => {
+console.log("Login thingToBeForgotten", thingToBeForgotten.subject);
           forgetThing(thingToBeForgotten, token);
+return;
         });
       }
       getThings(token);
@@ -261,7 +281,7 @@ createThing(defaultWebPrefix, datagram, token).then((result)=>{
       setMessage(
         "Made a Token card. Made a Log Out card. Removed non-conguent cards. Swipe Right."
       );
-
+toast("Logged in");
 setResponse((response)=>{return response + "Logged in. "   })
     }
 
@@ -298,6 +318,7 @@ return (<>LOGIN Valid token seen.</>);
     <div className="login-wrapper">
       LOGIN {login }
       <br />
+{JSON.stringify(token)}
       <h1>{!isValidToken ? "Please Log In" : "Logged In"}</h1>
 {!isValidToken && (<>
       <form onSubmit={handleSubmit}>

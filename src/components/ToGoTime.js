@@ -13,7 +13,7 @@ export default function ToGoTime({ thing, agentInput, toGoTime, onRefresh }) {
       return;
     }
 
-    console.debug("ToGoTime toGoTime", thing.uuid, toGoTime);
+//    console.debug("ToGoTime toGoTime", thing.uuid, toGoTime);
 
     if (toGoTime < 0) {
       onRefresh();
@@ -29,6 +29,6 @@ export default function ToGoTime({ thing, agentInput, toGoTime, onRefresh }) {
   );
 }
 
-ToGoTime.propTypes = {
+//ToGoTime.propTypes = {
   //  token: PropTypes.func.isRequired
-};
+//};

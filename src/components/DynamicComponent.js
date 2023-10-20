@@ -27,5 +27,4 @@ const DynamicComponent = ({ is, useDefaultPath = true, thing, agentInput, onThin
 };
 
 // https://hygraph.com/blog/react-memo
-//export default memo(DynamicComponent);
 export default DynamicComponent;

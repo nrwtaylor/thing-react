@@ -5,7 +5,6 @@ import TextField from "@mui/material/TextField";
 
 import useHybridEffect from "../useHybridEffect.js";
 
-
 import useThing from "../useThing.js";
 
 import { devFlag, debugFlag } from "../util/dev.js";
@@ -13,7 +12,11 @@ import { getSlug } from "./../util/text.js";
 
 const engineState = process.env.REACT_APP_ENGINE_STATE;
 
-export default function Subject({ thing:inputThing, agentInput, onThingReport }) {
+export default function Subject({
+  thing: inputThing,
+  agentInput,
+  onThingReport,
+}) {
   //  const [subject, setSubject] = useState(datagram.subject);
 
   const { thing, setThing, testThing, updateThing } = useThing(inputThing);
@@ -22,103 +25,85 @@ export default function Subject({ thing:inputThing, agentInput, onThingReport })
 
   const timeoutPeriod = 500;
 
-  const [s, setS] = useState('a');
-  const [defaultSubject, setDefaultSubject] = useState('b');
+  const [s, setS] = useState("null");
+  const [defaultSubject, setDefaultSubject] = useState("default");
 
-  const [response, setResponse] = useState('');
-  const [status, setStatus] = useState('idle');
+  const [response, setResponse] = useState("");
+  const [status, setStatus] = useState("idle");
 
-useHybridEffect(() =>{
+  useHybridEffect(() => {
+    if (inputThing == null) {
+      return;
+    }
+    console.log("Subject inputThing", inputThing);
 
-console.log("Subject inputThing", inputThing);
-if (inputThing == null) {return;}
+    var tempSubject = inputThing.subject;
+    if (inputThing.subject == null) {
+      tempSubject = "";
+    }
 
-var tempSubject = inputThing.subject;
-if (inputThing.subject == null) {tempSubject = '';}
-
-setDefaultSubject(tempSubject);
+    setDefaultSubject(tempSubject);
 
     setS(tempSubject);
     //testThing();
     textInput.current.value = tempSubject;
+  }, [inputThing]);
 
+  //useEffect(() =>{
 
-},[inputThing]);
+  //window.history.replaceState(null, null, getSlug(defaultSubject));
 
-//useEffect(() =>{
+  //},[defaultSubject]);
 
-//window.history.replaceState(null, null, getSlug(defaultSubject));
-
-
-//},[defaultSubject]);
-
-
-function handleSubjectSubmit(ev) {
-
-          console.log(`Subject onKeyDown ${ev.key}`);
-          if (ev.key === "Enter") {
-ev.preventDefault();
-//            setSubject(ev.target.value);
-            // Do code here
-const s = ev.target.value;
+  function handleSubjectSubmit(ev) {
+    console.log(`Subject onKeyDown ${ev.key}`);
+    if (ev.key === "Enter") {
+      ev.preventDefault();
+      //            setSubject(ev.target.value);
+      // Do code here
+      const s = ev.target.value;
       updateThing({ ...thing, subject: s });
 
-
-    setStatus("saving");
-//    return updateThing({ ...inputThing, variables: { item: e.target.checked } })
+      setStatus("saving");
+      //    return updateThing({ ...inputThing, variables: { item: e.target.checked } })
       updateThing({ ...inputThing, subject: s })
-      .then((result) => {
-        //addMessage("Item handleToggleItem update thing " + inputThing.subject);
+        .then((result) => {
+          //addMessage("Item handleToggleItem update thing " + inputThing.subject);
 
-        if (result && result.error && result.error.message) {
+          if (result && result.error && result.error.message) {
+            setResponse((response) => {
+              return response + result.error.message;
+            });
+
+            return;
+          }
+          setStatus("synced");
           setResponse((response) => {
-            return response + result.error.message;
+            return response + "Update thing. ";
           });
 
-          return;
-        }
-        setStatus("synced");
-        setResponse((response) => {
-          return response + "Update thing. ";
+          console.debug(
+            "Subject handleToggleItem updateThing result data",
+            result.data
+          );
+          console.debug("Item handleToggleItem updateThing result", result);
+        })
+        .catch((error) => {
+          setResponse((response) => {
+            return response + "Error";
+          });
+          //setError(error.message);
+          console.error("Item handleToggleItem updateThing error", error);
         });
-
-        console.debug(
-          "Subject handleToggleItem updateThing result data",
-          result.data
-        );
-        console.debug("Item handleToggleItem updateThing result", result);
-      })
-      .catch((error) => {
-        setResponse((response) => {
-          return response + "Error";
-        });
-        //setError(error.message);
-        console.error("Item handleToggleItem updateThing error", error);
-      });
-
-
-
-
-
-
-
-
-
-
-
-
-          }
-
-
-}
-
+    }
+  }
 
   // Look for a space
   // Then send what you have.
   // This will send token by token. Which is probably okay.
   useEffect(() => {
     if (s == null) {
-            setDefaultSubject("");
+      setDefaultSubject("");
       return;
     }
     if (s === "") {
@@ -127,7 +112,6 @@ const s = ev.target.value;
     }
 
     setDefaultSubject(s);
-
   }, [s]);
 
   // Apply a 2 second "settle" to the subject line.
@@ -135,26 +119,23 @@ const s = ev.target.value;
   useEffect(() => {
     const timer = setTimeout(() => {
       //      setSubject(s);
-console.log("Subject 2 second settle");
+      console.log("Subject 2 second settle");
       updateThing({ ...thing, subject: s });
     }, 2000);
     return () => clearTimeout(timer);
   }, [s]);
 
-
-useEffect(() =>{
-
-if (s== null) {return;}
+  useEffect(() => {
+    if (s == null) {
+      return;
+    }
 
     if (s.endsWith(" ")) {
       //      setSubject(s);
-console.log("Subject space settle");
+      console.log("Subject space settle");
       updateThing({ ...thing, subject: s });
     }
-
-
-}, [s]);
-
+  }, [s]);
 
   function subjectChange(e) {
     var d = e.target.value;
@@ -170,23 +151,24 @@ console.log("Subject space settle");
   return (
     <>
       {debugFlag && <>{thing.subject}</>}
-{agentInput && agentInput.edit && (<>
-      <TextField
-        //              error = {validation.validator(variableType,subject)}
-//disabled={agentInput && !agentInput.edit}
-        variant="filled"
-        margin="normal"
-        label={"subject"}
-        type="text"
-        fullWidth
-        name="updateSubject"
-        defaultValue={defaultSubject}
-        //        value={s}
-        onChange={subjectChange}
-        inputRef={textInput}
-        onKeyDown={(ev) => {
-handleSubjectSubmit(ev);
-/*
+      {agentInput && agentInput.edit && (
+        <>
+          <TextField
+            //              error = {validation.validator(variableType,subject)}
+            //disabled={agentInput && !agentInput.edit}
+            variant="filled"
+            margin="normal"
+            label={"subject"}
+            type="text"
+            fullWidth
+            name="updateSubject"
+            defaultValue={defaultSubject}
+            //        value={s}
+            onChange={subjectChange}
+            inputRef={textInput}
+            onKeyDown={(ev) => {
+              handleSubjectSubmit(ev);
+              /*
           console.log(`Subject onKeyDown ${ev.key}`);
           if (ev.key === "Enter") {
             setSubject(ev.target.value);
@@ -194,41 +176,28 @@ handleSubjectSubmit(ev);
             ev.preventDefault();
           }
 */
-        }}
+            }}
+          />
 
+          <div>{thing.subject !== defaultSubject && <>Not synced</>}</div>
+          <div>
+            SUBJECT {thing.subject}
+            <br />S {s}
+            <br />
+            DEFAULT SUBJECT {defaultSubject}
+            <br />
+            {status}
+            <br />
+            {response}
+          </div>
 
+          <br />
+        </>
+      )}
 
-      />
-
-<div>
-{thing.subject !== defaultSubject && (<>Not synced</>)}
-</div>
-<div>
-SUBJECT {thing.subject}
-<br />
-S {s}
-<br />
-DEFAULT SUBJECT {defaultSubject}
-<br/>
-{status}
-<br />
-{response}
-
-
-</div>
-
-<br />
-
-
-</>)}
-
-{agentInput && !agentInput.edit && (
-<div ref={textInput} >
-{defaultSubject}
-</div>
-)}
-
-
+      {agentInput && !agentInput.edit && (
+        <div ref={textInput}>{defaultSubject}</div>
+      )}
     </>
   );
 }

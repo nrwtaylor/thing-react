@@ -8,6 +8,8 @@ import {
 } from "./util/database.js";
 
 import { getSlug } from "./util/text.js";
+import useHybridEffect from "./useHybridEffect.js";
+
 
 import { v4 as uuidv4 } from "uuid";
 import useToken from "./useToken.js";
@@ -44,18 +46,13 @@ export default function useThing(datagram) {
     console.log("useThing things", things);
   }, [things]);
 */
-    useEffect(() =>{
-  console.log("useThing datagram", datagram && datagram.uuid, datagram);
-  //getThing();
-
-    }, [datagram]);
-
 const uuid = datagram && datagram.uuid;
 
 useEffect(()=>{
 if (uuid == null) {
 return;}
 if (isNotObject(thing)) {
+console.log("useThing uuid getThing called");
 getThing();
 }
 //console.log("useThing datagram", thing,datagram)
@@ -123,7 +120,9 @@ console.log("useThing getThing combinedThing", combinedThing);
         .catch((error) => {
           setFlag("yellow");
           // Add an error card in. Up front and center?
-          setThing(false);
+
+
+//          setThing(false);
 
           console.log("useThing getThing error", datagram.uuid, error);
         });

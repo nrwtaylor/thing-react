@@ -29,7 +29,7 @@ export var rxBytes = 0;
 
 export var databaseStatistics = {};
 const isRunning = false;
-const quotaBytes = 200000;
+const quotaBytes = 20000000;
 
 function analyzeChannel(r, channel) {
   const bytes = getSizeInBytes(r.data + r.headers);

@@ -1,4 +1,4 @@
-import React, { memo, lazy, useState, useEffect } from 
+import React, { lazy, useState, useEffect } from 
 "react";
 
 import update from "immutability-helper";
@@ -898,6 +898,12 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
     );
   };
 
+if (thing && thing.variables && thing.variables.card && thing.variables.card.visble === false) {
+
+return (<>THING NOT VISIBLE</>);
+
+}
+
   return (
     <>
 
@@ -929,9 +935,6 @@ PACKETS {databaseStatistics[uuid] && databaseStatistics[uuid].txCount}
           }
         />
 {debugFlag && (<>JSONTHING {JSON.stringify(thing)}<br/></>)}
-
-THING {JSON.stringify(thing)}
-<br />
 
         {debugFlag && (<>{expanded ? "EXPANDED" : "NOT EXPANDED"}<br /></>) }
         {debugFlag && (
@@ -1319,4 +1322,3 @@ agentInput={{text:"Start New Thing",link:webPrefix + "thing"}}
 }
 
 export default Thing;
-//export default memo(Thing);
