@@ -67,7 +67,7 @@ function slugAgent(slug) {
 // Refactor to pass this in thing as variables.
 const engineState = process.env.REACT_APP_ENGINE_STATE;
 
-function Agents({ thing, agentInput }) {
+function Agents({ thing, agentInput, onThingReport }) {
   const agent_input = agentInput; // remove
 
   const [agents, setAgents] = useState();
@@ -82,6 +82,12 @@ function Agents({ thing, agentInput }) {
     thing: { uuid: "X" },
     thingReport: { status:"loading", sms: "No response. Yet." },
   });
+
+function handleThingReport(t) {
+
+onThingReport(t);
+
+}
 
   /*
   useEffect(() => {
@@ -224,6 +230,7 @@ function Agents({ thing, agentInput }) {
               key={"agents_" + agent + "_" + index}
               thing={thing}
               agentInput={{ ...agentInput, agent: agent }}
+onThingReport={(t)=>handleThingReport(t)}
             />
 </>
           );

@@ -49,7 +49,7 @@ function slugAgent(slug) {
   return capitalizedParts.join("");
 }
 
-function Agent({ thing, agentInput }) {
+function Agent({ thing, agentInput, onThingReport }) {
   const agent_input = agentInput; // remove
 
   const agent = slugAgent(agentInput.agent);
@@ -73,6 +73,11 @@ function Agent({ thing, agentInput }) {
     //    setOpen(true);
   };
 
+  function handleThingReport(event) {
+    console.log("Agent handleThingReport event", event);
+    onThingReport(event);
+  }
+
   function humanTime(timestamp) {
     const ts = new Date();
     return ts.toISOString();
@@ -90,7 +95,6 @@ function Agent({ thing, agentInput }) {
     return thing.from;
   }
 
-
   // Used??
   const editAgent = () => {
     const datagram = {
@@ -102,7 +106,6 @@ function Agent({ thing, agentInput }) {
     };
     console.log("Datagram");
     console.log(datagram);
-
   };
 
   function timeStamp() {
@@ -117,10 +120,6 @@ function Agent({ thing, agentInput }) {
   const deleteButton = (
     <Forget uuid={thing && thing.uuid} callBack={callBack} />
   );
-
-  function handleThingReport(event) {
-    console.log("Agent handleThingReport event", event);
-  }
 
   return (
     <>
@@ -150,16 +149,20 @@ function Agent({ thing, agentInput }) {
 
           thing={thing}
           agentInput={agentInput}
-          thingReport={() => handleThingReport()}
+          onThingReport={(r) => handleThingReport(r)}
           datagram={thing}
           agent_input={agentInput}
         />
       )}
-{thing && agent && (
-<Input thing={thing} agentInput={agentInput} />
-)}
+      {thing && agent && (
+        <Input
+          thing={thing}
+          agentInput={agentInput}
+          onThingReport={(r) => handleThingReport(r)}
+        />
+      )}
 
-{/*
+      {/*
       {devFlag && (
         <TextField
           multiline
@@ -180,7 +183,6 @@ function Agent({ thing, agentInput }) {
   return (
     <>
       <div>AGENT</div>
-
       <DynamicComponent
         is={agent_input}
         channel={"image"}
@@ -188,6 +190,7 @@ function Agent({ thing, agentInput }) {
         //thing={data.thing}
         datagram={thing}
         agent_input={agentInput}
+        onThingReport={(r) => handleThingReport(r)}
       />
       {devFlag && (
         <>
@@ -223,9 +226,8 @@ function Agent({ thing, agentInput }) {
           }
         />
       </ListItem>
-
-<Input thing={thing} />
-TEXT FIELD
+      <Input thing={thing} onThingReport={(r) => handleThingReport(r)} />
+      TEXT FIELD
       <TextField
         multiline
         //        autoFocus

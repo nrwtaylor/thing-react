@@ -55,7 +55,6 @@ export const ThingContainer = ({ thing }) => {
     foldThing,
     deleteThing,
     spawnThing,
-    updateThing,
   } = useThing(thing);
 
   const [scoredThings, setScoredThings] = useState();
@@ -241,6 +240,13 @@ console.log("ThingContainer things thing.subject listener triggered");
 
   const [, drop] = useDrop(() => ({ accept: ItemTypes.CARD }));
 
+function handleUpdateThing() {
+
+// Somesort of getTHings trigger
+getThings();
+
+}
+
   function handleThing(t) {
     console.debug("ThingContainer handleThing t", t);
     if (t.variables.flag) {
@@ -282,7 +288,7 @@ agentInput={{text:"Add Thing",link:webPrefix + "thing/"+thing.uuid+"/"}}
                     text: context,
                     texts: [context],
                   }}
-                  updateThing={(t) => handleThing(t)}
+                  updateThing={(t) => handleUpdateThing(t)}
                 />
               );
             })();
@@ -315,6 +321,7 @@ agentInput={{text:"Add Thing",link:webPrefix + "thing/"+thing.uuid+"/"}}
                 foldCard={foldThing}
                 moveCard={moveThing}
                 deleteCard={deleteThing2}
+                updateCard={handleUpdateThing}
                 spawnCard={spawnThing}
                 findCard={findThing}
                 token={token}

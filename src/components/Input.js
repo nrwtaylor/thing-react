@@ -96,9 +96,9 @@ React.useEffect(() =>{
 
 if (response == null) {return;}
 
-if (onThingReport) {
+//if (onThingReport) {
         onThingReport({input:response});
-}
+//}
 
 
 

@@ -205,7 +205,7 @@ const engineState = process.env.REACT_APP_ENGINE_STATE;
 
 // Either a datagram, or a uuid.
 // datagram - to, from, subject, agentInput
-function Thing({thing:inputThing, agentInput, canOpen, open, createdAt, canFold,onChange, onForget, onFlip, onSpawn, onOpen, onFold}) {
+function Thing({thing:inputThing, agentInput, canOpen, open, createdAt, canFold,onChange, onForget, onFlip, onSpawn, onOpen, onFold, onThingReport}) {
 
 
 
@@ -820,6 +820,11 @@ console.log("Thing handleWebExpandClick webExpanded", webExpanded);
     }
   };
 
+const handleThingReport = (a) => {
+onThingReport(a);
+
+}
+
   const handleFoldThing = (e) => {
     handleFoldClick();
     //setExpanded(false);
@@ -923,7 +928,7 @@ return (<>THING NOT VISIBLE</>);
         <CardHeader
           action={
             <>
-          {!flipped && <Subject thing={thing} agentInput={{edit:expanded}} setSubject={setSubject} />}
+          {!flipped && <Subject thing={thing} agentInput={{edit:expanded}} setSubject={setSubject} onThingReport={(a)=>handleThingReport(a)} />}
 
               <Typography>{getNuuid(uuid)}</Typography>
 
@@ -1077,6 +1082,7 @@ agentInput={{text:"Start New Thing",link:webPrefix + "thing"}}
                       snapshot: false,
                       agents: { maximum: 1 },
                     }}
+onThingReport={(t)=>handleThingReport(t)}
                   />
                 </div>
               </LazyLoad>
@@ -1220,6 +1226,7 @@ agentInput={{text:"Start New Thing",link:webPrefix + "thing"}}
                 //   thing={props.datagram}
                 thing={{...thing, uuid:uuid}}
                 agentInput={{ ...agentInput, stack: { url: webPrefix } }}
+onThingReport={(t)=>handleThingReport(t)}
               />
               {subject && subject.toLowerCase().indexOf("ping") !== -1 && (
                 <div>

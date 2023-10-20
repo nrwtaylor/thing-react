@@ -49,12 +49,6 @@ export default function Subject({
     textInput.current.value = tempSubject;
   }, [inputThing]);
 
-  //useEffect(() =>{
-
-  //window.history.replaceState(null, null, getSlug(defaultSubject));
-
-  //},[defaultSubject]);
-
   function handleSubjectSubmit(ev) {
     console.log(`Subject onKeyDown ${ev.key}`);
     if (ev.key === "Enter") {
@@ -63,6 +57,7 @@ export default function Subject({
       // Do code here
       const s = ev.target.value;
       updateThing({ ...thing, subject: s });
+      onThingReport();
 
       setStatus("saving");
       //    return updateThing({ ...inputThing, variables: { item: e.target.checked } })
@@ -121,6 +116,7 @@ export default function Subject({
       //      setSubject(s);
       console.log("Subject 2 second settle");
       updateThing({ ...thing, subject: s });
+onThingReport();
     }, 2000);
     return () => clearTimeout(timer);
   }, [s]);

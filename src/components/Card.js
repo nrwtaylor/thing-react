@@ -35,6 +35,7 @@ export const Card = memo(function Card({
   moveCard,
   deleteCard,
   findCard,
+updateCard,
 }) {
   const [cardVisible, setCardVisible] = useState();
 
@@ -111,6 +112,11 @@ export const Card = memo(function Card({
     foldCard(id);
   }
 
+function handleThingReport(r) {
+updateCard(r);
+
+}
+
   function handleDelete() {
     //ole.log("Saw delete index", id)
     deleteCard(id);
@@ -145,6 +151,7 @@ export const Card = memo(function Card({
             thing={card}
             webPrefix={card.webPrefix}
             onChange={(e) => handleChange(e)}
+            onThingReport={(r)=>handleThingReport(r)}
           />
         </Box>
       </Grid>
@@ -201,6 +208,7 @@ width: "calc(100% - 2px)", // Adjusted width to accommodate the border and paddi
             }}
             webPrefix={card.webPrefix}
             onChange={(e) => handleChange(e)}
+            onThingReport={(r)=>handleThingReport(r)}
           />
 
         {card && 'score' in card && ( // Render the score if it exists
