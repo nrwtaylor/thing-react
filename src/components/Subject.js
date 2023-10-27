@@ -19,7 +19,7 @@ export default function Subject({
 }) {
   //  const [subject, setSubject] = useState(datagram.subject);
 
-  const { thing, setThing, testThing, updateThing } = useThing(inputThing);
+  const { thing, updateThing } = useThing(inputThing);
 
   const textInput = React.useRef(null);
 
@@ -45,7 +45,6 @@ export default function Subject({
     setDefaultSubject(tempSubject);
 
     setS(tempSubject);
-    //testThing();
     textInput.current.value = tempSubject;
   }, [inputThing]);
 
@@ -56,15 +55,16 @@ export default function Subject({
       //            setSubject(ev.target.value);
       // Do code here
       const s = ev.target.value;
-      updateThing({ ...thing, subject: s });
-      onThingReport();
-
+//      updateThing({ ...thing, subject: s });
+//      onThingReport();
+console.log("Subject u", thing, s);
       setStatus("saving");
       //    return updateThing({ ...inputThing, variables: { item: e.target.checked } })
-      updateThing({ ...inputThing, subject: s })
+      //updateThing({ ...inputThing, subject: s })
+updateThing({uuid:inputThing.uuid, subject:s})
         .then((result) => {
           //addMessage("Item handleToggleItem update thing " + inputThing.subject);
-
+onThingReport(result);
           if (result && result.error && result.error.message) {
             setResponse((response) => {
               return response + result.error.message;
@@ -115,8 +115,17 @@ export default function Subject({
     const timer = setTimeout(() => {
       //      setSubject(s);
       console.log("Subject 2 second settle");
-      updateThing({ ...thing, subject: s });
+      updateThing({ uuid:inputThing.uuid, subject: s }).then((result)=>{
+
+console.log("Subject timer result", result);
 onThingReport();
+
+
+}).catch((error)=>{
+
+console.error("Subject timer error", error);
+
+});
     }, 2000);
     return () => clearTimeout(timer);
   }, [s]);

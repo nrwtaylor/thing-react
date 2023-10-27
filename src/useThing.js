@@ -36,6 +36,9 @@ export default function useThing(datagram) {
   const { token } = useToken();
   const priorDatagram = usePrior(datagram);
 
+//  const [thing, setThing] = useState();
+  const [thing, setThing] = useState(userThing.get().thing);
+
   const { things, getThings, setThings } = useThings();
 
   const [flag, setFlag] = useState();
@@ -301,7 +304,7 @@ var result = deepDiffMapper.map({
     return ref.current;
   }
 
-  const [thing, setThing] = useState(userThing.get().thing);
+//  const [thing, setThing] = useState(userThing.get().thing);
 
   useEffect(() => {
     //console.log("useThing getThing datagram changed", priorDatagram, datagram, deepDiffMapper.map([priorDatagram, datagram]) );
@@ -459,7 +462,7 @@ var result = deepDiffMapper.map({
     console.log("useThing updateThing token", token);
     console.log("useThing updatething thing", thing);
     const newThing = { ...thing, ...t };
-    console.log("useThing updateThing request saveThing", newThing);
+    console.log("useThing updateThing request saveThing", thing.uuid, newThing);
     return saveThing(newThing)
       .then((result) => {
         console.log("useThing updateThing result", result);
@@ -632,7 +635,7 @@ var result = deepDiffMapper.map({
     updateThing: updateThing,
     setThing: saveThing,
     testThing: testThing,
-    setThing: setThing,
+//    setThing: setThing,
     getThing: getThing,
     findThing: findThing,
     flipThing: flipThing,

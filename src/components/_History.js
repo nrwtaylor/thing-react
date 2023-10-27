@@ -253,87 +253,62 @@ if (tempTextInterval === "1d") {
   // 1000 points in each snapshot
   // So need a 1000 points to fill in each inter
 
-const periodIntervals = ["1s", "1m", "30m", "1h"];
-let periods = [];
-//  let period1 = null;
-//  let period2 = null;
-//  let period3 = null;
-//  let period4 = null;
-
-periods = periodIntervals.map((periodInterval)=>{
-
-return null;
-
-});
+  let period1 = null;
+  let period2 = null;
+  let period3 = null;
+  let period4 = null;
 
   if (ref && typeof ref !== "undefined") {
     console.log("History ref", ref);
 
-//    period1 = linkHistory("transducers-" + ref + "-" + "1s");
-//    period2 = linkHistory("transducers-" + ref + "-" + "1m");
-//    period3 = linkHistory("transducers-" + ref + "-" + "30m");
-//    period4 = linkHistory("transducers-" + ref + "-" + "1h");
-
-periods = periodIntervals.map((periodInterval)=>{
-
-return linkHistory("transducers-" + ref + "-" + periodInterval);
-
-});
+    period1 = linkHistory("transducers-" + ref + "-" + "1s");
+    period2 = linkHistory("transducers-" + ref + "-" + "1m");
+    period3 = linkHistory("transducers-" + ref + "-" + "30m");
+    period4 = linkHistory("transducers-" + ref + "-" + "1h");
 
 if (hasUUID(ref)) {
-//    period1 = linkHistory(ref + "-" + "1s");
-//    period2 = linkHistory(ref + "-" + "1m");
-//    period3 = linkHistory(ref + "-" + "30m");
-//    period4 = linkHistory(ref + "-" + "1h");
-
-periods = periodIntervals.map((periodInterval)=>{
-
-return linkHistory(ref + "-" + periodInterval);
-
-});
-
-
+    period1 = linkHistory(ref + "-" + "1s");
+    period2 = linkHistory(ref + "-" + "1m");
+    period3 = linkHistory(ref + "-" + "30m");
+    period4 = linkHistory(ref + "-" + "1h");
 }
 
   }
 
-console.log("History period", periods[0], periods[1], periods[2], periods[3]);
-
-
+console.log("History period", period1, period2, period3, period4);
 
   const {
     snapshot: historyPeriod1,
     flag: periodFlag1,
     snapshotRunTime: snapshotRunTime1,
-  } = useSnapshot(periods[0], 1000);
+  } = useSnapshot(period1, 1000);
 
   const {
     snapshot: historyPeriod2,
     flag: periodFlag2,
     snapshotRunTime: snapshotRunTime2,
-  } = useSnapshot(periods[1], 60* 1000);
+  } = useSnapshot(period2, 500);
 
   const {
     snapshot: historyPeriod3,
     flag: periodFlag3,
     snapshotRunTime: snapshotRunTime3,
-  } = useSnapshot(periods[2], 30*60*1000);
+  } = useSnapshot(period3, 60*1000);
 
   const {
     snapshot: historyPeriod4,
     flag: periodFlag4,
     snapshotRunTime: snapshotRunTime4,
-  } = useSnapshot(periods[3], 60*60*1000);
+  } = useSnapshot(period4, 60*1000);
 
 
   console.debug(
     "History snapshotInterval period1 period2 period3",
     snapshotInterval,
     historyTo,
-    periods[0],
-    periods[1],
-    periods[2],
-    periods[3]
+    period1,
+    period2,
+    period3
   );
 
   useEffect(() => {
@@ -475,6 +450,17 @@ console.log("History period", periods[0], periods[1], periods[2], periods[3]);
     const p3 = processHistory(hist3);
     const p4 = processHistory(hist4);
 
+    console.debug(
+      "History historyPoints p p1 p2 p3",
+      period1,
+      p,
+      period1,
+      p1,
+      period2,
+      p2,
+      period3,
+      p3
+    );
 
     let hs = concatenateArrays(p, p1, p2, p3, p4);
 

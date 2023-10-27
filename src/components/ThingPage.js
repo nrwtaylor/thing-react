@@ -28,7 +28,6 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 import useHybridEffect from "../useHybridEffect.js";
 
-
 export default function ThingPage(props) {
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
   const apiPrefix = process.env.REACT_APP_API_PREFIX;
@@ -42,7 +41,8 @@ export default function ThingPage(props) {
 
   const uuids = pathname.match(reg);
 
-  const { username, token, isValidToken, getToken, setToken, deleteToken } = useToken();
+  const { username, token, isValidToken, getToken, setToken, deleteToken } =
+    useToken();
   const { identity, setIdentity, deleteIdentity } = useIdentity();
   const { input, setInput, deleteInput } = useInput();
 
@@ -81,11 +81,9 @@ export default function ThingPage(props) {
     if (things == null) {
       return;
     }
-console.log("ThingPage pathnameEffect things", things);
+    console.log("ThingPage pathnameEffect things", things);
     const uuidPathname = extractUuid(pathname);
     console.debug("ThingPage uuidPathname", uuidPathname);
-
-
 
     var uuidMatch = null;
     things.forEach((t) => {
@@ -105,7 +103,7 @@ console.log("ThingPage pathnameEffect things", things);
     }
 
     const nuuidPathname = extractNuuid(pathname);
-//    console.debug("ThingPage nuuidPathname", nuuidPathname);
+    //    console.debug("ThingPage nuuidPathname", nuuidPathname);
 
     var nuuidMatch = null;
     things.forEach((t) => {
@@ -144,61 +142,34 @@ console.log("ThingPage pathnameEffect things", things);
       return;
     }
 
-
     const d = {
-uuid:uuidPathname,
+      uuid: uuidPathname,
       //to: "agent",
-//      subject: pathname,
+      //      subject: pathname,
       //webPrefix: webPrefix,
     };
 
-console.log("ThingPage uuidPathname", uuidPathname);
-if (isValidUUID(uuidPathname)) {
-    console.debug("ThingPage using provided url");
-d.uuid = uuidPathname;
-} else {
-    console.debug("ThingPage using provided url");
-d.uuid= uuidv4(); // local stack can assign uuids. Other stacks will accept them on trust.
-d.subject = pathname;
+    console.log("ThingPage uuidPathname", uuidPathname);
+    if (isValidUUID(uuidPathname)) {
+      console.debug("ThingPage using provided url");
+      d.uuid = uuidPathname;
 
+      // Not sure about this. But it is needed to pass more complicated strings in.
+      // Will have to see that it works in the cases where the thing must pull back a subject
+      d.subject = pathname;
+    } else {
+      console.debug("ThingPage using provided url");
+      d.uuid = uuidv4(); // local stack can assign uuids. Other stacks will accept them on trust.
+      d.subject = pathname;
+    }
 
-}
-
-
-
-
-    //    getThing(d);
-//getThing(uuidPathname);
-
-
-    //setDatagram(d);
     setThing(d);
     setPlay(false);
   }, [pathname, things]);
 
-
-/*
-  useHybridEffect(() => {
-    console.debug("ThingPage thing", thing);
-console.debug("ThingPage thing pathname", pathname);
-
-
-if (getSlug(thing.subject) !== getSlug(pathname)) {
-console.log("ThingPage thing update url");
-
-window.history.replaceState(null, null, getSlug(thing.subject));
-
-}
-
-
-  }, [thing]);
-*/
-
-function handleThingReport(t) {
-console.log("ThingPage handleThingReport",t);
-
-
-}
+  function handleThingReport(t) {
+    console.log("ThingPage handleThingReport", t);
+  }
 
   if (pathname == null) {
     return null;
@@ -206,9 +177,8 @@ console.log("ThingPage handleThingReport",t);
 
   return (
     <>
-      THING PAGE {debugFlag && (<>DEBUG</>)}{' '}{devFlag && (<>DEV</>)}
-{' '}{isValidToken ? "VALID TOKEN" : "FALSE TOKEN"}
-
+      THING PAGE {debugFlag && <>DEBUG</>} {devFlag && <>DEV</>}{" "}
+      {isValidToken ? "VALID TOKEN" : "FALSE TOKEN"}
       {/*
       <Button
         thing={{
@@ -218,20 +188,16 @@ console.log("ThingPage handleThingReport",t);
       />
 */}
       {/*{thing && thing.subject*/}
-
-          <ThingButton
-            //          thing={{ subject: ("thing/"+ (uuid ==null ? "" : uuid)), a>
-            //          thing={{ subject: "add-thing", agentInput: "Add Thing" }}
-            thing={{
-              ...thing
-//              subject: "thing/" + thing.uuid + "/",
-//              agentInput: "Add Thing",
-            }}
-agentInput={{text:"Start New Thing",link:webPrefix + "thing"}}
-          />
-
-
-
+      <ThingButton
+        //          thing={{ subject: ("thing/"+ (uuid ==null ? "" : uuid)), a>
+        //          thing={{ subject: "add-thing", agentInput: "Add Thing" }}
+        thing={{
+          ...thing,
+          //              subject: "thing/" + thing.uuid + "/",
+          //              agentInput: "Add Thing",
+        }}
+        agentInput={{ text: "Start New Thing", link: webPrefix + "thing" }}
+      />
       {thing && (
         <Thing
           key={thing.uuid}
@@ -251,7 +217,7 @@ agentInput={{text:"Start New Thing",link:webPrefix + "thing"}}
             play: play,
           }}
           agentInput={{ collection: true }}
-          onThingReport={(t)=>handleThingReport(t)}
+          onThingReport={(t) => handleThingReport(t)}
         />
       )}
       <br />

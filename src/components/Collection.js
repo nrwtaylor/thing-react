@@ -35,7 +35,7 @@ const img = {
   height: "100%",
 };
 
-function Collection({ thing, agentInput }) {
+function Collection({ thing, agentInput, onThingReport }) {
   const dndFlag = true;
 
   // This passes the reordered images back up to
@@ -45,6 +45,12 @@ function Collection({ thing, agentInput }) {
   //}
 
   //return null;
+
+function handleThingReport(r) {
+
+onThingReport(r);
+
+}
 
   return (
     <>
@@ -75,6 +81,7 @@ function Collection({ thing, agentInput }) {
         <ThingContainer
           thing={thing}
           agentInput={{ ...agentInput, thingContainer: true }}
+          onThingReport={(r)=>{handleThingReport(r)}}
           //          onCollectionChange={handleCollectionChange}
         />
       </DndProvider>

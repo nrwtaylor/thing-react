@@ -36,10 +36,10 @@ import { humanTime, humanRuntime, zuluTextSpread } from "../util/time.js";
 
 
 
-function TraceCircle(props) {
+function TraceCircle({thing, agentInput, onThingReport}) {
 
 
-  const { data } = props;
+  const { data } = agentInput;
   const canSwipe = true;
 //  const shade = true;
 

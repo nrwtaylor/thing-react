@@ -310,7 +310,11 @@ setResponse((response)=>{return response + "Logged in. "   })
 
 if (isValidToken) {
 
-return (<>LOGIN Valid token seen.</>);
+return (<>
+{JSON.stringify(isValidToken)}
+LOGIN Valid token seen.
+
+</>);
 
 }
 

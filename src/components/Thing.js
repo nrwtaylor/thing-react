@@ -282,7 +282,7 @@ function Thing({thing:inputThing, agentInput, canOpen, open, createdAt, canFold,
     flipThing,
     forgetThing,
     getThing,
-    setThing,
+   // setThing,
     updateThing,
   } = useThing(datagram);
 
@@ -354,7 +354,7 @@ console.log("Thing webExpanded", webExpanded);
     console.debug("Thing " + nuuidText + " datagram", datagram);
     console.log("Thing " + nuuidText + " datagram uuid", uuid, datagram.subject);
 
-    setThing(datagram);
+    updateThing(datagram);
 
     if (typeof datagram.subject !== "undefined") {
       setSubject(inputThing.subject);
@@ -380,7 +380,7 @@ console.log("Thing webExpanded", webExpanded);
 
     console.log("Thing " + nuuidText + " datagram uuid", uuid);
 
-    setThing(datagram);
+    updateThing(datagram);
   }, [datagram]);
 
   function processFlag(flagName, flagState) {
@@ -1317,6 +1317,7 @@ onThingReport={(t)=>handleThingReport(t)}
             <Collection
               thing={{ ...thing, variables: { ...thing.variables } }}
               agentInput={{ ...agentInput, collection: false }}
+              onThingReport={(r)=>{handleThingReport(r)}}
             />
           )}
         </div>

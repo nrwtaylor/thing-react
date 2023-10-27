@@ -14,6 +14,8 @@ import useThing from "../useThing.js";
 
 import useToken from "../useToken.js";
 import useIdentity from "../useIdentity.js";
+
+import useHybridEffect from "../useHybridEffect.js";
 import {
   scoreThings,
   sortThingsByScore,
@@ -84,7 +86,7 @@ export const ThingContainer = ({ thing }) => {
     console.log("ThingContainer things", things);
   }, [things]);
 
-  useEffect(() => {
+  useHybridEffect(() => {
     if (thing == null) {
       return;
     }
@@ -100,6 +102,8 @@ export const ThingContainer = ({ thing }) => {
 
       setAssociations(newAssociations);
     }
+
+
   }, [thing]);
 
   const deleteThing3 = (e) => {
@@ -126,7 +130,7 @@ export const ThingContainer = ({ thing }) => {
     [things]
   );
 
-  useEffect(() => {
+  useHybridEffect(() => {
 console.log("ThingContainer things thing.subject listener triggered");
 
     if (things == null) {
@@ -143,10 +147,10 @@ console.log("ThingContainer things thing.subject listener triggered");
 
     console.log("ThingContainer scoredThings prescore", thing, thing.subject);
 
-    const scoredThings = scoreThings(things, thing.subject);
+    const s = scoreThings(things, thing.subject);
 
-    setScoredThings(scoredThings);
-  }, [things, thing && thing.subject]);
+    setScoredThings(s);
+  }, [things, thing]);
 
   useEffect(() => {
     console.debug("ThingContainer chooseThings");
@@ -157,8 +161,8 @@ console.log("ThingContainer things thing.subject listener triggered");
     if (scoredThings == null) {
       return;
     }
-
-    console.log("ThingContainer scoredThings", scoredThings);
+    console.log("ThingContainer chooseThings thing", thing);
+    console.log("ThingContainer chooseThings scoredThings", scoredThings);
 
     const priorityThings = scoredThings.filter((t) => {
       if (t.priority == null) {
@@ -240,8 +244,8 @@ console.log("ThingContainer things thing.subject listener triggered");
 
   const [, drop] = useDrop(() => ({ accept: ItemTypes.CARD }));
 
-function handleUpdateThing() {
-
+function handleUpdateThing(t) {
+console.log("ThingContainer handleUpdateThing", t);
 // Somesort of getTHings trigger
 getThings();
 
