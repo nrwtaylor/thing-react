@@ -17,11 +17,11 @@ export function readToken(jwtToken) {
   return {
     refreshedAt: t.iat,
     expiresAt: t.exp,
-    isValidToken: isValidToken(t),
+    isValidToken: checkToken(t),
   };
 }
 
-export function isValidToken(t) {
+export function checkToken(t) {
   //console.log("jwtToken", jwtToken);
 
   //  const t = jwt_decode(jwtToken);
@@ -30,12 +30,12 @@ export function isValidToken(t) {
   const age = parseFloat(expiresAt) * 1000 - Date.now();
   console.log("useToken isValidToken expiresAt age", expiresAt, age);
   var isValidToken = false;
-  if ((age) => 0) {
-    isValidToken = false;
+  if (age >= 0) {
+    isValidToken = true;
   }
 
   if (age < 0) {
-    isValidToken = true;
+    isValidToken = false;
   }
 
   return isValidToken;
@@ -68,7 +68,13 @@ export default function useToken() {
     setRefreshedAt(t.iat);
 
     setExpiresAt(t.exp);
-    setIsValidToken(t);
+
+
+
+    setIsValidToken(checkToken(t));
+
+
+
   };
 
   // Watch the localStorage for a token we recognize.

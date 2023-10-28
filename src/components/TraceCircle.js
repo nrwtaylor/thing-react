@@ -4,48 +4,17 @@ import * as d3 from "d3";
 import PolarChart from "../components/PolarChart.js";
 
 import "../index.css";
-import {
-  Typography,
-  //  Avatar,
-  //  ListItemAvatar,
-  Box,
-} from "@mui/material";
-
-
-
-
-
-/*
-import {
-  Button,
-  TextField,
-  IconButton,
-  ListItem,
-  ListItemText,
-  Dialog,
-  DialogContent,
-  DialogActions,
-} from "@mui/material";
-*/
-//import Frequency from "../components/Frequency.js";
-
-//import useThing from "../useThing.js";
 
 import { humanTime, humanRuntime, zuluTextSpread } from "../util/time.js";
 
+import { minMaxData, minMaxTicks } from "../util/data.js";
 
-
-
-function TraceCircle({thing, agentInput, onThingReport}) {
-
-
+function TraceCircle({ thing, agentInput, onThingReport }) {
   const { data } = agentInput;
-  const canSwipe = true;
-//  const shade = true;
 
+  const [circleRanging, setCircleRanging] = useState();
   const [conditionedData, setConditionedData] = useState();
   const [colors, setColors] = useState();
-  //const now = new Date().getTime();
 
   const [currentTime, setCurrentTime] = useState();
 
@@ -81,15 +50,75 @@ function TraceCircle({thing, agentInput, onThingReport}) {
       });
     });
 
-    setConditionedData(newData.reverse());
+newData.reverse();
+
+const newArray = newData.map((n)=>{
+
+return insertNullObjects(n);
+
+});
+console.log("TraceCircle newArray", newArray);
+//    setConditionedData(newData);
+
+    setConditionedData(newArray);
+
   }, [data]);
+
+function insertNullObjects(data) {
+//return data;
+  const newArray = [];
+//console.log("insertNullObjects data", data);
+  for (let i = 0; i < data.length; i++) {
+console.log("TraceCircle insertNullObjects data[i]", data[i]);
+    newArray.push(data[i]);
+
+
+    if (i > 0 && data[i+1]) {
+      const currentTime = data[i].x;
+      const nextTime = data[i + 1].x;
+
+      const timeDifference = currentTime - nextTime;
+//console.log("timeDifference data[i]", timeDifference, data[i]);
+
+      if (timeDifference > 3600000) { // 1 hour in milliseconds
+        const averageTime = (currentTime + nextTime) / 2;
+        newArray.push({ x: averageTime, y: null });
+      }
+
+    }
+
+  }
+
+//newArray.push(data[data.length]);
+
+  return newArray;
+}
+
+  useEffect(() => {
+    if (conditionedData == null) {
+      return;
+    }
+
+    const mergedArray = [].concat(...conditionedData);
+
+    //console.log("TraceCircle mergedArray", mergedArray);
+    //const mergedArray = conditionedData.slice(-1);
+
+    console.log("TraceCircle mergedArray", mergedArray);
+
+    const [min, max] = minMaxData(mergedArray, "y");
+    const a = minMaxTicks(min, max, 5);
+
+    console.log("TraceCircle circleRanging", a);
+    setCircleRanging(a);
+  }, [conditionedData]);
 
   useEffect(() => {
     updateTime();
 
     const interval = setInterval(() => {
       updateTime();
-    }, 10000); // 20 Hz was 200.
+    }, 10000); // 20 Hz was 200.ircleRangin
 
     return () => clearInterval(interval);
   }, []);
@@ -99,55 +128,47 @@ function TraceCircle({thing, agentInput, onThingReport}) {
     setCurrentTime(x);
   }
 
+  useEffect(() => {
+    if (conditionedData == null) {
+      return;
+    }
+    const c =
+      conditionedData &&
+      conditionedData
+        .map((c, index) => {
+          if (index === 0) {
+            return "#ff0000";
+          }
+          return hexShade(index, 1);
+        })
+        .reverse();
+    setColors(c);
+  }, [conditionedData]);
 
-useEffect(() =>{ 
-if (conditionedData == null) {return;}
-  const c =
-    conditionedData &&
-    conditionedData
-      .map((c, index) => {
-        if (index === 0) {
-          return "#ff0000";
-        }
-        return hexShade(index, 1);
-      })
-      .reverse();
-setColors(c);
-}, [conditionedData]);
-
-useEffect(() =>{
-
-  console.log("TraceCircle data", data);
-
-}, [ conditionedData  ]);
-
+  useEffect(() => {
+    console.log("TraceCircle data", data);
+  }, [conditionedData]);
 
   if (conditionedData == null) {
     return;
   }
 
   if (colors == null) {
-return;
+    return;
   }
 
-
-/*
   return (
     <>
-    <div style={{ maxWidth: '100%', overflowX: 'hidden' }}>
-      <PolarChart data={conditionedData} colors={colors} strokeWidth={4} />
-    </div>
+      <PolarChart
+        agentInput={{
+          circleData: circleRanging,
+          data: conditionedData,
+          colors: colors,
+          strokeWidth: 4,
+        }}
+      />
     </>
   );
-*/
-
-  return (
-    <>
-      <PolarChart data={conditionedData} colors={colors} strokeWidth={4} />
-    </>
-  );
-
-
 }
 
 function hexShade(n, maxN) {

@@ -1,36 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
-/*
-import Box from "@mui/material/Box";
-import { makeStyles } from "@mui/styles";
 
-const useStyles = makeStyles((theme) => ({
-  cardImageContainer: {
-    margin: "0 auto",
-    maxWidth: "100%",
-    width: "100%",
-  },
-  media: {
-    minHeight: "200px",
-    height: "auto",
-    alignItems: "center",
-    justifyContent: "center",
-    display: "flex",
+const PolarChart = ({ agentInput }) => {
 
-    [theme.breakpoints.down("sm")]: {
-      minHeight: "150px",
-    },
-  },
-  image: {
-    maxHeight: "180px",
-    width: "100%",
-  },
-}));
-*/
-const PolarChart = ({ data, colors, strokeWidth }) => {
-  //const theme = useTheme();
-//  const classes = useStyles();
-
+const {data, colors, strokeWidth, circleData} = agentInput;
   const chartRef = useRef(null);
 
   useEffect(() => {
@@ -94,7 +67,7 @@ const PolarChart = ({ data, colors, strokeWidth }) => {
         .scaleSqrt()
         .domain([minValue, maxValue])
         .range([minRadius, radius]);
-      const circleData = [10, 11, 12, 13, 14, 15, 16];
+      //const circleData = [10, 11, 12, 13, 14, 15, 16];
 
       svg
         .selectAll(".circle")

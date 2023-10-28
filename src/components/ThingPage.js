@@ -86,39 +86,39 @@ export default function ThingPage(props) {
     const uuidPathname = extractUuid(pathname);
     console.debug("ThingPage uuidPathname", uuidPathname);
 
-    var uuidMatch = null;
+    var thingMatch = null;
     things.forEach((t) => {
       if (t.uuid == null) {
         return;
       }
+
       if (t.uuid === uuidPathname) {
-        uuidMatch = t;
+        thingMatch = t;
       }
     });
 
-    if (uuidMatch !== null) {
-      console.debug("ThingPage matched uuid", uuidMatch);
-      setThing(uuidMatch);
+    if (thingMatch !== null) {
+      console.debug("ThingPage matched uuid", thingMatch);
+      setThing(thingMatch);
       setPlay(false);
       return;
     }
 
     const nuuidPathname = extractNuuid(pathname);
-    //    console.debug("ThingPage nuuidPathname", nuuidPathname);
 
-    var nuuidMatch = null;
     things.forEach((t) => {
       if (t.uuid == null) {
         return;
       }
+
       if (t.uuid.slice(0, 4) === nuuidPathname) {
-        nuuidMatch = t;
+        thingMatch = t;
       }
     });
 
-    if (nuuidMatch !== null) {
-      console.debug("ThingPage matched nuuid", nuuidMatch);
-      setThing(nuuidMatch);
+    if (thingMatch !== null) {
+      console.debug("ThingPage matched nuuid", thingMatch);
+      setThing(thingMatch);
       setPlay(false);
       return;
     }

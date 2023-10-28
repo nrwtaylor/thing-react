@@ -11,9 +11,8 @@ import { v4 as uuidv4 } from "uuid";
 
 import useToken from "./useToken.js";
 
-import sha256 from 'crypto-js';
+import sha256 from "crypto-js";
 //import crypto from 'crypto';
-
 
 const userThings = makeObservable({ things: [], count: 0 });
 
@@ -26,7 +25,7 @@ const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 // Took out the first one to isolate the new item creation behaviour.
 
 const defaultThings = [
-/*
+  /*
   {
     to: "localhost",
     subject: window.location.pathname.replace(/^\/|\/$/g, ""),
@@ -64,7 +63,6 @@ const defaultThings = [
     uuid: uuidv4(),
     input: "DataMonitor",
   },
-
 
   {
     index: 20,
@@ -124,7 +122,7 @@ const errorThing = {
 };
 
 function hashFunction(obj) {
-return "hello";
+  //return "hello";
   const jsonString = JSON.stringify(obj);
   const hash = sha256(jsonString);
   return hash.toString(crypto.enc.Hex);
@@ -133,7 +131,6 @@ return "hello";
 export default function useThings() {
   const { token } = useToken();
   const [count, setCount] = useState();
-  //  const [things, setThings] = useState(userThings.get().things);
 
   const [things, setThings] = useState();
 
@@ -145,12 +142,11 @@ export default function useThings() {
   const getThings = () => {
     console.log("useThings getThings token", token);
     if (token == null) {
+      // If the token is null, it means there is no access
+      // to the forward stack pointer.
 
-// If the token is null, it means there is no access
-// to the forward stack pointer.
-
-// No need to set default.
-// But need to establish a hook to monitor changes in [things].
+      // No need to set default.
+      // But need to establish a hook to monitor changes in [things].
 
       setThings(defaultThings);
       console.log("useThings saw null token");
@@ -165,59 +161,58 @@ export default function useThings() {
         console.log("useThings getThings getThingies things", things);
         console.log("useThings getThings getThingies result", result);
 
-// This does a straight drop of any duplicated uuids.
-// This is a problem because a more sophicated merge
-// is required based on change history.
+        // This does a straight drop of any duplicated uuids.
+        // This is a problem because a more sophicated merge
+        // is required based on change history.
 
-// Consider also. The server does not need to send stale things.
-// Only things which have changed in the prior interval.
-// Otherwise can send uuid as placeholder.
+        // Consider also. The server does not need to send stale things.
+        // Only things which have changed in the prior interval.
+        // Otherwise can send uuid as placeholder.
 
-if (result.hasOwnProperty("error")) {
+        if (result.hasOwnProperty("error")) {
+          console.error("useThings getThingies error", result.error);
+        }
 
-console.error("useThings getThingies error", result.error);
+        const addedThings = [];
+        const removedThings = [];
 
+        // Compare result.things with tempThings
+        for (const thing of result.things) {
+          if (!tempThings.includes(thing)) {
+            // If the thing is in result.things but not in tempThings, it's added.
+            addedThings.push(thing);
+          }
+        }
 
-}
+        for (const thing of tempThings) {
+          if (!result.things.includes(thing)) {
+            // If the thing is in tempThings but not in result.things, it's removed.
+            removedThings.push(thing);
+          }
+        }
 
-    const addedThings = [];
-    const removedThings = [];
+        // Create hashes for each thing in result.things and tempThings
+        const tempHashes = tempThings.map((thing) => hashFunction(thing));
+        const resultHashes = result.things.map((thing) => hashFunction(thing));
 
-    // Compare result.things with tempThings
-    for (const thing of result.things) {
-      if (!tempThings.includes(thing)) {
-        // If the thing is in result.things but not in tempThings, it's added.
-        addedThings.push(thing);
-      }
-    }
+        // Find the indices of changed things
+        const changedThingIndices = [];
 
-    for (const thing of tempThings) {
-      if (!result.things.includes(thing)) {
-        // If the thing is in tempThings but not in result.things, it's removed.
-        removedThings.push(thing);
-      }
-    }
+        for (let i = 0; i < resultHashes.length; i++) {
+          if (tempHashes.indexOf(resultHashes[i]) === -1) {
+            // The thing at index i has changed
+            changedThingIndices.push(i);
+          }
+        }
 
-    // Create hashes for each thing in result.things and tempThings
-    const tempHashes = tempThings.map(thing => hashFunction(thing));
-    const resultHashes = result.things.map(thing => hashFunction(thing));
+        // Create an array of the changed things based on the indices
+        const changedThings = changedThingIndices.map(
+          (index) => result.things[index]
+        );
 
-    // Find the indices of changed things
-    const changedThingIndices = [];
-
-    for (let i = 0; i < resultHashes.length; i++) {
-      if (tempHashes.indexOf(resultHashes[i]) === -1) {
-        // The thing at index i has changed
-        changedThingIndices.push(i);
-      }
-    }
-
-    // Create an array of the changed things based on the indices
-    const changedThings = changedThingIndices.map(index => result.things[index]);
-
-console.log("useThings changedThings", changedThings);
-// Not used these.
-// Because need to consider how to merge two things together.
+        console.log("useThings changedThings", changedThings);
+        // Not used these.
+        // Because need to consider how to merge two things together.
 
         var combinedThings = [];
         if (result && result.things && result.things.length !== 0) {
@@ -276,22 +271,13 @@ console.log("useThings changedThings", changedThings);
   };
 
   useEffect(() => {
-    //    getThings();
     return userThings.subscribe(setThings);
   }, []);
 
   useHybridEffect(() => {
-    //if (things == null) {return;}
+    if (things == null) {return;}
     console.log("useThings things", things);
   }, [things]);
-
-  useEffect(() => {
-    console.log("useThings setThings");
-  }, [setThings]);
-
-  useEffect(() => {
-    //console.log("useThings getThings");
-  }, [getThings]);
 
   useEffect(() => {
     getThings();
@@ -315,7 +301,6 @@ console.log("useThings changedThings", changedThings);
     setThings(userThings);
   };
 
-
   function mergeObjectsInUnique<T>(array: T[], property: any): T[] {
     const newArray = new Map();
 
@@ -332,14 +317,7 @@ console.log("useThings changedThings", changedThings);
     return Array.from(newArray.values());
   }
 
-  //  const deleteIdentity = (userIdentity) => {
-  // Leave no rubbish behind.
-  //    setIdentity(false);
-  //  };
-
   return {
-    //    deleteIdentity: deleteIdentity,
-    //    state: things,
     setThings: saveThings,
     getThings: getThings,
     things,

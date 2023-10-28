@@ -41,28 +41,10 @@ import { humanTime, humanRuntime, zuluTextSpread } from "../util/time.js";
 import { useSwipeable } from "react-swipeable";
 
 import { minMaxData, minMaxTicks } from "../util/data.js";
-/*
-
-      <Carousel
-        useKeyBoardArrows={canSwipe}
-        showArrows={canSwipe}
-        swipeable={canSwipe}
-        showThumbs={false}
-        showIndicators={false}
-        showStatus={false}
-        swipeScrollTolerance={100}
-        preventMovementUntilSwipeScrollTolerance={true}
-      >
-        {things.map((thing) => (
-          <div key={thing.uuid}>
-
-*/
 
 function Trace(props) {
   const { data, timeType, period } = props;
-  //  const [canSwipe, setCanSwipe] = useState();
-  const canSwipe = true;
-  const shade = true;
+ // const shade = true;
 
   const [timeSeriesData, setTimeSeriesData] = useState();
   const [xSeriesData, setXSeriesData] = useState();
@@ -286,11 +268,15 @@ return true;
       return;
     }
     const s = atSpread(filteredData);
+
+
     const [min, max] = minMaxData(filteredData);
-    console.debug("Trace filteredData", s, filteredData, min, max);
+    console.debug("Trace filteredData", filteredData, min, max);
     setFilteredDataSpread(s);
     const a = minMaxTicks(min, max, 5);
     console.debug("Trace filteredData a", a);
+
+
     setYSeriesData(a);
   }, [filteredData]);
 
@@ -325,12 +311,6 @@ return true;
   }
 
   //  return <>Blank Trace 2</>;
-
-  //useEffect(() =>{
-
-  //console.log("Trace period", period);
-
-  //},[period]);
 
   //  const xAxisDomain = [currentTime - period, currentTime]; // Calculate the start and end of the desired period
   useEffect(() => {

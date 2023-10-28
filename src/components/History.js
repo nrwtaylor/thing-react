@@ -733,13 +733,12 @@ console.log("History period", periods[0], periods[1], periods[2], periods[3]);
           <br />
           SNAPSHOTTO {snapshotTo}
           <br />
+      TEXT INTERVAL{' '}{textInterval}
+      <br />
+
         </>
       )}
       {debugFlag && <>SNAPSHOT INTERVAL {snapshotInterval}</>}
-      <br />
-      TEXT INTERVAL{' '}{textInterval}
-      <br />
-      HISTORYREF {historyRef}
       <br />
 {false && textInterval && (<>TEXT INTERVAL</>)}
 {false && textInterval && typeof textInterval === "string" && (<>TEXT INTERVAL IS STRING</>)}
