@@ -28,6 +28,8 @@ import {
 import Forget from "../components/Forget.js";
 import DynamicComponent from "../components/DynamicComponent.js";
 
+import useHybridEffect from "../useHybridEffect.js";
+
 import Input from "../components/Input.js";
 
 import { devFlag, debugFlag } from "../util/dev.js";

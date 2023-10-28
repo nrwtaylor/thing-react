@@ -75,12 +75,13 @@ export default function ThingPage(props) {
     console.debug("ThingPage uuids", uuids);
   }, [uuids]);
 
-  useEffect(() => {
-    console.debug("ThingPage pathname", pathname);
+  useHybridEffect(() => {
 
     if (things == null) {
       return;
     }
+    console.debug("ThingPage pathname", pathname);
+
     console.log("ThingPage pathnameEffect things", things);
     const uuidPathname = extractUuid(pathname);
     console.debug("ThingPage uuidPathname", uuidPathname);
@@ -178,7 +179,8 @@ export default function ThingPage(props) {
   return (
     <>
       THING PAGE {debugFlag && <>DEBUG</>} {devFlag && <>DEV</>}{" "}
-      {isValidToken ? "VALID TOKEN" : "FALSE TOKEN"}
+      {isValidToken === false ? "FALSE TOKEN" : "VALID TOKEN"}
+{JSON.stringify(isValidToken)}
       {/*
       <Button
         thing={{

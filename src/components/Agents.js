@@ -25,6 +25,8 @@ import {
   Edit,
 } from "@mui/icons-material";
 
+import useHybridEffect from "../useHybridEffect.js";
+
 import Forget from "../components/Forget.js";
 import Agent from "../components/Agent.js";
 
@@ -73,30 +75,16 @@ function Agents({ thing, agentInput, onThingReport }) {
   const [agents, setAgents] = useState();
 
   const [flag, setFlag] = useState();
-  //const [requestedAt, setRequestedAt] = useState();
   const [reply, setReply] = useState("");
-
-  //  const thing = props.thing;
 
   const [data, setData] = useState({
     thing: { uuid: "X" },
-    thingReport: { status:"loading", sms: "No response. Yet." },
+    thingReport: { status: "loading", sms: "No response. Yet." },
   });
 
-function handleThingReport(t) {
-
-onThingReport(t);
-
-}
-
-  /*
-  useEffect(() => {
-    setFlag("green");
-
-//    getAgent();
-  }, [getAgent]); // eslint-disable-line react-hooks/exhaustive-deps
-*/
-  //  const [open, setOpen] = useState(false);
+  function handleThingReport(t) {
+    onThingReport(t);
+  }
 
   const replyAgentDialog = (thing) => {
     //    setOpen(true);
@@ -119,7 +107,7 @@ onThingReport(t);
     return thing.from;
   }
 
-  useEffect(() => {
+  useHybridEffect(() => {
     if (thing == null) {
       return;
     }
@@ -173,13 +161,11 @@ onThingReport(t);
         matchedSlugs.push("datamonitor");
       }
 
-
       //      console.log("Agents thing matchedSlugs", matchedSlugs);
 
       setAgents(matchedSlugs);
 
       {
-
       }
     }
   }, [thing]);
@@ -209,7 +195,7 @@ onThingReport(t);
   return (
     <>
       {debugFlag && <div>AGENTS</div>}
-{/*
+      {/*
       {devFlag && (
         <>
           DEV FLAG
@@ -224,15 +210,15 @@ onThingReport(t);
         agents &&
         agents.map((agent, index) => {
           return (
-<>
-{thing && thing.uuid}
-            <Agent
-              key={"agents_" + agent + "_" + index}
-              thing={thing}
-              agentInput={{ ...agentInput, agent: agent }}
-onThingReport={(t)=>handleThingReport(t)}
-            />
-</>
+            <>
+              {thing && thing.uuid}
+              <Agent
+                key={"agents_" + agent + "_" + index}
+                thing={thing}
+                agentInput={{ ...agentInput, agent: agent }}
+                onThingReport={(t) => handleThingReport(t)}
+              />
+            </>
           );
         })}
     </>

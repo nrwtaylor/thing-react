@@ -1072,17 +1072,13 @@ agentInput={{text:"Start New Thing",link:webPrefix + "thing"}}
                 <div>
 {debugFlag && (<>AGENTS</>)}
                   <Agents
-                    channel={"image"}
-                    user={null}
-                    //thing={data.thing}
                     thing={thing}
-                    //       thing={props.datagram}
                     agentInput={{
                       stack: { url: webPrefix },
                       snapshot: false,
                       agents: { maximum: 1 },
                     }}
-onThingReport={(t)=>handleThingReport(t)}
+                    onThingReport={(t)=>handleThingReport(t)}
                   />
                 </div>
               </LazyLoad>
@@ -1220,13 +1216,9 @@ onThingReport={(t)=>handleThingReport(t)}
               {debugFlag && <Typography>RUNTIME {runTime}</Typography>}
               {!data && <>NOT DATA</>}
               <Agents
-                channel={"image"}
-                user={null}
-                //thing={data.thing}
-                //   thing={props.datagram}
                 thing={{...thing, uuid:uuid}}
                 agentInput={{ ...agentInput, stack: { url: webPrefix } }}
-onThingReport={(t)=>handleThingReport(t)}
+                onThingReport={(t)=>handleThingReport(t)}
               />
               {subject && subject.toLowerCase().indexOf("ping") !== -1 && (
                 <div>

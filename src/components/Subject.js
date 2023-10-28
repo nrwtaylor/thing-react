@@ -55,16 +55,16 @@ export default function Subject({
       //            setSubject(ev.target.value);
       // Do code here
       const s = ev.target.value;
-//      updateThing({ ...thing, subject: s });
-//      onThingReport();
-console.log("Subject u", thing, s);
+      //      updateThing({ ...thing, subject: s });
+      //      onThingReport();
+      console.log("Subject u", thing, s);
       setStatus("saving");
       //    return updateThing({ ...inputThing, variables: { item: e.target.checked } })
       //updateThing({ ...inputThing, subject: s })
-updateThing({uuid:inputThing.uuid, subject:s})
+      updateThing({ uuid: inputThing.uuid, subject: s })
         .then((result) => {
           //addMessage("Item handleToggleItem update thing " + inputThing.subject);
-onThingReport(result);
+          onThingReport(result);
           if (result && result.error && result.error.message) {
             setResponse((response) => {
               return response + result.error.message;
@@ -115,17 +115,14 @@ onThingReport(result);
     const timer = setTimeout(() => {
       //      setSubject(s);
       console.log("Subject 2 second settle");
-      updateThing({ uuid:inputThing.uuid, subject: s }).then((result)=>{
-
-console.log("Subject timer result", result);
-onThingReport();
-
-
-}).catch((error)=>{
-
-console.error("Subject timer error", error);
-
-});
+      updateThing({ uuid: inputThing.uuid, subject: s })
+        .then((result) => {
+          console.log("Subject timer result", result);
+          onThingReport();
+        })
+        .catch((error) => {
+          console.error("Subject timer error", error);
+        });
     }, 2000);
     return () => clearTimeout(timer);
   }, [s]);

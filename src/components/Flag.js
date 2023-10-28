@@ -15,6 +15,8 @@ import {
 
 import useThing from "../useThing.js";
 
+import useHybridEffect from "../useHybridEffect.js";
+
 const defaultFlag = "red";
 
 export default function Flag({ thing, agentInput, updateThing }) {
@@ -34,7 +36,7 @@ const isSelected = agentInput?.flag === agentInput?.text;
     console.debug("Flag start");
   }, []);
 
-  useEffect(() => {
+  useHybridEffect(() => {
     if (thing == null) {
       return;
     }
@@ -50,13 +52,13 @@ const isSelected = agentInput?.flag === agentInput?.text;
 
       setFlag(null);
     }
-  }, [thing && thing.variables]);
+  }, [thing]);
 
   useEffect(() => {
     console.debug("Flag flag", thing.uuid, flag);
   }, [flag]);
 
-  useEffect(() => {
+  useHybridEffect(() => {
     if (agentInput == null) {
       return;
     }
