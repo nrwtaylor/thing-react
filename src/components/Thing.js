@@ -865,7 +865,7 @@ onThingReport(a);
 
     return (
       <>
-        {expanded && (
+        {debugFlag && expanded && (
           <>
             TXPACKETS {txCount}
             <br />

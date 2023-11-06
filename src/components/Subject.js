@@ -17,8 +17,6 @@ export default function Subject({
   agentInput,
   onThingReport,
 }) {
-  //  const [subject, setSubject] = useState(datagram.subject);
-
   const { thing, updateThing } = useThing(inputThing);
 
   const textInput = React.useRef(null);
@@ -52,15 +50,13 @@ export default function Subject({
     console.log(`Subject onKeyDown ${ev.key}`);
     if (ev.key === "Enter") {
       ev.preventDefault();
-      //            setSubject(ev.target.value);
+
       // Do code here
       const s = ev.target.value;
-      //      updateThing({ ...thing, subject: s });
-      //      onThingReport();
+
       console.log("Subject u", thing, s);
       setStatus("saving");
-      //    return updateThing({ ...inputThing, variables: { item: e.target.checked } })
-      //updateThing({ ...inputThing, subject: s })
+
       updateThing({ uuid: inputThing.uuid, subject: s })
         .then((result) => {
           //addMessage("Item handleToggleItem update thing " + inputThing.subject);
@@ -182,16 +178,22 @@ export default function Subject({
           />
 
           <div>{thing.subject !== defaultSubject && <>Not synced</>}</div>
-          <div>
-            SUBJECT {thing.subject}
-            <br />S {s}
-            <br />
-            DEFAULT SUBJECT {defaultSubject}
-            <br />
-            {status}
-            <br />
-            {response}
-          </div>
+
+          {debugFlag && (
+            <>
+              {" "}
+              <div>
+                SUBJECT {thing.subject}
+                <br />S {s}
+                <br />
+                DEFAULT SUBJECT {defaultSubject}
+                <br />
+                {status}
+                <br />
+              </div>
+            </>
+          )}
+          <div>{response}</div>
 
           <br />
         </>

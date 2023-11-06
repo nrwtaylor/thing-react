@@ -22,6 +22,7 @@ export function readToken(jwtToken) {
 }
 
 export function checkToken(t) {
+if (t == null) {return false}
   //console.log("jwtToken", jwtToken);
 
   //  const t = jwt_decode(jwtToken);

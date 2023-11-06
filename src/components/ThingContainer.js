@@ -37,7 +37,6 @@ const style = {
   // spacing:'1'
 };
 
-//export const ThingContainer = memo(function ThingContainer(props) {
 export const ThingContainer = ({ thing }) => {
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
 
@@ -67,7 +66,7 @@ export const ThingContainer = ({ thing }) => {
   const [associations, setAssociations] = useState();
   const { things, getThings, setThings } = useThings();
 
-  useEffect(() => {
+  useHybridEffect(() => {
     if (filteredScoredThings == null) {
       return;
     }
@@ -76,7 +75,7 @@ export const ThingContainer = ({ thing }) => {
       Array.isArray(filteredScoredThings) &&
       filteredScoredThings.length === 0
     ) {
-//console.log("ThingContainer call getThings");
+
       getThings();
       return;
     }
@@ -304,7 +303,7 @@ agentInput={{text:"Add Thing",link:webPrefix + "thing/"+thing.uuid+"/"}}
     {/*    <Grid container spacing={3} direction="row"> */}
           {filteredScoredThings && (
             <div>
-              Showing {filteredScoredThings.length} of {things.length} known
+              Showing {filteredScoredThings.length} Things. Including {things.length} Stack
               Things.
               <br />
             </div>

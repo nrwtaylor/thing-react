@@ -274,7 +274,7 @@ export function zuluTimeDifferenceMilliseconds(atA, atB) {
   return differenceMilliseconds;
 }
 
-
+/*
 export function extractDurations(tokens) {
   const timeUnitSuffixes = ['y', 'd', 'h', 'm', 's', 'ms', 'µs', 'ps'];
   
@@ -283,3 +283,38 @@ export function extractDurations(tokens) {
     return timeUnitSuffixes.includes(lastChar);
   });
 }
+*/
+
+
+export function extractDurations(tokens) {
+  const timeUnitSuffixes = ['y', 'd', 'h', 'm', 's', 'ms', 'µs', 'ps'];
+
+  return tokens.filter((token) => {
+    const matches = token.match(/(\d+)([a-zA-Z]+)/);
+    var numberComponent = null;
+    var characterComponent = "";
+    if (matches) {
+      numberComponent = matches[1];
+      characterComponent = matches[2];
+    }
+
+    // Check if the token ends only with one of the time unit suffixes
+    let endsOnlyWithSuffix = false;
+    for (const suffix of timeUnitSuffixes) {
+      if (token.toLowerCase().endsWith(suffix)) {
+        // Check if the token ends *only* with this suffix
+        const trimmedToken = token.slice(0, -suffix.length);
+        if (trimmedToken.match(/\D/)) {
+          // If there are non-digit characters in the trimmed token, it's not a>
+          endsOnlyWithSuffix = false;
+        } else {
+          endsOnlyWithSuffix = true;
+        }
+      }
+    }
+    return endsOnlyWithSuffix;
+  });
+}
+
+
+

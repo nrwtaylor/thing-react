@@ -241,6 +241,13 @@ export function createThing(webPrefix, datagram, token) {
 
   console.debug("database createThing datagram", datagram);
 
+  const tokenResponse = readToken(token);
+  console.log("database token tokenResponse", token, tokenResponse);
+
+  if (tokenResponse.isValidToken === false) {
+    return Promise.resolve({ error: { message: "Token not valid." } });
+  }
+
   // Set createThing browndog endpoint
   const u = apiPrefix + "/thing/";
   console.debug("database createThing u", u);

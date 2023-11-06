@@ -153,11 +153,19 @@ export default function ThingPage(props) {
     console.log("ThingPage uuidPathname", uuidPathname);
     if (isValidUUID(uuidPathname)) {
       console.debug("ThingPage using provided url");
+
+
+
+
       d.uuid = uuidPathname;
 
       // Not sure about this. But it is needed to pass more complicated strings in.
       // Will have to see that it works in the cases where the thing must pull back a subject
       d.subject = pathname;
+
+
+
+
     } else {
       console.debug("ThingPage using provided url");
       d.uuid = uuidv4(); // local stack can assign uuids. Other stacks will accept them on trust.
@@ -180,7 +188,7 @@ export default function ThingPage(props) {
     <>
       THING PAGE {debugFlag && <>DEBUG</>} {devFlag && <>DEV</>}{" "}
       {isValidToken === false ? "FALSE TOKEN" : "VALID TOKEN"}
-{JSON.stringify(isValidToken)}
+{/*JSON.stringify(isValidToken)*/}
       {/*
       <Button
         thing={{

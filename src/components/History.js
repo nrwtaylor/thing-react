@@ -72,11 +72,11 @@ import useThingReport from "../useThingReport.js";
 import { useSwipeable } from "react-swipeable";
 
 //import { devFlag, debugFlag } from "../util/dev.js";
-import { devFlag } from "../util/dev.js";
+import { devFlag, debugFlag } from "../util/dev.js";
 
 import { useTheme } from "@mui/material/styles";
 
-const debugFlag = true;
+//const debugFlag = true;
 
 // Refactor to pass this in thing as variables.
 const engineState = process.env.REACT_APP_ENGINE_STATE;
@@ -138,8 +138,8 @@ function History({ thing, agentInput }) {
     //}
 
 var tempTextIntervalArray = extractDurations(i);
-if ( Array.isArray(tempTextIntervalArray) && tempTextIntervalArray.length === 1) { 
-var tempTextInterval = tempTextIntervalArray[0];
+if ( Array.isArray(tempTextIntervalArray) && tempTextIntervalArray.length > 0) { 
+var tempTextInterval = tempTextIntervalArray.slice(-1)[0];
 }
 
     setTextInterval(tempTextInterval);
@@ -151,8 +151,6 @@ var tempTextInterval = tempTextIntervalArray[0];
     console.log("History tempR textInterval", tempR, tempTextInterval);
 
     const maxInterval = 1000;
-
-    //if (interval > 1000) {textInterval = maxInterval;}
 
     try {
       var interval = true;
@@ -797,6 +795,7 @@ console.log("History period", periods[0], periods[1], periods[2], periods[3]);
           </div>
         </>
       )}
+
       <div>
         SNAPSHOT GET TIME {snapshotRunTime}ms{" "}
         {Math.round(1000 / snapshotRunTime, 1)}Hz
