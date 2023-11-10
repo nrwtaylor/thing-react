@@ -9,6 +9,7 @@ import {
 
 import { getSlug } from "./util/text.js";
 import useHybridEffect from "./useHybridEffect.js";
+import { useNavigate } from "react-router-dom";
 
 
 import { v4 as uuidv4 } from "uuid";
@@ -34,6 +35,7 @@ const defaultThing = {
 
 export default function useThing(datagram) {
   const { token } = useToken();
+  const { navigate } = useNavigate();
   const priorDatagram = usePrior(datagram);
 
 //  const [thing, setThing] = useState();
@@ -433,7 +435,7 @@ var result = deepDiffMapper.map({
       setThingy(newThing.uuid, newThing, token).then((result) => {
         console.log("ThingContainer setThing result", result);
       });
-
+navigate("/" + "thing" + "/" + newThing.uuid + "/");
       //props.onCollectionChange(things);
     },
     [things]

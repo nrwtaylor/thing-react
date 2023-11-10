@@ -1,6 +1,8 @@
 import React from "react";
 import Button from "@mui/material/Button";
 import useToken from "../useToken.js";
+import { useNavigate } from "react-router-dom";
+
 
 
 //import './Login.css';
@@ -23,7 +25,7 @@ async function logoutUser(token) {
 export default function Logout() {
 
 const { deleteToken, isValidToken } = useToken();
-
+  const navigate = useNavigate();
 
   //  const [username, setUserName] = useState();
   //  const [password, setPassword] = useState();
@@ -39,7 +41,8 @@ const { deleteToken, isValidToken } = useToken();
     deleteToken(token);
     logoutUser(token);
 
-    window.history.replaceState(null, null, "/");
+//    window.history.replaceState(null, null, "/");
+navigate("/logout");
   };
 
   return (

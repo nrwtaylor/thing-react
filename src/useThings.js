@@ -161,6 +161,12 @@ export default function useThings() {
         console.log("useThings getThings getThingies things", things);
         console.log("useThings getThings getThingies result", result);
 
+if (result && result.error) {
+
+return;
+
+}
+
         // This does a straight drop of any duplicated uuids.
         // This is a problem because a more sophicated merge
         // is required based on change history.
@@ -177,6 +183,8 @@ export default function useThings() {
         const removedThings = [];
 
         // Compare result.things with tempThings
+
+if (result && result.things) {
         for (const thing of result.things) {
           if (!tempThings.includes(thing)) {
             // If the thing is in result.things but not in tempThings, it's added.
@@ -190,6 +198,7 @@ export default function useThings() {
             removedThings.push(thing);
           }
         }
+}
 
         // Create hashes for each thing in result.things and tempThings
         const tempHashes = tempThings.map((thing) => hashFunction(thing));
@@ -262,6 +271,7 @@ export default function useThings() {
         // Add an error card in. Up front and center?
         //setThings(defaultThings);
         //webPrefix, defaultThings[1], token
+        console.log("useThings loadThings apiPrefix token", apiPrefix, token);
         createThing(webPrefix, errorThing, token);
         console.error("useThings loadThings error", error);
       });

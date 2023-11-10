@@ -5,6 +5,8 @@ import PropTypes from "prop-types";
 import crypto from "crypto";
 import Button from "@mui/material/Button";
 
+import { useNavigate } from "react-router-dom";
+
 
 //import * as crypto from "crypto"
 
@@ -60,6 +62,8 @@ export default function Login({ datagram }) {
 
   const { token, isValidToken, setToken } = useToken();
   const { identity, setIdentity, deleteIdentity } = useIdentity();
+  const navigate = useNavigate();
+
   //const [ error, setError ] = useState();
 
   // FRAMING Needs to be minimal,
@@ -283,6 +287,8 @@ return;
       );
 toast("Logged in");
 setResponse((response)=>{return response + "Logged in. "   })
+                  navigate("/" + "login");
+
     }
 
     // Authentication ... and Authorisation.

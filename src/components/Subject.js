@@ -4,8 +4,12 @@ import PropTypes from "prop-types";
 import TextField from "@mui/material/TextField";
 
 import useHybridEffect from "../useHybridEffect.js";
+import { useNavigate } from "react-router-dom";
+
 
 import useThing from "../useThing.js";
+
+import {hasUUID} from "./../util/uuid.js";
 
 import { devFlag, debugFlag } from "../util/dev.js";
 import { getSlug } from "./../util/text.js";
@@ -18,8 +22,10 @@ export default function Subject({
   onThingReport,
 }) {
   const { thing, updateThing } = useThing(inputThing);
-
+  const navigate = useNavigate();
   const textInput = React.useRef(null);
+
+  const pathname = window.location.pathname.replace(/\//, "");
 
   const timeoutPeriod = 500;
 
@@ -39,7 +45,7 @@ export default function Subject({
     if (inputThing.subject == null) {
       tempSubject = "";
     }
-
+console.log("Subject inputThing", inputThing);
     setDefaultSubject(tempSubject);
 
     setS(tempSubject);
@@ -78,6 +84,24 @@ export default function Subject({
             result.data
           );
           console.debug("Item handleToggleItem updateThing result", result);
+
+
+// If the subject update has a uuid in it, then update the url.
+// Because ... it is a different thing.
+
+//                  navigate("/" + "login");
+if (hasUUID(s)) {
+
+navigate("/"+s);
+
+}
+
+if (!hasUUID(pathname) && !hasUUID(s)) {
+
+navigate("/"+s);
+
+}
+
         })
         .catch((error) => {
           setResponse((response) => {
@@ -101,7 +125,7 @@ export default function Subject({
       setDefaultSubject("");
       return;
     }
-
+console.log("Subject s", s);
     setDefaultSubject(s);
   }, [s]);
 
