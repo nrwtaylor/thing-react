@@ -113,3 +113,20 @@ export function minMaxTicks(min, max, numberOfTicks) {
 function roundDownToTickInterval(n, tickInterval) {
   return Math.floor(n / tickInterval) * tickInterval;
 }
+
+export  function atSpread(data) {
+    if (data == null) {
+      return;
+    }
+    if (Array.isArray(data) && data.length === 0) {
+      return;
+    }
+    const first = new Date(data[0].at);
+    const last = new Date(data[data.length - 1].at);
+
+    const spreadEvent = last - first > 0 ? last - first : first - last;
+
+   // setFirstAt(data[0].at);
+    //setLastAt(data[data.length - 1].at);
+    return {firstAt:data[0].at, lastAt:data[data.length -1].at, spread:spreadEvent};
+  }

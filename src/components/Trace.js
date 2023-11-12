@@ -351,6 +351,10 @@ return true;
     );
     //    return null;
   }
+//return (<>FLERPLE
+//{props.domain == null ? "NULL DOMAIN" : "DOMAIN"}
+//{JSON.stringify(ySeriesData)}</>);
+
 
   return (
     <>

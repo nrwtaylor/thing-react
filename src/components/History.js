@@ -11,6 +11,9 @@ import useHybridEffect from "../useHybridEffect.js";
 
 import { makeStyles } from "@mui/styles";
 
+import { minMaxData, minMaxTicks } from "../util/data.js";
+
+
 import {
   Typography,
   //  Avatar,
@@ -66,6 +69,8 @@ import {
   prefixText,
 } from "../util/text.js";
 
+import {atSpread } from "../util/data.js";
+
 import useSnapshot from "../useSnapshot.js";
 import useThingReport from "../useThingReport.js";
 
@@ -80,6 +85,10 @@ import { useTheme } from "@mui/material/styles";
 
 // Refactor to pass this in thing as variables.
 const engineState = process.env.REACT_APP_ENGINE_STATE;
+
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
 
 function History({ thing, agentInput }) {
   const navigate = useNavigate();
@@ -102,6 +111,9 @@ function History({ thing, agentInput }) {
   const [resolution, setResolution] = useState();
   const [amount, setAmount] = useState();
   const [textInterval, setTextInterval] = useState();
+
+
+const [domain2, setDomain2] = useState();
 
   useHybridEffect(() => {
     if (datagram == null) {
@@ -527,6 +539,15 @@ console.log("History period", periods[0], periods[1], periods[2], periods[3]);
     const p = hist.map((h) => {
       var amount = null;
 
+
+if (h && h.event) {
+amount = false;
+}
+
+if (h && h.event && isNumeric(h.event)) {
+amount = h.event;
+}
+
       if (typeof h.event === "string" || h.event instanceof String) {
         amount = parseFloat(h.event);
       }
@@ -534,6 +555,7 @@ console.log("History period", periods[0], periods[1], periods[2], periods[3]);
       if (h.event.amount) {
         amount = parseFloat(h.event.amount);
       }
+
 
       if (h.event.data) {
         const pingArray = parsePing(h.event.data);
@@ -635,6 +657,7 @@ console.log("History period", periods[0], periods[1], periods[2], periods[3]);
   }
 
   useHybridEffect(() => {
+console.log("historyPoints", historyPoints);
     // Bin history points in to cycle.
     const cycleMilliseconds = 1000 * 24 * 60 * 60;
 
@@ -642,6 +665,21 @@ console.log("History period", periods[0], periods[1], periods[2], periods[3]);
     cycleStartDate.setHours(24, 0, 0, 0);
 
     // Set to midnight local time.
+
+
+    //const s = atSpread(historyPoints);
+
+
+    const [min, max] = minMaxData(historyPoints);
+    //setFilteredDataSpread(s);
+    const a = minMaxTicks(min, max, 5);
+    //console.debug("Trace filteredData a", a);
+
+
+    setDomain2(a);
+
+
+
 
     const cycleRunAt = zuluTime(cycleStartDate);
     console.debug("History cycleRunAt", cycleRunAt);
@@ -746,7 +784,7 @@ console.log("History period", periods[0], periods[1], periods[2], periods[3]);
           <>
 <div>1 DAY RENDER</div>
             <TraceCircle agentInput={{data:tracePoints, cycle:1}}  />
-            <Trace data={tracePoints} cycle={1} />
+            <Trace data={tracePoints} cycle={1} domain={domain2} />
           </>
         )}
       {textInterval && textInterval === true && (
@@ -821,4 +859,7 @@ console.log("History period", periods[0], periods[1], periods[2], periods[3]);
   );
 }
 
+
+
 export default History;
+
