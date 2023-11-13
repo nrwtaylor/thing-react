@@ -14,6 +14,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { v4 as uuidv4 } from "uuid";
 
+import { createThing } from "../util/database.js";
+
 import useToken from "../useToken.js";
 import useIdentity from "../useIdentity.js";
 import useInput from "../useInput.js";
@@ -28,6 +30,8 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 import useHybridEffect from "../useHybridEffect.js";
 
+const defaultWebPrefix = process.env.REACT_APP_WEB_PREFIX;
+
 export default function ThingPage(props) {
   const webPrefix = process.env.REACT_APP_WEB_PREFIX;
   const apiPrefix = process.env.REACT_APP_API_PREFIX;
@@ -36,6 +40,9 @@ export default function ThingPage(props) {
 
   const pathname = window.location.pathname.replace(/\//, "");
 
+  const [status, setStatus] = useState();
+  const [response, setResponse] = useState();
+
   const reg =
     /\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/g;
 
@@ -43,6 +50,7 @@ export default function ThingPage(props) {
 
   const { username, token, isValidToken, getToken, setToken, deleteToken } =
     useToken();
+
   const { identity, setIdentity, deleteIdentity } = useIdentity();
   const { input, setInput, deleteInput } = useInput();
 
@@ -68,30 +76,39 @@ export default function ThingPage(props) {
     setUuid(u);
   }
 
-  useEffect(() => {
+  useHybridEffect(() => {
     if (uuids == null) {
       return;
     }
     console.debug("ThingPage uuids", uuids);
   }, [uuids]);
 
-  useHybridEffect(() => {
+useEffect(() =>{
 
+console.log("ThingPage token isValidToken", token, isValidToken);
+
+
+}, [token, isValidToken]);
+
+  useHybridEffect(() => {
     if (things == null) {
       return;
     }
+
     console.debug("ThingPage pathname", pathname);
 
     console.log("ThingPage pathnameEffect things", things);
     const uuidPathname = extractUuid(pathname);
     console.debug("ThingPage uuidPathname", uuidPathname);
 
+console.log("ThingPage things", things);
+
     var thingMatch = null;
     things.forEach((t) => {
       if (t.uuid == null) {
         return;
       }
-
+console.log("ThingPage xxx t.uuid uuidPathname", t.uuid, uuidPathname);
       if (t.uuid === uuidPathname) {
         thingMatch = t;
       }
@@ -152,28 +169,83 @@ export default function ThingPage(props) {
 
     console.log("ThingPage uuidPathname", uuidPathname);
     if (isValidUUID(uuidPathname)) {
-      console.debug("ThingPage using provided url");
-
-
-
-
+      console.debug("ThingPage using provided uuid");
+// HERE
       d.uuid = uuidPathname;
 
       // Not sure about this. But it is needed to pass more complicated strings in.
       // Will have to see that it works in the cases where the thing must pull back a subject
       d.subject = pathname;
 
-
-
+//    setThing(d);
+//    setPlay(false);
 
     } else {
-      console.debug("ThingPage using provided url");
-      d.uuid = uuidv4(); // local stack can assign uuids. Other stacks will accept them on trust.
+      console.debug("ThingPage No Uuid uusing provided url");
+
+      const datagram = {
+        //         index: 20,
+        to: "localhost",
+        from: thing && thing.uuid,
+        subject: pathname,
+        //          priority: "routine",
+        //          createdAt: Date.now(),
+        //          uuid: uuidv4(),
+        //          input: "InputText",
+      };
+console.log("ThingPage token isValidToken", token, isValidToken);
+      let tokent = null;
+      if (isValidToken === true) {
+        tokent = token;
+      }
+console.log("ThingPage tokent", tokent);
+      createThing(defaultWebPrefix, datagram, tokent)
+        .then((result) => {
+          //console.log("Input sendText createThing result", result);
+          //        setInputText(''); // Clear the input field
+          //setStatus('idle');
+console.log("ThingPage createThing result", result);
+          if (result.hasOwnProperty("error")) {
+
+            setResponse((response) => {
+              return response + result.error.message;
+            });
+
+
+d.subject = pathname;
+setThing(d);
+setPlay(false);
+
+
+            return;
+          }
+
+          setResponse((response) => {
+            return response + "Text sent successfully. ";
+          });
+
+//console.log("ThingPage createThing result", result);
+
+      d.uuid = uuidv4(); // local stack can assign uuids. Other stacks will accept them o>
       d.subject = pathname;
-    }
 
     setThing(d);
     setPlay(false);
+
+
+        })
+        .catch((error) => {
+          setStatus("error");
+          console.error("ThingPage createThing error", error);
+          setResponse((response) => {
+            return response + error.message;
+          });
+        });
+
+    }
+
+//    setThing(d);
+//    setPlay(false);
   }, [pathname, things]);
 
   function handleThingReport(t) {
@@ -188,7 +260,11 @@ export default function ThingPage(props) {
     <>
       THING PAGE {debugFlag && <>DEBUG</>} {devFlag && <>DEV</>}{" "}
       {isValidToken === false ? "FALSE TOKEN" : "VALID TOKEN"}
-{/*JSON.stringify(isValidToken)*/}
+      {/*JSON.stringify(isValidToken)*/}
+      {JSON.stringify(thing)}
+<br />
+{status}<br />
+{response}<br />
       {/*
       <Button
         thing={{

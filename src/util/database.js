@@ -266,8 +266,17 @@ export function createThing(webPrefix, datagram, token) {
     })
     .catch((error) => {
       //return {error:true, message:error.data.message};
-      console.error("database createThing u error", u, error);
+console.log("database createThing u", u);
+      console.error("database createThing error", error.response.data);
       var apiErrorMessage = "Problem creating Thing.";
+
+      if (
+        error &&
+        error.response &&
+        error.response.data      ) {
+        apiErrorMessage = error.response.data;
+      }
+
       if (
         error &&
         error.response &&

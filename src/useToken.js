@@ -3,6 +3,7 @@ import jwt_decode from "jwt-decode";
 
 import useHybridEffect from "./useHybridEffect.js";
 
+import { humanPosixTime, humanTime, zuluTime } from "./util/time.js";
 
 export function readToken(jwtToken) {
   if (jwtToken == null) {
@@ -26,10 +27,11 @@ if (t == null) {return false}
   //console.log("jwtToken", jwtToken);
 
   //  const t = jwt_decode(jwtToken);
-  const expiresAt = t.iat;
+  //const expiresAt = t.iat;
+const expiresAt = t.exp;
 
   const age = parseFloat(expiresAt) * 1000 - Date.now();
-  console.log("useToken isValidToken expiresAt age", expiresAt, age);
+  console.log("useToken checkToken expiresAt age", humanPosixTime(expiresAt), age);
   var isValidToken = false;
   if (age >= 0) {
     isValidToken = true;
@@ -90,6 +92,12 @@ export default function useToken() {
     getToken();
   }, []);
 
+useEffect(()=>{
+
+console.log("useToken isValidToken", isValidToken);
+
+}, [isValidToken]);
+
   const getToken = () => {
     const tokenString = localStorage.getItem("token");
 
@@ -126,6 +134,19 @@ export default function useToken() {
       //      console.log("Token tick");
       //setCurrentTime(Date.now());
       updateAge(expiresAt);
+
+console.log("useToken isValidToken", isValidToken);
+if (isValidToken === false) {
+
+const response = getToken();
+//const t = readToken(response);
+console.log("useToken getToken response", response);
+validToken(response);
+
+
+}
+
+
     }, 500); // 20 Hz was 200.
 
     return () => clearInterval(interval);

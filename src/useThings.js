@@ -11,8 +11,8 @@ import { v4 as uuidv4 } from "uuid";
 
 import useToken from "./useToken.js";
 
-import sha256 from "crypto-js";
-//import crypto from 'crypto';
+//import sha256 from "crypto-js";
+import crypto from 'crypto';
 
 const userThings = makeObservable({ things: [], count: 0 });
 
@@ -124,8 +124,13 @@ const errorThing = {
 function hashFunction(obj) {
   //return "hello";
   const jsonString = JSON.stringify(obj);
-  const hash = sha256(jsonString);
-  return hash.toString(crypto.enc.Hex);
+  //const hash = sha256(jsonString);
+
+  const hash = crypto.createHash('sha256');
+  
+  hash.update(jsonString);
+  return hash.digest('hex');
+//  return hash.toString(crypto.enc.Hex);
 }
 
 export default function useThings() {
@@ -149,7 +154,7 @@ export default function useThings() {
       // But need to establish a hook to monitor changes in [things].
 
       setThings(defaultThings);
-      console.log("useThings saw null token");
+      console.log("useThings getThings saw null token");
       return;
     }
 
@@ -161,11 +166,9 @@ export default function useThings() {
         console.log("useThings getThings getThingies things", things);
         console.log("useThings getThings getThingies result", result);
 
-if (result && result.error) {
-
-return;
-
-}
+        if (result && result.error) {
+          return;
+        }
 
         // This does a straight drop of any duplicated uuids.
         // This is a problem because a more sophicated merge
@@ -176,7 +179,7 @@ return;
         // Otherwise can send uuid as placeholder.
 
         if (result.hasOwnProperty("error")) {
-          console.error("useThings getThingies error", result.error);
+          console.error("useThings getThings getThingies error", result.error);
         }
 
         const addedThings = [];
@@ -184,22 +187,22 @@ return;
 
         // Compare result.things with tempThings
 
-if (result && result.things) {
-        for (const thing of result.things) {
-          if (!tempThings.includes(thing)) {
-            // If the thing is in result.things but not in tempThings, it's added.
-            addedThings.push(thing);
+        if (result && result.things) {
+          for (const thing of result.things) {
+            if (!tempThings.includes(thing)) {
+              // If the thing is in result.things but not in tempThings, it's added.
+              addedThings.push(thing);
+            }
+          }
+
+          for (const thing of tempThings) {
+            if (!result.things.includes(thing)) {
+              // If the thing is in tempThings but not in result.things, it's removed.
+              removedThings.push(thing);
+            }
           }
         }
-
-        for (const thing of tempThings) {
-          if (!result.things.includes(thing)) {
-            // If the thing is in tempThings but not in result.things, it's removed.
-            removedThings.push(thing);
-          }
-        }
-}
-
+console.log("useThings getThings MERP");
         // Create hashes for each thing in result.things and tempThings
         const tempHashes = tempThings.map((thing) => hashFunction(thing));
         const resultHashes = result.things.map((thing) => hashFunction(thing));
@@ -219,7 +222,7 @@ if (result && result.things) {
           (index) => result.things[index]
         );
 
-        console.log("useThings changedThings", changedThings);
+        console.log("useThings getThings changedThings", changedThings);
         // Not used these.
         // Because need to consider how to merge two things together.
 
@@ -260,7 +263,7 @@ if (result && result.things) {
         //)
 
         console.log(
-          "useThings loadThings conditionedThings",
+          "useThings getThings conditionedThings",
           conditionedThings
         );
 
@@ -271,9 +274,9 @@ if (result && result.things) {
         // Add an error card in. Up front and center?
         //setThings(defaultThings);
         //webPrefix, defaultThings[1], token
-        console.log("useThings loadThings apiPrefix token", apiPrefix, token);
+        console.log("useThings getThings apiPrefix token", apiPrefix, token);
         createThing(webPrefix, errorThing, token);
-        console.error("useThings loadThings error", error);
+        console.error("useThings getThings error", error);
       });
 
     //    const things = getThings();
@@ -285,7 +288,9 @@ if (result && result.things) {
   }, []);
 
   useHybridEffect(() => {
-    if (things == null) {return;}
+    if (things == null) {
+      return;
+    }
     console.log("useThings things", things);
   }, [things]);
 
